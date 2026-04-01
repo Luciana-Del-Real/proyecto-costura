@@ -1,0 +1,118 @@
+@import "tailwindcss";
+
+@theme {
+  --color-grow-cream: #F5EFE6;
+  --color-grow-cream-dark: #EDE4D6;
+  --color-grow-sage: #7A9E7E;
+  --color-grow-sage-dark: #5E8262;
+  --color-grow-sage-light: #EAF0EA;
+  --color-grow-terra: #C4785A;
+  --color-grow-terra-dark: #A85E42;
+  --color-grow-terra-light: #F5E8E2;
+  --color-grow-brown: #3D2B1F;
+  --color-grow-brown-mid: #6B4C3B;
+  --color-grow-warm: #F9F5F0;
+}
+
+@layer base {
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: #F9F5F0;
+    color: #3D2B1F;
+  }
+}
+
+/* Fade up — entrada suave desde abajo */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Fade in simple */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Slide down — para el dropdown del navbar */
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.5s ease both;
+}
+.animate-fade-up-delay-1 {
+  animation: fadeUp 0.5s ease 0.1s both;
+}
+.animate-fade-up-delay-2 {
+  animation: fadeUp 0.5s ease 0.2s both;
+}
+.animate-fade-up-delay-3 {
+  animation: fadeUp 0.5s ease 0.3s both;
+}
+.animate-fade-up-delay-4 {
+  animation: fadeUp 0.5s ease 0.4s both;
+}
+.animate-fade-in {
+  animation: fadeIn 0.4s ease both;
+}
+.animate-slide-down {
+  animation: slideDown 0.2s ease both;
+}
+
+/* Scroll-triggered — estado inicial (oculto) */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-32px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal-left.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-right {
+  opacity: 0;
+  transform: translateX(32px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal-right.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.92);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.reveal-scale.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Delays para stagger en scroll */
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* Stagger para listas de cards */
+.stagger-item:nth-child(1) { animation: fadeUp 0.5s ease 0.05s both; }
+.stagger-item:nth-child(2) { animation: fadeUp 0.5s ease 0.15s both; }
+.stagger-item:nth-child(3) { animation: fadeUp 0.5s ease 0.25s both; }
+.stagger-item:nth-child(4) { animation: fadeUp 0.5s ease 0.35s both; }
+.stagger-item:nth-child(5) { animation: fadeUp 0.5s ease 0.45s both; }
+.stagger-item:nth-child(6) { animation: fadeUp 0.5s ease 0.55s both; }
