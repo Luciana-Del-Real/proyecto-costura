@@ -4,10 +4,11 @@ import { useCourses } from '../../context/CoursesContext';
 
 export default function AdminDashboard() {
   const { user } = useAuth();
-  const { courses, getAllPurchases, getAllUsers } = useCourses();
+  const { courses, getAllPurchases, getAllUsers, getPendingRequests } = useCourses();
 
-  const allPurchases = useMemo(() => getAllPurchases(), []);
-  const allUsers = useMemo(() => getAllUsers(), []);
+  const allPurchases = useMemo(() => getAllPurchases(), [getAllPurchases]);
+  const allUsers = useMemo(() => getAllUsers(), [getAllUsers]);
+  const pendingRequests = useMemo(() => getPendingRequests(), [getPendingRequests]);
 
   const totalRevenue = allPurchases.reduce((sum, p) => sum + p.course.price, 0);
   const topCourses = courses
@@ -18,6 +19,7 @@ export default function AdminDashboard() {
   const stats = [
     { label: 'Ingresos totales', value: `$${totalRevenue.toLocaleString()}`, icon: '💰', color: 'bg-[#EAF0EA] text-[#5E8262]' },
     { label: 'Ventas totales', value: allPurchases.length, icon: '🛒', color: 'bg-[#F5E8E2] text-[#A85E42]' },
+    { label: 'Solicitudes pendientes', value: pendingRequests.length, icon: '⏳', color: 'bg-[#FDEECB] text-[#A36700]' },
     { label: 'Alumnos', value: allUsers.length, icon: '👩‍🎓', color: 'bg-[#EDE4D6] text-[#6B4C3B]' },
     { label: 'Cursos activos', value: courses.length, icon: '📚', color: 'bg-[#F5EFE6] text-[#3D2B1F]' },
   ];

@@ -2,8 +2,9 @@ import { useMemo, useState } from 'react';
 import { useCourses } from '../../context/CoursesContext';
 
 export default function AdminSales() {
-  const { courses, getAllPurchases } = useCourses();
-  const allPurchases = useMemo(() => getAllPurchases(), []);
+  const { courses, getAllPurchases, getPendingRequests, approvePurchase, denyPurchase } = useCourses();
+  const allPurchases = useMemo(() => getAllPurchases(), [getAllPurchases]);
+  const pendingRequests = useMemo(() => getPendingRequests(), [getPendingRequests]);
   const [filter, setFilter] = useState('todos');
 
   const filtered = filter === 'todos'
@@ -31,6 +32,32 @@ export default function AdminSales() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Pending approvals */}
+        <div className="bg-white rounded-2xl border border-[#EDE4D6] p-6 mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="font-bold text-[#3D2B1F]">Solicitudes pendientes de pago</h2>
+            <span className="text-xs text-[#A08060]">{pendingRequests.length} solicitud{pendingRequests.length !== 1 ? 'es' : ''}</span>
+          </div>
+          {pendingRequests.length === 0 ? (
+            <p className="text-[#A08060] text-sm">No hay solicitudes pendientes.</p>
+          ) : (
+            <div className="grid gap-3">
+              {pendingRequests.map((req, idx) => (
+                <div key={`${req.user.id}-${req.course.id}-${idx}`} className="bg-[#F9F5F0] rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <p className="font-medium text-[#3D2B1F]">{req.user.name} ({req.user.email})</p>
+                    <p className="text-xs text-[#6B4C3B]">{req.course.title} - {req.course.price ? `$${req.course.price.toLocaleString()}` : ''}</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <button onClick={() => approvePurchase(req.course.id)} className="px-3 py-1.5 text-xs bg-[#7A9E7E] text-white rounded-lg hover:bg-[#5E8262]">Aprobar</button>
+                    <button onClick={() => denyPurchase(req.course.id)} className="px-3 py-1.5 text-xs bg-[#EDE4D6] text-[#6B4C3B] rounded-lg hover:bg-[#D4C2B5]">Rechazar</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
         {/* Summary cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
           <div className="bg-white rounded-2xl border border-[#EDE4D6] p-5 animate-fade-up">

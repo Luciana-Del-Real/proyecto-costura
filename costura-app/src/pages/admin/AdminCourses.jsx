@@ -230,7 +230,7 @@ export default function AdminCourses() {
         )}
 
         <div className="space-y-3">
-          {courses.map((course, i) => (
+          {courses.map((course) => (
             <div key={course.id} className="stagger-item bg-white rounded-2xl border border-[#EDE4D6] p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 hover:shadow-sm transition-all duration-200">
               <img src={course.image} alt={course.title} className="w-full sm:w-20 h-16 object-cover rounded-xl flex-shrink-0" />
               <div className="flex-1 min-w-0">

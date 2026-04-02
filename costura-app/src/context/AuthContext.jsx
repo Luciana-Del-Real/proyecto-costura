@@ -1,68 +1,51 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { post } from '../services/api';
 
 const AuthContext = createContext(null);
-
-// Cuenta admin por defecto — se crea si no existe
-const ADMIN_SEED = {
-  id: 'admin-001',
-  name: 'Daia',
-  email: 'admin@grow.com',
-  password: 'grow2026',
-  role: 'admin',
-  createdAt: '2026-01-01T00:00:00.000Z',
-};
-
-function seedAdmin() {
-  const users = JSON.parse(localStorage.getItem('costura_users') || '[]');
-  if (!users.find(u => u.id === ADMIN_SEED.id)) {
-    users.unshift(ADMIN_SEED);
-    localStorage.setItem('costura_users', JSON.stringify(users));
-  }
-}
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    seedAdmin();
-    const stored = localStorage.getItem('costura_user');
-    if (stored) setUser(JSON.parse(stored));
+    // Check if user is logged in on app start
+    const token = localStorage.getItem('costura_token');
+    const storedUser = localStorage.getItem('costura_user');
+    if (token && storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
     setLoading(false);
   }, []);
 
-  const register = (name, email, password) => {
-    const users = JSON.parse(localStorage.getItem('costura_users') || '[]');
-    if (users.find(u => u.email === email)) throw new Error('El email ya está registrado');
-    const newUser = {
-      id: Date.now(),
-      name,
-      email,
-      password,
-      role: 'alumno',
-      createdAt: new Date().toISOString(),
-    };
-    users.push(newUser);
-    localStorage.setItem('costura_users', JSON.stringify(users));
-    const { password: _, ...safeUser } = newUser;
-    setUser(safeUser);
-    localStorage.setItem('costura_user', JSON.stringify(safeUser));
-    return safeUser;
+  const register = async (name, email, password) => {
+    try {
+      const response = await post('/auth/register', { name, email, password });
+      const { token, user: userData } = response;
+      localStorage.setItem('costura_token', token);
+      localStorage.setItem('costura_user', JSON.stringify(userData));
+      setUser(userData);
+      return userData;
+    } catch (error) {
+      throw new Error(error.message || 'Error en el registro');
+    }
   };
 
-  const login = (email, password) => {
-    const users = JSON.parse(localStorage.getItem('costura_users') || '[]');
-    const found = users.find(u => u.email === email && u.password === password);
-    if (!found) throw new Error('Email o contraseña incorrectos');
-    if (found.active === false) throw new Error('Tu cuenta está suspendida. Contactá al administrador.');
-    const { password: _, ...safeUser } = found;
-    setUser(safeUser);
-    localStorage.setItem('costura_user', JSON.stringify(safeUser));
-    return safeUser;
+  const login = async (email, password) => {
+    try {
+      const response = await post('/auth/login', { email, password });
+      const { token, user: userData } = response;
+      localStorage.setItem('costura_token', token);
+      localStorage.setItem('costura_user', JSON.stringify(userData));
+      setUser(userData);
+      return userData;
+    } catch (error) {
+      throw new Error(error.message || 'Email o contraseña incorrectos');
+    }
   };
 
   const logout = () => {
     setUser(null);
+    localStorage.removeItem('costura_token');
     localStorage.removeItem('costura_user');
   };
 
@@ -70,21 +53,20 @@ export function AuthProvider({ children }) {
     const updated = { ...user, ...data };
     setUser(updated);
     localStorage.setItem('costura_user', JSON.stringify(updated));
-    const users = JSON.parse(localStorage.getItem('costura_users') || '[]');
-    const idx = users.findIndex(u => u.id === user.id);
-    if (idx !== -1) {
-      users[idx] = { ...users[idx], ...data };
-      localStorage.setItem('costura_users', JSON.stringify(users));
-    }
   };
 
-  const isAdmin = user?.role === 'admin';
+  const isAdmin = user?.role === 'ADMIN';
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Cargando...</div>;
+  }
 
   return (
-    <AuthContext.Provider value={{ user, loading, register, login, logout, updateUser, isAdmin }}>
+    <AuthContext.Provider value={{ user, register, login, logout, updateUser, isAdmin }}>
       {children}
     </AuthContext.Provider>
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => useContext(AuthContext);

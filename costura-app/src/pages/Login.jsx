@@ -15,8 +15,8 @@ export default function Login() {
     setError('');
     setLoading(true);
     try {
-      const loggedUser = login(form.email, form.password);
-      navigate(loggedUser.role === 'admin' ? '/admin' : '/dashboard');
+      const loggedUser = await login(form.email, form.password);
+      navigate(loggedUser.role === 'ADMIN' ? '/admin' : '/dashboard');
     } catch (err) {
       setError(err.message);
     } finally {

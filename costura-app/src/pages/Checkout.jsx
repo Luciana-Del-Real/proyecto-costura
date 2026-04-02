@@ -1,16 +1,13 @@
 import { useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { courses } from '../data/courses';
 import { useCourses } from '../context/CoursesContext';
 
 export default function Checkout() {
   const { id } = useParams();
-  const navigate = useNavigate();
-  const { buyCourse, hasCourse } = useCourses();
+  const { hasCourse, isPending, requestPurchase } = useCourses();
   const course = courses.find(c => c.id === Number(id));
-  const [card, setCard] = useState({ number: '', name: '', expiry: '', cvv: '' });
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const [requested, setRequested] = useState(false);
 
   if (!course) return <div className="min-h-screen flex items-center justify-center"><p>Curso no encontrado</p></div>;
 
@@ -28,28 +25,25 @@ export default function Checkout() {
     );
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setTimeout(() => {
-      buyCourse(course.id);
-      setSuccess(true);
-      setLoading(false);
-      setTimeout(() => navigate('/mis-cursos'), 2000);
-    }, 1500);
-  };
-
-  if (success) {
+  if (isPending(course.id) || requested) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F9F5F0] px-4">
         <div className="text-center">
-          <div className="text-6xl mb-4">🎉</div>
-          <h2 className="text-2xl font-bold text-[#3D2B1F] mb-2">¡Compra exitosa!</h2>
-          <p className="text-[#A08060]">Redirigiendo a tus cursos...</p>
+          <span className="text-5xl">⏳</span>
+          <h2 className="text-xl font-bold text-[#3D2B1F] mt-4">Solicitud de compra enviada</h2>
+          <p className="text-[#A08060] mt-2">Tu comprobante está en revisión por el admin. Te notificaremos cuando se confirme.</p>
+          <Link to="/mis-cursos" className="mt-4 inline-block bg-[#7A9E7E] text-white px-6 py-2.5 rounded-xl hover:bg-[#5E8262] transition-colors">
+            Ver mis cursos
+          </Link>
         </div>
       </div>
     );
   }
+
+  const handleRequestPurchase = () => {
+    requestPurchase(course.id);
+    setRequested(true);
+  };
 
   return (
     <div className="min-h-screen bg-[#F9F5F0] py-10 px-4">
@@ -73,49 +67,25 @@ export default function Checkout() {
           </div>
 
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-[#EDE4D6]">
-            <h2 className="font-bold text-[#3D2B1F] text-lg mb-4">Datos de pago</h2>
+            <h2 className="font-bold text-[#3D2B1F] text-lg mb-4">Instrucciones de pago</h2>
             <div className="bg-[#F5EFE6] border border-[#EDE4D6] rounded-xl px-4 py-3 mb-5 text-sm text-[#6B4C3B]">
-              🔒 Simulación de pago — no se procesará ningún cobro real
+              1) Transferí a cuenta: CVU 0000000000000000000000 · Alias: grow.costura
+              <br />
+              2) Enviá el comprobante por WhatsApp al admin: +54 9 11 1234 5678
+              <br />
+              3) El admin verifica y habilita tu acceso desde el panel.
             </div>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-[#6B4C3B] mb-1.5">Número de tarjeta</label>
-                <input type="text" required maxLength={19} value={card.number}
-                  onChange={e => setCard({ ...card, number: e.target.value.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim() })}
-                  className="w-full border border-[#EDE4D6] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#7A9E7E] bg-[#F9F5F0]"
-                  placeholder="1234 5678 9012 3456" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-[#6B4C3B] mb-1.5">Nombre en la tarjeta</label>
-                <input type="text" required value={card.name}
-                  onChange={e => setCard({ ...card, name: e.target.value })}
-                  className="w-full border border-[#EDE4D6] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#7A9E7E] bg-[#F9F5F0]"
-                  placeholder="NOMBRE APELLIDO" />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-[#6B4C3B] mb-1.5">Vencimiento</label>
-                  <input type="text" required maxLength={5} value={card.expiry}
-                    onChange={e => setCard({ ...card, expiry: e.target.value.replace(/\D/g, '').replace(/^(\d{2})(\d)/, '$1/$2') })}
-                    className="w-full border border-[#EDE4D6] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#7A9E7E] bg-[#F9F5F0]"
-                    placeholder="MM/AA" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-[#6B4C3B] mb-1.5">CVV</label>
-                  <input type="text" required maxLength={4} value={card.cvv}
-                    onChange={e => setCard({ ...card, cvv: e.target.value.replace(/\D/g, '') })}
-                    className="w-full border border-[#EDE4D6] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#7A9E7E] bg-[#F9F5F0]"
-                    placeholder="123" />
-                </div>
-              </div>
-              <button type="submit" disabled={loading}
-                className="w-full bg-[#C4785A] text-white py-3.5 rounded-xl font-semibold hover:bg-[#A85E42] transition-colors disabled:opacity-60 mt-2">
-                {loading ? 'Procesando...' : `Confirmar compra — $${course.price.toLocaleString()}`}
-              </button>
-            </form>
+            <button
+              onClick={handleRequestPurchase}
+              className="w-full bg-[#7A9E7E] text-white py-3 rounded-xl font-semibold hover:bg-[#5E8262] transition-colors"
+            >
+              Solicitar acceso
+            </button>
           </div>
         </div>
       </div>
     </div>
   );
 }
+
+

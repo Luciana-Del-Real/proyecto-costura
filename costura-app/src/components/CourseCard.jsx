@@ -10,8 +10,9 @@ const levelColors = {
 
 export default function CourseCard({ course }) {
   const { user } = useAuth();
-  const { hasCourse, isFavorite, toggleFavorite, getProgress } = useCourses();
+  const { hasCourse, isPending, isFavorite, toggleFavorite, getProgress } = useCourses();
   const owned = user && hasCourse(course.id);
+  const pending = user && isPending(course.id);
   const fav = user && isFavorite(course.id);
   const prog = owned ? getProgress(course.id, course.lessons.length) : 0;
 
@@ -74,6 +75,10 @@ export default function CourseCard({ course }) {
             >
               Continuar →
             </Link>
+          ) : pending ? (
+            <button className="w-full text-center bg-[#EDE4D6] text-[#6B4C3B] text-sm py-2 rounded-xl cursor-not-allowed" disabled>
+              Solicitud en revisión
+            </button>
           ) : (
             <Link
               to={user ? `/checkout/${course.id}` : '/login'}

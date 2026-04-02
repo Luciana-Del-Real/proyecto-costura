@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState } from 'react';
 import { useAuth } from './AuthContext';
 import { courses as initialCourses } from '../data/courses';
 
@@ -6,27 +6,36 @@ const CoursesContext = createContext(null);
 
 export function CoursesProvider({ children }) {
   const { user } = useAuth();
-  const [purchases, setPurchases] = useState([]);
-  const [progress, setProgress] = useState({});
-  const [favorites, setFavorites] = useState([]);
+  const storageKey = user ? `costura_data_${user.id}` : null;
+
+  const [purchases, setPurchases] = useState(() => {
+    if (!storageKey) return [];
+    const stored = JSON.parse(localStorage.getItem(storageKey) || '{}');
+    return stored.purchases || [];
+  });
+  const [pendingPurchases, setPendingPurchases] = useState(() => {
+    if (!storageKey) return [];
+    const stored = JSON.parse(localStorage.getItem(storageKey) || '{}');
+    return stored.pendingPurchases || [];
+  });
+  const [progress, setProgress] = useState(() => {
+    if (!storageKey) return {};
+    const stored = JSON.parse(localStorage.getItem(storageKey) || '{}');
+    return stored.progress || {};
+  });
+  const [favorites, setFavorites] = useState(() => {
+    if (!storageKey) return [];
+    const stored = JSON.parse(localStorage.getItem(storageKey) || '{}');
+    return stored.favorites || [];
+  });
   const [courses, setCourses] = useState(() => {
     const stored = localStorage.getItem('costura_courses');
     return stored ? JSON.parse(stored) : initialCourses;
   });
 
-  const storageKey = user ? `costura_data_${user.id}` : null;
-
-  useEffect(() => {
-    if (!storageKey) { setPurchases([]); setProgress({}); setFavorites([]); return; }
-    const stored = JSON.parse(localStorage.getItem(storageKey) || '{}');
-    setPurchases(stored.purchases || []);
-    setProgress(stored.progress || {});
-    setFavorites(stored.favorites || []);
-  }, [storageKey]);
-
-  const save = (p, pr, f) => {
+  const save = (p, pp, pr, f) => {
     if (!storageKey) return;
-    localStorage.setItem(storageKey, JSON.stringify({ purchases: p, progress: pr, favorites: f }));
+    localStorage.setItem(storageKey, JSON.stringify({ purchases: p, pendingPurchases: pp, progress: pr, favorites: f }));
   };
 
   const saveCourses = (updated) => {
@@ -40,16 +49,51 @@ export function CoursesProvider({ children }) {
     const updated = [...purchases, courseId];
     const updatedProgress = { ...progress, [courseId]: { completed: [], lastLesson: 0 } };
     setPurchases(updated);
+    setPendingPurchases(pendingPurchases.filter(id => id !== courseId));
+    save(updated, pendingPurchases.filter(id => id !== courseId), updatedProgress, favorites);
+  };
+
+  const requestPurchase = (courseId) => {
+    if (purchases.includes(courseId) || pendingPurchases.includes(courseId)) return;
+    const updatedPending = [...pendingPurchases, courseId];
+    setPendingPurchases(updatedPending);
+    save(purchases, updatedPending, progress, favorites);
+  };
+
+  const approvePurchase = (courseId) => {
+    if (purchases.includes(courseId)) return;
+    const updated = [...purchases, courseId];
+    const updatedPending = pendingPurchases.filter(id => id !== courseId);
+    const updatedProgress = { ...progress, [courseId]: { completed: [], lastLesson: 0 } };
+    setPurchases(updated);
+    setPendingPurchases(updatedPending);
     setProgress(updatedProgress);
-    save(updated, updatedProgress, favorites);
+    save(updated, updatedPending, updatedProgress, favorites);
+  };
+
+  const denyPurchase = (courseId) => {
+    const updatedPending = pendingPurchases.filter(id => id !== courseId);
+    setPendingPurchases(updatedPending);
+    save(purchases, updatedPending, progress, favorites);
   };
 
   const completeLesson = (courseId, lessonId) => {
     const cp = progress[courseId] || { completed: [], lastLesson: 0 };
-    const completed = cp.completed.includes(lessonId) ? cp.completed : [...cp.completed, lessonId];
+    if (cp.completed.includes(lessonId)) return;
+
+    const course = courses.find(c => c.id === courseId);
+    if (!course) return;
+
+    const lessonIndex = course.lessons.findIndex(l => l.id === lessonId);
+    if (lessonIndex === -1) return;
+
+    // Secuencia obligatoria: solo se puede completar si la lección anterior está completa
+    if (lessonIndex > 0 && !cp.completed.includes(course.lessons[lessonIndex - 1].id)) return;
+
+    const completed = [...cp.completed, lessonId];
     const updatedProgress = { ...progress, [courseId]: { ...cp, completed, lastLesson: lessonId } };
     setProgress(updatedProgress);
-    save(purchases, updatedProgress, favorites);
+    save(purchases, pendingPurchases, updatedProgress, favorites);
   };
 
   const toggleFavorite = (courseId) => {
@@ -67,6 +111,7 @@ export function CoursesProvider({ children }) {
   };
 
   const hasCourse = (courseId) => purchases.includes(courseId);
+  const isPending = (courseId) => pendingPurchases.includes(courseId);
   const isFavorite = (courseId) => favorites.includes(courseId);
 
   // --- Admin: gestión de cursos ---
@@ -150,19 +195,34 @@ export function CoursesProvider({ children }) {
       });
   };
 
+  const getPendingRequests = () => {
+    const users = JSON.parse(localStorage.getItem('costura_users') || '[]');
+    const result = [];
+    users.forEach(u => {
+      if (u.role === 'admin') return;
+      const data = JSON.parse(localStorage.getItem(`costura_data_${u.id}`) || '{}');
+      const requests = data.pendingPurchases || [];
+      requests.forEach(courseId => {
+        const course = courses.find(c => c.id === courseId);
+        if (course) result.push({ user: u, course, date: u.createdAt });
+      });
+    });
+    return result;
+  };
   return (
     <CoursesContext.Provider value={{
       courses,
       purchases, progress, favorites,
-      buyCourse, completeLesson, toggleFavorite,
-      getProgress, hasCourse, isFavorite,
+      buyCourse, requestPurchase, approvePurchase, denyPurchase, completeLesson, toggleFavorite,
+      getProgress, hasCourse, isFavorite, isPending,
       updateCourse, addCourse, deleteCourse,
       addLesson, updateLesson, deleteLesson,
-      getAllPurchases, getAllUsers, deleteUser, toggleUserActive,
+      getAllPurchases, getPendingRequests, getAllUsers, deleteUser, toggleUserActive,
     }}>
       {children}
     </CoursesContext.Provider>
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useCourses = () => useContext(CoursesContext);

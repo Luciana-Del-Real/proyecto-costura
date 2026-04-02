@@ -18,7 +18,7 @@ export default function Register() {
     if (form.password !== form.confirm) return setError('Las contraseñas no coinciden');
     setLoading(true);
     try {
-      register(form.name.trim(), form.email, form.password);
+      await register(form.name.trim(), form.email, form.password);
       navigate('/dashboard');
     } catch (err) {
       setError(err.message);

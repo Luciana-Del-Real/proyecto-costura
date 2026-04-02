@@ -25,6 +25,17 @@ export default function CourseDetail() {
   const currentLesson = course.lessons[activeLesson];
   const isCompleted = (lessonId) => courseProgress.completed.includes(lessonId);
 
+  const isSequentialAllowed = (index) => {
+    if (index === 0) return true;
+    return courseProgress.completed.includes(course.lessons[index - 1].id);
+  };
+
+  const canCompleteCurrent = () => {
+    if (!currentLesson) return false;
+    if (isCompleted(currentLesson.id)) return false;
+    return isSequentialAllowed(activeLesson);
+  };
+
   if (!owned) {
     return (
       <div className="min-h-screen bg-stone-50">
@@ -95,13 +106,20 @@ export default function CourseDetail() {
               </div>
               <button
                 onClick={() => completeLesson(course.id, currentLesson.id)}
+                disabled={!canCompleteCurrent()}
                 className={`flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
                   isCompleted(currentLesson.id)
                     ? 'bg-emerald-500 text-white'
-                    : 'bg-rose-400 text-white hover:bg-rose-500'
+                    : canCompleteCurrent()
+                    ? 'bg-rose-400 text-white hover:bg-rose-500'
+                    : 'bg-stone-600 text-stone-300 cursor-not-allowed'
                 }`}
               >
-                {isCompleted(currentLesson.id) ? '✓ Completada' : 'Marcar como completada'}
+                {isCompleted(currentLesson.id)
+                  ? '✓ Completada'
+                  : canCompleteCurrent()
+                  ? 'Marcar como completada'
+                  : 'Completa lección anterior primero'}
               </button>
             </div>
             <div className="flex gap-3 mt-5">
@@ -130,31 +148,38 @@ export default function CourseDetail() {
             <p className="text-stone-400 text-xs mt-0.5">{courseProgress.completed.length}/{course.lessons.length} completadas</p>
           </div>
           <div className="divide-y divide-stone-700">
-            {course.lessons.map((lesson, idx) => (
-              <button
-                key={lesson.id}
-                onClick={() => setActiveLesson(idx)}
-                className={`w-full text-left px-4 py-3.5 flex items-start gap-3 hover:bg-stone-700 transition-colors ${
-                  activeLesson === idx ? 'bg-stone-700' : ''
-                }`}
-              >
-                <div className={`w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center mt-0.5 text-xs ${
-                  isCompleted(lesson.id)
-                    ? 'bg-emerald-500 text-white'
-                    : activeLesson === idx
-                    ? 'bg-rose-400 text-white'
-                    : 'bg-stone-600 text-stone-400'
-                }`}>
-                  {isCompleted(lesson.id) ? '✓' : idx + 1}
-                </div>
-                <div className="min-w-0">
-                  <p className={`text-sm font-medium truncate ${activeLesson === idx ? 'text-white' : 'text-stone-300'}`}>
-                    {lesson.title}
-                  </p>
-                  <p className="text-stone-500 text-xs mt-0.5">{lesson.duration}</p>
-                </div>
-              </button>
-            ))}
+            {course.lessons.map((lesson, idx) => {
+              const blocked = !isSequentialAllowed(idx);
+              return (
+                <button
+                  key={lesson.id}
+                  onClick={() => !blocked && setActiveLesson(idx)}
+                  disabled={blocked}
+                  className={`w-full text-left px-4 py-3.5 flex items-start gap-3 transition-colors ${
+                    activeLesson === idx ? 'bg-stone-700' : ''
+                  } ${blocked ? 'opacity-60 cursor-not-allowed' : 'hover:bg-stone-700'} `}
+                >
+                  <div className={`w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center mt-0.5 text-xs ${
+                    isCompleted(lesson.id)
+                      ? 'bg-emerald-500 text-white'
+                      : activeLesson === idx
+                      ? 'bg-rose-400 text-white'
+                      : 'bg-stone-600 text-stone-400'
+                  }`}>
+                    {isCompleted(lesson.id) ? '✓' : idx + 1}
+                  </div>
+                  <div className="min-w-0">
+                    <p className={`text-sm font-medium truncate ${activeLesson === idx ? 'text-white' : 'text-stone-300'}`}>
+                      {lesson.title}
+                    </p>
+                    <p className="text-stone-500 text-xs mt-0.5">{lesson.duration}</p>
+                    {blocked && (
+                      <span className="text-xs text-rose-300 mt-0.5 block">Completa la lección anterior para continuar</span>
+                    )}
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
