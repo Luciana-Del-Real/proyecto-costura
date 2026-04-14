@@ -42,13 +42,43 @@ export default function AdminCourses() {
     setView('lessons');
   };
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
-    const data = { ...form, price: Number(form.price) };
-    if (selected) updateCourse(selected.id, data);
-    else addCourse(data);
-    setSaved(true);
-    setTimeout(() => { setSaved(false); setView('list'); }, 1200);
+    const formData = new FormData();
+    formData.append('title', form.title);
+    formData.append('description', form.description);
+    if (form.longDescription) formData.append('longDescription', form.longDescription);
+    if (form.instructor) formData.append('instructor', form.instructor);
+    if (form.duration) formData.append('duration', form.duration);
+    formData.append('price', Number(form.price));
+    formData.append('level', form.level.toUpperCase()); // NestJS espera enum UPPERCASE por EJ: PRINCIPIANTE
+    formData.append('featured', form.featured ? 'true' : 'false');
+    
+    if (form._imageFile) {
+      formData.append('image', form._imageFile);
+    } else if (form.image && typeof form.image === 'string') {
+      // keep old image if no new file selected ? In FormData we usually only append if it's a file, but let's see how our backend handles it. If string, it might just parse as string or DTO might try to transform it. For now, string is allowed in CreateCourseDto (but overridden by image interceptor).
+      formData.append('image', form.image);
+    }
+
+    if (form._pdfFile) {
+      formData.append('pdfGuide', form._pdfFile);
+    } else if (form.pdfGuide && typeof form.pdfGuide === 'string') {
+      formData.append('pdfGuide', form.pdfGuide);
+    }
+
+    try {
+      if (selected) {
+        await updateCourse(selected.id, formData);
+      } else {
+        await addCourse(formData);
+      }
+      setSaved(true);
+      setTimeout(() => { setSaved(false); setView('list'); }, 1200);
+    } catch (err) {
+      console.error(err);
+      alert('Error guardando el curso');
+    }
   };
 
   const handleDelete = (id) => {
@@ -94,14 +124,23 @@ export default function AdminCourses() {
             {[
               { label: 'Título', key: 'title', type: 'text', required: true },
               { label: 'Descripción corta', key: 'description', type: 'text', required: true },
-              { label: 'Imagen (URL)', key: 'image', type: 'text' },
+              { label: 'Imagen de portada', key: '_imageFile', type: 'file', accept: 'image/*' },
+              { label: 'PDF o Guía de trabajo (Opcional)', key: '_pdfFile', type: 'file', accept: '.pdf' },
               { label: 'Instructora', key: 'instructor', type: 'text' },
               { label: 'Duración total', key: 'duration', type: 'text', placeholder: 'ej: 8 horas' },
             ].map(f => (
               <div key={f.key}>
                 <label className="block text-sm font-medium text-[#6B4C3B] mb-1.5">{f.label}</label>
-                <input type={f.type} required={f.required} value={form[f.key]} placeholder={f.placeholder || ''}
-                  onChange={e => setForm({ ...form, [f.key]: e.target.value })}
+                <input type={f.type} accept={f.accept} required={f.required}
+                  value={f.type === 'file' ? undefined : (form[f.key] || '')}
+                  placeholder={f.placeholder || ''}
+                  onChange={e => {
+                    if (f.type === 'file') {
+                      setForm({ ...form, [f.key]: e.target.files[0] });
+                    } else {
+                      setForm({ ...form, [f.key]: e.target.value });
+                    }
+                  }}
                   className="w-full border border-[#EDE4D6] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#7A9E7E] bg-[#F9F5F0]" />
               </div>
             ))}
@@ -180,10 +219,29 @@ export default function AdminCourses() {
                 <input required value={lessonForm.duration} onChange={e => setLessonForm({ ...lessonForm, duration: e.target.value })}
                   placeholder="Duración (ej: 20 min)"
                   className="w-full border border-[#EDE4D6] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#7A9E7E] bg-[#F9F5F0]" />
-                <input value={lessonForm.videoUrl} onChange={e => setLessonForm({ ...lessonForm, videoUrl: e.target.value })}
-                  placeholder="URL del video (embed)"
-                  className="w-full border border-[#EDE4D6] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#7A9E7E] bg-[#F9F5F0]" />
-              </div>
+                  <input 
+                    value={lessonForm.videoUrl} 
+                    onChange={e => setLessonForm({ ...lessonForm, videoUrl: e.target.value })}
+                    pattern="^(https?\:\/\/)?((www\.)?youtube\.com|youtu\.be)\/.+$"
+                    placeholder="URL del video de YouTube"
+                    title="Debe ser un enlace válido de YouTube"
+                    className="w-full border border-[#EDE4D6] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#7A9E7E] bg-[#F9F5F0]" 
+                  />
+                </div>
+                <p className="text-xs text-[#A08060] mt-1 italic">Recordá subir el video a YouTube como 'Oculto' para que solo tus alumnos puedan verlo.</p>
+                {lessonForm.videoUrl && (lessonForm.videoUrl.includes('youtube.com') || lessonForm.videoUrl.includes('youtu.be')) && (
+                  <div className="mt-3 aspect-video rounded-xl overflow-hidden bg-black shadow-inner border border-[#EDE4D6]">
+                    <iframe 
+                      width="100%" 
+                      height="100%" 
+                      src={lessonForm.videoUrl.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/")} 
+                      title="YouTube video player" 
+                      frameBorder="0" 
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                      allowFullScreen>
+                    </iframe>
+                  </div>
+                )}
               <div className="flex gap-2">
                 <button type="submit" className="bg-[#7A9E7E] text-white px-5 py-2 rounded-xl text-sm font-medium hover:bg-[#5E8262] transition-colors">
                   {editingLesson ? 'Guardar cambios' : 'Agregar lección'}
@@ -232,7 +290,7 @@ export default function AdminCourses() {
         <div className="space-y-3">
           {courses.map((course) => (
             <div key={course.id} className="stagger-item bg-white rounded-2xl border border-[#EDE4D6] p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 hover:shadow-sm transition-all duration-200">
-              <img src={course.image} alt={course.title} className="w-full sm:w-20 h-16 object-cover rounded-xl flex-shrink-0" />
+              <img src={course.image?.startsWith('/uploads') ? `http://localhost:3000${course.image}` : course.image} alt={course.title} className="w-full sm:w-20 h-16 object-cover rounded-xl flex-shrink-0" />
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <h3 className="font-semibold text-[#3D2B1F] text-sm">{course.title}</h3>

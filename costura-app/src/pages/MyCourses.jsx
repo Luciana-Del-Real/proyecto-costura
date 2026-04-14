@@ -1,9 +1,8 @@
 import { Link } from 'react-router-dom';
 import { useCourses } from '../context/CoursesContext';
-import { courses } from '../data/courses';
 
 export default function MyCourses() {
-  const { purchases, getProgress } = useCourses();
+  const { purchases, getProgress, courses } = useCourses();
   const myCourses = courses.filter(c => purchases.includes(c.id));
 
   return (

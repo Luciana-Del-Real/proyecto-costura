@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import BackToHome from './BackToHome';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -28,7 +29,9 @@ export default function Navbar() {
   }, []);
 
   return (
-    <nav className="bg-[#F5EFE6] border-b border-[#EDE4D6] sticky top-0 z-50">
+    <>
+      <BackToHome />
+      <nav className="bg-[#F5EFE6] border-b border-[#EDE4D6] sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
         <Link to={user ? (user.role === 'admin' ? "/admin" : "/dashboard") : "/"} className="flex items-center gap-2">
           <span className="text-2xl">🧵</span>
@@ -134,6 +137,7 @@ export default function Navbar() {
           )}
         </div>
       )}
-    </nav>
+      </nav>
+    </>
   );
 }

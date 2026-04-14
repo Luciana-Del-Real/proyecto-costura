@@ -209,6 +209,23 @@ export class PurchasesService {
     });
   }
 
+  async getAllPurchases() {
+    return this.prisma.purchase.findMany({
+      where: { status: 'APPROVED' },
+      include: {
+        course: true,
+        user: {
+          select: {
+            id: true,
+            email: true,
+            name: true,
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
   async getPurchaseById(id: string) {
     const purchase = await this.prisma.purchase.findUnique({
       where: { id },

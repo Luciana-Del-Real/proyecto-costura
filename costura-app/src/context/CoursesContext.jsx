@@ -1,12 +1,27 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
-import { courses as initialCourses } from '../data/courses';
+import { get, postForm, putForm, post, put, del } from '../services/api';
 
 const CoursesContext = createContext(null);
 
 export function CoursesProvider({ children }) {
   const { user } = useAuth();
   const storageKey = user ? `costura_data_${user.id}` : null;
+
+  const [courses, setCourses] = useState([]);
+  
+  // Fetch courses from backend when initializing
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const data = await get('/courses');
+        setCourses(data);
+      } catch (error) {
+        console.error('Error fetching courses:', error);
+      }
+    };
+    fetchCourses();
+  }, []);
 
   const [purchases, setPurchases] = useState(() => {
     if (!storageKey) return [];
@@ -28,11 +43,6 @@ export function CoursesProvider({ children }) {
     const stored = JSON.parse(localStorage.getItem(storageKey) || '{}');
     return stored.favorites || [];
   });
-  const [courses, setCourses] = useState(() => {
-    const stored = localStorage.getItem('costura_courses');
-    return stored ? JSON.parse(stored) : initialCourses;
-  });
-
   const save = (p, pp, pr, f) => {
     if (!storageKey) return;
     localStorage.setItem(storageKey, JSON.stringify({ purchases: p, pendingPurchases: pp, progress: pr, favorites: f }));
@@ -40,7 +50,6 @@ export function CoursesProvider({ children }) {
 
   const saveCourses = (updated) => {
     setCourses(updated);
-    localStorage.setItem('costura_courses', JSON.stringify(updated));
   };
 
   // --- Alumno ---
@@ -87,7 +96,7 @@ export function CoursesProvider({ children }) {
     const lessonIndex = course.lessons.findIndex(l => l.id === lessonId);
     if (lessonIndex === -1) return;
 
-    // Secuencia obligatoria: solo se puede completar si la lección anterior está completa
+    // Secuencia obligatoria: solo se puede completar si la lecciÃƒÂ³n anterior estÃƒÂ¡ completa
     if (lessonIndex > 0 && !cp.completed.includes(course.lessons[lessonIndex - 1].id)) return;
 
     const completed = [...cp.completed, lessonId];
@@ -114,47 +123,79 @@ export function CoursesProvider({ children }) {
   const isPending = (courseId) => pendingPurchases.includes(courseId);
   const isFavorite = (courseId) => favorites.includes(courseId);
 
-  // --- Admin: gestión de cursos ---
-  const updateCourse = (courseId, data) => {
-    const updated = courses.map(c => c.id === courseId ? { ...c, ...data } : c);
-    saveCourses(updated);
+  // --- Admin: gestiÃƒÂ³n de cursos ---
+  const updateCourse = async (courseId, formData) => {
+    try {
+      const updatedCourse = await putForm(`/courses/${courseId}`, formData);
+      setCourses(courses.map(c => c.id === courseId ? updatedCourse : c));
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
   };
 
-  const addCourse = (courseData) => {
-    const newCourse = { ...courseData, id: Date.now(), students: 0, rating: 5.0 };
-    saveCourses([...courses, newCourse]);
+  const addCourse = async (formData) => {
+    try {
+      const newCourse = await postForm('/courses', formData);
+      setCourses([...courses, newCourse]);
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
   };
 
-  const deleteCourse = (courseId) => {
-    saveCourses(courses.filter(c => c.id !== courseId));
+  const deleteCourse = async (courseId) => {
+    try {
+      await del(`/courses/${courseId}`);
+      setCourses(courses.filter(c => c.id !== courseId));
+    } catch (e) {
+      console.error(e);
+    }
   };
 
-  const addLesson = (courseId, lesson) => {
-    const updated = courses.map(c => {
-      if (c.id !== courseId) return c;
-      const newLesson = { ...lesson, id: Date.now() };
-      return { ...c, lessons: [...c.lessons, newLesson] };
-    });
-    saveCourses(updated);
+  const addLesson = async (courseId, lesson) => {
+    try {
+      // Find the current course to determine the next order index
+      const targetCourse = courses.find(c => c.id === courseId);
+      const nextOrder = targetCourse && targetCourse.lessons ? targetCourse.lessons.length + 1 : 1;
+
+      const payload = {
+        ...lesson,
+        courseId: courseId,
+        order: nextOrder
+      };
+      const newLesson = await post(`/courses/${courseId}/lessons`, payload);
+      const data = await get('/courses');
+      setCourses(data);
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
   };
 
-  const updateLesson = (courseId, lessonId, data) => {
-    const updated = courses.map(c => {
-      if (c.id !== courseId) return c;
-      return { ...c, lessons: c.lessons.map(l => l.id === lessonId ? { ...l, ...data } : l) };
-    });
-    saveCourses(updated);
+  const updateLesson = async (courseId, lessonId, dataPayload) => {
+    try {
+      await put(`/courses/${courseId}/lessons/${lessonId}`, dataPayload);
+      const data = await get('/courses');
+      setCourses(data);
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
   };
 
-  const deleteLesson = (courseId, lessonId) => {
-    const updated = courses.map(c => {
-      if (c.id !== courseId) return c;
-      return { ...c, lessons: c.lessons.filter(l => l.id !== lessonId) };
-    });
-    saveCourses(updated);
+  const deleteLesson = async (courseId, lessonId) => {
+    try {
+      await del(`/courses/${courseId}/lessons/${lessonId}`);
+      const data = await get('/courses');
+      setCourses(data);
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
   };
 
-  // --- Admin: estadísticas globales ---
+  // --- Admin: estadÃƒsticas globales ---
   const getAllPurchases = () => {
     const users = JSON.parse(localStorage.getItem('costura_users') || '[]');
     const result = [];
@@ -223,6 +264,4 @@ export function CoursesProvider({ children }) {
     </CoursesContext.Provider>
   );
 }
-
-// eslint-disable-next-line react-refresh/only-export-components
 export const useCourses = () => useContext(CoursesContext);

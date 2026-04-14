@@ -6,9 +6,18 @@ async function apiFetch(path, options = {}) {
     const token = localStorage.getItem('costura_token');
 
     const defaultHeaders = {
-      'Content-Type': 'application/json',
       'Accept': 'application/json',
     };
+
+    // Check if it's FormData. Using constructor.name helps avoid cross-frame/polyfill instanceof issues
+    const isFormData = options.body && (
+      options.body instanceof FormData || 
+      options.body.constructor.name === 'FormData'
+    );
+
+    if (!isFormData) {
+      defaultHeaders['Content-Type'] = 'application/json';
+    }
 
     if (token) {
       defaultHeaders['Authorization'] = `Bearer ${token}`;
@@ -61,8 +70,16 @@ export async function post(path, body) {
   return apiFetch(path, { method: 'POST', body: JSON.stringify(body) });
 }
 
+export async function postForm(path, formData) {
+  return apiFetch(path, { method: 'POST', body: formData });
+}
+
 export async function put(path, body) {
   return apiFetch(path, { method: 'PUT', body: JSON.stringify(body) });
+}
+
+export async function putForm(path, formData) {
+  return apiFetch(path, { method: 'PUT', body: formData });
 }
 
 export async function patch(path, body) {

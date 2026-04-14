@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import BackToHome from './BackToHome';
 
 const navLinks = [
   { to: '/admin', label: 'Inicio', icon: '📊' },
@@ -18,7 +19,9 @@ export default function AdminNavbar() {
   const handleLogout = () => { logout(); navigate('/'); };
 
   return (
-    <nav className="bg-[#3D2B1F] sticky top-0 z-50">
+    <>
+      <BackToHome />
+      <nav className="bg-[#3D2B1F] sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         <Link to="/admin" className="flex items-center gap-2">
           <span className="text-xl">🧵</span>
@@ -73,6 +76,7 @@ export default function AdminNavbar() {
           <button onClick={handleLogout} className="text-left text-[#C4785A] text-sm mt-2">Cerrar sesión</button>
         </div>
       )}
-    </nav>
+      </nav>
+    </>
   );
 }

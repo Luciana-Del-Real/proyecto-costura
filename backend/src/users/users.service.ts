@@ -28,6 +28,9 @@ export class UsersService {
         role: true,
         active: true,
         createdAt: true,
+        purchases: {
+          select: { courseId: true }
+        }
       },
       orderBy: { createdAt: 'desc' },
     });

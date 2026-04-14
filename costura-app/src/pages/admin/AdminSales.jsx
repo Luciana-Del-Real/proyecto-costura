@@ -1,11 +1,19 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useCourses } from '../../context/CoursesContext';
 
 export default function AdminSales() {
   const { courses, getAllPurchases, getPendingRequests, approvePurchase, denyPurchase } = useCourses();
-  const allPurchases = useMemo(() => getAllPurchases(), [getAllPurchases]);
-  const pendingRequests = useMemo(() => getPendingRequests(), [getPendingRequests]);
+  const [allPurchases, setAllPurchases] = useState([]);
+  const [pendingRequests, setPendingRequests] = useState([]);
   const [filter, setFilter] = useState('todos');
+
+  useEffect(() => {
+    const load = async () => {
+      setAllPurchases(await getAllPurchases());
+      setPendingRequests(await getPendingRequests());
+    };
+    load();
+  }, []);
 
   const filtered = filter === 'todos'
     ? allPurchases
@@ -49,8 +57,8 @@ export default function AdminSales() {
                     <p className="text-xs text-[#6B4C3B]">{req.course.title} - {req.course.price ? `$${req.course.price.toLocaleString()}` : ''}</p>
                   </div>
                   <div className="flex gap-2">
-                    <button onClick={() => approvePurchase(req.course.id)} className="px-3 py-1.5 text-xs bg-[#7A9E7E] text-white rounded-lg hover:bg-[#5E8262]">Aprobar</button>
-                    <button onClick={() => denyPurchase(req.course.id)} className="px-3 py-1.5 text-xs bg-[#EDE4D6] text-[#6B4C3B] rounded-lg hover:bg-[#D4C2B5]">Rechazar</button>
+                      <button onClick={async () => { await approvePurchase(req.id); setPendingRequests(await getPendingRequests()); setAllPurchases(await getAllPurchases()); }} className="px-3 py-1.5 text-xs bg-[#7A9E7E] text-white rounded-lg hover:bg-[#5E8262]">Aprobar</button>
+                      <button onClick={async () => { await denyPurchase(req.id); setPendingRequests(await getPendingRequests()); setAllPurchases(await getAllPurchases()); }} className="px-3 py-1.5 text-xs bg-[#EDE4D6] text-[#6B4C3B] rounded-lg hover:bg-[#D4C2B5]">Rechazar</button>
                   </div>
                 </div>
               ))}

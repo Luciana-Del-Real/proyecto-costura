@@ -59,12 +59,12 @@ export default function AdminUsers() {
           <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-[60] animate-fade-in px-4">
             <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-xl animate-fade-up">
               <h3 className="font-bold text-[#3D2B1F] mb-2">
-                {confirmToggle.action === 'deactivate' ? '¿Dar de baja a esta alumna?' : '¿Reactivar esta cuenta?'}
+                {confirmToggle.action === 'deactivate' ? 'Â¿Dar de baja a esta alumna?' : 'Â¿Reactivar esta cuenta?'}
               </h3>
               <p className="text-[#A08060] text-sm mb-5">
                 {confirmToggle.action === 'deactivate'
-                  ? 'La alumna no podrá iniciar sesión hasta que se reactive su cuenta.'
-                  : 'La alumna podrá volver a iniciar sesión normalmente.'}
+                  ? 'La alumna no podrÃ¡ iniciar sesiÃ³n hasta que se reactive su cuenta.'
+                  : 'La alumna podrÃ¡ volver a iniciar sesiÃ³n normalmente.'}
               </p>
               <div className="flex gap-3">
                 <button onClick={handleToggle}
@@ -100,7 +100,7 @@ export default function AdminUsers() {
                     <p className="text-[#A08060] text-xs">{selected.email}</p>
                   </div>
                 </div>
-                <button onClick={() => setSelected(null)} className="text-[#A08060] hover:text-[#6B4C3B] text-xl leading-none">×</button>
+                <button onClick={() => setSelected(null)} className="text-[#A08060] hover:text-[#6B4C3B] text-xl leading-none">Ã—</button>
               </div>
 
               <div className="grid grid-cols-2 gap-3 mb-5">
@@ -118,7 +118,7 @@ export default function AdminUsers() {
 
               <h4 className="font-semibold text-[#3D2B1F] text-sm mb-3">Cursos y progreso</h4>
               {getUserCourses(selected).length === 0 ? (
-                <p className="text-[#A08060] text-sm mb-5">Sin cursos aún.</p>
+                <p className="text-[#A08060] text-sm mb-5">Sin cursos aÃºn.</p>
               ) : (
                 <div className="space-y-3 mb-5">
                   {getUserCourses(selected).map(course => {
@@ -167,8 +167,8 @@ export default function AdminUsers() {
 
         {filtered.length === 0 ? (
           <div className="text-center py-16">
-            <span className="text-5xl">👥</span>
-            <p className="text-[#A08060] mt-4">{allUsers.length === 0 ? 'Sin alumnos registrados aún.' : 'No se encontraron resultados.'}</p>
+            <span className="text-5xl">ðŸ‘¥</span>
+            <p className="text-[#A08060] mt-4">{allUsers.length === 0 ? 'Sin alumnos registrados aÃºn.' : 'No se encontraron resultados.'}</p>
           </div>
         ) : (
           <div className="bg-white rounded-2xl border border-[#EDE4D6] overflow-hidden">

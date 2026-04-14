@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
-import { Link } from 'react-router-dom';import { useAuth } from '../../context/AuthContext';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import { useCourses } from '../../context/CoursesContext';
 
 export default function AdminDashboard() {

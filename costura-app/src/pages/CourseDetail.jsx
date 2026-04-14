@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { courses } from '../data/courses';
 import { useCourses } from '../context/CoursesContext';
 import { useAuth } from '../context/AuthContext';
+import ReactPlayer from 'react-player';
 
 export default function CourseDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { hasCourse, completeLesson, progress, getProgress } = useCourses();
+  const { courses, hasCourse, isPending, requestPurchase, progress, getProgress, completeLesson, toggleFavorite, isFavorite } = useCourses();
   const course = courses.find(c => c.id === Number(id));
 
   const owned = user && hasCourse(course?.id);
@@ -85,19 +85,20 @@ export default function CourseDetail() {
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row h-[calc(100vh-52px)]">
+      <div className="flex flex-col lg:flex-row min-h-[calc(100vh-52px)] bg-stone-950 p-4 lg:p-8 gap-6 justify-center">
         {/* Video player */}
-        <div className="flex-1 flex flex-col">
-          <div className="bg-black aspect-video w-full">
-            <iframe
-              src={currentLesson.videoUrl}
-              title={currentLesson.title}
-              className="w-full h-full"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
+        <div className="flex-1 flex flex-col max-w-5xl mx-auto w-full">
+          <div className="rounded-2xl overflow-hidden shadow-2xl bg-black aspect-video w-full relative">
+            <ReactPlayer
+              url={currentLesson.videoUrl}
+              width="100%"
+              height="100%"
+              controls={true}
+              className="absolute top-0 left-0"
+              style={{ position: 'absolute', top: 0, left: 0 }}
             />
           </div>
-          <div className="bg-stone-800 p-5 flex-1">
+          <div className="bg-stone-800 p-6 rounded-2xl flex-1 mt-4 shadow-xl border border-stone-700">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-stone-400 text-xs mb-1">Lección {activeLesson + 1} de {course.lessons.length}</p>
@@ -147,6 +148,19 @@ export default function CourseDetail() {
             <h3 className="text-white font-semibold text-sm">Contenido del curso</h3>
             <p className="text-stone-400 text-xs mt-0.5">{courseProgress.completed.length}/{course.lessons.length} completadas</p>
           </div>
+          
+          <div className="bg-[#FFF4E5] border border-[#F3CAA8] rounded-xl p-4 m-4 shadow-sm">
+            <div className="flex items-center gap-2 font-bold text-[#A85B24] mb-2 text-sm uppercase">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+              </svg>
+              Importante
+            </div>
+            <p className="text-sm text-[#874A1D] leading-relaxed">
+              Este material es personal e intransferible. El sistema detecta accesos simultáneos y compartidos, lo que resultará en la baja inmediata de la cuenta.
+            </p>
+          </div>
+
           <div className="divide-y divide-stone-700">
             {course.lessons.map((lesson, idx) => {
               const blocked = !isSequentialAllowed(idx);

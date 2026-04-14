@@ -32,6 +32,12 @@ export class PurchasesController {
     return this.purchasesService.getPendingRequests();
   }
 
+  @Get('all')
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  async getAllPurchases() {
+    return this.purchasesService.getAllPurchases();
+  }
+
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   async getPurchaseById(@Param('id') id: string) {

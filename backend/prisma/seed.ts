@@ -7,15 +7,22 @@ async function main() {
   console.log('🌱 Starting seed...');
 
   // Check if admin exists
-  const adminEmail = process.env.ADMIN_EMAIL || 'admin@costura.app';
-  const adminPassword = process.env.ADMIN_PASSWORD || 'Admin123!';
+  const adminEmail = process.env.ADMIN_EMAIL || 'daiana@grow.com';
+  const adminPassword = process.env.ADMIN_PASSWORD || 'Daiana2026';
+  const adminName = process.env.ADMIN_NAME || 'Daiana Lubo Nuñez';
 
   const existingAdmin = await prisma.user.findUnique({
     where: { email: adminEmail },
   });
 
   if (existingAdmin) {
-    console.log('✅ Admin user already exists');
+    console.log('✅ Admin user already exists. Updating name and password...');
+    const hashedPassword = await bcrypt.hash(adminPassword, 12);
+    await prisma.user.update({
+      where: { email: adminEmail },
+      data: { name: adminName, password: hashedPassword }
+    });
+    console.log(`✅ Admin user updated: ${adminEmail}`);
   } else {
     // Hash password
     const hashedPassword = await bcrypt.hash(adminPassword, 12);
@@ -24,7 +31,7 @@ async function main() {
     const admin = await prisma.user.create({
       data: {
         email: adminEmail,
-        name: 'Admin User',
+        name: adminName,
         password: hashedPassword,
         role: 'ADMIN',
         active: true,

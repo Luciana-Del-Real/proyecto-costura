@@ -1,25 +1,38 @@
 import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
+import { join } from 'path';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  // Servir archivos estáticos (imágenes y PDFs subidos)
+  app.useStaticAssets(join(__dirname, '..', 'uploads'), {
+    prefix: '/uploads/',
+  });
 
   // Seguridad: Helmet para headers HTTP
-  app.use(helmet());
+  app.use(
+    helmet({
+      crossOriginResourcePolicy: false, // Permite cargar recursos estáticos (imágenes/pdfs) desde otros dominios (ej. el frontend)
+    }),
+  );
 
-  // CORS restrictivo
-  const corsOrigins = process.env.CORS_ORIGIN?.split(',') || ['http://localhost:5173'];
+  // CORS permisivo para desarrollo
+  const corsOrigins = process.env.CORS_ORIGIN
+    ? process.env.CORS_ORIGIN.split(',')
+    : ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175'];
   app.use(
     cors({
       origin: corsOrigins,
       credentials: true,
-      methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-      allowedHeaders: ['Content-Type', 'Authorization'],
-    })
+      methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+    }),
   );
 
   // Rate limiting

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { courses, testimonials } from '../data/courses';
+import { testimonials } from '../data/courses';
+import { useCourses } from '../context/CoursesContext';
 import CourseCard from '../components/CourseCard';
 import RevealSection from '../components/RevealSection';
 import { useInView } from '../hooks/useInView';
@@ -21,9 +22,9 @@ const categories = [
 const delays = ['', 'reveal-delay-1', 'reveal-delay-2', 'reveal-delay-3'];
 
 export default function Home() {
-  const featured = courses.filter(c => c.featured);
-  const [daiaRef, daiaInView] = useInView();
-
+  const { courses } = useCourses();
+  const featured = courses.slice(0, 3);
+  const [daiaRef, daiaInView] = useInView(0.2);
   return (
     <div>
       {/* Hero */}

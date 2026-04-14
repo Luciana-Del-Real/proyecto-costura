@@ -1,4 +1,5 @@
 import { IsString, IsNumber, IsOptional, IsBoolean, IsEnum, Min } from 'class-validator';
+import { Type, Transform } from 'class-transformer';
 
 enum Level {
   PRINCIPIANTE = 'PRINCIPIANTE',
@@ -17,9 +18,11 @@ export class CreateCourseDto {
   @IsString()
   longDescription?: string;
 
-  @IsNumber()
-  @Min(0, { message: 'Precio debe ser mayor a 0' })
-  price!: number;
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber({}, { message: 'Precio debe ser un número' })
+  @Min(0, { message: 'Precio debe ser mayor o igual a 0' })
+  price?: number;
 
   @IsEnum(Level, { message: 'Nivel debe ser PRINCIPIANTE, INTERMEDIO o AVANZADO' })
   level!: Level;
@@ -34,9 +37,18 @@ export class CreateCourseDto {
 
   @IsOptional()
   @IsString()
+  pdfGuide?: string;
+
+  @IsOptional()
+  @IsString()
   duration?: string;
 
   @IsOptional()
+  @Transform(({ value }) => {
+    if (value === 'true' || value === true || value === 1 || value === '1') return true;
+    if (value === 'false' || value === false || value === 0 || value === '0') return false;
+    return value;
+  })
   @IsBoolean()
   featured?: boolean;
 }
