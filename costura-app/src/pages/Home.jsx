@@ -54,17 +54,40 @@ export default function Home() {
         </div>
       </section>
 
-      {/* About Grow */}
-      <section className="py-16 px-4 bg-white">
-        <RevealSection className="max-w-4xl mx-auto text-center">
-          <h2 className="text-2xl md:text-3xl font-bold text-[#3D2B1F] mb-4">¿Qué es Grow?</h2>
-          <p className="text-[#6B4C3B] text-base leading-relaxed mb-6 opacity-80">
-            GROW es un estudio creativo dedicado a la costura, el bordado y el diseño, pensado para acompañarte paso a paso en tu aprendizaje. Acá vas a encontrar clases, herramientas, inspiración y una comunidad que crece junto a vos.
-          </p>
-          <p className="text-[#7A9E7E] font-medium text-lg">
-            ¿Te quedás a descubrir todo lo que podrías lograr con tus propias manos?
-          </p>
-        </RevealSection>
+      
+
+      {/* Combined About section: side-by-side on md+ */}
+      <section className="py-16 px-4">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+          <div className="bg-white rounded-2xl border border-[#EDE4D6] p-8">
+            <RevealSection>
+              <div className="text-left">
+                <h2 className="text-2xl md:text-3xl font-bold text-[#3D2B1F] mb-4">¿Qué es Grow?</h2>
+                <p className="text-[#6B4C3B] text-base leading-relaxed mb-6">
+                  GROW es un estudio creativo dedicado a la costura, el bordado y el diseño, pensado para acompañarte paso a paso en tu aprendizaje. Acá vas a encontrar clases, herramientas, inspiración y una comunidad que crece junto a vos.
+                </p>
+                <p className="text-[#7A9E7E] font-medium text-lg">
+                  ¿Te quedás a descubrir todo lo que podrías lograr con tus propias manos?
+                </p>
+              </div>
+            </RevealSection>
+          </div>
+
+          <div className="bg-[#F9F5F0] rounded-2xl border border-[#EDE4D6] p-8 h-full flex items-start">
+            <div ref={daiaRef} className={`flex flex-col md:flex-row md:items-start gap-6 reveal ${daiaInView ? 'visible' : ''}`}>
+              <div className={`w-28 h-28 rounded-full bg-[#EDE4D6] flex items-center justify-center text-4xl flex-shrink-0 reveal-scale ${daiaInView ? 'visible' : ''}`}>
+                👩‍🎨
+              </div>
+              <div className={`reveal-right ${daiaInView ? 'visible' : ''}`}>
+                <span className="text-[#7A9E7E] text-sm font-medium">¿Quién está detrás de Grow?</span>
+                <h3 className="text-2xl font-bold text-[#3D2B1F] mt-1 mb-3">Hola, soy Daia</h3>
+                <p className="text-[#6B4C3B] opacity-90 leading-relaxed">
+                  Diseñadora de indumentaria, diseñadora gráfica, modista y apasionada del bordado en todas sus formas. Tengo más de diez años de experiencia compartiendo lo que sé y aprendiendo siempre. En Grow no tenés que adaptarte a un sistema rígido: nosotros nos adaptamos a vos, a tu ritmo, a tus tiempos, a tus ganas de crear.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* Benefits */}
@@ -123,24 +146,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* About Daia */}
-      <section className="py-16 px-4 bg-[#F9F5F0]">
-        <div
-          ref={daiaRef}
-          className={`max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-10 reveal ${daiaInView ? 'visible' : ''}`}
-        >
-          <div className={`w-32 h-32 rounded-full bg-[#EDE4D6] flex items-center justify-center text-6xl flex-shrink-0 reveal-scale ${daiaInView ? 'visible' : ''}`}>
-            👩‍🎨
-          </div>
-          <div className={`reveal-right ${daiaInView ? 'visible' : ''}`}>
-            <span className="text-[#7A9E7E] text-sm font-medium">¿Quién está detrás de Grow?</span>
-            <h2 className="text-2xl font-bold text-[#3D2B1F] mt-1 mb-3">Hola, soy Daia</h2>
-            <p className="text-[#6B4C3B] opacity-80 leading-relaxed">
-              Diseñadora de indumentaria, diseñadora gráfica, modista y apasionada del bordado en todas sus formas. Tengo más de diez años de experiencia compartiendo lo que sé y aprendiendo siempre. En Grow no tenés que adaptarte a un sistema rígido: nosotros nos adaptamos a vos, a tu ritmo, a tus tiempos, a tus ganas de crear.
-            </p>
-          </div>
-        </div>
-      </section>
+      
 
       {/* Testimonials */}
       <section className="py-16 px-4 bg-white">

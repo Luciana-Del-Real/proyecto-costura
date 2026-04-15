@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCourses } from '../../context/CoursesContext';
 
 const EMPTY_COURSE = {
@@ -11,7 +11,22 @@ const levels = ['Principiante', 'Intermedio', 'Avanzado'];
 
 export default function AdminCourses() {
   const { courses, updateCourse, addCourse, deleteCourse, addLesson, updateLesson, deleteLesson, getAllPurchases } = useCourses();
-  const allPurchases = getAllPurchases();
+  const [allPurchases, setAllPurchases] = useState([]);
+
+  useEffect(() => {
+    let mounted = true;
+    const load = async () => {
+      try {
+        const data = await getAllPurchases();
+        if (mounted) setAllPurchases(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error('Error cargando compras:', err);
+        if (mounted) setAllPurchases([]);
+      }
+    };
+    load();
+    return () => { mounted = false; };
+  }, [getAllPurchases]);
 
   const [view, setView] = useState('list'); // list | edit | lessons
   const [selected, setSelected] = useState(null);
@@ -111,7 +126,7 @@ export default function AdminCourses() {
     setSelected(updated.find(c => c.id === selected.id));
   };
 
-  const getBuyers = (courseId) => allPurchases.filter(p => p.course.id === courseId).length;
+  const getBuyers = (courseId) => Array.isArray(allPurchases) ? allPurchases.filter(p => p.course.id === courseId).length : 0;
 
   if (view === 'edit') return (
     <div className="min-h-screen bg-[#F9F5F0] py-8 px-4">

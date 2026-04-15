@@ -1,4 +1,17 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap');
+
+:root {
+  --bg: #F9F7F2; /* fondo crema suave */
+  --text: #333333; /* gris carbón */
+  --accent: #8A9A5B; /* Verde Sage */
+  --cta: #E59572; /* Naranja Terracota */
+  --radius: 12px;
+  --shadow: 0 4px 15px rgba(0,0,0,0.05);
+  --transition: all 0.3s ease;
+  --heading-font: 'Playfair Display', serif;
+  --body-font: 'Montserrat', sans-serif;
+}
 
 @theme {
   --color-grow-cream: #F5EFE6;
@@ -16,9 +29,82 @@
 
 @layer base {
   body {
-    font-family: 'Inter', sans-serif;
-    background-color: #F9F5F0;
-    color: #3D2B1F;
+    font-family: var(--body-font);
+    background-color: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: auto;
+    -moz-osx-font-smoothing: auto;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--heading-font);
+    color: var(--text);
+    margin-top: 0;
+    margin-bottom: 0.6rem;
+    line-height: 1.08;
+  }
+
+  img, .object-cover {
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+  }
+
+  /* Superficie uniforme: aplicar borde redondeado y sombra consistente a tarjetas/panels */
+  /* Evitar aplicar a secciones de layout (section, main, header, footer) para no crear cajas pesadas */
+  .bg-white, .card, .surface, .panel, .panel-card, .rounded-xl, .rounded-2xl {
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+    border: 1px solid rgba(0,0,0,0.06);
+    background-clip: padding-box;
+  }
+
+  a, button {
+    transition: var(--transition);
+    font-family: var(--body-font);
+  }
+
+  /* Estilo base para botones/CTAs */
+  button, input[type="submit"], .btn {
+    background: var(--cta);
+    color: #ffffff;
+    border: none;
+    padding: 0.75rem 1.125rem;
+    border-radius: var(--radius);
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    text-rendering: optimizeLegibility;
+  }
+
+  button:hover, .btn:hover, input[type="submit"]:hover {
+    filter: brightness(0.92);
+  }
+
+  /* Color de acento para elementos de énfasis */
+  .text-accent, .accent, .badge-accent {
+    color: var(--accent);
+  }
+
+  /* Dejar que Tailwind controle paddings por defecto; aumentar márgenes donde convenga */
+  .mb-6 { margin-bottom: 1.5rem !important; }
+
+  /* Borde más suave */
+  .border { border-color: rgba(0,0,0,0.06) !important; }
+
+  /* Ajustes para tablas y cards */
+  table { border-collapse: separate; border-spacing: 0 0.6rem; }
+  th, td { padding: 1rem 1rem; }
+
+  /* Inputs más suaves */
+  input, textarea, select {
+    border-radius: calc(var(--radius) - 4px);
+    border: 1px solid rgba(0,0,0,0.09);
+    padding: 0.7rem 0.85rem;
+    font-family: var(--body-font);
   }
 }
 
