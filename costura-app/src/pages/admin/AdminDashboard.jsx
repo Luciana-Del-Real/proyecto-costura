@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useCourses } from '../../context/CoursesContext';
@@ -6,10 +6,18 @@ import { useCourses } from '../../context/CoursesContext';
 export default function AdminDashboard() {
   const { user } = useAuth();
   const { courses, getAllPurchases, getAllUsers, getPendingRequests } = useCourses();
+  const [allPurchases, setAllPurchases] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
+  const [pendingRequests, setPendingRequests] = useState([]);
 
-  const allPurchases = useMemo(() => getAllPurchases(), [getAllPurchases]);
-  const allUsers = useMemo(() => getAllUsers(), [getAllUsers]);
-  const pendingRequests = useMemo(() => getPendingRequests(), [getPendingRequests]);
+  useEffect(() => {
+    const load = async () => {
+      setAllPurchases(await getAllPurchases());
+      setAllUsers(await getAllUsers());
+      setPendingRequests(await getPendingRequests());
+    };
+    load();
+  }, [getAllPurchases, getAllUsers, getPendingRequests]);
 
   const totalRevenue = allPurchases.reduce((sum, p) => sum + p.course.price, 0);
   const topCourses = courses

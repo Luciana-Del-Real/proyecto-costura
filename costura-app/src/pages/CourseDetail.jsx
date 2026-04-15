@@ -9,7 +9,7 @@ export default function CourseDetail() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { courses, hasCourse, isPending, requestPurchase, progress, getProgress, completeLesson, toggleFavorite, isFavorite } = useCourses();
-  const course = courses.find(c => c.id === Number(id));
+  const course = courses.find(c => String(c.id) === String(id));
 
   const owned = user && hasCourse(course?.id);
   const courseProgress = progress[course?.id] || { completed: [], lastLesson: 0 };

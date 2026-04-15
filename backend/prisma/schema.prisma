@@ -7,12 +7,29 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  ADMIN
+  ALUMNO
+}
+
+enum CourseLevel {
+  PRINCIPIANTE
+  INTERMEDIO
+  AVANZADO
+}
+
+enum PurchaseStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 model User {
   id            String    @id @default(cuid())
   email         String    @unique
   name          String
   password      String
-  role          String    @default("ALUMNO") // "ADMIN" | "ALUMNO"
+  role          Role      @default(ALUMNO)
   active        Boolean   @default(true)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -21,6 +38,7 @@ model User {
   progress       LessonProgress[]
   favorites      Favorite[]
   notifications  Notification[]
+  passwordResetTokens PasswordResetToken[]
 
   @@map("users")
 }
@@ -33,7 +51,7 @@ model Course {
   image             String?
   pdfGuide          String?
   price             Float     @default(0)
-  level             String    @default("PRINCIPIANTE") // "PRINCIPIANTE" | "INTERMEDIO" | "AVANZADO"
+  level             CourseLevel @default(PRINCIPIANTE)
   instructor        String?
   duration          String?
   featured          Boolean   @default(false)
@@ -86,16 +104,33 @@ model Purchase {
   id        String    @id @default(cuid())
   userId    String
   courseId  String
-  status    String    @default("PENDING") // "PENDING" | "APPROVED" | "REJECTED"
+  status    PurchaseStatus @default(PENDING)
+  deletedAt DateTime?
   total     Float
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  // Eliminada la eliminación en cascada por seguridad contable.
+  // Se usa borrado lógico a través de `deletedAt`.
+  user   User   @relation(fields: [userId], references: [id])
+  course Course @relation(fields: [courseId], references: [id])
 
   @@unique([userId, courseId])
   @@map("purchases")
+}
+
+model PasswordResetToken {
+  id         String   @id @default(cuid())
+  tokenHash  String   @unique
+  userId     String
+  expiresAt  DateTime
+  used       Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("password_reset_tokens")
 }
 
 model Favorite {

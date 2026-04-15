@@ -1,11 +1,6 @@
 import { IsString, IsNumber, IsOptional, IsBoolean, IsEnum, Min } from 'class-validator';
 import { Type, Transform } from 'class-transformer';
-
-enum Level {
-  PRINCIPIANTE = 'PRINCIPIANTE',
-  INTERMEDIO = 'INTERMEDIO',
-  AVANZADO = 'AVANZADO',
-}
+import { CourseLevel } from '../../common/enums';
 
 export class CreateCourseDto {
   @IsString({ message: 'Título debe ser una cadena' })
@@ -24,8 +19,8 @@ export class CreateCourseDto {
   @Min(0, { message: 'Precio debe ser mayor o igual a 0' })
   price?: number;
 
-  @IsEnum(Level, { message: 'Nivel debe ser PRINCIPIANTE, INTERMEDIO o AVANZADO' })
-  level!: Level;
+  @IsEnum(CourseLevel, { message: 'Nivel debe ser PRINCIPIANTE, INTERMEDIO o AVANZADO' })
+  level!: CourseLevel;
 
   @IsOptional()
   @IsString()

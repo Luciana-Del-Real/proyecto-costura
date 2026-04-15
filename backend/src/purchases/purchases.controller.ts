@@ -7,6 +7,7 @@ import {
   Param,
   UseGuards,
   Request,
+  Query,
 } from '@nestjs/common';
 import { PurchasesService } from './purchases.service';
 import { CreatePurchaseDto } from './dto/create-purchase.dto';
@@ -28,8 +29,16 @@ export class PurchasesController {
 
   @Get('pending')
   @UseGuards(JwtAuthGuard, AdminGuard)
-  async getPendingRequests() {
-    return this.purchasesService.getPendingRequests();
+  async getPendingRequests(@Query('page') page?: string, @Query('limit') limit?: string) {
+    let p = parseInt(page as any, 10);
+    if (isNaN(p) || p < 1) p = 1;
+
+    let l = parseInt(limit as any, 10);
+    if (isNaN(l) || l < 1) l = 20;
+    const MAX = 100;
+    if (l > MAX) l = MAX;
+
+    return this.purchasesService.getPendingRequests(p, l);
   }
 
   @Get('all')

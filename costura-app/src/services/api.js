@@ -70,6 +70,14 @@ export async function post(path, body) {
   return apiFetch(path, { method: 'POST', body: JSON.stringify(body) });
 }
 
+export async function forgotPassword(email) {
+  return post('/auth/forgot-password', { email });
+}
+
+export async function resetPassword(token, password) {
+  return post('/auth/reset-password', { token, password });
+}
+
 export async function postForm(path, formData) {
   return apiFetch(path, { method: 'POST', body: formData });
 }

@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext';
 export default function Checkout() {
   const { id } = useParams();
   const { courses, hasCourse, isPending, requestPurchase } = useCourses();
-  const course = courses.find(c => c.id === Number(id));
+  const course = courses.find(c => String(c.id) === String(id));
   const [requested, setRequested] = useState(false);
   const [copied, setCopied] = useState('');
   const { user } = useAuth();
@@ -59,9 +59,13 @@ export default function Checkout() {
     );
   }
 
-  const handleRequestPurchase = () => {
-    requestPurchase(course.id);
-    setRequested(true);
+  const handleRequestPurchase = async () => {
+    try {
+      await requestPurchase(course.id);
+      setRequested(true);
+    } catch (err) {
+      console.error('Error al solicitar compra:', err);
+    }
   };
 
   return (

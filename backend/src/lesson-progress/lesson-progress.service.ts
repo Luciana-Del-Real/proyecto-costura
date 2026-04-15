@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { UpdateLessonProgressDto } from './dto/update-lesson-progress.dto';
+import { PurchaseStatus } from '../common/enums';
 
 @Injectable()
 export class LessonProgressService {
@@ -35,7 +36,7 @@ export class LessonProgressService {
     });
 
     // Calculate overall progress percentage
-    const completedCount = progressList.filter((p) => p.completed).length;
+    const completedCount = progressList.filter((p: any) => p.completed).length;
     const progressPercentage =
       course.lessons.length > 0
         ? Math.round((completedCount / course.lessons.length) * 100)
@@ -46,8 +47,8 @@ export class LessonProgressService {
       totalLessons: course.lessons.length,
       completedLessons: completedCount,
       progressPercentage,
-      lessons: course.lessons.map((lesson) => {
-        const progress = progressList.find((p) => p.lessonId === lesson.id);
+      lessons: course.lessons.map((lesson: any) => {
+        const progress = progressList.find((p: any) => p.lessonId === lesson.id);
         return {
           id: lesson.id,
           title: lesson.title,
@@ -75,16 +76,15 @@ export class LessonProgressService {
     }
 
     // Verify user has purchased this course
-    const purchase = await this.prisma.purchase.findUnique({
+    const purchase = await this.prisma.purchase.findFirst({
       where: {
-        userId_courseId: {
-          userId,
-          courseId: lesson.courseId,
-        },
+        userId,
+        courseId: lesson.courseId,
+        deletedAt: null,
       },
     });
 
-    if (!purchase || purchase.status !== 'APPROVED') {
+    if (!purchase || purchase.status !== PurchaseStatus.APPROVED) {
       throw new NotFoundException('User does not have access to this course');
     }
 

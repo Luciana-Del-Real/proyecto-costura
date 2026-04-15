@@ -12,7 +12,14 @@ export function AuthProvider({ children }) {
     const token = localStorage.getItem('costura_token');
     const storedUser = localStorage.getItem('costura_user');
     if (token && storedUser) {
-      setUser(JSON.parse(storedUser));
+      try {
+        const parsed = JSON.parse(storedUser);
+        // Normalize role to uppercase to avoid casing mismatches
+        if (parsed && parsed.role) parsed.role = String(parsed.role).toUpperCase();
+        setUser(parsed);
+      } catch (e) {
+        setUser(JSON.parse(storedUser));
+      }
     }
     setLoading(false);
   }, []);
@@ -21,9 +28,10 @@ export function AuthProvider({ children }) {
     try {
       const response = await post('/auth/register', { name, email, password });
       const { token, user: userData } = response;
+      const normalized = { ...userData, role: userData.role ? String(userData.role).toUpperCase() : userData.role };
       localStorage.setItem('costura_token', token);
-      localStorage.setItem('costura_user', JSON.stringify(userData));
-      setUser(userData);
+      localStorage.setItem('costura_user', JSON.stringify(normalized));
+      setUser(normalized);
       return userData;
     } catch (error) {
       throw new Error(error.message || 'Error en el registro');
@@ -34,10 +42,11 @@ export function AuthProvider({ children }) {
     try {
       const response = await post('/auth/login', { email, password });
       const { token, user: userData } = response;
+      const normalized = { ...userData, role: userData.role ? String(userData.role).toUpperCase() : userData.role };
       localStorage.setItem('costura_token', token);
-      localStorage.setItem('costura_user', JSON.stringify(userData));
-      setUser(userData);
-      return userData;
+      localStorage.setItem('costura_user', JSON.stringify(normalized));
+      setUser(normalized);
+      return normalized;
     } catch (error) {
       throw new Error(error.message || 'Email o contraseña incorrectos');
     }

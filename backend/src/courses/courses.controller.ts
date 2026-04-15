@@ -23,8 +23,20 @@ export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
 
   @Get()
-  async findAll(@Query('featured') featured?: string) {
-    return this.coursesService.findAll(featured === 'true');
+  async findAll(
+    @Query('featured') featured?: string,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    let p = parseInt(page as any, 10);
+    if (isNaN(p) || p < 1) p = 1;
+
+    let l = parseInt(limit as any, 10);
+    if (isNaN(l) || l < 1) l = 20;
+    const MAX = 100;
+    if (l > MAX) l = MAX;
+
+    return this.coursesService.findAll(featured === 'true', p, l);
   }
 
   @Get(':id')

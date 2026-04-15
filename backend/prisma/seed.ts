@@ -20,7 +20,7 @@ async function main() {
     const hashedPassword = await bcrypt.hash(adminPassword, 12);
     await prisma.user.update({
       where: { email: adminEmail },
-      data: { name: adminName, password: hashedPassword }
+      data: { name: adminName, password: hashedPassword, role: 'ADMIN', active: true }
     });
     console.log(`✅ Admin user updated: ${adminEmail}`);
   } else {

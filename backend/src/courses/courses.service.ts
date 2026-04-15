@@ -14,11 +14,20 @@ export class CoursesService {
     });
   }
 
-  async findAll(featured?: boolean) {
+  async findAll(featured?: boolean, page = 1, limit = 20) {
+    const MAX = 100;
+    const p = Number.isInteger(page) && page > 0 ? page : 1;
+    let l = Number.isInteger(limit) && limit > 0 ? limit : 20;
+    if (l > MAX) l = MAX;
+
+    const skip = (p - 1) * l;
+
     return this.prisma.course.findMany({
-      where: featured ? { featured: true, active: true } :{ active: true },
+      where: featured ? { featured: true, active: true } : { active: true },
       include: { lessons: { orderBy: { order: 'asc' } } },
       orderBy: { createdAt: 'desc' },
+      skip,
+      take: l,
     });
   }
 

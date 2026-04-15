@@ -11,6 +11,7 @@ import { PurchasesModule } from './purchases/purchases.module';
 import { LessonProgressModule } from './lesson-progress/lesson-progress.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { FavoritesModule } from './favorites/favorites.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { FavoritesModule } from './favorites/favorites.module';
     LessonProgressModule,
     NotificationsModule,
     FavoritesModule,
+    MailModule,
   ],
   controllers: [],
   providers: [],

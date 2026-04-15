@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import BackToHome from './BackToHome';
 
 export default function Navbar() {
-  const { user, logout } = useAuth();
+  const { user, logout, isAdmin } = useAuth();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -33,7 +33,7 @@ export default function Navbar() {
       <BackToHome />
       <nav className="bg-[#F5EFE6] border-b border-[#EDE4D6] sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-        <Link to={user ? (user.role === 'admin' ? "/admin" : "/dashboard") : "/"} className="flex items-center gap-2">
+        <Link to={user ? (isAdmin ? "/admin" : "/dashboard") : "/"} className="flex items-center gap-2">
           <span className="text-2xl">🧵</span>
           <span className="font-bold text-[#7A9E7E] text-xl tracking-tight">Grow</span>
           <span className="text-[#6B4C3B] text-sm font-medium hidden sm:inline">Textil Creative Institute</span>

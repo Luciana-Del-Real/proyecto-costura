@@ -16,8 +16,8 @@ export default function AdminSales() {
   }, []);
 
   const filtered = filter === 'todos'
-    ? allPurchases
-    : allPurchases.filter(p => p.course.id === Number(filter));
+      ? allPurchases
+      : allPurchases.filter(p => p.course.id === filter);
 
   const totalRevenue = filtered.reduce((sum, p) => sum + p.course.price, 0);
 
