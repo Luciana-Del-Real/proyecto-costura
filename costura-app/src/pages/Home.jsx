@@ -29,91 +29,51 @@ export default function Home() {
   return (
     <div>
       {/* Hero */}
-      <section className="hero" aria-labelledby="hero-title">
-        <div className="hero-left">
-          <span className="hero-badge">Bienvenida</span>
+      <section
+        className="relative min-h-[60vh] md:min-h-[80vh] flex items-center py-12 px-4 bg-cover bg-right bg-no-repeat"
+        style={{
+          backgroundImage: `url(${encodeURI('/Images/hero.webp')})`,
+          backgroundPosition: 'center right',
+          backgroundSize: 'cover'
+        }}
+      >
+        <div
+          className="absolute inset-0"
+          style={{ background: 'linear-gradient(90deg, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.28) 40%, rgba(0,0,0,0) 80%)' }}
+        />
+        <div className="relative z-10 max-w-6xl mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-6">
+            <div>
+              <div className="hero-card text-theme mx-auto md:mx-0 max-w-md">
+                <span className="animate-fade-up block mx-auto text-center bg-white/95 text-[#4E6D5B] text-sm font-medium px-4 py-1.5 rounded-full mb-4">
+                  ✨ Grow · Textil Creative Institute · Sídney
+                </span>
 
-          <h1 id="hero-title" className="title">
-            CREA · COSER · CRECER
-          </h1>
+                <h1 className="animate-fade-up-delay-1 text-3xl md:text-5xl font-bold heading-display mb-4 leading-tight" style={{ textShadow: '0 8px 28px rgba(0,0,0,0.18)' }}>
+                  Creá con tus<br />
+                  <span style={{ color: 'var(--accent)' }}>propias manos</span>
+                </h1>
 
-          <h2 className="subtitle">Aprendé técnicas prácticas con estilo propio</h2>
+                <p className="animate-fade-up-delay-2 text-base md:text-lg mb-4 max-w-xl md:mx-0 opacity-95">
+                  Cursos online de costura, bordado y diseño textil para todos los niveles. A tu ritmo, con acompañamiento profesional.
+                </p>
 
-          <p className="lead">
-            GROW combina procesos artesanales y formación online para que diseñes y confecciones con confianza.
-            Cursos guiados, comunidad y proyectos reales para avanzar a tu ritmo.
-          </p>
+                <p className="animate-fade-up-delay-3 text-sm mb-6 max-w-lg md:mx-0 italic opacity-85">
+                  "Creemos que todas las personas pueden crear, incluso si empiezan desde cero."
+                </p>
 
-          <div className="hero-cta" role="group" aria-label="Llamados a la acción">
-            <Link to="/registro" className="btn btn-primary btn-lg">Comenzar ahora</Link>
-            <Link to="/cursos" className="btn btn-outline btn-lg">Ver cursos</Link>
+                <div className="animate-fade-up-delay-4 actions">
+                  <Link to="/cursos" className="btn-theme btn-hero transition-all duration-200 hover:scale-105 active:scale-95">
+                    Ver cursos
+                  </Link>
+                  <Link to="/registro" className="btn-theme btn-hero transition-all duration-200 hover:scale-105 active:scale-95">
+                    Registrarse gratis
+                  </Link>
+                </div>
+              </div>
+            </div>
+            <div className="hidden md:block" />
           </div>
-        </div>
-
-        <div className="hero-right" aria-hidden="false">
-          <div className="hero-image-wrap">
-            <img src={encodeURI('/Images/daia.webp')} alt="Daia, fundadora de GROW" className="hero-image" />
-
-            <div className="logo-circle" aria-hidden="true">
-              <img src={encodeURI('/Images/logo-grow.webp')} alt="Logo GROW" style={{ width: '70%', height: '70%', objectFit: 'contain' }} />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Estilo Visual */}
-      <section className="visual-section" aria-labelledby="visual-title">
-        <div>
-          <div className="visual-icons" role="list" aria-hidden="true">
-            {/* Icono 1: botón (fucsia) */}
-            <div className="visual-icon pink" role="listitem" aria-label="CTA">
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
-                <rect x="3" y="6" width="18" height="12" rx="3" strokeWidth="1.6" />
-                <circle cx="9" cy="12" r="1.2" fill="currentColor" />
-              </svg>
-            </div>
-
-            {/* Icono 2: ramita (verde) */}
-            <div className="visual-icon green" role="listitem" aria-label="Orgánico">
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
-                <path d="M20 8c0 0-3.5 1-6 4s-6 6-6 6" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M6 6c2 1 3 3 4 4" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-
-            {/* Icono 3: carretel (verde) */}
-            <div className="visual-icon green" role="listitem" aria-label="Carretel">
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
-                <circle cx="12" cy="12" r="6" strokeWidth="1.6" />
-                <circle cx="12" cy="12" r="2" fill="currentColor" />
-              </svg>
-            </div>
-
-            {/* Icono 4: aguja (fucsia) */}
-            <div className="visual-icon pink" role="listitem" aria-label="Aguja">
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
-                <path d="M3 21l12-12" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M20 9a2 2 0 0 0-2-2l-3 3 2 2 3-3z" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-
-            {/* Icono 5: ovillo (verde) */}
-            <div className="visual-icon green" role="listitem" aria-label="Ovillo">
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
-                <circle cx="12" cy="12" r="6" strokeWidth="1.6" />
-                <path d="M8 11c1.2-2 4-3 6-2" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-          </div>
-        </div>
-
-        <div className="visual-text">
-          <h3 id="visual-title" className="subtitle">Estilo visual</h3>
-          <p>
-            GROW utiliza una estética limpia con elementos orgánicos: texturas suaves, formas circulares y una paleta que combina
-            el rosa claro para fondos con un fucsia en detalles y un verde profundo como identidad. Las tipografías equilibran
-            carácter (Bebas / Playfair) y legibilidad (Montserrat).
-          </p>
         </div>
       </section>
 
