@@ -17,265 +17,144 @@
 
 :root {
   --bg: #FFFFFF; /* Blanco: fondo principal */
-  --text: #1D1D1B; /* Negro cuerpo de texto */
-  --accent: #E83E8C; /* Fucsia principal (acento/CTAs) */
-  --cta: #E83E8C; /* CTA principal -> Fucsia */
-  --secondary: #4E6D5B; /* Verde secundario */
-  --secondary-dark: #3C5A4B; /* Verde oscuro para hover */
-  --soft: #F7C1D6; /* Rosa claro para fondos y toques */
-  --surface: #FFFFFF; /* Superficies / tarjetas */
-  --radius: 12px;
-  --shadow: 0 4px 15px rgba(0,0,0,0.05);
-  --border: rgba(29,29,27,0.06);
-  --transition: all 0.3s ease;
-  /* Tipografías del sistema de diseño */
-  --font-bebas: 'Bebas Neue', sans-serif; /* títulos y encabezados */
-  --font-playfair: 'Playfair Display', serif; /* textos y subtítulos */
-  --font-montserrat: 'Montserrat', sans-serif; /* cuerpos de texto y soportes */
-  --font-dancing: 'Dancing Script', cursive; /* acentos y detalles */
-  --font-handmade: 'Simple Handmade', 'Patrick Hand', 'Homemade Apple', cursive; /* elementos artesanales */
+  @import "tailwindcss";
+  @import './fonts-local.css';
 
-  --heading-font: var(--font-playfair);
-  --subtitle-font: var(--font-playfair);
-  --body-font: var(--font-montserrat);
-  --accent-font: var(--font-dancing);
-  --handmade-font: var(--font-handmade);
+  /* =========================
+     GROW — Sistema de marca
+     ========================= */
 
-  /* Colores de marca adicionales (marrones/dorados usados en footer/admin) */
-  --brown: #3D2B1F;
-  --brown-soft: #C4A882;
-  --brown-dark: #5C3D2A;
-  --brown-muted: #4A2E1A;
-  --brown-accent: #C4785A;
-}
+  /* Variables exactas según la guía */
+  :root {
+    --bg: #FFFFFF;
+    --soft: #F7C1D6;
+    --accent: #E83E8C;
+    --secondary: #4E6D5B;
+    --text: #1D1D1B;
+    --radius: 12px;
+    --shadow: 0 8px 30px rgba(0,0,0,0.08);
+    --transition: 180ms ease;
+    --font-bebas: 'Bebas Neue', sans-serif;
+    --font-playfair: 'Playfair Display', serif;
+    --font-montserrat: 'Montserrat', sans-serif;
+    --font-dancing: 'Dancing Script', cursive;
+  }
 
-@theme {
-  --color-white: #FFFFFF;
-  --color-rosa: #F7C1D6;
-  --color-fucsia: #E83E8C;
-  --color-verde: #4E6D5B;
-  --color-black: #1D1D1B;
-  --color-border: rgba(29,29,27,0.06);
-  --color-surface: #FFFFFF;
-  --color-bg: #FFFFFF;
-}
-
-@layer base {
+  /* =========================
+     Base / Tipografías
+     ========================= */
+  html,body { height:100%; }
   body {
-    font-family: var(--body-font);
-    background-color: var(--bg);
+    margin:0;
+    font-family: var(--font-montserrat);
+    background: var(--bg);
     color: var(--text);
-    -webkit-font-smoothing: auto;
-    -moz-osx-font-smoothing: auto;
-    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
   }
 
-  h1, h2, h3 {
-    font-family: var(--heading-font);
-    color: var(--text);
-    margin-top: 0;
-    margin-bottom: 0.6rem;
-    line-height: 1.08;
+  /* Headings (Bebas) */
+  .title, h1, h2, h3 {
+    font-family: var(--font-bebas);
+    color: var(--secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 0 0 0.6rem 0;
+    line-height: 1.02;
   }
 
-  img, .object-cover {
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    transition: var(--transition);
+  /* Subtítulos (Playfair) */
+  .subtitle, h4 { font-family: var(--font-playfair); color: var(--text); margin:0 0 .5rem 0; }
+
+  /* Cuerpo (Montserrat) */
+  p, li, span, input, button { font-family: var(--font-montserrat); color: var(--text); }
+
+  /* Acentos informales */
+  .accent-script { font-family: var(--font-dancing); color: var(--accent); display:inline-block; }
+
+  /* =========================
+     Animaciones / reveals
+     ========================= */
+  @keyframes fadeUp { from { opacity:0; transform: translateY(20px);} to { opacity:1; transform: translateY(0);} }
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+  @keyframes slideDown { from { opacity:0; transform: translateY(-6px);} to { opacity:1; transform: translateY(0);} }
+
+  .animate-fade-up { animation: fadeUp .5s ease both; }
+  .animate-fade-up-delay-1 { animation: fadeUp .5s ease .08s both; }
+  .animate-fade-up-delay-2 { animation: fadeUp .5s ease .16s both; }
+  .animate-fade-up-delay-3 { animation: fadeUp .5s ease .24s both; }
+  .animate-fade-up-delay-4 { animation: fadeUp .5s ease .32s both; }
+  .animate-fade-in { animation: fadeIn .4s ease both; }
+  .animate-slide-down { animation: slideDown .2s ease both; }
+
+  .reveal { opacity:0; transform: translateY(32px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal.visible { opacity:1; transform: translateY(0); }
+  .reveal-left { opacity:0; transform: translateX(-32px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal-left.visible { opacity:1; transform: translateX(0); }
+  .reveal-right { opacity:0; transform: translateX(32px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal-right.visible { opacity:1; transform: translateX(0); }
+  .reveal-scale { opacity:0; transform: scale(.92); transition: opacity .5s ease, transform .5s ease; }
+  .reveal-scale.visible { opacity:1; transform: scale(1); }
+
+  /* =========================
+     Botones / CTAs
+     ========================= */
+  .btn { display:inline-flex; align-items:center; gap:.5rem; padding:.6rem 1rem; border-radius: var(--radius); font-weight:600; cursor:pointer; transition: transform var(--transition), filter var(--transition); text-decoration:none; border:none; }
+  .btn-primary, .btn-theme { background: var(--accent); color:#fff; box-shadow: var(--shadow); }
+  .btn-primary:hover, .btn-theme:hover { filter: brightness(.95); transform: translateY(-2px); }
+  .btn-secondary { background: var(--secondary); color:#fff; }
+  .btn-outline { background:transparent; color:var(--secondary); border:2px solid var(--secondary); }
+  .btn-lg { padding:.9rem 1.4rem; font-size:1.05rem; border-radius:9999px; }
+  .btn-sm { padding:.35rem .75rem; font-size:.9rem; }
+  .btn-hero { padding:.75rem 1.25rem; border-radius:12px; min-width:150px; font-weight:700; font-size:1.05rem; }
+
+  /* =========================
+     Hero — estructura
+     ========================= */
+  .hero { display:grid; grid-template-columns: 1fr 1fr; gap:2.5rem; align-items:center; padding:4rem 1.25rem; background-color: var(--bg); }
+  .hero-left { max-width:640px; }
+  .hero-badge { display:inline-block; background: var(--soft); color: var(--accent); padding:.35rem .9rem; border-radius:9999px; font-family: var(--font-dancing); font-size:.95rem; margin-bottom:.9rem; }
+  .hero-left .title { font-size: clamp(2.1rem, 4vw, 3.6rem); }
+  .hero-left .subtitle { font-size:1.125rem; margin-top:.5rem; }
+  .hero-left .lead { margin-top:1rem; font-size:1.03rem; color: rgba(29,29,27,0.92); }
+  .hero-cta { display:flex; gap:1rem; margin-top:1.25rem; align-items:center; }
+  .hero-right { display:flex; justify-content:center; align-items:center; }
+  .hero-image-wrap { position:relative; display:inline-block; }
+  .hero-image { display:block; width:100%; max-width:480px; height:auto; border-radius:14px; box-shadow: var(--shadow); object-fit:cover; }
+  .logo-circle { position:absolute; right:-22px; top:-22px; width:128px; height:128px; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center; box-shadow: var(--shadow); border:6px solid rgba(255,255,255,0.95); }
+
+  /* =========================
+     Sección "Estilo Visual"
+     ========================= */
+  .visual-section { padding:2.75rem 1.25rem; border-top:3px dashed var(--accent); display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; align-items:center; }
+  .visual-icons { display:flex; gap:1.25rem; align-items:center; justify-content:flex-start; flex-wrap:wrap; }
+  .visual-icon { width:72px; height:72px; border-radius:9999px; display:flex; align-items:center; justify-content:center; background:transparent; border:2px solid rgba(0,0,0,0.04); color:var(--secondary); transition: transform var(--transition), box-shadow var(--transition); }
+  .visual-icon:hover { transform: translateY(-6px); box-shadow:0 12px 30px rgba(0,0,0,0.08); }
+  .visual-icon.pink { color:var(--accent); border-color: rgba(232,62,140,0.12); }
+  .visual-icon.green { color:var(--secondary); border-color: rgba(78,109,91,0.12); }
+  .visual-text p { font-family: var(--font-montserrat); color: var(--text); line-height:1.6; }
+
+  /* =========================
+     Helpers / Accessibility
+     ========================= */
+  a:focus, button:focus { outline: 3px solid color-mix(in srgb, var(--accent) 12%, transparent); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { .hero-cta, .visual-icon { transition:none !important; transform:none !important; } }
+
+  /* =========================
+     Responsive
+     ========================= */
+  @media (max-width:900px) {
+    .hero { grid-template-columns: 1fr; padding:2.25rem 1rem; gap:1.25rem; }
+    .hero-right { order:2; }
+    .hero-left { order:1; }
+    .logo-circle { right:8px; top:8px; width:96px; height:96px; border-width:4px; }
+    .visual-section { grid-template-columns:1fr; gap:1rem; }
+    .visual-icons { justify-content:flex-start; }
   }
 
-  /* Superficie uniforme: aplicar borde redondeado y sombra consistente a tarjetas/panels */
-  /* Evitar aplicar a secciones de layout (section, main, header, footer) para no crear cajas pesadas */
-  .bg-white, .card, .surface, .panel, .panel-card, .rounded-xl, .rounded-2xl {
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    transition: var(--transition);
-    border: 1px solid rgba(0,0,0,0.06);
-    background-clip: padding-box;
-  }
-
-  a, button {
-    transition: var(--transition);
-    font-family: var(--body-font);
-  }
-
-  /* Estilo base para botones/CTAs */
-  button, input[type="submit"], .btn {
-    background: var(--cta);
-    color: #ffffff;
-    border: none;
-    padding: 0.75rem 1.125rem;
-    border-radius: var(--radius);
-    cursor: pointer;
-    box-shadow: var(--shadow);
-    font-weight: 600;
-    letter-spacing: 0.2px;
-    text-rendering: optimizeLegibility;
-  }
-
-  button:hover, .btn:hover, input[type="submit"]:hover {
-    filter: brightness(0.92);
-  }
-
-  /* Color de acento para elementos de énfasis */
-  .text-accent, .accent, .badge-accent {
-    color: var(--accent);
-  }
-
-  /* Dejar que Tailwind controle paddings por defecto; aumentar márgenes donde convenga */
-  .mb-6 { margin-bottom: 1.5rem !important; }
-
-  /* Borde más suave */
-  .border { border-color: rgba(0,0,0,0.06) !important; }
-
-  /* Ajustes para tablas y cards */
-  table { border-collapse: separate; border-spacing: 0 0.6rem; }
-  th, td { padding: 1rem 1rem; }
-
-  /* Inputs más suaves */
-  input, textarea, select {
-    border-radius: calc(var(--radius) - 4px);
-    border: 1px solid rgba(0,0,0,0.09);
-    padding: 0.7rem 0.85rem;
-    font-family: var(--body-font);
-  }
-}
-
-/* Fade up — entrada suave desde abajo */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* Fade in simple */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-/* Slide down — para el dropdown del navbar */
-@keyframes slideDown {
-  from { opacity: 0; transform: translateY(-6px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.animate-fade-up {
-  animation: fadeUp 0.5s ease both;
-}
-.animate-fade-up-delay-1 {
-  animation: fadeUp 0.5s ease 0.1s both;
-}
-.animate-fade-up-delay-2 {
-  animation: fadeUp 0.5s ease 0.2s both;
-}
-.animate-fade-up-delay-3 {
-  animation: fadeUp 0.5s ease 0.3s both;
-}
-.animate-fade-up-delay-4 {
-  animation: fadeUp 0.5s ease 0.4s both;
-}
-.animate-fade-in {
-  animation: fadeIn 0.4s ease both;
-}
-.animate-slide-down {
-  animation: slideDown 0.2s ease both;
-}
-
-/* Scroll-triggered — estado inicial (oculto) */
-.reveal {
-  opacity: 0;
-  transform: translateY(32px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.reveal-left {
-  opacity: 0;
-  transform: translateX(-32px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-.reveal-left.visible {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.reveal-right {
-  opacity: 0;
-  transform: translateX(32px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-.reveal-right.visible {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.reveal-scale {
-  opacity: 0;
-  transform: scale(0.92);
-  transition: opacity 0.5s ease, transform 0.5s ease;
-}
-.reveal-scale.visible {
-  opacity: 1;
-  transform: scale(1);
-}
-
-/* Delays para stagger en scroll */
-.reveal-delay-1 { transition-delay: 0.1s; }
-.reveal-delay-2 { transition-delay: 0.2s; }
-.reveal-delay-3 { transition-delay: 0.3s; }
-.reveal-delay-4 { transition-delay: 0.4s; }
-
-/* Stagger para listas de cards */
-.stagger-item:nth-child(1) { animation: fadeUp 0.5s ease 0.05s both; }
-.stagger-item:nth-child(2) { animation: fadeUp 0.5s ease 0.15s both; }
-.stagger-item:nth-child(3) { animation: fadeUp 0.5s ease 0.25s both; }
-.stagger-item:nth-child(4) { animation: fadeUp 0.5s ease 0.35s both; }
-.stagger-item:nth-child(5) { animation: fadeUp 0.5s ease 0.45s both; }
-
-.stagger-item:nth-child(6) { animation: fadeUp 0.5s ease 0.55s both; }
-
-/* Theme overrides for legacy hex-based Tailwind utilities (map old hex to new variables) */
-[class*="bg-[#F5EFE6]"] { background-color: var(--soft) !important; }
-[class*="bg-[#FFF4E5]"] { background-color: var(--soft) !important; }
-[class*="bg-[#F9F5F0]"] { background-color: var(--soft) !important; }
-[class*="border-[#EDE4D6]"] { border-color: var(--border) !important; }
-[class*="border-[#F3CAA8]"] { border-color: var(--border) !important; }
-[class*="text-[#3D2B1F]"] { color: var(--text) !important; }
-[class*="text-[#874A1D]"] { color: var(--text) !important; }
-[class*="text-[#A08060]"] { color: var(--accent) !important; }
-[class*="text-[#6B4C3B]"] { color: var(--secondary) !important; }
-[class*="bg-[#7A9E7E]"] { background-color: var(--secondary) !important; }
-[class*="bg-[#7A9E7E]"]:hover { background-color: var(--secondary-dark) !important; }
-[class*="hover:bg-[#5E8262]"]:hover { background-color: var(--secondary-dark) !important; }
-[class*="text-[#A08060]"]:hover { color: var(--accent) !important; }
-[class*="bg-[#25D366]"] { background-color: var(--secondary) !important; }
-
-/* Mapear hex legacy del footer/admin al sistema de variables de marca */
-[class*="bg-[#3D2B1F]"] { background-color: var(--brown) !important; }
-[class*="bg-[#2E1F15]"] { background-color: var(--brown-muted) !important; }
-[class*="bg-[#4A2E1A]"] { background-color: var(--brown-muted) !important; }
-[class*="bg-[#5C3D2A]"] { background-color: var(--brown-dark) !important; }
-[class*="text-[#C4A882]"] { color: var(--brown-soft) !important; }
-[class*="text-[#F5EFE6]"] { color: var(--color-rosa) !important; }
-[class*="border-[#5C3D2A]"] { border-color: var(--brown-dark) !important; }
-[class*="text-[#7A5C40]"] { color: var(--brown-muted) !important; }
-[class*="text-[#C4785A]"] { color: var(--brown-accent) !important; }
-
-
-/* Fallback for elements with hardcoded inline styles */
-[style*="#F5EFE6"] { background-color: var(--soft) !important; }
-[style*="#F9F5F0"] { background-color: var(--soft) !important; }
-
-/* Simple helper classes for components to opt into theme */
-.text-theme { color: var(--text); }
-.bg-theme { background-color: var(--surface); }
-.btn-theme { background-color: var(--accent); color: #fff; padding: 0.6rem 1rem; border-radius: calc(var(--radius) - 2px); transition: background-color 0.18s ease; }
-.btn-theme:hover { background-color: #C73574; }
-
-/* Tipografía: utilidades para aplicar las familias solicitadas */
+  /* Keep additional legacy mappings lightly to avoid visual regressions */
+  .bg-theme { background: var(--bg) !important; }
+  .text-theme { color: var(--text) !important; }
 .font-bebas { font-family: var(--font-bebas); letter-spacing: 0.08em; text-transform: uppercase; }
 .font-playfair { font-family: var(--font-playfair); }
 .font-montserrat { font-family: var(--font-montserrat); }
