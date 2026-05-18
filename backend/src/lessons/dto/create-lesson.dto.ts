@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsNotEmpty, Min } from 'class-validator';
+import { IsString, IsNumber, IsNotEmpty, Min, IsOptional } from 'class-validator';
 
 export class CreateLessonDto {
   @IsString()
@@ -12,6 +12,10 @@ export class CreateLessonDto {
   @IsString()
   @IsNotEmpty()
   videoUrl!: string;
+
+  @IsOptional()
+  @IsString()
+  pdf?: string;
 
   @IsNumber()
   @Min(0)

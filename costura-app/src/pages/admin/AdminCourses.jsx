@@ -257,6 +257,15 @@ export default function AdminCourses() {
                     </iframe>
                   </div>
                 )}
+              <div className="mt-3">
+                <label className="block text-sm font-medium text-[#6B4C3B] mb-1.5">PDF de la lección (Opcional)</label>
+                <input type="file" accept=".pdf"
+                  onChange={e => setLessonForm({ ...lessonForm, _pdfFile: e.target.files ? e.target.files[0] : null })}
+                  className="w-full border border-[#EDE4D6] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#7A9E7E] bg-[#F9F5F0]" />
+                {editingLesson && selected && selected.lessons && selected.lessons.find(l => l.id === editingLesson) && selected.lessons.find(l => l.id === editingLesson).pdf && (
+                  <p className="text-xs mt-2">PDF actual: <a className="text-[#7A9E7E] underline" href={`${selected.lessons.find(l => l.id === editingLesson).pdf?.startsWith('/uploads') ? `http://localhost:3000${selected.lessons.find(l => l.id === editingLesson).pdf}` : selected.lessons.find(l => l.id === editingLesson).pdf}`} target="_blank" rel="noreferrer">Ver</a></p>
+                )}
+              </div>
               <div className="flex gap-2">
                 <button type="submit" className="bg-[#7A9E7E] text-white px-5 py-2 rounded-xl text-sm font-medium hover:bg-[#5E8262] transition-colors">
                   {editingLesson ? 'Guardar cambios' : 'Agregar lección'}

@@ -1,30 +1,56 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap');
+@import './fonts-local.css';
+
+/* Optional local font registration for `Simple Handmade`.
+   If you have the font file (woff2), place it in `public/fonts/SimpleHandmade.woff2`
+   and uncomment the rule below to load the font. Until then the stylesheet
+   falls back to `Patrick Hand` as defined in --font-handmade.
+
+@font-face {
+  font-family: 'Simple Handmade';
+  src: url('/fonts/SimpleHandmade.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+*/
 
 :root {
-  --bg: #F9F7F2; /* fondo crema suave */
-  --text: #333333; /* gris carbón */
-  --accent: #8A9A5B; /* Verde Sage */
-  --cta: #E59572; /* Naranja Terracota */
+  --bg: #FFFFFF; /* Blanco: fondo principal */
+  --text: #1D1D1B; /* Negro cuerpo de texto */
+  --accent: #E83E8C; /* Fucsia principal (acento/CTAs) */
+  --cta: #E83E8C; /* CTA principal -> Fucsia */
+  --secondary: #4E6D5B; /* Verde secundario */
+  --secondary-dark: #3C5A4B; /* Verde oscuro para hover */
+  --soft: #F7C1D6; /* Rosa claro para fondos y toques */
+  --surface: #FFFFFF; /* Superficies / tarjetas */
   --radius: 12px;
   --shadow: 0 4px 15px rgba(0,0,0,0.05);
+  --border: rgba(29,29,27,0.06);
   --transition: all 0.3s ease;
-  --heading-font: 'Playfair Display', serif;
-  --body-font: 'Montserrat', sans-serif;
+  /* Tipografías del sistema de diseño */
+  --font-bebas: 'Bebas Neue', sans-serif; /* títulos y encabezados */
+  --font-playfair: 'Playfair Display', serif; /* textos y subtítulos */
+  --font-montserrat: 'Montserrat', sans-serif; /* cuerpos de texto y soportes */
+  --font-dancing: 'Dancing Script', cursive; /* acentos y detalles */
+  --font-handmade: 'Simple Handmade', 'Patrick Hand', 'Homemade Apple', cursive; /* elementos artesanales */
+
+  --heading-font: var(--font-bebas);
+  --subtitle-font: var(--font-playfair);
+  --body-font: var(--font-montserrat);
+  --accent-font: var(--font-dancing);
+  --handmade-font: var(--font-handmade);
 }
 
 @theme {
-  --color-grow-cream: #F5EFE6;
-  --color-grow-cream-dark: #EDE4D6;
-  --color-grow-sage: #7A9E7E;
-  --color-grow-sage-dark: #5E8262;
-  --color-grow-sage-light: #EAF0EA;
-  --color-grow-terra: #C4785A;
-  --color-grow-terra-dark: #A85E42;
-  --color-grow-terra-light: #F5E8E2;
-  --color-grow-brown: #3D2B1F;
-  --color-grow-brown-mid: #6B4C3B;
-  --color-grow-warm: #F9F5F0;
+  --color-white: #FFFFFF;
+  --color-rosa: #F7C1D6;
+  --color-fucsia: #E83E8C;
+  --color-verde: #4E6D5B;
+  --color-black: #1D1D1B;
+  --color-border: rgba(29,29,27,0.06);
+  --color-surface: #FFFFFF;
+  --color-bg: #FFFFFF;
 }
 
 @layer base {
@@ -201,4 +227,171 @@
 .stagger-item:nth-child(3) { animation: fadeUp 0.5s ease 0.25s both; }
 .stagger-item:nth-child(4) { animation: fadeUp 0.5s ease 0.35s both; }
 .stagger-item:nth-child(5) { animation: fadeUp 0.5s ease 0.45s both; }
+
 .stagger-item:nth-child(6) { animation: fadeUp 0.5s ease 0.55s both; }
+
+/* Theme overrides for legacy hex-based Tailwind utilities (map old hex to new variables) */
+[class*="bg-[#F5EFE6]"] { background-color: var(--soft) !important; }
+[class*="bg-[#FFF4E5]"] { background-color: var(--soft) !important; }
+[class*="bg-[#F9F5F0]"] { background-color: var(--soft) !important; }
+[class*="border-[#EDE4D6]"] { border-color: var(--border) !important; }
+[class*="border-[#F3CAA8]"] { border-color: var(--border) !important; }
+[class*="text-[#3D2B1F]"] { color: var(--text) !important; }
+[class*="text-[#874A1D]"] { color: var(--text) !important; }
+[class*="text-[#A08060]"] { color: var(--accent) !important; }
+[class*="text-[#6B4C3B]"] { color: var(--secondary) !important; }
+[class*="bg-[#7A9E7E]"] { background-color: var(--secondary) !important; }
+[class*="bg-[#7A9E7E]"]:hover { background-color: var(--secondary-dark) !important; }
+[class*="hover:bg-[#5E8262]"]:hover { background-color: var(--secondary-dark) !important; }
+[class*="text-[#A08060]"]:hover { color: var(--accent) !important; }
+[class*="bg-[#25D366]"] { background-color: var(--secondary) !important; }
+
+
+/* Fallback for elements with hardcoded inline styles */
+[style*="#F5EFE6"] { background-color: var(--soft) !important; }
+[style*="#F9F5F0"] { background-color: var(--soft) !important; }
+
+/* Simple helper classes for components to opt into theme */
+.text-theme { color: var(--text); }
+.bg-theme { background-color: var(--surface); }
+.btn-theme { background-color: var(--accent); color: #fff; padding: 0.6rem 1rem; border-radius: calc(var(--radius) - 2px); transition: background-color 0.18s ease; }
+.btn-theme:hover { background-color: #C73574; }
+
+/* Tipografía: utilidades para aplicar las familias solicitadas */
+.font-bebas { font-family: var(--font-bebas); letter-spacing: 0.08em; text-transform: uppercase; }
+.font-playfair { font-family: var(--font-playfair); }
+.font-montserrat { font-family: var(--font-montserrat); }
+.font-dancing { font-family: var(--font-dancing); }
+.font-handmade { font-family: var(--font-handmade); }
+
+/* Atajos semánticos */
+.heading-display { font-family: var(--heading-font); }
+.subtitle { font-family: var(--subtitle-font); }
+.body-text { font-family: var(--body-font); }
+
+/* Hero: tarjeta translúcida y logo circular */
+.hero-card {
+  background: rgba(255,255,255,0.52);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border-radius: 18px;
+  box-shadow: 0 14px 40px rgba(6,16,10,0.14);
+  border: 1px solid rgba(255,255,255,0.7);
+  padding: 1.25rem;
+  color: var(--text);
+}
+.hero-card .badge { display: inline-block; }
+.hero-card .actions { display:flex; gap:0.75rem; justify-content:center; align-items:center; margin-top:0.5rem; }
+.btn-hero {
+  padding: 0.75rem 1.25rem;
+  border-radius: 9999px;
+  min-width: 150px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+.logo-circle {
+  width: 180px;
+  height: 180px;
+  border-radius: 9999px;
+  background: rgba(255,255,255,0.96);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 14px 40px rgba(0,0,0,0.16);
+  border: 6px solid rgba(255,255,255,0.9);
+  text-align: center;
+}
+@media (min-width: 768px) {
+  .logo-circle { width: 220px; height: 220px; }
+}
+
+/* Visual style section - inspirado en el ejemplo (iconos, raya punteada, acentos) */
+.visual-style {
+  padding-top: 1rem;
+  padding-bottom: 2rem;
+}
+.visual-style .section-top-dash {
+  border-top: 3px dashed var(--soft);
+  padding-top: 0.75rem;
+  margin-bottom: 1rem;
+}
+.visual-title {
+  font-family: var(--font-bebas);
+  color: var(--secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  display: inline-block;
+  font-size: 1rem;
+  position: relative;
+  margin-bottom: 0.5rem;
+}
+.visual-title::after {
+  content: '';
+  display: block;
+  height: 4px;
+  width: 56px;
+  background: var(--soft);
+  margin-top: 6px;
+  border-radius: 4px;
+}
+.visual-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  align-items: center;
+}
+.visual-icons {
+  display:flex;
+  gap:1rem;
+  align-items:center;
+  justify-content:flex-start;
+  flex-wrap:wrap;
+}
+.visual-icon {
+  width:72px;
+  height:72px;
+  border-radius:9999px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: transparent;
+  border: 2px solid var(--soft);
+  color: var(--secondary);
+  font-size: 1.8rem;
+  padding: 8px;
+}
+.visual-icon:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+}
+.visual-icon.small {
+  width:56px;
+  height:56px;
+  font-size:1.5rem;
+  padding:6px;
+}
+.visual-text p {
+  color: var(--text);
+  font-family: var(--body-font);
+  line-height: 1.6;
+}
+.visual-text .lead {
+  color: var(--text);
+  font-weight:600;
+  font-size:1rem;
+  margin-bottom:0.5rem;
+}
+.visual-text .muted {
+  color: rgba(29,29,27,0.66);
+}
+.visual-style .icons-compact {
+  display:flex;
+  gap:1.25rem;
+  align-items:center;
+}
+.icon-outline-pink { border-color: var(--soft); color: var(--accent); }
+.icon-outline-green { border-color: var(--secondary); color: var(--secondary); }
+

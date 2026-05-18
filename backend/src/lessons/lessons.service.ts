@@ -28,6 +28,7 @@ export class LessonsService {
         videoUrl: dto.videoUrl,
         order: dto.order,
         courseId: dto.courseId,
+        pdf: (dto as any).pdf,
       },
     });
   }
@@ -80,6 +81,7 @@ export class LessonsService {
         videoUrl: dto.videoUrl,
         order: dto.order,
         courseId: dto.courseId,
+        pdf: (dto as any).pdf,
       },
     });
   }

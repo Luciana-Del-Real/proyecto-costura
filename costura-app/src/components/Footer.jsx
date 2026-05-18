@@ -5,8 +5,8 @@ export default function Footer() {
     <footer className="bg-[#3D2B1F] text-[#C4A882] mt-auto">
       <div className="max-w-6xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-3 gap-8">
         <div>
-          <div className="flex items-center gap-2 mb-3">
-            <span className="text-2xl">🧵</span>
+          <div className="flex items-center gap-3 mb-3">
+            <img src={encodeURI('/Images/logo-grow.webp')} alt="Grow" className="w-12 h-12 object-contain" />
             <div>
               <span className="font-bold text-white text-lg block leading-tight">Grow</span>
               <span className="text-[#C4A882] text-xs">Textil Creative Institute</span>

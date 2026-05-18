@@ -73,6 +73,7 @@ model Lesson {
   title     String
   duration  String
   videoUrl  String
+  pdf       String?
   order     Int
   courseId  String
   createdAt DateTime @default(now())

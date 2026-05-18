@@ -24,8 +24,8 @@ export default function AdminNavbar() {
       <BackToHome />
       <nav className="bg-[#3D2B1F] sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-        <Link to="/admin" className="flex items-center gap-2">
-          <span className="text-xl">🧵</span>
+        <Link to="/admin" className="flex items-center gap-3">
+          <img src={encodeURI('/Images/logo-grow.webp')} alt="Grow" className="w-9 h-9 object-contain" />
           <div>
             <span className="font-bold text-[#F5EFE6] text-base tracking-tight">Grow</span>
             <span className="text-[#C4A882] text-xs ml-1.5">Admin</span>

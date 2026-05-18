@@ -31,12 +31,14 @@ export default function Navbar() {
   return (
     <>
       <BackToHome />
-      <nav className="bg-[#F5EFE6] border-b border-[#EDE4D6] sticky top-0 z-50">
+      <nav className="bg-white border-b border-[#EDE4D6] sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-        <Link to={user ? (isAdmin ? "/admin" : "/dashboard") : "/"} className="flex items-center gap-2">
-          <span className="text-2xl">🧵</span>
-          <span className="font-bold text-[#7A9E7E] text-xl tracking-tight">Grow</span>
-          <span className="text-[#6B4C3B] text-sm font-medium hidden sm:inline">Textil Creative Institute</span>
+        <Link to={user ? (isAdmin ? "/admin" : "/dashboard") : "/"} className="flex items-center gap-3">
+          <img src={encodeURI('/Images/logo-grow.webp')} alt="Grow" className="w-10 h-10 object-contain" />
+          <div className="hidden sm:block">
+            <span className="font-bold text-[#7A9E7E] text-xl tracking-tight">Grow</span>
+            <span className="text-[#6B4C3B] text-sm font-medium block">Textil Creative Institute</span>
+          </div>
         </Link>
 
         {/* Desktop */}
@@ -109,7 +111,7 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden bg-[#F5EFE6] border-t border-[#EDE4D6] px-4 py-3 flex flex-col gap-3">
+        <div className="md:hidden bg-white border-t border-[#EDE4D6] px-4 py-3 flex flex-col gap-3">
           {user ? (
             <>
               <div className="flex items-center gap-2 pb-2 border-b border-[#EDE4D6]">
