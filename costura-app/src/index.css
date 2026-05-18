@@ -35,7 +35,7 @@
   --font-dancing: 'Dancing Script', cursive; /* acentos y detalles */
   --font-handmade: 'Simple Handmade', 'Patrick Hand', 'Homemade Apple', cursive; /* elementos artesanales */
 
-  --heading-font: var(--font-bebas);
+  --heading-font: var(--font-playfair);
   --subtitle-font: var(--font-playfair);
   --body-font: var(--font-montserrat);
   --accent-font: var(--font-dancing);
