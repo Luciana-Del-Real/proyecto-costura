@@ -40,6 +40,13 @@
   --body-font: var(--font-montserrat);
   --accent-font: var(--font-dancing);
   --handmade-font: var(--font-handmade);
+
+  /* Colores de marca adicionales (marrones/dorados usados en footer/admin) */
+  --brown: #3D2B1F;
+  --brown-soft: #C4A882;
+  --brown-dark: #5C3D2A;
+  --brown-muted: #4A2E1A;
+  --brown-accent: #C4785A;
 }
 
 @theme {
@@ -245,6 +252,17 @@
 [class*="hover:bg-[#5E8262]"]:hover { background-color: var(--secondary-dark) !important; }
 [class*="text-[#A08060]"]:hover { color: var(--accent) !important; }
 [class*="bg-[#25D366]"] { background-color: var(--secondary) !important; }
+
+/* Mapear hex legacy del footer/admin al sistema de variables de marca */
+[class*="bg-[#3D2B1F]"] { background-color: var(--brown) !important; }
+[class*="bg-[#2E1F15]"] { background-color: var(--brown-muted) !important; }
+[class*="bg-[#4A2E1A]"] { background-color: var(--brown-muted) !important; }
+[class*="bg-[#5C3D2A]"] { background-color: var(--brown-dark) !important; }
+[class*="text-[#C4A882]"] { color: var(--brown-soft) !important; }
+[class*="text-[#F5EFE6]"] { color: var(--color-rosa) !important; }
+[class*="border-[#5C3D2A]"] { border-color: var(--brown-dark) !important; }
+[class*="text-[#7A5C40]"] { color: var(--brown-muted) !important; }
+[class*="text-[#C4785A]"] { color: var(--brown-accent) !important; }
 
 
 /* Fallback for elements with hardcoded inline styles */
