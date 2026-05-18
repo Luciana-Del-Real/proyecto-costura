@@ -35,7 +35,7 @@
   --font-dancing: 'Dancing Script', cursive; /* acentos y detalles */
   --font-handmade: 'Simple Handmade', 'Patrick Hand', 'Homemade Apple', cursive; /* elementos artesanales */
 
-  --heading-font: var(--font-playfair);
+  --heading-font: var(--font-bebas);
   --subtitle-font: var(--font-playfair);
   --body-font: var(--font-montserrat);
   --accent-font: var(--font-dancing);
@@ -72,10 +72,11 @@
 
   h1, h2, h3 {
     font-family: var(--heading-font);
-    color: var(--text);
+    color: var(--secondary);
     margin-top: 0;
     margin-bottom: 0.6rem;
     line-height: 1.08;
+    text-transform: uppercase;
   }
 
   img, .object-cover {
@@ -281,6 +282,12 @@
 .font-montserrat { font-family: var(--font-montserrat); }
 .font-dancing { font-family: var(--font-dancing); }
 .font-handmade { font-family: var(--font-handmade); }
+
+/* Title utility - large headings */
+.title { font-family: var(--font-bebas); color: var(--secondary); text-transform: uppercase; }
+
+/* Accent script for informal highlights */
+.accent-script { font-family: var(--font-dancing); color: var(--accent); }
 
 /* Atajos semánticos */
 .heading-display { font-family: var(--heading-font); }
