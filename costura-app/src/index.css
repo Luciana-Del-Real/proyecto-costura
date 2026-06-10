@@ -628,6 +628,26 @@ footer.bg-brown * {
   font-size:1.5rem;
   padding:6px;
 }
+/* Nuevo: contenedor de iconos embebidos en tarjetas */
+.icon-wrapper {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid rgba(78,109,91,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+.icon-wrapper svg { width: 44px; height: 44px; }
+
+/* Cuando la tarjeta principal se hover, escalar el contenedor del icono y añadir sombra suave */
+.feature-card:hover .icon-wrapper {
+  transform: scale(1.08);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
 .visual-text p {
   color: var(--text);
   font-family: var(--body-font);

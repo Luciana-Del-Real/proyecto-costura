@@ -120,13 +120,49 @@ export default function Home() {
                 yarn: YarnIcon,
               };
               return benefits.map((b, i) => {
-                const Icon = ICON_MAP[b.icon] || VideoIcon;
                 return (
                   <RevealSection key={i} animation="reveal-scale" delay={delays[i]}>
-                    <div className="text-center p-6 rounded-2xl bg-white border border-theme hover:border-[#7A9E7E] hover:-translate-y-1 hover:shadow-md transition-all duration-300 h-full">
+                    <div className="feature-card text-center p-6 rounded-2xl bg-white border border-theme hover:border-[#7A9E7E] hover:-translate-y-1 hover:shadow-md transition-all duration-300 h-full">
                       <div className="flex items-center justify-center mb-3">
-                        <div className={`visual-icon ${i % 2 === 0 ? 'icon-outline-pink' : 'icon-outline-green'} small`} aria-hidden>
-                          <Icon className="w-10 h-10" />
+                        <div className={`icon-wrapper ${i % 2 === 0 ? 'icon-outline-pink' : 'icon-outline-green'}`} aria-hidden>
+                          {i % 2 === 0 ? (
+                            /* pink icons: video, infinity for some */
+                            b.icon === 'video' ? (
+                              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#E83E8C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                                <rect x="2" y="5" width="20" height="14" rx="2" />
+                                <polygon points="10,8 16,12 10,16" fill="#E83E8C" stroke="none" />
+                              </svg>
+                            ) : b.icon === 'phone' ? (
+                              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#E83E8C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                <rect x="6" y="3" width="12" height="18" rx="2" />
+                                <circle cx="12" cy="18" r="0.6" fill="#E83E8C" stroke="none" />
+                              </svg>
+                            ) : b.icon === 'infinity' ? (
+                              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#E83E8C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M18.5 7.5c-1.7-1.7-4.5-1.7-6.2 0l-1.3 1.3-1.3-1.3c-1.7-1.7-4.5-1.7-6.2 0-1.7 1.7-1.7 4.5 0 6.2l1.3 1.3 6.2 6.2 6.2-6.2 1.3-1.3c1.7-1.7 1.7-4.5 0-6.2z" />
+                              </svg>
+                            ) : (
+                              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#E83E8C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                <rect x="3" y="6" width="18" height="12" rx="2" />
+                                <polygon points="9,9 15,12 9,15" fill="#E83E8C" stroke="none" />
+                              </svg>
+                            )
+                          ) : (
+                            /* green icons: scissors, needle */
+                            b.icon === 'scissors' ? (
+                              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#4E6D5B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M14.5 14.5l5 5" />
+                                <path d="M5.5 5.5l5 5" />
+                                <circle cx="6" cy="6" r="3" />
+                                <circle cx="18" cy="18" r="3" />
+                              </svg>
+                            ) : (
+                              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#4E6D5B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M20 4c-2 2-6 6-8 8-2 2-6 6-8 8" />
+                                <path d="M14 10l6-6" />
+                              </svg>
+                            )
+                          )}
                         </div>
                       </div>
                       <h3 className="font-semibold text-theme mb-2">{b.title}</h3>
@@ -159,13 +195,24 @@ export default function Home() {
                 yarn: YarnIcon,
               };
               return categories.map((cat, i) => {
-                const Icon = ICON_MAP[cat.icon] || ScissorsIcon;
                 return (
                   <RevealSection key={i} animation="reveal" delay={delays[i]}>
-                    <Link to="/cursos" className="block bg-white rounded-2xl p-6 text-center border border-theme hover:border-[#C4785A] hover:-translate-y-1 hover:shadow-md transition-all duration-300">
+                    <Link to="/cursos" className="block bg-white rounded-2xl p-6 text-center border border-theme hover:border-[#C4785A] hover:-translate-y-1 hover:shadow-md transition-all duration-300 feature-card">
                       <div className="flex items-center justify-center mb-2">
-                        <div className={`visual-icon ${i % 2 === 0 ? 'icon-outline-pink' : 'icon-outline-green'} small`} aria-hidden>
-                          <Icon className="w-10 h-10" />
+                        <div className={`icon-wrapper ${i % 2 === 0 ? 'icon-outline-pink' : 'icon-outline-green'}`} aria-hidden>
+                          {cat.icon === 'scissors' ? (
+                            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#4E6D5B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M14.5 14.5l5 5" />
+                              <path d="M5.5 5.5l5 5" />
+                              <circle cx="6" cy="6" r="3" />
+                              <circle cx="18" cy="18" r="3" />
+                            </svg>
+                          ) : (
+                            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#4E6D5B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M20 4c-2 2-6 6-8 8-2 2-6 6-8 8" />
+                              <path d="M14 10l6-6" />
+                            </svg>
+                          )}
                         </div>
                       </div>
                       <p className="font-medium text-theme text-sm">{cat.label}</p>
