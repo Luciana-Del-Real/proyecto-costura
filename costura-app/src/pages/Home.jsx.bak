@@ -1,0 +1,54 @@
+import { Link } from 'react-router-dom';
+import { testimonials } from '../data/courses';
+import { useCourses } from '../context/CoursesContext';
+import CourseCard from '../components/CourseCard';
+import RevealSection from '../components/RevealSection';
+import { useInView } from '../hooks/useInView';
+import { VideoIcon, PhoneIcon, InfinityIcon, TeacherIcon, ScissorsIcon, NeedleIcon, PaletteIcon, YarnIcon } from '../components/Icons';
+const benefits = [
+  { icon: 'video', title: 'Clases grabadas', desc: 'Accedé al contenido cuando quieras, sin horarios fijos.' },
+  { icon: 'phone', title: 'Desde cualquier dispositivo', desc: 'Aprendé desde tu celular, tablet o computadora.' },
+  { icon: 'infinity', title: 'Acceso de por vida', desc: 'Una vez que comprás, el curso es tuyo para siempre.' },
+  { icon: 'teacher', title: 'Instructora experta', desc: 'Aprendé con Daia, diseñadora con más de 10 años de experiencia.' },
+];
+
+const categories = [
+  { icon: 'scissors', label: 'Costura' },
+  { icon: 'needle', label: 'Bordado' },
+  { icon: 'palette', label: 'Diseño Textil' },
+  { icon: 'yarn', label: 'Workshops' },
+];
+
+const delays = ['', 'reveal-delay-1', 'reveal-delay-2', 'reveal-delay-3'];
+
+export default function Home() {
+  const { courses } = useCourses();
+  const featured = courses.slice(0, 3);
+  const [daiaRef, daiaInView] = useInView(0.2);
+
+  return (
+    <div>
+      {/* Hero */}
+      <section
+        className="relative min-h-[60vh] md:min-h-[80vh] flex items-center py-12 px-4 bg-cover bg-center bg-no-repeat hero-no-sep"
+        style={{
+          backgroundImage: "url('/Images/ultima%20portada%20web.png')",
+          backgroundPosition: 'center',
+          backgroundSize: 'cover'
+        }}
+      >
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.28) 40%, rgba(0,0,0,0) 80%)' }} />
+        <div className="relative z-10 w-full">
+          <div className="max-w-6xl mx-auto px-4 flex items-center justify-center">
+            <div className="hero-card text-theme mx-auto max-w-md">
+              <h1 className="animate-fade-up-delay-1 text-3xl md:text-5xl font-bold heading-display mb-4 leading-tight" style={{ textShadow: '0 8px 28px rgba(0,0,0,0.18)' }}>
+                Creá con tus<br />
+                <span style={{ color: 'var(--accent)' }}>propias manos</span>
+              </h1>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}

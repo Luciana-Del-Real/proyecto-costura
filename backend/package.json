@@ -1,7 +1,7 @@
 {
   "name": "costura-api",
   "version": "1.0.0",
-  "description": "API backend para Grow - Textil Creative Institute",
+  "description": "API backend para Grow-Creative Education Studio",
   "main": "dist/main.js",
   "scripts": {
     "dev": "nest start --watch",

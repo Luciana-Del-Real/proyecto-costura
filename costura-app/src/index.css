@@ -17,6 +17,10 @@
 
 :root {
   --bg: #FFFFFF; /* Blanco: fondo principal */
+  /* Degradado global: blanco -> rosa pálido (ligeramente más visible) */
+  --bg-gradient: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(247,193,214,0.06) 100%);
+  /* Degradado invertido (rosa pálido -> blanco) usado por la página de auth */
+  --bg-gradient-inverted: linear-gradient(180deg, rgba(247,193,214,0.06) 0%, rgba(255,255,255,1) 100%);
   --text: #1D1D1B; /* Negro cuerpo de texto */
   --accent: #E83E8C; /* Fucsia principal (acento/CTAs) */
   --cta: #E83E8C; /* CTA principal -> Fucsia */
@@ -27,6 +31,7 @@
   --radius: 12px;
   --shadow: 0 4px 15px rgba(0,0,0,0.05);
   --border: rgba(29,29,27,0.06);
+  --auth-bg: #F9F7F2; /* Fondo claro para páginas de auth (crema muy claro) */
   --transition: all 0.3s ease;
   /* Tipografías del sistema de diseño */
   --font-bebas: 'Bebas Neue', sans-serif; /* títulos y encabezados */
@@ -63,7 +68,9 @@
 @layer base {
   body {
     font-family: var(--body-font);
+    /* Fondo de la página en blanco (sin degradado global) */
     background-color: var(--bg);
+    background-image: none;
     color: var(--text);
     -webkit-font-smoothing: auto;
     -moz-osx-font-smoothing: auto;
@@ -100,22 +107,43 @@
     font-family: var(--body-font);
   }
 
-  /* Estilo base para botones/CTAs */
-  button, input[type="submit"], .btn {
-    background: var(--cta);
+  /* Estilo base unificado para botones/CTAs (aplicado globalmente) */
+  button,
+  a.btn,
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"],
+  .btn,
+  [role="button"] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: var(--secondary);
     color: #ffffff;
     border: none;
     padding: 0.75rem 1.125rem;
-    border-radius: var(--radius);
+    border-radius: calc(var(--radius) - 2px);
     cursor: pointer;
     box-shadow: var(--shadow);
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: 0.2px;
-    text-rendering: optimizeLegibility;
+    text-decoration: none;
+    -webkit-appearance: none;
+    appearance: none;
+    vertical-align: middle;
+    line-height: 1;
+    transition: var(--transition);
   }
 
-  button:hover, .btn:hover, input[type="submit"]:hover {
-    filter: brightness(0.92);
+  button:hover,
+  a.btn:hover,
+  .btn:hover,
+  input[type="button"]:hover,
+  input[type="submit"]:hover,
+  input[type="reset"]:hover,
+  [role="button"]:hover {
+    background-color: var(--secondary-dark);
   }
 
   /* Color de acento para elementos de énfasis */
@@ -239,42 +267,240 @@
 .stagger-item:nth-child(6) { animation: fadeUp 0.5s ease 0.55s both; }
 
 /* Theme overrides for legacy hex-based Tailwind utilities (map old hex to new variables) */
+/* Pastel / beige backgrounds -> rosa suave */
 [class*="bg-[#F5EFE6]"] { background-color: var(--soft) !important; }
 [class*="bg-[#FFF4E5]"] { background-color: var(--soft) !important; }
 [class*="bg-[#F9F5F0]"] { background-color: var(--soft) !important; }
+[class*="bg-[#EAF0EA]"] { background-color: var(--soft) !important; }
+[class*="bg-[#F5E8E2]"] { background-color: var(--soft) !important; }
+[class*="bg-[#EDE4D6]"] { background-color: var(--soft) !important; }
+
+/* Borders */
 [class*="border-[#EDE4D6]"] { border-color: var(--border) !important; }
 [class*="border-[#F3CAA8]"] { border-color: var(--border) !important; }
+
+/* Text color mappings */
 [class*="text-[#3D2B1F]"] { color: var(--text) !important; }
-[class*="text-[#874A1D]"] { color: var(--text) !important; }
-[class*="text-[#A08060]"] { color: var(--accent) !important; }
-[class*="text-[#6B4C3B]"] { color: var(--secondary) !important; }
+[class*="text-[#874A1D]"] { color: var(--brown) !important; }
+[class*="text-[#A08060]"] { color: var(--brown-accent) !important; }
+[class*="text-[#6B4C3B]"] { color: var(--brown-muted) !important; }
+[class*="text-[#A85E42]"] { color: var(--brown-accent) !important; }
+[class*="text-[#5E8262]"] { color: var(--secondary) !important; }
+[class*="text-[#7A9E7E]"] { color: var(--secondary) !important; }
+[class*="text-[#C4A882]"] { color: var(--brown-soft) !important; }
+
+/* Greens */
 [class*="bg-[#7A9E7E]"] { background-color: var(--secondary) !important; }
+[class*="bg-[#25D366]"] { background-color: var(--secondary) !important; }
 [class*="bg-[#7A9E7E]"]:hover { background-color: var(--secondary-dark) !important; }
 [class*="hover:bg-[#5E8262]"]:hover { background-color: var(--secondary-dark) !important; }
-[class*="text-[#A08060]"]:hover { color: var(--accent) !important; }
-[class*="bg-[#25D366]"] { background-color: var(--secondary) !important; }
 
-/* Mapear hex legacy del footer/admin al sistema de variables de marca */
+/* Hover adjustments */
+[class*="text[#A08060]"]:hover { color: var(--brown-accent) !important; }
+
+/* Brown / admin palette */
 [class*="bg-[#3D2B1F]"] { background-color: var(--brown) !important; }
 [class*="bg-[#2E1F15]"] { background-color: var(--brown-muted) !important; }
 [class*="bg-[#4A2E1A]"] { background-color: var(--brown-muted) !important; }
 [class*="bg-[#5C3D2A]"] { background-color: var(--brown-dark) !important; }
-[class*="text-[#C4A882]"] { color: var(--brown-soft) !important; }
-[class*="text-[#F5EFE6]"] { color: var(--color-rosa) !important; }
 [class*="border-[#5C3D2A]"] { border-color: var(--brown-dark) !important; }
-[class*="text-[#7A5C40]"] { color: var(--brown-muted) !important; }
 [class*="text-[#C4785A]"] { color: var(--brown-accent) !important; }
+[class*="text-[#F5EFE6]"] { color: var(--color-rosa) !important; }
 
-
-/* Fallback for elements with hardcoded inline styles */
+/* Fallback for inline styles */
 [style*="#F5EFE6"] { background-color: var(--soft) !important; }
 [style*="#F9F5F0"] { background-color: var(--soft) !important; }
+[style*="#FFF4E5"] { background-color: var(--soft) !important; }
+[style*="#EDE4D6"] { background-color: var(--soft) !important; }
+
+/* Helpers / base component classes */
+.card, .card-soft { background: var(--soft); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1rem; color: var(--text); }
+.input-default { background: var(--color-white); border: 1px solid var(--border); border-radius: calc(var(--radius) - 4px); padding: 0.7rem 0.85rem; }
+.btn-primary, .btn-theme { background: var(--secondary); color: #fff; }
+.btn-primary:hover, .btn-theme:hover { background: var(--secondary-dark); }
+.btn-ghost { background: transparent; color: var(--text); border: none; }
+.icon-btn { background: transparent; border: none; padding: 0; display:inline-flex; align-items:center; justify-content:center; }
+.btn-eye {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  color: var(--text) !important;
+}
+.btn-eye svg { width: 1.1rem; height: 1.1rem; }
+.btn-eye:hover { opacity: 0.95; background: transparent !important; }
 
 /* Simple helper classes for components to opt into theme */
 .text-theme { color: var(--text); }
 .bg-theme { background-color: var(--surface); }
-.btn-theme { background-color: var(--accent); color: #fff; padding: 0.6rem 1rem; border-radius: calc(var(--radius) - 2px); transition: background-color 0.18s ease; }
-.btn-theme:hover { background-color: #C73574; }
+.btn-theme { background-color: var(--secondary); color: #fff; padding: 0.6rem 1rem; border-radius: calc(var(--radius) - 2px); transition: background-color 0.18s ease; }
+.btn-theme:hover { background-color: var(--secondary-dark); }
+
+/* Forzar texto blanco en botones para consistencia visual (excluye variantes transparentes/iconos) */
+button,
+a.btn,
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+.btn,
+.btn-theme,
+.btn-primary,
+.btn-hero,
+[role="button"] {
+  color: #ffffff !important;
+}
+
+/* Convertir utilidad text-white a color de texto por defecto (negro),
+   pero preservar blanco dentro de botones/links con clase .btn */
+.text-white { color: var(--text) !important; }
+
+button .text-white,
+a.btn .text-white,
+.btn .text-white,
+.btn-theme .text-white,
+.btn-primary .text-white,
+.btn-hero .text-white,
+[role="button"] .text-white {
+  color: #ffffff !important;
+}
+
+/* Casos donde la clase text-white se aplica en el mismo elemento que .btn */
+.btn.text-white,
+button.text-white,
+a.btn.text-white,
+.btn-theme.text-white,
+.btn-primary.text-white,
+.btn-hero.text-white {
+  color: #ffffff !important;
+}
+
+/* Semantic helpers for replacing hard-coded hex colors */
+.bg-soft { background-color: var(--soft) !important; color: var(--text) !important; }
+.border-theme { border-color: var(--border) !important; }
+.bg-secondary { background-color: var(--secondary) !important; }
+.text-secondary { color: var(--secondary) !important; }
+.text-accent { color: var(--accent) !important; }
+.bg-accent { background-color: var(--accent) !important; }
+
+/* Hover utilities para utilidades semánticas (escape de colon para nombres tipo Tailwind) */
+.hover\:bg-secondary:hover { background-color: var(--secondary) !important; }
+.hover\:bg-secondary-dark:hover { background-color: var(--secondary-dark) !important; }
+.hover\:bg-soft:hover { background-color: var(--soft) !important; }
+.hover\:bg-accent:hover { background-color: var(--accent) !important; }
+.hover\:bg-brown-dark:hover { background-color: var(--brown-dark) !important; }
+.hover\:bg-brown-muted:hover { background-color: var(--brown-muted) !important; }
+.hover\:text-accent:hover { color: var(--accent) !important; }
+
+/* Utilidades para la paleta 'brown' (footer/admin) */
+.bg-brown { background-color: var(--brown) !important; }
+.bg-brown-dark { background-color: var(--brown-dark) !important; }
+.bg-brown-muted { background-color: var(--brown-muted) !important; }
+
+/* Nota: la definición del fondo de auth se aplica más abajo (con un degradado verde). */
+
+/* Forzar texto blanco en el footer con fondo marrón, sin alterar el fondo */
+footer.bg-brown,
+footer.bg-brown * {
+  color: #ffffff !important;
+}
+
+/* Helpers para layout de autenticación */
+.auth-logo-wrapper {
+  width: 16rem;
+  height: 16rem;
+  border-radius: 9999px;
+}
+.auth-card { padding: 1.5rem; }
+
+/* Fondo verde difuminado invertido (de derecha a izquierda) para las páginas de auth */
+.auth-page-bg {
+  /* Fondo neutro: blanco/crema según variable */
+  background-color: var(--auth-bg);
+  background-image: none;
+}
+
+/* Estilos para los tabs y inputs en la tarjeta de auth (para parecerse al mockup) */
+.auth-tabs { padding: 6px; }
+.auth-tab { border-radius: var(--radius); font-weight: 600; padding: 0.5rem 0; text-transform: none; }
+
+/* Active tab: fondo verde seco + texto blanco */
+.auth-tab.active { background: var(--secondary); color: #ffffff; box-shadow: none; }
+
+/* Inactive variant for register/login when not active: texto fucsia o línea fina abajo */
+.auth-tab.register-tab:not(.active) { color: var(--accent); background: transparent; border-bottom: 2px solid var(--accent); }
+.auth-tab.login-tab:not(.active) { color: var(--text); background: transparent; }
+
+.auth-input {
+  background: #ffffff;
+  border: 2px solid rgba(29,29,27,0.06);
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  box-shadow: none;
+  box-sizing: border-box;
+}
+.auth-input:focus { outline: none; border-color: var(--secondary); box-shadow: 0 6px 18px rgba(78,109,91,0.06); }
+
+.bg-beige { background: #F9F7F2 !important; }
+.auth-card { padding: 40px; }
+.auth-card .bg-accent { background: var(--accent) !important; }
+
+/* Botones dentro de la tarjeta: radio unificado y dimensionado */
+.auth-card button,
+.auth-card .btn {
+  border-radius: var(--radius) !important;
+}
+.auth-card .w-full { max-width: 100%; }
+
+@media (max-width: 768px) {
+  .auth-card { padding: 40px; position: relative; }
+  .auth-card .bg-accent { background: var(--accent) !important; }
+
+  /* Limitar ligeramente el ancho de inputs y botones dentro de la tarjeta para que "respiren" */
+  .auth-card .w-full { max-width: 92%; margin-left: auto; margin-right: auto; display: block; }
+.auth-card .w-full { max-width: 92%; margin-left: auto; margin-right: auto; display: block; }
+}
+
+/* Centrar logo vertical y horizontalmente en la columna izquierda */
+.auth-left {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .auth-logo-wrapper { width: 11rem; height: 11rem; margin: 0 auto; }
+  .auth-left { order: 2; text-align: center; display:block; }
+  .auth-card { order: 1; padding: 1.25rem; }
+}
+
+/* Asegurar que el logo no se estire y se muestre nítido dentro del wrapper */
+.auth-logo-wrapper img { display: block; max-width: 72%; max-height: 72%; width: auto; height: auto; }
+
+/* Mejora de contraste para CTA en auth */
+.auth-card .bg-accent { background-color: var(--accent) !important; color: #fff !important; }
+
+.text-brown-soft { color: var(--brown-soft) !important; }
+.text-brown-muted { color: var(--brown-muted) !important; }
+.text-brown-accent { color: var(--brown-accent) !important; }
+.text-rosa { color: var(--color-rosa) !important; }
+.border-brown-dark { border-color: var(--brown-dark) !important; }
+.border-brown-accent { border-color: var(--brown-accent) !important; }
+.hover\:bg-brown-muted:hover { background-color: var(--brown-muted) !important; }
+.hover\:bg-brown-dark:hover { background-color: var(--brown-dark) !important; }
+.hover\:text-rosa:hover { color: var(--color-rosa) !important; }
+
+/* Level badge helpers (mantener visual original pero con clases semánticas) */
+.lvl-principiante { background-color: #EAF0EA !important; color: #5E8262 !important; }
+.lvl-intermedio { background-color: #F5E8E2 !important; color: #A85E42 !important; }
+.lvl-avanzado { background-color: #EDE4D6 !important; color: var(--brown) !important; }
+.bg-beige { background-color: #EDE4D6 !important; }
+.fill-brown-accent { fill: var(--brown-accent) !important; }
 
 /* Tipografía: utilidades para aplicar las familias solicitadas */
 .font-bebas { font-family: var(--font-bebas); letter-spacing: 0.08em; text-transform: uppercase; }
@@ -304,6 +530,10 @@
   border: 1px solid rgba(255,255,255,0.7);
   padding: 1.25rem;
   color: var(--text);
+  /* Espacio simétrico arriba/abajo para que el gap con la navbar
+     coincida con el gap hacia la sección de presentación (Daia) */
+  margin-top: 4rem;
+  margin-bottom: 4rem;
 }
 .hero-card .badge { display: inline-block; }
 .hero-card .actions { display:flex; gap:0.75rem; justify-content:center; align-items:center; margin-top:0.5rem; }
@@ -419,4 +649,156 @@
 }
 .icon-outline-pink { border-color: var(--soft); color: var(--accent); }
 .icon-outline-green { border-color: var(--secondary); color: var(--secondary); }
+
+/* ------------------------------------------------------------------
+   Secciones como tarjetas centradas (fondo general blanco/crema)
+   En lugar de pintar toda la sección con color, dibujamos un panel
+   centrado y sutil por detrás del contenido para generar relieve.
+   Afecta a: section.bg-soft, section.bg-secondary, section.bg-accent,
+   section.bg-brown, section.bg-brown-muted
+   ------------------------------------------------------------------ */
+
+:root {
+  --section-card-max-width: 1100px;
+  --section-card-shadow: 0 8px 30px rgba(0,0,0,0.04);
+  --section-card-border: 1px solid rgba(0,0,0,0.03);
+}
+
+/* Mantener fondo de la página blanco/crema suave (usa --bg definido arriba) */
+body { background-color: var(--bg); }
+
+/* Transformar fondos de sección en paneles centrados y sutiles */
+section.bg-soft,
+section.bg-secondary,
+section.bg-accent,
+section.bg-brown,
+section.bg-brown-muted {
+  background: transparent !important;
+  position: relative;
+  overflow: visible;
+}
+
+section.bg-soft::before,
+section.bg-secondary::before,
+section.bg-accent::before,
+section.bg-brown::before,
+section.bg-brown-muted::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 0.6rem;
+  bottom: 0.6rem;
+  width: min(var(--section-card-max-width), calc(100% - 2rem));
+  border-radius: calc(var(--radius) + 6px);
+  box-shadow: var(--section-card-shadow);
+  border: var(--section-card-border);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Tintes desactivados: dejamos el panel sin tintes para que las cards
+  (fondo rosa) sean la fuente del color. Mantener el pseudo-elemento
+  para sombra solamente. */
+section.bg-soft::before { background: transparent; }
+section.bg-secondary::before { background: transparent; }
+section.bg-accent::before { background: transparent; }
+section.bg-brown::before { background: transparent; }
+section.bg-brown-muted::before { background: transparent; }
+
+/* Elevar el contenido por encima del panel */
+section.bg-soft > div,
+section.bg-secondary > div,
+section.bg-accent > div,
+section.bg-brown > div,
+section.bg-brown-muted > div {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 640px) {
+  section.bg-soft::before,
+  section.bg-secondary::before,
+  section.bg-accent::before {
+    top: 0.4rem;
+    bottom: 0.4rem;
+    width: calc(100% - 1rem);
+    border-radius: calc(var(--radius) + 4px);
+  }
+}
+
+/* Utilidad: forzar un card centrado dentro de cualquier sección */
+.section-centered-card > .card,
+.section-centered-card > .card-soft {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: var(--section-card-max-width);
+  background: var(--soft);
+  box-shadow: var(--section-card-shadow);
+  border: var(--section-card-border);
+  color: var(--text);
+}
+
+/* Separador tipo hilo entre secciones: fine dashed top border simula una costura */
+section + section {
+  border-top: 2px dashed rgba(232, 62, 140, 0.3);
+  padding-top: 1.25rem;
+  margin-top: 1.25rem;
+}
+
+@media (max-width: 640px) {
+  section + section {
+    padding-top: 0.9rem;
+    margin-top: 0.9rem;
+    border-top-width: 2px;
+  }
+}
+
+/* Excluir el separador inmediatamente después del hero */
+section.hero-no-sep + section {
+  border-top: none !important;
+}
+
+@media (max-width: 640px) {
+  section.hero-no-sep + section {
+    border-top: none !important;
+  }
+}
+
+/* Navbar variant for when it overlays the hero background */
+.nav-on-hero {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(255,255,255,0.52) !important;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(255,255,255,0.7);
+  box-shadow: none !important;
+}
+.nav-on-hero .logo-text { color: var(--brown-dark) !important; font-weight:600; }
+.nav-on-hero .text-theme,
+.nav-on-hero .text-secondary,
+.nav-on-hero a,
+.nav-on-hero .nav-link,
+.nav-on-hero .text-brown-soft,
+.nav-on-hero .text-brown-muted {
+  color: var(--brown-dark) !important;
+}
+.nav-on-hero .border-theme { border-color: transparent !important; }
+.nav-on-hero .bg-theme { background: transparent !important; }
+.nav-on-hero .btn { color: #ffffff !important; }
+.nav-on-hero .btn:hover { opacity: 0.95; }
+
+/* When navbar overlays the hero, add top padding to the hero so content doesn't hide under the nav */
+.nav-on-hero + main .hero-no-sep {
+  padding-top: 4.25rem; /* ~68px to visually match the mockup */
+}
+@media (max-width: 640px) {
+  .nav-on-hero + main .hero-no-sep {
+    padding-top: 3.5rem;
+  }
+}
+
 

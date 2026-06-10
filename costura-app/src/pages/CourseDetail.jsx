@@ -40,14 +40,14 @@ export default function CourseDetail() {
     return (
       <div className="min-h-screen bg-stone-50">
         <div className="max-w-4xl mx-auto px-4 py-10">
-          <Link to="/cursos" className="text-rose-400 text-sm hover:text-rose-500 mb-6 inline-block">← Volver a cursos</Link>
-          <div className="bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden">
+          <Link to="/cursos" className="text-accent text-sm hover:text-accent mb-6 inline-block">← Volver a cursos</Link>
+          <div className="card rounded-2xl overflow-hidden">
             <img src={course.image} alt={course.title} className="w-full h-64 object-cover" />
             <div className="p-8">
-              <span className="text-xs font-semibold bg-rose-100 text-rose-500 px-3 py-1 rounded-full">{course.level}</span>
-              <h1 className="text-3xl font-bold text-stone-800 mt-3 mb-2">{course.title}</h1>
-              <p className="text-stone-500 mb-4">{course.longDescription}</p>
-              <div className="flex flex-wrap gap-4 text-sm text-stone-400 mb-6">
+              <span className="text-xs font-semibold bg-soft text-accent px-3 py-1 rounded-full">{course.level}</span>
+              <h1 className="text-3xl font-bold text-theme mt-3 mb-2">{course.title}</h1>
+              <p className="text-theme mb-4">{course.longDescription}</p>
+              <div className="flex flex-wrap gap-4 text-sm text-theme mb-6">
                 <span>👩‍🏫 {course.instructor}</span>
                 <span>🕐 {course.duration}</span>
                 <span>📚 {course.lessons.length} lecciones</span>
@@ -57,7 +57,7 @@ export default function CourseDetail() {
                 <span className="text-3xl font-bold text-stone-800">${course.price.toLocaleString()}</span>
                 <button
                   onClick={() => navigate(user ? `/checkout/${course.id}` : '/login')}
-                  className="bg-rose-400 text-white px-8 py-3 rounded-xl font-semibold hover:bg-rose-500 transition-colors"
+                  className="btn-theme px-8 py-3 rounded-xl font-semibold"
                 >
                   Comprar curso
                 </button>
@@ -149,14 +149,14 @@ export default function CourseDetail() {
             <p className="text-stone-400 text-xs mt-0.5">{courseProgress.completed.length}/{course.lessons.length} completadas</p>
           </div>
           
-          <div className="bg-[#FFF4E5] border border-[#F3CAA8] rounded-xl p-4 m-4 shadow-sm">
-            <div className="flex items-center gap-2 font-bold text-[#A85B24] mb-2 text-sm uppercase">
+          <div className="card-soft rounded-xl p-4 m-4 shadow-sm">
+            <div className="flex items-center gap-2 font-bold text-brown-accent mb-2 text-sm uppercase">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
                 <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
               </svg>
               Importante
             </div>
-            <p className="text-sm text-[#874A1D] leading-relaxed">
+            <p className="text-sm text-brown-muted leading-relaxed">
               Este material es personal e intransferible. El sistema detecta accesos simultáneos y compartidos, lo que resultará en la baja inmediata de la cuenta.
             </p>
           </div>

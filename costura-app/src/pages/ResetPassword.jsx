@@ -39,11 +39,12 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5EFE6] flex items-center justify-center px-4 py-12">
-      <div className="bg-white rounded-3xl shadow-sm border border-[#EDE4D6] p-8 w-full max-w-md animate-fade-up">
+    <div className="min-h-screen bg-soft flex items-center justify-center px-4 py-12">
+      <div className="bg-white rounded-3xl shadow-sm border border-theme p-8 w-full max-w-md animate-fade-up">
         <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold text-[#3D2B1F]">Restablecer contraseña</h1>
-          <p className="text-[#A08060] text-sm mt-1">Ingresá tu nueva contraseña</p>
+          <img src="/Images/logo-nuevo-grow.png" alt="Grow" className="w-12 h-12 mx-auto object-contain" />
+          <h1 className="text-2xl font-bold text-theme">Restablecer contraseña</h1>
+          <p className="text-theme text-sm mt-1">Ingresá tu nueva contraseña</p>
         </div>
 
         {message && (
@@ -60,25 +61,25 @@ export default function ResetPassword() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-[#6B4C3B] mb-1.5">Nueva contraseña</label>
+            <label className="block text-sm font-medium text-theme mb-1.5">Nueva contraseña</label>
             <input
               type="password"
               required
               value={password}
               onChange={e => setPassword(e.target.value)}
-              className="w-full border border-[#EDE4D6] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#7A9E7E] focus:border-transparent bg-[#F9F5F0]"
+              className="w-full border border-theme rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#7A9E7E] focus:border-transparent bg-soft"
               placeholder="••••••••"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[#6B4C3B] mb-1.5">Confirmar contraseña</label>
+            <label className="block text-sm font-medium text-theme mb-1.5">Confirmar contraseña</label>
             <input
               type="password"
               required
               value={confirm}
               onChange={e => setConfirm(e.target.value)}
-              className="w-full border border-[#EDE4D6] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#7A9E7E] focus:border-transparent bg-[#F9F5F0]"
+              className="w-full border border-theme rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#7A9E7E] focus:border-transparent bg-soft"
               placeholder="••••••••"
             />
           </div>
@@ -86,13 +87,13 @@ export default function ResetPassword() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#7A9E7E] text-white py-3 rounded-xl font-semibold hover:bg-[#5E8262] transition-colors disabled:opacity-60"
+            className="w-full bg-secondary text-white py-3 rounded-xl font-semibold hover:bg-[#5E8262] transition-colors disabled:opacity-60"
           >
             {loading ? 'Procesando...' : 'Restablecer contraseña'}
           </button>
 
           <div className="text-center">
-            <Link to="/login" className="text-sm text-[#A08060] hover:text-[#6B4C3B]">Volver al login</Link>
+            <Link to="/login" className="text-sm text-theme">Volver al login</Link>
           </div>
         </form>
       </div>

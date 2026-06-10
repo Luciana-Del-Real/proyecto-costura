@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
@@ -24,74 +24,104 @@ export default function Login() {
     }
   };
 
+  const location = useLocation();
+  const isLogin = location.pathname === '/login';
   return (
-    <div className="min-h-screen bg-[#F5EFE6] flex items-center justify-center px-4 py-12">
-      <div className="bg-white rounded-3xl shadow-sm border border-[#EDE4D6] p-8 w-full max-w-md animate-fade-up">
-        <div className="text-center mb-8">
-          <span className="text-4xl">🧵</span>
-          <h1 className="text-2xl font-bold text-[#3D2B1F] mt-3">Bienvenida de vuelta</h1>
-          <p className="text-[#A08060] text-sm mt-1">Ingresá a tu cuenta para continuar</p>
+    <div className="min-h-screen auth-page-bg flex items-center justify-center px-4 py-12">
+      <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        {/* Left: large logo and branding */}
+        <div className="flex flex-col items-center md:items-start">
+          <div className="w-64 h-64 rounded-full bg-white flex items-center justify-center border border-theme shadow-lg">
+            <img src="/Images/logo-nuevo-grow.png" alt="Grow" className="max-w-[72%] max-h-[72%] object-contain" />
+          </div>
+          <div className="mt-4 text-center md:text-left">
+            <h2 className="text-lg font-semibold text-secondary">Creative Education Studio</h2>
+            <p className="text-sm text-theme mt-1">Un estudio creativo dedicado a la costura, el bordado y el diseño.</p>
+          </div>
         </div>
 
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl px-4 py-3 mb-4">
-            {error}
+        {/* Right: auth card with tabs */}
+        <div className="auth-card bg-white rounded-xl shadow-sm border border-theme p-6 w-full max-w-md animate-fade-up">
+          <div className="flex items-center gap-2 mb-6 bg-white rounded-xl p-1 auth-tabs">
+            <Link
+              to="/login"
+              className={`flex-1 text-center py-2 rounded-xl ${isLogin ? 'text-secondary bg-white font-semibold border-b-4' : 'text-theme'}`}
+              style={isLogin ? { borderColor: 'var(--secondary)' } : undefined}
+            >
+              Iniciar sesión
+            </Link>
+            <Link
+              to="/registro"
+              className={`flex-1 text-center py-2 rounded-xl ${!isLogin ? 'text-accent bg-white font-semibold border-b-4 border-accent' : 'text-theme'}`}
+              style={!isLogin ? { borderColor: 'var(--accent)' } : undefined}
+            >
+              Registrarse
+            </Link>
           </div>
-        )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-[#6B4C3B] mb-1.5">Email</label>
-            <input
-              type="email"
-              required
-              value={form.email}
-              onChange={e => setForm({ ...form, email: e.target.value })}
-              className="w-full border border-[#EDE4D6] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#7A9E7E] focus:border-transparent bg-[#F9F5F0]"
-              placeholder="tu@email.com"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-[#6B4C3B] mb-1.5">Contraseña</label>
-            <div className="relative">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                required
-                value={form.password}
-                onChange={e => setForm({ ...form, password: e.target.value })}
-                className="w-full border border-[#EDE4D6] rounded-xl px-4 py-2.5 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-[#7A9E7E] focus:border-transparent bg-[#F9F5F0]"
-                placeholder="••••••••"
-              />
-              <button type="button" onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A08060] hover:text-[#6B4C3B] transition-colors">
-                {showPassword
-                  ? <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
-                  : <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>}
-              </button>
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl px-4 py-3 mb-4">
+              {error}
             </div>
-          </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-[#7A9E7E] text-white py-3 rounded-xl font-semibold hover:bg-[#5E8262] transition-colors disabled:opacity-60 mt-2"
-          >
-            {loading ? 'Ingresando...' : 'Iniciar sesión'}
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate('/')}
-            className="w-full text-[#A08060] py-2.5 rounded-xl text-sm hover:text-[#6B4C3B] transition-colors"
-          >
-            Cancelar
-          </button>
-        </form>
+          )}
 
-        <p className="text-center text-sm text-[#A08060] mt-6">
-          ¿No tenés cuenta?{' '}
-          <Link to="/registro" className="text-[#C4785A] font-medium hover:text-[#A85E42]">
-            Registrate gratis
-          </Link>
-        </p>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-theme mb-1.5">Email</label>
+              <input
+                type="email"
+                required
+                value={form.email}
+                onChange={e => setForm({ ...form, email: e.target.value })}
+                className="w-full rounded-xl px-4 py-2.5 text-sm focus:outline-none auth-input"
+                placeholder="tu@email.com"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-theme mb-1.5">Contraseña</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  value={form.password}
+                  onChange={e => setForm({ ...form, password: e.target.value })}
+                  className="w-full rounded-xl px-4 py-2.5 pr-10 text-sm focus:outline-none auth-input"
+                  placeholder="••••••••"
+                />
+                <button type="button" onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 btn-eye text-theme transition-colors" aria-label="Mostrar contraseña">
+                  {showPassword
+                    ? <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
+                    : <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>}
+                </button>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-accent text-white py-3 rounded-xl font-semibold hover:opacity-95 transition-colors disabled:opacity-60 mt-2"
+            >
+              {loading ? 'Ingresando...' : 'Iniciar sesión'}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => navigate('/')}
+              className="w-full text-theme py-2.5 rounded-xl text-sm transition-colors"
+            >
+              Cancelar
+            </button>
+          </form>
+
+          <p className="text-center text-sm text-theme mt-6">
+            ¿No tenés cuenta?{' '}
+            <Link to="/registro" className="text-accent font-medium">
+              Registrate gratis
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

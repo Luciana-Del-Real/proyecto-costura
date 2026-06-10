@@ -13,7 +13,7 @@ if (!fs.existsSync(destDir)) fs.mkdirSync(destDir, { recursive: true });
 
 const tasks = [
   { src: 'ultima portada web.png', dest: 'hero.webp', options: { quality: 85 } },
-  { src: 'logo nuevo grow.png', dest: 'logo-grow.webp', options: { quality: 90 } },
+  { src: 'logo-nuevo-grow.png', dest: 'logo-grow.webp', options: { quality: 90 } },
   { src: 'IMG_7148.HEIC', dest: 'daia.webp', options: { quality: 85 } },
 ];
 

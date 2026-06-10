@@ -11,13 +11,13 @@ export default function Dashboard() {
   const suggested = courses.filter(c => !purchases.includes(c.id)).slice(0, 3);
 
   return (
-    <div className="min-h-screen bg-[#F9F5F0]">
+    <div className="min-h-screen bg-soft">
       {/* Header */}
-      <div className="bg-[#7A9E7E] text-white px-4 py-10 animate-fade-up">
+      <div className="bg-secondary text-white px-4 py-10 animate-fade-up">
         <div className="max-w-6xl mx-auto">
-          <p className="text-[#D4E8D4] text-sm mb-1">Bienvenida de vuelta 👋</p>
+          <p className="text-white text-sm mb-1">Bienvenida de vuelta 👋</p>
           <h1 className="text-3xl font-bold">{user?.name}</h1>
-          <p className="text-[#D4E8D4] mt-1 text-sm">{user?.email}</p>
+          <p className="text-white mt-1 text-sm">{user?.email}</p>
         </div>
       </div>
 
@@ -26,8 +26,8 @@ export default function Dashboard() {
         {myCourses.length > 0 && (
           <div className="mb-10">
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-xl font-bold text-[#3D2B1F]">Mis cursos</h2>
-              <Link to="/mis-cursos" className="text-[#7A9E7E] text-sm hover:text-[#5E8262]">Ver todos →</Link>
+              <h2 className="text-xl font-bold text-theme">Mis cursos</h2>
+              <Link to="/mis-cursos" className="text-secondary text-sm hover:text-[#5E8262]">Ver todos →</Link>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {myCourses.slice(0, 3).map(course => (

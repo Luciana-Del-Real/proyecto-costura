@@ -39,7 +39,7 @@ export default function AdminDashboard() {
         <div className="max-w-7xl mx-auto">
           <p className="text-[#C4A882] text-sm mb-1">Panel de administración</p>
           <h1 className="text-3xl font-bold text-[#F5EFE6]">Bienvenida, {user?.name} 👋</h1>
-          <p className="text-[#A08060] text-sm mt-1">Resumen general de Grow Textil Creative Institute</p>
+          <p className="text-[#A08060] text-sm mt-1">Resumen general de Grow-Creative Education Studio</p>
         </div>
       </div>
 
