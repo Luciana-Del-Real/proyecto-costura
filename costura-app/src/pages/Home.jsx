@@ -133,9 +133,10 @@ export default function Home() {
                                 <polygon points="10,8 16,12 10,16" fill="#E83E8C" stroke="none" />
                               </svg>
                             ) : b.icon === 'phone' ? (
-                              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#E83E8C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                                <rect x="6" y="3" width="12" height="18" rx="2" />
-                                <circle cx="12" cy="18" r="0.6" fill="#E83E8C" stroke="none" />
+                              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#E83E8C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                                <rect x="7" y="3" width="10" height="18" rx="2" />
+                                <line x1="9" y1="5.5" x2="15" y2="5.5" />
+                                <circle cx="12" cy="18.5" r="0.65" />
                               </svg>
                             ) : b.icon === 'infinity' ? (
                               <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#E83E8C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
