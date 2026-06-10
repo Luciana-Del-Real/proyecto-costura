@@ -83,7 +83,7 @@ export default function Home() {
                     <img
                       src="/Images/IMG_7148.jpg"
                       alt="Daia"
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover object-center"
                       loading="lazy"
                       decoding="async"
                       onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/Images/IMG_7148.jpg'; }}
