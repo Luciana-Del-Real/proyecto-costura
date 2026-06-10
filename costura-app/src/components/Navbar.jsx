@@ -40,7 +40,7 @@ export default function Navbar() {
       <nav className={`${isHome ? 'absolute inset-x-0 top-0' : 'sticky top-0'} z-50 ${isHome ? 'nav-on-hero' : 'bg-theme border-b border-theme'}`}>
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
         <Link to={user ? (isAdmin ? "/admin" : "/dashboard") : "/"} className="flex items-center gap-3">
-          <img src="/Images/logo-nuevo-grow.png" alt="Grow" className="w-10 h-10 object-contain bg-white p-1 rounded-full" />
+          <img src="/Images/logo-nuevo-grow.png" alt="Grow" className="w-12 h-12 object-cover bg-white rounded-full overflow-hidden" />
           <div className="hidden sm:block">
             <span className="font-bold text-secondary text-xl tracking-tight logo-text">Creative Education Studio</span>
           </div>
