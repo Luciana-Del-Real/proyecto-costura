@@ -134,23 +134,20 @@ export const courses = [
 export const testimonials = [
   {
     id: 1,
-    name: "Florencia M.",
-    text: "Gracias a estos cursos pude empezar mi propio emprendimiento de ropa. Las clases son claras y puedo verlas cuando quiero.",
-    avatar: "https://i.pravatar.cc/80?img=47",
-    course: "Confección de Ropa Femenina",
+    name: "Leonela Orellana",
+    text: "Hermoso lugar y hermosa clase ❤️ recomiendo por mil ! Dai hace que aprender costura sea simple divertido y funcional 🙌🏽…",
+    course: "Google Maps · Hace 6 meses",
   },
   {
     id: 2,
-    name: "Daniela R.",
-    text: "Nunca había cosido en mi vida y ahora hago mis propias prendas. El curso de principiantes es increíble.",
-    avatar: "https://i.pravatar.cc/80?img=45",
-    course: "Costura para Principiantes",
+    name: "Natalia Michelet",
+    text: "Los mejores cursos para aprender desde 0, excelente experiencia!",
+    course: "Google Maps · Hace 6 meses",
   },
   {
     id: 3,
-    name: "Marcela V.",
-    text: "El curso de bordado superó mis expectativas. La instructora explica todo con mucha paciencia y detalle.",
-    avatar: "https://i.pravatar.cc/80?img=44",
-    course: "Bordado a Mano Artístico",
+    name: "Maria Isabel Giaimo",
+    text: "Recomiendo 100%. Daiana es una docente con mucha paciencia y pasión por lo que hace, está acompañando mi proceso de aprendizaje con mucho cariño y buena energia. Me ha dado las herramientas para que yo pueda seguir patrones o moldes sola, por ende pueda volver a la clase con dudas puntuales. En dos semanas ya estaba haciendo totebags para mi familia y al mes ya me encontraba arreglando a mi medida un vestido. Aprendí muchisimo y me hice amigas en sus clases, le tengo mucho cariño a este instuto que me ha dado más que solamente aprender a coser. Orgullosa de ser parte de la sede en Sydney.",
+    course: "Google Maps · Hace 6 meses",
   },
 ];

@@ -1,22 +1,22 @@
 import { Link } from 'react-router-dom';
+import { Video, Smartphone, Infinity as InfinityIcon, GraduationCap, Scissors, Feather, Palette, Shirt } from 'lucide-react';
 import { testimonials } from '../data/courses';
 import { useCourses } from '../context/CoursesContext';
 import CourseCard from '../components/CourseCard';
 import RevealSection from '../components/RevealSection';
 import { useInView } from '../hooks/useInView';
-import { VideoIcon, PhoneIcon, InfinityIcon, TeacherIcon, ScissorsIcon, NeedleIcon, PaletteIcon, YarnIcon } from '../components/Icons';
 const benefits = [
-  { icon: 'video', title: 'Clases grabadas', desc: 'Accedé al contenido cuando quieras, sin horarios fijos.' },
-  { icon: 'phone', title: 'Desde cualquier dispositivo', desc: 'Aprendé desde tu celular, tablet o computadora.' },
-  { icon: 'infinity', title: 'Acceso de por vida', desc: 'Una vez que comprás, el curso es tuyo para siempre.' },
-  { icon: 'teacher', title: 'Instructora experta', desc: 'Aprendé con Daia, diseñadora con más de 10 años de experiencia.' },
+  { Icon: Video, title: 'Clases grabadas', desc: 'Accedé al contenido cuando quieras, sin horarios fijos.' },
+  { Icon: Smartphone, title: 'Desde cualquier dispositivo', desc: 'Aprendé desde tu celular, tablet o computadora.' },
+  { Icon: InfinityIcon, title: 'Acceso de por vida', desc: 'Una vez que comprás, el curso es tuyo para siempre.' },
+  { Icon: GraduationCap, title: 'Instructora experta', desc: 'Aprendé con Daia, diseñadora con más de 10 años de experiencia.' },
 ];
 
 const categories = [
-  { icon: 'scissors', label: 'Costura' },
-  { icon: 'needle', label: 'Bordado' },
-  { icon: 'palette', label: 'Diseño Textil' },
-  { icon: 'yarn', label: 'Workshops' },
+  { Icon: Scissors, label: 'Costura' },
+  { Icon: Feather, label: 'Bordado' },
+  { Icon: Palette, label: 'Diseño Textil' },
+  { Icon: Shirt, label: 'Workshops' },
 ];
 
 const delays = ['', 'reveal-delay-1', 'reveal-delay-2', 'reveal-delay-3'];
@@ -33,7 +33,7 @@ export default function Home() {
         className="relative min-h-[60vh] md:min-h-[80vh] flex items-center py-12 px-4 bg-cover bg-center bg-no-repeat hero-no-sep"
         style={{
           backgroundImage: "url('/Images/IMG_8373.jpg')",
-          backgroundPosition: 'right center',
+          backgroundPosition: 'right 20%',
           backgroundSize: 'cover'
         }}
       >
@@ -108,71 +108,19 @@ export default function Home() {
             <h2 className="text-2xl md:text-3xl font-bold text-theme text-center mb-10">¿Por qué elegirnos?</h2>
           </RevealSection>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-            {(() => {
-              const ICON_MAP = {
-                video: VideoIcon,
-                phone: PhoneIcon,
-                infinity: InfinityIcon,
-                teacher: TeacherIcon,
-                scissors: ScissorsIcon,
-                needle: NeedleIcon,
-                palette: PaletteIcon,
-                yarn: YarnIcon,
-              };
-              return benefits.map((b, i) => {
-                return (
-                  <RevealSection key={i} animation="reveal-scale" delay={delays[i]}>
-                    <div className="feature-card text-center p-6 rounded-2xl bg-white border border-theme hover:border-[#7A9E7E] hover:-translate-y-1 hover:shadow-md transition-all duration-300 h-full">
-                      <div className="flex items-center justify-center mb-3">
-                        <div className={`icon-wrapper ${i % 2 === 0 ? 'icon-outline-pink' : 'icon-outline-green'}`} aria-hidden>
-                          {i % 2 === 0 ? (
-                            /* pink icons: video, infinity for some */
-                            b.icon === 'video' ? (
-                              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#E83E8C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                                <rect x="2" y="5" width="20" height="14" rx="2" />
-                                <polygon points="10,8 16,12 10,16" fill="#E83E8C" stroke="none" />
-                              </svg>
-                            ) : b.icon === 'phone' ? (
-                              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#E83E8C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                                <rect x="7" y="3" width="10" height="18" rx="2" />
-                                <line x1="9" y1="5.5" x2="15" y2="5.5" />
-                                <circle cx="12" cy="18.5" r="0.65" />
-                              </svg>
-                            ) : b.icon === 'infinity' ? (
-                              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#E83E8C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M18.5 7.5c-1.7-1.7-4.5-1.7-6.2 0l-1.3 1.3-1.3-1.3c-1.7-1.7-4.5-1.7-6.2 0-1.7 1.7-1.7 4.5 0 6.2l1.3 1.3 6.2 6.2 6.2-6.2 1.3-1.3c1.7-1.7 1.7-4.5 0-6.2z" />
-                              </svg>
-                            ) : (
-                              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#E83E8C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                                <rect x="3" y="6" width="18" height="12" rx="2" />
-                                <polygon points="9,9 15,12 9,15" fill="#E83E8C" stroke="none" />
-                              </svg>
-                            )
-                          ) : (
-                            /* green icons: scissors, needle */
-                            b.icon === 'scissors' ? (
-                              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#4E6D5B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M14.5 14.5l5 5" />
-                                <path d="M5.5 5.5l5 5" />
-                                <circle cx="6" cy="6" r="3" />
-                                <circle cx="18" cy="18" r="3" />
-                              </svg>
-                            ) : (
-                              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#4E6D5B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M20 4c-2 2-6 6-8 8-2 2-6 6-8 8" />
-                                <path d="M14 10l6-6" />
-                              </svg>
-                            )
-                          )}
-                        </div>
-                      </div>
-                      <h3 className="font-semibold text-theme mb-2">{b.title}</h3>
-                      <p className="text-theme text-sm">{b.desc}</p>
+            {benefits.map((b, i) => (
+              <RevealSection key={i} animation="reveal-scale" delay={delays[i]}>
+                <div className="feature-card text-center p-6 rounded-2xl bg-white border border-theme hover:border-[#7A9E7E] hover:-translate-y-1 hover:shadow-md transition-all duration-300 h-full">
+                  <div className="flex items-center justify-center mb-3">
+                    <div className="icon-wrapper" aria-hidden>
+                      <b.Icon className="benefit-icon" color="#E83E8C" aria-hidden />
                     </div>
-                  </RevealSection>
-                );
-              });
-            })()}
+                  </div>
+                  <h3 className="font-semibold text-theme mb-2">{b.title}</h3>
+                  <p className="text-theme text-sm">{b.desc}</p>
+                </div>
+              </RevealSection>
+            ))}
           </div>
         </div>
       </section>
@@ -184,44 +132,18 @@ export default function Home() {
             <h2 className="text-2xl md:text-3xl font-bold text-theme text-center mb-10">Nuestras especialidades</h2>
           </RevealSection>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {(() => {
-              const ICON_MAP = {
-                video: VideoIcon,
-                phone: PhoneIcon,
-                infinity: InfinityIcon,
-                teacher: TeacherIcon,
-                scissors: ScissorsIcon,
-                needle: NeedleIcon,
-                palette: PaletteIcon,
-                yarn: YarnIcon,
-              };
-              return categories.map((cat, i) => {
-                return (
-                  <RevealSection key={i} animation="reveal" delay={delays[i]}>
-                    <Link to="/cursos" className="block bg-white rounded-2xl p-6 text-center border border-theme hover:border-[#C4785A] hover:-translate-y-1 hover:shadow-md transition-all duration-300 feature-card">
-                      <div className="flex items-center justify-center mb-2">
-                        <div className={`icon-wrapper ${i % 2 === 0 ? 'icon-outline-pink' : 'icon-outline-green'}`} aria-hidden>
-                          {cat.icon === 'scissors' ? (
-                            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#4E6D5B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                              <path d="M14.5 14.5l5 5" />
-                              <path d="M5.5 5.5l5 5" />
-                              <circle cx="6" cy="6" r="3" />
-                              <circle cx="18" cy="18" r="3" />
-                            </svg>
-                          ) : (
-                            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#4E6D5B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                              <path d="M20 4c-2 2-6 6-8 8-2 2-6 6-8 8" />
-                              <path d="M14 10l6-6" />
-                            </svg>
-                          )}
-                        </div>
-                      </div>
-                      <p className="font-medium text-theme text-sm">{cat.label}</p>
-                    </Link>
-                  </RevealSection>
-                );
-              });
-            })()}
+            {categories.map((cat, i) => (
+              <RevealSection key={i} animation="reveal" delay={delays[i]}>
+                <Link to="/cursos" className="block bg-white rounded-2xl p-6 text-center border border-theme hover:border-[#C4785A] hover:-translate-y-1 hover:shadow-md transition-all duration-300 feature-card">
+                  <div className="flex items-center justify-center mb-2">
+                    <div className="icon-wrapper" aria-hidden>
+                      <cat.Icon className="specialty-icon" color="#4E6D5B" aria-hidden />
+                    </div>
+                  </div>
+                  <p className="font-medium text-theme text-sm">{cat.label}</p>
+                </Link>
+              </RevealSection>
+            ))}
           </div>
         </div>
       </section>
@@ -239,12 +161,9 @@ export default function Home() {
               <RevealSection key={t.id} animation="reveal" delay={delays[i]}>
                 <div className="bg-soft rounded-2xl p-6 border border-theme hover:-translate-y-1 hover:shadow-sm transition-all duration-300 h-full">
                   <p className="text-theme text-sm mb-4 italic leading-relaxed">"{t.text}"</p>
-                  <div className="flex items-center gap-3">
-                    <img src={t.avatar} alt={t.name} className="w-10 h-10 rounded-full object-cover" />
-                    <div>
-                      <p className="font-semibold text-theme text-sm">{t.name}</p>
-                      <p className="text-theme text-xs">{t.course}</p>
-                    </div>
+                  <div>
+                    <p className="font-semibold text-theme text-sm">{t.name}</p>
+                    <p className="text-theme text-xs">{t.course}</p>
                   </div>
                 </div>
               </RevealSection>

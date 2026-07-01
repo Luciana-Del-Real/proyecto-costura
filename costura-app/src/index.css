@@ -642,6 +642,12 @@ footer.bg-brown * {
   box-sizing: border-box;
 }
 .icon-wrapper svg { width: 44px; height: 44px; }
+.benefit-icon,
+.specialty-icon {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+}
 
 /* Cuando la tarjeta principal se hover, escalar el contenedor del icono y añadir sombra suave */
 .feature-card:hover .icon-wrapper {
