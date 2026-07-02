@@ -8,7 +8,16 @@ export default function Auth({ defaultTab = 'login' }) {
   const [tab, setTab] = useState(defaultTab);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [form, setForm] = useState({ name: '', email: '', password: '', confirm: '' });
+  
+  // Agregamos 'country' al estado inicial del formulario
+  const [form, setForm] = useState({ 
+    name: '', 
+    email: '', 
+    password: '', 
+    confirm: '', 
+    country: 'ARS' 
+  });
+  
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -17,11 +26,29 @@ export default function Auth({ defaultTab = 'login' }) {
     navigate(t === 'login' ? '/login' : '/registro');
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    
+    try {
+      if (tab === 'register') {
+        await register(form.name, form.email, form.password, form.country);
+      } else {
+        await login(form.email, form.password);
+      }
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err.message || 'Error al procesar la solicitud');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-[#F8F9FA]">
       <div className="w-full max-w-md animate-fade-up">
         
-        {/* Encabezado restaurado */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-[#6B4C3B] mb-2">
             {tab === 'login' ? 'Bienvenida de nuevo' : 'Crear cuenta'}
@@ -31,18 +58,28 @@ export default function Auth({ defaultTab = 'login' }) {
           </p>
         </div>
 
-        {/* Formulario */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
           {error && <p className="text-red-500 text-sm mb-4 text-center">{error}</p>}
           
-          <form className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             {tab === 'register' && (
               <input type="text" placeholder="Nombre completo" className="w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-[#4E6D5B] outline-none" onChange={e => setForm({...form, name: e.target.value})} />
             )}
             
             <input type="email" placeholder="Email" className="w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-[#4E6D5B] outline-none" onChange={e => setForm({...form, email: e.target.value})} />
 
-            {/* Input Contraseña con Ojo mejorado */}
+            {/* Selector de país - Solo visible en registro */}
+            {tab === 'register' && (
+              <select 
+                className="w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-[#4E6D5B] outline-none bg-white text-gray-600"
+                value={form.country}
+                onChange={e => setForm({...form, country: e.target.value})}
+              >
+                <option value="ARS">Argentina (ARS)</option>
+                <option value="AUD">Australia (AUD)</option>
+              </select>
+            )}
+
             <div className="relative">
               <input 
                 type={showPassword ? "text" : "password"} 
@@ -50,11 +87,7 @@ export default function Auth({ defaultTab = 'login' }) {
                 className="w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-[#4E6D5B] outline-none pr-16" 
                 onChange={e => setForm({...form, password: e.target.value})} 
               />
-              <button 
-                type="button" 
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-medium text-[#4E6D5B] hover:opacity-70" 
-                onClick={() => setShowPassword(!showPassword)}
-              >
+              <button type="button" className="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-medium text-[#4E6D5B] hover:opacity-70" onClick={() => setShowPassword(!showPassword)}>
                 {showPassword ? "Ocultar" : "Ver"}
               </button>
             </div>
@@ -64,7 +97,7 @@ export default function Auth({ defaultTab = 'login' }) {
                 <input 
                   type={showConfirm ? "text" : "password"} 
                   placeholder="Confirmar contraseña" 
-                  className="w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-[#4E6D5B] outline-none pr-16" 
+                  className="w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-[#4E6D5B] outline-none" 
                   onChange={e => setForm({...form, confirm: e.target.value})} 
                 />
               </div>
@@ -76,7 +109,7 @@ export default function Auth({ defaultTab = 'login' }) {
               </div>
             )}
 
-            <button className="w-full bg-[#4E6D5B] text-white py-3.5 rounded-xl font-semibold hover:bg-[#3d5648] transition-all mt-2">
+            <button type="submit" className="w-full bg-[#4E6D5B] text-white py-3.5 rounded-xl font-semibold hover:bg-[#3d5648] transition-all mt-2">
               {loading ? 'Procesando...' : (tab === 'login' ? 'Iniciar sesión' : 'Registrarse')}
             </button>
           </form>

@@ -13,5 +13,5 @@ export class RegisterDto {
   password!: string;
 
   @IsString()
-  country: string;
+  country!: string;
 }

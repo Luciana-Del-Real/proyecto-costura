@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 export default function Register() {
   const { register } = useAuth();
   const navigate = useNavigate();
-  // Estado inicial actualizado con el campo country
+  
   const [form, setForm] = useState({ 
     name: '', 
     email: '', 
@@ -25,7 +25,6 @@ export default function Register() {
     if (form.password !== form.confirm) return setError('Las contraseñas no coinciden');
     setLoading(true);
     try {
-      // Enviamos el nuevo parámetro country a la función de registro
       await register(form.name.trim(), form.email, form.password, form.country);
       navigate('/dashboard');
     } catch (err) {
@@ -41,7 +40,6 @@ export default function Register() {
   return (
     <div className="min-h-screen auth-page-bg flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-        {/* Left: large logo and branding */}
         <div className="flex flex-col items-center md:items-start">
           <div className="w-64 h-64 rounded-full bg-white flex items-center justify-center border border-theme shadow-lg">
               <img src="/Images/logo-nuevo-grow.png" alt="Grow" className="w-40 h-40 object-contain" />
@@ -52,7 +50,6 @@ export default function Register() {
           </div>
         </div>
 
-        {/* Right: auth card with tabs */}
         <div className="auth-card bg-white rounded-xl shadow-sm border border-theme p-6 w-full max-w-md animate-fade-up">
           <div className="flex items-center gap-2 mb-6 bg-white rounded-xl p-1 auth-tabs">
             <Link to="/login" className={`flex-1 text-center py-2 rounded-xl ${!isRegister ? 'text-secondary bg-white font-semibold border-b-4' : 'text-theme'}`} style={!isRegister ? { borderColor: 'var(--secondary)' } : undefined}>
@@ -94,10 +91,54 @@ export default function Register() {
               />
             </div>
 
-            {/* Nuevo Selector de País */}
+            {/* Selector de País Corregido */}
             <div>
               <label className="block text-sm font-medium text-theme mb-1.5">País de residencia</label>
               <select
                 required
                 value={form.country}
-                onChange={
+                onChange={e => setForm({ ...form, country: e.target.value })}
+                className="w-full rounded-xl px-4 py-2.5 text-sm focus:outline-none auth-input bg-white"
+              >
+                <option value="ARS">Argentina (ARS)</option>
+                <option value="AUD">Australia (AUD)</option>
+              </select>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-theme mb-1.5">Contraseña</label>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                required
+                value={form.password}
+                onChange={e => setForm({ ...form, password: e.target.value })}
+                className="w-full rounded-xl px-4 py-2.5 text-sm focus:outline-none auth-input"
+                placeholder="Mínimo 6 caracteres"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-theme mb-1.5">Confirmar contraseña</label>
+              <input
+                type={showConfirm ? 'text' : 'password'}
+                required
+                value={form.confirm}
+                onChange={e => setForm({ ...form, confirm: e.target.value })}
+                className="w-full rounded-xl px-4 py-2.5 text-sm focus:outline-none auth-input"
+                placeholder="Repetí tu contraseña"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-accent text-white py-3 rounded-xl font-semibold hover:opacity-95 transition-colors disabled:opacity-60 mt-2"
+            >
+              {loading ? 'Creando cuenta...' : 'Crear cuenta'}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+}

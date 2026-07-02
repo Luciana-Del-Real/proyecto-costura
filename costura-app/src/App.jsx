@@ -35,9 +35,10 @@ function Layout({ children }) {
   );
 }
 
+// CORREGIDO: Añadimos el fondo beige y aquí gestionamos el único Navbar de admin
 function AdminLayout({ children }) {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-[#F9F5F0]">
       <AdminNavbar />
       <main className="flex-1">{children}</main>
     </div>

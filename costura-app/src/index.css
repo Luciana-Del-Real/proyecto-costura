@@ -26,7 +26,7 @@
   --cta: #E83E8C; /* CTA principal -> Fucsia */
   --secondary: #4E6D5B; /* Verde secundario */
   --secondary-dark: #3C5A4B; /* Verde oscuro para hover */
-  --soft: #F7C1D6; /* Rosa claro para fondos y toques */
+  --soft: #F9F5F0; /* Rosa claro para fondos y toques */
   --surface: #FFFFFF; /* Superficies / tarjetas */
   --radius: 12px;
   --shadow: 0 4px 15px rgba(0,0,0,0.05);
@@ -108,7 +108,7 @@
   }
 
   /* Estilo base unificado para botones/CTAs (aplicado globalmente) */
-  button,
+  /*btn-global,
   a.btn,
   input[type="button"],
   input[type="submit"],
@@ -144,7 +144,7 @@
   input[type="reset"]:hover,
   [role="button"]:hover {
     background-color: var(--secondary-dark);
-  }
+  }*/
 
   /* Color de acento para elementos de énfasis */
   .text-accent, .accent, .badge-accent {
