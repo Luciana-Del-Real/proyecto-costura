@@ -54,8 +54,8 @@ export default function App() {
             <Route path="/" element={<Layout><Home /></Layout>} />
             <Route path="/login" element={<Layout><Auth defaultTab="login" /></Layout>} />
             <Route path="/registro" element={<Layout><Auth defaultTab="register" /></Layout>} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/forgot-password" element={<Layout hideNavLinks={true}><ForgotPassword /></Layout>} />
+            <Route path="/reset-password" element={<Layout hideNavLinks={true}><ResetPassword /></Layout>} />
             <Route path="/cursos" element={<Layout><Courses /></Layout>} />
 
             {/* Alumno */}

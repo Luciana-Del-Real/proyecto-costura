@@ -11,4 +11,7 @@ export class RegisterDto {
   @IsString()
   @MinLength(6, { message: 'Contraseña debe tener al menos 6 caracteres' })
   password!: string;
+
+  @IsString()
+  country: string;
 }

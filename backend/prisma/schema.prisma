@@ -29,6 +29,7 @@ model User {
   email         String    @unique
   name          String
   password      String
+  country   String   @default("ARS")
   role          Role      @default(ALUMNO)
   active        Boolean   @default(true)
   createdAt     DateTime  @default(now())

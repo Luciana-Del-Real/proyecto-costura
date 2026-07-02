@@ -826,5 +826,66 @@ section.hero-no-sep + section {
     padding-top: 3.5rem;
   }
 }
+/* ==========================================================================
+   CORRECCIÓN DE VISIBILIDAD: BOTONES DE FILTRO (NIVELES)
+   ========================================================================== */
 
+/* Contenedor que agrupa los botones */
+.filter-container {
+    display: flex !important;
+    gap: 12px !important;
+    margin: 25px 0 !important;
+    flex-wrap: wrap;
+    align-items: center;
+}
 
+/* Estilo para que el texto "Principiante, Intermedio, Avanzado" se VEA */
+.filter-container button,
+.filter-btn {
+    background-color: #FFFFFF !important; /* Fondo blanco para resaltar sobre el rosa */
+    color: #4E6D5B !important;            /* Texto en color verde GROW */
+    border: 1px solid rgba(78, 109, 91, 0.2) !important;
+    padding: 10px 24px !important;
+    border-radius: 25px !important;       /* Bordes redondeados sutiles */
+    font-size: 14px !important;
+    font-weight: 600 !important;          /* Mayor grosor para que sea legible */
+    cursor: pointer;
+    display: inline-block !important;
+    visibility: visible !important;       /* Fuerza a que no se oculte */
+    opacity: 1 !important;
+    transition: all 0.3s ease;
+}
+
+/* Efecto al pasar el mouse por arriba */
+.filter-container button:hover,
+.filter-btn:hover {
+    background-color: #FDF8FA !important; 
+    color: #E83E8C !important;            /* El texto cambia a fucsia */
+    border-color: #E83E8C !important;
+}
+
+/* El botón activo (en este caso "Todos") queda resaltado en verde */
+.filter-container button.active,
+.filter-btn.active {
+    background-color: #4E6D5B !important; /* Fondo verde */
+    color: #FFFFFF !important;            /* Texto blanco */
+    border-color: #4E6D5B !important;
+    box-shadow: 0 4px 10px rgba(78, 109, 91, 0.2);
+}
+@keyframes slideUpFade {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-stagger {
+  animation: slideUpFade 0.6s ease-out forwards;
+  opacity: 0; /* Empiezan invisibles */
+}
+
+/* Creamos un retraso escalonado para las primeras 8 tarjetas */
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+.delay-5 { animation-delay: 0.5s; }
+.delay-6 { animation-delay: 0.6s; }

@@ -26,7 +26,7 @@ export function AuthProvider({ children }) {
 
   const register = async (name, email, password) => {
     try {
-      const response = await post('/auth/register', { name, email, password });
+      const response = await post('/auth/register', { name, email, password, country });
       const { token, user: userData } = response;
       const normalized = { ...userData, role: userData.role ? String(userData.role).toUpperCase() : userData.role };
       localStorage.setItem('costura_token', token);
