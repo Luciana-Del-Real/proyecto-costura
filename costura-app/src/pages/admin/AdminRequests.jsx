@@ -77,7 +77,7 @@ export default function AdminRequests() {
                 <div key={req.id} className="bg-[#F9F5F0] rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
                     <p className="font-medium text-[#3D2B1F]">{req.user?.name} <span className="text-xs text-[#A08060]">({req.user?.email})</span></p>
-                    <p className="text-xs text-[#6B4C3B]">Curso: {req.course?.title} — {req.course?.price ? `$${req.course.price.toLocaleString()}` : ''}</p>
+                    <p className="text-xs text-[#6B4C3B]">Curso: {req.course?.title} — {req.course?.priceARS ? `$${req.course.priceARS.toLocaleString()}` : ''}</p>
                     <p className="text-xs text-[#A08060]">Solicitado: {new Date(req.createdAt).toLocaleString()}</p>
                   </div>
                   <div className="flex gap-2">

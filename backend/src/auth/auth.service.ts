@@ -38,6 +38,7 @@ export class AuthService {
         name: dto.name.trim(),
         email: dto.email.toLowerCase(),
         password: hashedPassword,
+        country: dto.country,
         role: 'ALUMNO',
       },
       select: {
@@ -45,6 +46,7 @@ export class AuthService {
         email: true,
         name: true,
         role: true,
+        country: true,
       },
     });
 
@@ -95,6 +97,7 @@ export class AuthService {
         email: user.email,
         name: user.name,
         role: user.role,
+        country: user.country,
       },
       token,
     };

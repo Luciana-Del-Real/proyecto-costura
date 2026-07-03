@@ -19,12 +19,12 @@ export default function AdminSales() {
       ? allPurchases
       : allPurchases.filter(p => p.course.id === filter);
 
-  const totalRevenue = filtered.reduce((sum, p) => sum + p.course.price, 0);
+  const totalRevenue = filtered.reduce((sum, p) => sum + p.course.priceARS, 0);
 
   // Revenue per course for mini chart
   const revenuePerCourse = courses.map(c => ({
     ...c,
-    revenue: allPurchases.filter(p => p.course.id === c.id).reduce((s, p) => s + p.course.price, 0),
+    revenue: allPurchases.filter(p => p.course.id === c.id).reduce((s, p) => s + p.course.priceARS, 0),
     count: allPurchases.filter(p => p.course.id === c.id).length,
   })).filter(c => c.count > 0).sort((a, b) => b.revenue - a.revenue);
 
@@ -54,7 +54,7 @@ export default function AdminSales() {
                 <div key={`${req.user.id}-${req.course.id}-${idx}`} className="bg-[#F9F5F0] rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
                     <p className="font-medium text-[#3D2B1F]">{req.user.name} ({req.user.email})</p>
-                    <p className="text-xs text-[#6B4C3B]">{req.course.title} - {req.course.price ? `$${req.course.price.toLocaleString()}` : ''}</p>
+                    <p className="text-xs text-[#6B4C3B]">{req.course.title} - {req.course.priceARS ? `$${req.course.priceARS.toLocaleString()}` : ''}</p>
                   </div>
                   <div className="flex gap-2">
                       <button onClick={async () => { await approvePurchase(req.id); setPendingRequests(await getPendingRequests()); setAllPurchases(await getAllPurchases()); }} className="px-3 py-1.5 text-xs bg-[#7A9E7E] text-white rounded-lg hover:bg-[#5E8262]">Aprobar</button>
@@ -70,7 +70,7 @@ export default function AdminSales() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
           <div className="bg-white rounded-2xl border border-[#EDE4D6] p-5 animate-fade-up">
             <p className="text-[#A08060] text-xs mb-1">Ingresos totales</p>
-            <p className="text-2xl font-bold text-[#3D2B1F]">${allPurchases.reduce((s, p) => s + p.course.price, 0).toLocaleString()}</p>
+            <p className="text-2xl font-bold text-[#3D2B1F]">${allPurchases.reduce((s, p) => s + p.course.priceARS, 0).toLocaleString()}</p>
           </div>
           <div className="bg-white rounded-2xl border border-[#EDE4D6] p-5 animate-fade-up-delay-1">
             <p className="text-[#A08060] text-xs mb-1">Total de ventas</p>
@@ -79,7 +79,7 @@ export default function AdminSales() {
           <div className="bg-white rounded-2xl border border-[#EDE4D6] p-5 animate-fade-up-delay-2">
             <p className="text-[#A08060] text-xs mb-1">Ticket promedio</p>
             <p className="text-2xl font-bold text-[#3D2B1F]">
-              ${allPurchases.length > 0 ? Math.round(allPurchases.reduce((s, p) => s + p.course.price, 0) / allPurchases.length).toLocaleString() : 0}
+              ${allPurchases.length > 0 ? Math.round(allPurchases.reduce((s, p) => s + p.course.priceARS, 0) / allPurchases.length).toLocaleString() : 0}
             </p>
           </div>
         </div>
@@ -144,7 +144,7 @@ export default function AdminSales() {
                           <span className="text-[#3D2B1F] truncate max-w-[180px]">{p.course.title}</span>
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-right font-semibold text-[#7A9E7E]">${p.course.price.toLocaleString()}</td>
+                      <td className="px-4 py-3 text-right font-semibold text-[#7A9E7E]">${p.course.priceARS.toLocaleString()}</td>
                     </tr>
                   ))}
                 </tbody>

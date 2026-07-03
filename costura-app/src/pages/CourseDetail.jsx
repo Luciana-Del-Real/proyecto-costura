@@ -54,7 +54,7 @@ export default function CourseDetail() {
                 <span>⭐ {course.rating} ({course.students.toLocaleString()} alumnas)</span>
               </div>
               <div className="border-t border-stone-100 pt-6 flex items-center justify-between">
-                <span className="text-3xl font-bold text-stone-800">${course.price.toLocaleString()}</span>
+                <span className="text-3xl font-bold text-stone-800">${course.priceARS.toLocaleString()}</span>
                 <button
                   onClick={() => navigate(user ? `/checkout/${course.id}` : '/login')}
                   className="btn-theme px-8 py-3 rounded-xl font-semibold"

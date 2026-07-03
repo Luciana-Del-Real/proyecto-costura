@@ -24,6 +24,7 @@ import AdminCourses from './pages/admin/AdminCourses';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminSales from './pages/admin/AdminSales';
 import AdminRequests from './pages/admin/AdminRequests';
+import AdminCourseForm from './pages/admin/AdminCourseForm';
 
 function Layout({ children }) {
   return (
@@ -73,6 +74,9 @@ export default function App() {
             <Route path="/admin/usuarios" element={<AdminRoute><AdminLayout><AdminUsers /></AdminLayout></AdminRoute>} />
             <Route path="/admin/solicitudes" element={<AdminRoute><AdminLayout><AdminRequests /></AdminLayout></AdminRoute>} />
             <Route path="/admin/ventas" element={<AdminRoute><AdminLayout><AdminSales /></AdminLayout></AdminRoute>} />
+            <Route path="/admin/courses" element={<AdminCourses />} />
+            <Route path="/admin/courses/new" element={<AdminCourseForm />} />
+            <Route path="/admin/courses/edit/:id" element={<AdminCourseForm />} />
           </Routes>
         </CoursesProvider>
       </AuthProvider>

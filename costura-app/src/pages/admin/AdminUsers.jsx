@@ -110,7 +110,7 @@ export default function AdminUsers() {
                 </div>
                 <div className="bg-[#F9F5F0] rounded-xl p-3 text-center">
                   <p className="text-xl font-bold text-[#3D2B1F]">
-                    ${getUserCourses(selected).reduce((s, c) => s + c.price, 0).toLocaleString()}
+                    ${getUserCourses(selected).reduce((s, c) => s + c.priceARS, 0).toLocaleString()}
                   </p>
                   <p className="text-xs text-[#A08060]">Total invertido</p>
                 </div>

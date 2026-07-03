@@ -91,7 +91,7 @@ export default function CourseCard({ course }) {
             <div className="flex flex-col">
               <span className="text-[10px] uppercase tracking-wider font-bold text-gray-400 leading-none">Inversión</span>
               <span className="font-extrabold text-gray-800 text-xl tracking-tight mt-0.5">
-                ${course.price.toLocaleString()}
+                ${course.priceARS.toLocaleString()}
               </span>
             </div>
           )}

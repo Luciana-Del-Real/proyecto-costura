@@ -45,13 +45,20 @@ export class PurchasesService {
       );
     }
 
+    // Determinar el precio según el país/moneda del comprador
+    const buyer = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { country: true },
+    });
+    const total = buyer?.country === 'AUD' ? course.priceAUD : course.priceARS;
+
     // Create purchase request with PENDING status
     return this.prisma.purchase.create({
       data: {
         userId,
         courseId: dto.courseId,
         status: PurchaseStatus.PENDING,
-        total: course.priceARS,
+        total,
       },
       include: {
         course: true,
@@ -60,6 +67,7 @@ export class PurchasesService {
             id: true,
             email: true,
             name: true,
+            country: true,
           },
         },
       },
@@ -185,6 +193,7 @@ export class PurchasesService {
             id: true,
             email: true,
             name: true,
+            country: true,
           },
         },
       },
@@ -213,6 +222,7 @@ export class PurchasesService {
             id: true,
             email: true,
             name: true,
+            country: true,
           },
         },
       },
@@ -237,6 +247,7 @@ export class PurchasesService {
             id: true,
             email: true,
             name: true,
+            country: true,
           },
         },
       },
@@ -256,6 +267,7 @@ export class PurchasesService {
             id: true,
             email: true,
             name: true,
+            country: true,
           },
         },
       },
@@ -273,6 +285,7 @@ export class PurchasesService {
             id: true,
             email: true,
             name: true,
+            country: true,
           },
         },
       },

@@ -85,7 +85,7 @@ export default function Checkout() {
             </div>
             <div className="border-t border-theme pt-4 flex justify-between items-center">
               <span className="text-theme font-medium">Total</span>
-              <span className="text-2xl font-bold text-theme">${course.price.toLocaleString()}</span>
+              <span className="text-2xl font-bold text-theme">${course.priceARS.toLocaleString()}</span>
             </div>
           </div>
 

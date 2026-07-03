@@ -1,3 +1,4 @@
+import { useMemo, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useCourses } from '../../context/CoursesContext';
@@ -18,7 +19,7 @@ export default function AdminDashboard() {
     load();
   }, [getAllPurchases, getAllUsers, getPendingRequests]);
 
-  const totalRevenue = allPurchases.reduce((sum, p) => sum + (p.course?.price || 0), 0);
+  const totalRevenue = allPurchases.reduce((sum, p) => sum + (p.course?.priceARS || 0), 0);
   const topCourses = courses
     .map(c => ({ ...c, buyers: allPurchases.filter(p => p.course?.id === c.id).length }))
     .sort((a, b) => b.buyers - a.buyers)
@@ -74,7 +75,7 @@ export default function AdminDashboard() {
                       <p className="text-sm font-medium text-theme truncate">{c.title}</p>
                       <p className="text-xs text-theme opacity-70">{c.buyers} venta{c.buyers !== 1 ? 's' : ''}</p>
                     </div>
-                    <span className="text-sm font-semibold text-accent">${c.price.toLocaleString()}</span>
+                    <span className="text-sm font-semibold text-accent">${c.priceARS.toLocaleString()}</span>
                   </div>
                 ))}
               </div>

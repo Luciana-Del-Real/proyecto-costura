@@ -116,12 +116,12 @@ export default function Profile() {
                     <p className="font-medium text-theme text-sm truncate">{course.title}</p>
                     <p className="text-theme text-xs">{course.level}</p>
                   </div>
-                  <span className="font-semibold text-theme text-sm flex-shrink-0">${course.price.toLocaleString()}</span>
+                  <span className="font-semibold text-theme text-sm flex-shrink-0">${course.priceARS.toLocaleString()}</span>
                 </div>
               ))}
               <div className="pt-2 flex justify-between text-sm font-semibold text-[#3D2B1F]">
                 <span>Total invertido</span>
-                <span>${myCourses.reduce((sum, c) => sum + c.price, 0).toLocaleString()}</span>
+                <span>${myCourses.reduce((sum, c) => sum + c.priceARS, 0).toLocaleString()}</span>
               </div>
             </div>
           )}
