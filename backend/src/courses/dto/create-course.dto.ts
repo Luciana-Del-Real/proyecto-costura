@@ -13,7 +13,6 @@ export class CreateCourseDto {
   @IsString()
   longDescription?: string;
 
-  // --- NUEVOS CAMPOS CORREGIDOS ---
   @Type(() => Number)
   @IsNumber({}, { message: 'Precio ARS debe ser un número' })
   @Min(0, { message: 'Precio ARS debe ser mayor o igual a 0' })
@@ -23,7 +22,6 @@ export class CreateCourseDto {
   @IsNumber({}, { message: 'Precio AUD debe ser un número' })
   @Min(0, { message: 'Precio AUD debe ser mayor o igual a 0' })
   priceAUD!: number;
-  // --------------------------------
 
   @IsEnum(CourseLevel, { message: 'Nivel debe ser PRINCIPIANTE, INTERMEDIO o AVANZADO' })
   level!: CourseLevel;
@@ -52,4 +50,10 @@ export class CreateCourseDto {
   })
   @IsBoolean()
   featured?: boolean;
+
+  // --- AGREGA ESTO ---
+  @IsOptional()
+  @IsString() // Se acepta como string porque llega de FormData como JSON
+  lessons?: string; 
+  // -------------------
 }

@@ -8,16 +8,57 @@ export class CoursesService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(dto: CreateCourseDto) {
-    // Desestructuramos el DTO para asegurar que no enviamos campos extra a Prisma
-    const { ...courseData } = dto;
-    
+    const { lessons, ...courseData } = dto;
+    let lessonsArray = [];
+    if (lessons) {
+      try {
+        lessonsArray = JSON.parse(lessons as string);
+      } catch (e) {
+        console.error("Error al parsear lecciones:", e);
+      }
+    }
+
     return this.prisma.course.create({
-      data: courseData,
+      data: {
+        ...courseData,
+        lessons: {
+          create: lessonsArray.map((l: any) => ({
+            title: l.title,
+            description: l.description,
+          })),
+        },
+      },
       include: { lessons: true, attachments: true },
     });
   }
 
-  // Método específico para adjuntos (no pasa por el DTO del curso)
+  // Corregido: Nombre cambiado de updateCourse a update
+  async update(id: string, dto: UpdateCourseDto) {
+    const { lessons, ...courseData } = dto;
+    
+    // Preparamos el objeto de actualización
+    const updatePayload: any = { ...courseData };
+
+    if (lessons) {
+      const parsedLessons = typeof lessons === 'string' ? JSON.parse(lessons) : lessons;
+      
+      // Estrategia: borrar las existentes y crear las nuevas
+      updatePayload.lessons = {
+        deleteMany: {}, 
+        create: parsedLessons.map((l: any) => ({
+          title: l.title,
+          description: l.description,
+        })),
+      };
+    }
+
+    return await this.prisma.course.update({
+      where: { id },
+      data: updatePayload as any, // Forzamos el tipo para evitar conflicto con la estructura relacional
+      include: { lessons: true, attachments: true },
+    });
+  }
+
   async createManyAttachments(data: { filename: string, url: string, courseId: string }[]) {
     return this.prisma.attachment.createMany({
       data: data,
@@ -56,20 +97,7 @@ export class CoursesService {
     if (!course) {
       throw new NotFoundException('Curso no encontrado');
     }
-
     return course;
-  }
-
-  async update(id: string, dto: UpdateCourseDto) {
-    // Validar que existe
-    await this.findOne(id); 
-    
-    // Al igual que en create, aseguramos que dto solo contenga campos válidos del modelo Course
-    return this.prisma.course.update({
-      where: { id },
-      data: dto,
-      include: { lessons: true, attachments: true },
-    });
   }
 
   async delete(id: string) {
