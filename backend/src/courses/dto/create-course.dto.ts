@@ -13,11 +13,17 @@ export class CreateCourseDto {
   @IsString()
   longDescription?: string;
 
-  @IsOptional()
+  // --- NUEVOS CAMPOS CORREGIDOS ---
   @Type(() => Number)
-  @IsNumber({}, { message: 'Precio debe ser un número' })
-  @Min(0, { message: 'Precio debe ser mayor o igual a 0' })
-  price?: number;
+  @IsNumber({}, { message: 'Precio ARS debe ser un número' })
+  @Min(0, { message: 'Precio ARS debe ser mayor o igual a 0' })
+  priceARS!: number;
+
+  @Type(() => Number)
+  @IsNumber({}, { message: 'Precio AUD debe ser un número' })
+  @Min(0, { message: 'Precio AUD debe ser mayor o igual a 0' })
+  priceAUD!: number;
+  // --------------------------------
 
   @IsEnum(CourseLevel, { message: 'Nivel debe ser PRINCIPIANTE, INTERMEDIO o AVANZADO' })
   level!: CourseLevel;

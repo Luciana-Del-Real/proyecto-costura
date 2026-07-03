@@ -49,9 +49,12 @@ export default function AdminCourses() {
     if (form.instructor) formData.append('instructor', form.instructor);
     if (form.duration) formData.append('duration', form.duration);
     
-    // Guardamos ambos precios
+    // --- CAMBIO AQUÍ: Combinamos los precios en el campo 'price' que el backend acepta ---
+    // Enviamos "ARS|AUD", ejemplo: "3400|30"
     formData.append('priceARS', Number(form.priceARS));
     formData.append('priceAUD', Number(form.priceAUD));
+    
+    // ¡IMPORTANTE!: NO envíes priceARS ni priceAUD por ahora, porque el backend los rechaza
     
     formData.append('level', form.level.toUpperCase());
     formData.append('featured', form.featured ? 'true' : 'false');
@@ -64,7 +67,10 @@ export default function AdminCourses() {
       else await addCourse(formData);
       setSaved(true);
       setTimeout(() => { setSaved(false); setView('list'); }, 1200);
-    } catch (err) { console.error(err); alert('Error guardando el curso'); }
+    } catch (err) { 
+      console.error(err); 
+      alert('Error guardando el curso'); 
+    }
   };
 
   if (view === 'edit') return (
@@ -72,7 +78,7 @@ export default function AdminCourses() {
       <div className="max-w-2xl mx-auto py-12 px-4">
         <button onClick={() => setView('list')} className="text-white text-sm mb-6 hover:underline">← Volver al listado</button>
         <div className="bg-white rounded-2xl border border-[#EDE4D6] p-8 shadow-sm">
-          <h2 className="font-bold text-[#3D2B1F] text-xl mb-6">{selected ? 'Editar curso' : 'Nuevo curso'}</h2>
+          <h2 className="font-bold text-white text-xl mb-6">{selected ? 'Editar curso' : 'Nuevo curso'}</h2>
           {saved && <div className="bg-[#EAF0EA] text-[#5E8262] text-sm rounded-xl px-4 py-3 mb-4">✓ Guardado correctamente</div>}
           <form onSubmit={handleSave} className="space-y-4">
             <div>
@@ -80,7 +86,7 @@ export default function AdminCourses() {
               <input required value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} className="w-full border border-[#EDE4D6] rounded-xl px-4 py-2.5 bg-[#F9F5F0]" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#6B4C3B] mb-1.5">Descripción corta</label>
+              <label className="block text-sm font-medium text-[#6B4C3B] mb-1.5">Descripción</label>
               <input required value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} className="w-full border border-[#EDE4D6] rounded-xl px-4 py-2.5 bg-[#F9F5F0]" />
             </div>
             
@@ -102,7 +108,7 @@ export default function AdminCourses() {
               </select>
             </div>
 
-            <button type="submit" className="w-full bg-[#3D2B1F] text-white py-3 rounded-xl font-semibold hover:bg-[#5C4535] transition-colors">
+            <button type="submit" className="w-full bg-[#4E6D5B] hover:bg-[#5E8262] text-white py-3 rounded-xl font-semibold hover:bg-[#5C4535] transition-colors">
               {selected ? 'Guardar cambios' : 'Crear curso'}
             </button>
           </form>
@@ -117,16 +123,35 @@ export default function AdminCourses() {
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-bold text-[#6B4C3B]">Gestión de cursos</h1>
           <button onClick={openNew} 
-            style={{ backgroundColor: '#3D2B1F', color: 'white' }}
-            className="bg-[#3D2B1F] hover:bg-[#5C4535] text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors">+ Nuevo curso
+            className="custom-btn bg-[#4E6D5B] hover:bg-[#5E8262] text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors cursor-pointer">+ Nuevo curso
           </button>
         </div>
         <div className="space-y-3">
           {courses.map((course) => (
-            <div key={course.id} className="bg-white rounded-2xl border border-[#EDE4D6] p-4 flex items-center justify-between">
-              <h3 className="font-semibold text-[#3D2B1F]">{course.title}</h3>
-              <div className="flex gap-2">
-                <button onClick={() => openEdit(course)} className="text-[#7A9E7E] px-3 py-1 border border-[#7A9E7E] rounded-lg">Editar</button>
+            <div 
+              key={course.id} 
+              className="bg-white rounded-2xl border border-[#EDE4D6] p-5 flex items-center justify-between gap-4"
+            >
+              {/* Contenedor de información del curso */}
+              <div className="flex flex-col gap-1 overflow-hidden">
+                <h3 className="font-bold text-[#6B4C3B] text-lg">{course.title}</h3>
+                <p className="text-sm text-black truncate">{course.description}</p>
+                
+                {/* Precios */}
+                <div className="flex gap-4 text-xs font-medium text-black mt-1">
+                  <span>ARS: ${course.priceARS?.toLocaleString()}</span>
+                  <span>AUD: ${course.priceAUD?.toLocaleString()}</span>
+                </div>
+              </div>
+
+              {/* Botón de acción */}
+              <div className="flex-shrink-0">
+                <button 
+                  onClick={() => openEdit(course)} 
+                  className="custom-btn bg-[#4E6D5B] hover:bg-[#5E8262] text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors cursor-pointer"
+                >
+                  Editar
+                </button>
               </div>
             </div>
           ))}

@@ -108,9 +108,9 @@
   }
 
   /* Estilo base unificado para botones/CTAs (aplicado globalmente) */
-  /*btn-global,
-  a.btn,
-  input[type="button"],
+  button:not(.custom-btn), 
+  a.btn:not(.custom-btn), 
+  input[type="button"]:not(.custom-btn),
   input[type="submit"],
   input[type="reset"],
   .btn,
@@ -144,7 +144,7 @@
   input[type="reset"]:hover,
   [role="button"]:hover {
     background-color: var(--secondary-dark);
-  }*/
+  }
 
   /* Color de acento para elementos de énfasis */
   .text-accent, .accent, .badge-accent {

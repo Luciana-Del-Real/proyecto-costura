@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query, UseGuards, UseInterceptors, UploadedFiles } from '@nestjs/common';
-import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { FileFieldsInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { CoursesService } from './courses.service';
@@ -63,6 +63,25 @@ export class CoursesController {
     return this.coursesService.create(dto);
   }
 
+  // NUEVO ENDPOINT: Subida masiva de archivos adjuntos
+  @Post(':id/attachments')
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseInterceptors(FilesInterceptor('attachments', 10, storageOptions))
+  async addAttachments(
+    @Param('id') id: string,
+    @UploadedFiles() files: Express.Multer.File[],
+  ) {
+    if (!files || files.length === 0) return;
+
+    const attachmentsData = files.map(file => ({
+      filename: file.originalname,
+      url: `/uploads/courses/${file.filename}`,
+      courseId: id,
+    }));
+
+    return this.coursesService.createManyAttachments(attachmentsData);
+  }
+
   @Put(':id')
   @UseGuards(JwtAuthGuard, AdminGuard)
   @UseInterceptors(FileFieldsInterceptor([
@@ -70,7 +89,7 @@ export class CoursesController {
     { name: 'pdfGuide', maxCount: 1 },
   ], storageOptions))
   async update(
-    @Param('id') id: string, 
+    @Param('id') id: string,
     @Body() dto: UpdateCourseDto,
     @UploadedFiles() files: { image?: Express.Multer.File[], pdfGuide?: Express.Multer.File[] },
   ) {

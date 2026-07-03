@@ -8,9 +8,19 @@ export class CoursesService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(dto: CreateCourseDto) {
+    // Desestructuramos el DTO para asegurar que no enviamos campos extra a Prisma
+    const { ...courseData } = dto;
+    
     return this.prisma.course.create({
-      data: dto,
-      include: { lessons: true },
+      data: courseData,
+      include: { lessons: true, attachments: true },
+    });
+  }
+
+  // Método específico para adjuntos (no pasa por el DTO del curso)
+  async createManyAttachments(data: { filename: string, url: string, courseId: string }[]) {
+    return this.prisma.attachment.createMany({
+      data: data,
     });
   }
 
@@ -24,7 +34,10 @@ export class CoursesService {
 
     return this.prisma.course.findMany({
       where: featured ? { featured: true, active: true } : { active: true },
-      include: { lessons: { orderBy: { order: 'asc' } } },
+      include: { 
+        lessons: { orderBy: { order: 'asc' } },
+        attachments: true 
+      },
       orderBy: { createdAt: 'desc' },
       skip,
       take: l,
@@ -34,7 +47,10 @@ export class CoursesService {
   async findOne(id: string) {
     const course = await this.prisma.course.findUnique({
       where: { id },
-      include: { lessons:{ orderBy: { order: 'asc' } } },
+      include: { 
+        lessons: { orderBy: { order: 'asc' } },
+        attachments: true 
+      },
     });
 
     if (!course) {
@@ -45,16 +61,19 @@ export class CoursesService {
   }
 
   async update(id: string, dto: UpdateCourseDto) {
-    await this.findOne(id); // Validar que existe
+    // Validar que existe
+    await this.findOne(id); 
+    
+    // Al igual que en create, aseguramos que dto solo contenga campos válidos del modelo Course
     return this.prisma.course.update({
       where: { id },
       data: dto,
-      include: { lessons: true },
+      include: { lessons: true, attachments: true },
     });
   }
 
   async delete(id: string) {
-    await this.findOne(id); // Validar que existe
+    await this.findOne(id);
     return this.prisma.course.delete({
       where: { id },
       select: { id: true, title: true },

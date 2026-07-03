@@ -51,7 +51,7 @@ export class PurchasesService {
         userId,
         courseId: dto.courseId,
         status: PurchaseStatus.PENDING,
-        total: course.price,
+        total: course.priceARS,
       },
       include: {
         course: true,
