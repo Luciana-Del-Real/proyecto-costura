@@ -37,15 +37,13 @@ export default function Navbar() {
   return (
     <>
       <BackToHome />
-      <nav className={`${isHome ? 'absolute inset-x-0 top-0 z-50 nav-on-hero' : 'sticky top-0 z-50 bg-white border-b border-gray-100'}`}>
+      <nav className={`${isHome ? 'absolute inset-x-0 top-0 z-50 nav-on-hero' : 'sticky top-0 z-50 bg-white border-b border-theme shadow-sm'}`}>
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
         <Link to={user ? (isAdmin ? "/admin" : "/dashboard") : "/"} className="flex items-center gap-3">
-          <Link to="/admin" className="flex items-center gap-3">
-            <img src="/Images/logo-nuevo-grow.png" alt="Grow" className="w-9 h-9 object-contain" />
-            <div className="flex flex-col">
-              <span className="text-[10px] uppercase tracking-widest text-theme">Creative Education Studio</span>
-            </div>
-          </Link>
+          <img src="/Images/logo-nuevo-grow.png" alt="Grow" className="w-9 h-9 object-contain" />
+          <div className="flex flex-col">
+            <span className="text-[10px] uppercase tracking-widest text-theme">Creative Education Studio</span>
+          </div>
         </Link>
 
         {/* Desktop */}
@@ -53,9 +51,9 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-6">
           {user ? (
             <>
-              <Link to="/dashboard" className="text-theme hover:text-secondary transition-colors text-sm font-medium">Inicio</Link>
-              <Link to="/cursos" className="text-theme hover:text-secondary transition-colors text-sm font-medium">Cursos disponibles</Link>
-              <Link to="/favoritos" className="text-theme hover:text-secondary transition-colors text-sm font-medium">Favoritos</Link>
+              <Link to="/dashboard" className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${pathname === '/dashboard' ? 'bg-theme/10 text-secondary' : 'text-theme hover:text-secondary hover:bg-theme/5'}`}>Inicio</Link>
+              <Link to="/cursos" className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${pathname === '/cursos' ? 'bg-theme/10 text-secondary' : 'text-theme hover:text-secondary hover:bg-theme/5'}`}>Cursos disponibles</Link>
+              <Link to="/favoritos" className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${pathname === '/favoritos' ? 'bg-theme/10 text-secondary' : 'text-theme hover:text-secondary hover:bg-theme/5'}`}>Favoritos</Link>
 
               {/* Profile dropdown */}
               <div className="relative" ref={profileRef}>

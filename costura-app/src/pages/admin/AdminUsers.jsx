@@ -1,23 +1,41 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useCourses } from '../../context/CoursesContext';
+import { getCoursePrice, getCurrencyCode } from '../../utils/currency';
 
 export default function AdminUsers() {
   const { courses, getAllUsers, toggleUserActive } = useCourses();
-  const [allUsers, setAllUsers] = useState(() => getAllUsers());
+  const [allUsers, setAllUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
   const [confirmToggle, setConfirmToggle] = useState(null); // { user, action }
   const [search, setSearch] = useState('');
 
-  const refreshUsers = () => setAllUsers(getAllUsers());
-
-  const handleToggle = () => {
-    toggleUserActive(confirmToggle.user.id);
-    refreshUsers();
-    // update selected if open
-    if (selected?.id === confirmToggle.user.id) {
-      setSelected(prev => ({ ...prev, active: prev.active === false ? true : false }));
+  const refreshUsers = useCallback(async () => {
+    try {
+      const data = await getAllUsers();
+      setAllUsers(data);
+    } catch (err) {
+      console.error('Error cargando alumnas:', err);
+    } finally {
+      setLoading(false);
     }
-    setConfirmToggle(null);
+  }, [getAllUsers]);
+
+  useEffect(() => { refreshUsers(); }, [refreshUsers]);
+
+  const handleToggle = async () => {
+    try {
+      await toggleUserActive(confirmToggle.user.id);
+      await refreshUsers();
+      if (selected?.id === confirmToggle.user.id) {
+        setSelected(prev => ({ ...prev, active: prev.active === false ? true : false }));
+      }
+    } catch (err) {
+      console.error(err);
+      alert('No se pudo actualizar el estado de la cuenta');
+    } finally {
+      setConfirmToggle(null);
+    }
   };
 
   const filtered = allUsers.filter(u =>
@@ -25,18 +43,30 @@ export default function AdminUsers() {
     u.email.toLowerCase().includes(search.toLowerCase())
   );
 
-  const getUserCourses = (user) => courses.filter(c => user.purchases.includes(c.id));
+  // user.purchases viene del backend como [{ courseId }, ...]
+  const getPurchasedCourseIds = (user) => (user.purchases || []).map(p => p.courseId);
+  const getUserCourses = (user) => {
+    const ids = getPurchasedCourseIds(user);
+    return courses.filter(c => ids.includes(c.id));
+  };
 
-  const getProgress = (user, courseId, totalLessons) => {
-    const p = user.progress?.[courseId];
-    if (!p || totalLessons === 0) return 0;
-    return Math.round((p.completed.length / totalLessons) * 100);
+  // user.progress viene del backend como [{ lessonId }, ...] (solo lecciones completadas)
+  const getProgress = (user, course) => {
+    const totalLessons = course.lessons?.length || 0;
+    if (totalLessons === 0) return 0;
+    const courseLessonIds = course.lessons.map(l => l.id);
+    const completedCount = (user.progress || []).filter(p => courseLessonIds.includes(p.lessonId)).length;
+    return Math.round((completedCount / totalLessons) * 100);
   };
 
   const isActive = (u) => u.active !== false;
 
+  if (loading) {
+    return <div className="min-h-screen bg-[#F9F5F0] flex items-center justify-center"><span className="text-4xl">🧵</span></div>;
+  }
+
   return (
-    <div className="min-h-screen bg-[#F9F5F0]">
+    <div className="max-w-6xl mx-auto px-4">
       <div className="bg-[#F5EFE6] py-8 px-4 border-b border-[#EDE4D6]">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-3xl font-bold text-[#6B4C3B]">Alumnos</h1>
@@ -58,24 +88,24 @@ export default function AdminUsers() {
         {confirmToggle && (
           <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-[60] animate-fade-in px-4">
             <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-xl animate-fade-up">
-              <h3 className="font-bold text-[#3D2B1F] mb-2">
+              <h3 className="text-white px-5 py-2.5 rounded-xl text-xl font-bold justify-center text-center mb-3">
                 {confirmToggle.action === 'deactivate' ? '¿Dar de baja a esta alumna?' : '¿Reactivar esta cuenta?'}
               </h3>
-              <p className="text-[#A08060] text-sm mb-5">
+              <p className="text-[#A08060] text-sm mb-5 justify-center text-center">
                 {confirmToggle.action === 'deactivate'
                   ? 'La alumna no podrá iniciar sesión hasta que se reactive su cuenta.'
                   : 'La alumna podrá volver a iniciar sesión normalmente.'}
               </p>
-              <div className="flex gap-3">
+              <div className="flex justify-center items-center gap-3">
                 <button onClick={handleToggle}
-                  className={`text-white px-5 py-2 rounded-xl text-sm font-medium transition-colors ${
+                  className={`text-white text-sm hover:text-[#6B4C3B] ${
                     confirmToggle.action === 'deactivate'
                       ? 'bg-red-500 hover:bg-red-600'
                       : 'bg-[#7A9E7E] hover:bg-[#5E8262]'
                   }`}>
                   {confirmToggle.action === 'deactivate' ? 'Dar de baja' : 'Reactivar'}
                 </button>
-                <button onClick={() => setConfirmToggle(null)} className="text-[#A08060] text-sm hover:text-[#6B4C3B]">Cancelar</button>
+                <button onClick={() => setConfirmToggle(null)} className="text-white text-sm hover:text-[#6B4C3B]">Cancelar</button>
               </div>
             </div>
           </div>
@@ -92,7 +122,7 @@ export default function AdminUsers() {
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <h3 className="font-bold text-[#3D2B1F]">{selected.name}</h3>
+                      <h3 className="font-bold text-black text-xl">{selected.name}</h3>
                       {!isActive(selected) && (
                         <span className="text-xs bg-red-50 text-red-400 border border-red-200 px-2 py-0.5 rounded-full">Suspendida</span>
                       )}
@@ -100,19 +130,19 @@ export default function AdminUsers() {
                     <p className="text-[#A08060] text-xs">{selected.email}</p>
                   </div>
                 </div>
-                <button onClick={() => setSelected(null)} className="text-[#A08060] hover:text-[#6B4C3B] text-xl leading-none">×</button>
+                <button onClick={() => setSelected(null)} className="text-white hover:text-[#6B4C3B] text-xl leading-none">×</button>
               </div>
 
               <div className="grid grid-cols-2 gap-3 mb-5">
                 <div className="bg-[#F9F5F0] rounded-xl p-3 text-center">
-                  <p className="text-xl font-bold text-[#3D2B1F]">{selected.purchases.length}</p>
+                  <p className="text-xl font-bold text-[#3D2B1F]">{getPurchasedCourseIds(selected).length}</p>
                   <p className="text-xs text-[#A08060]">Cursos comprados</p>
                 </div>
                 <div className="bg-[#F9F5F0] rounded-xl p-3 text-center">
                   <p className="text-xl font-bold text-[#3D2B1F]">
-                    ${getUserCourses(selected).reduce((s, c) => s + c.priceARS, 0).toLocaleString()}
+                    ${getUserCourses(selected).reduce((s, c) => s + getCoursePrice(c, selected), 0).toLocaleString()} {getCurrencyCode(selected)}
                   </p>
-                  <p className="text-xs text-[#A08060]">Total invertido</p>
+                  <p className="text-xs text-[#A08060]">Total</p>
                 </div>
               </div>
 
@@ -122,7 +152,7 @@ export default function AdminUsers() {
               ) : (
                 <div className="space-y-3 mb-5">
                   {getUserCourses(selected).map(course => {
-                    const prog = getProgress(selected, course.id, course.lessons.length);
+                    const prog = getProgress(selected, course);
                     return (
                       <div key={course.id} className="flex items-center gap-3">
                         <img src={course.image} alt={course.title} className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
@@ -150,13 +180,13 @@ export default function AdminUsers() {
                 {isActive(selected) ? (
                   <button
                     onClick={() => setConfirmToggle({ user: selected, action: 'deactivate' })}
-                    className="w-full text-center text-sm text-red-500 border border-red-200 py-2.5 rounded-xl hover:bg-red-50 transition-colors font-medium">
+                    className="w-full text-center text-sm text-white border border-red-200 py-2.5 rounded-xl font-medium">
                     Dar de baja esta cuenta
                   </button>
                 ) : (
                   <button
                     onClick={() => setConfirmToggle({ user: selected, action: 'activate' })}
-                    className="w-full text-center text-sm text-[#7A9E7E] border border-[#7A9E7E] py-2.5 rounded-xl hover:bg-[#EAF0EA] transition-colors font-medium">
+                    className="w-full text-center text-sm text-white border border-red-200 py-2.5 rounded-xl font-medium">
                     Reactivar esta cuenta
                   </button>
                 )}
@@ -194,7 +224,7 @@ export default function AdminUsers() {
                     </td>
                     <td className="px-4 py-3 text-[#A08060] hidden md:table-cell">{u.email}</td>
                     <td className="px-4 py-3 text-center">
-                      <span className="bg-[#EDE4D6] text-[#6B4C3B] text-xs px-2 py-0.5 rounded-full">{u.purchases.length}</span>
+                      <span className="bg-[#EDE4D6] text-[#6B4C3B] text-xs px-2 py-0.5 rounded-full">{getPurchasedCourseIds(u).length}</span>
                     </td>
                     <td className="px-4 py-3 text-center hidden sm:table-cell">
                       {isActive(u)
@@ -202,7 +232,7 @@ export default function AdminUsers() {
                         : <span className="text-xs bg-red-50 text-red-400 border border-red-200 px-2 py-0.5 rounded-full">Suspendida</span>}
                     </td>
                     <td className="px-4 py-3 text-right">
-                      <button onClick={() => setSelected(u)} className="text-xs text-[#7A9E7E] hover:text-[#5E8262] font-medium">Ver detalle</button>
+                      <button onClick={() => setSelected(u)} className="bg-[#4E6D5B] !text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-[#3d5a4a] transition-all">Ver detalle</button>
                     </td>
                   </tr>
                 ))}

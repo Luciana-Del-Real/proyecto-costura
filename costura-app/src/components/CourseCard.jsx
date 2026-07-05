@@ -65,8 +65,8 @@ console.log("Datos del usuario:", user);
 
           {/* LÓGICA DE PRECIO: Solo visible si el usuario está logueado */}
           {user && !owned && (
-            <div className="mt-2 mb-4">
-              <p className="text-sm text-gray-400 font-medium">Inversión:</p>
+            <div className="mt-2">
+              <p className="text-sm text-gray-400 font-medium">Precio:</p>
               <p className="text-2xl font-bold text-[#3D2B1F]">
                 {/* Cambiamos la comparación a 'ARS' según los datos de tu consola */}
                 {user.country === 'ARS' 

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useCourses } from '../../context/CoursesContext';
+import { sumByCurrency, formatMoney } from '../../utils/currency';
 
 export default function AdminSales() {
   const { courses, getAllPurchases, getPendingRequests, approvePurchase, denyPurchase } = useCourses();
@@ -19,21 +20,20 @@ export default function AdminSales() {
       ? allPurchases
       : allPurchases.filter(p => p.course.id === filter);
 
-  const totalRevenueARS = filtered.reduce((sum, p) => sum + (p.course.priceARS || 0), 0);
-  const totalRevenueAUD = filtered.reduce((sum, p) => sum + (p.course.priceAUD || 0), 0);
+  const revenueFiltered = sumByCurrency(filtered);
 
-  // Revenue per course for mini chart
-  const revenuePerCourse = courses.map(c => ({
+  // Ventas por curso para el mini gráfico (cantidad de ventas, ya que sumar
+  // ARS y AUD directamente en una sola barra no tendría sentido)
+  const salesPerCourse = courses.map(c => ({
     ...c,
-    revenueARS: allPurchases.filter(p => p.course.id === c.id).reduce((s, p) => s + (p.course.priceARS || 0), 0),
-    revenueAUD: allPurchases.filter(p => p.course.id === c.id).reduce((s, p) => s + (p.course.priceAUD || 0), 0),
+    revenueByCurrency: sumByCurrency(allPurchases.filter(p => p.course.id === c.id)),
     count: allPurchases.filter(p => p.course.id === c.id).length,
-  })).filter(c => c.count > 0).sort((a, b) => b.revenueARS - a.revenueARS);
+  })).filter(c => c.count > 0).sort((a, b) => b.count - a.count);
 
-  const maxRevenue = revenuePerCourse[0]?.revenueARS || 1;
+  const maxCount = salesPerCourse[0]?.count || 1;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="max-w-6xl mx-auto px-4">
       <div className="bg-[#F5EFE6] py-8 px-4 border-b border-[#EDE4D6]">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-3xl font-bold text-[#6B4C3B]">Historial de ventas</h1>
@@ -46,8 +46,8 @@ export default function AdminSales() {
         <div className="grid grid-cols-2 gap-4 mb-8">
           <div className="bg-white rounded-2xl border border-[#EDE4D6] p-5 animate-fade-up">
             <p className="text-[#A08060] text-sm mt-0.5">Ingresos totales</p>
-            <p className="text-md font-bold text-[#3D2B1F]">${totalRevenueARS.toLocaleString()} ARS</p>
-            <p className="text-md font-bold text-[#3D2B1F]">${totalRevenueAUD.toLocaleString()} AUD</p>
+            <p className="text-md font-bold text-[#3D2B1F]">${revenueFiltered.ARS.toLocaleString()} ARS</p>
+            <p className="text-md font-bold text-[#3D2B1F]">${revenueFiltered.AUD.toLocaleString()} AUD</p>
           </div>
           <div className="bg-white rounded-2xl border border-[#EDE4D6] p-5 animate-fade-up-delay-1">
             <p className="text-[#A08060] text-sm mt-0.5">Total de ventas</p>
@@ -56,22 +56,22 @@ export default function AdminSales() {
         </div>
 
         {/* Revenue bar chart */}
-        {revenuePerCourse.length > 0 && (
+        {salesPerCourse.length > 0 && (
           <div className="bg-white rounded-2xl border border-[#EDE4D6] p-6 mb-8 animate-fade-up">
-            <h2 className="font-bold text-[#3D2B1F] mb-5">Ingresos por curso</h2>
+            <h2 className="font-bold text-[#3D2B1F] mb-5">Ventas por curso</h2>
             <div className="space-y-3">
-              {revenuePerCourse.map(c => (
+              {salesPerCourse.map(c => (
                 <div key={c.id} className="flex items-center gap-3">
                   <p className="text-xs text-[#6B4C3B] w-40 truncate flex-shrink-0">{c.title}</p>
                   <div className="flex-1 bg-[#F5EFE6] rounded-full h-2.5 overflow-hidden">
                     <div
                       className="bg-[#7A9E7E] h-2.5 rounded-full transition-all duration-700"
-                      style={{ width: `${(c.revenueARS / maxRevenue) * 100}%` }}
+                      style={{ width: `${(c.count / maxCount) * 100}%` }}
                     />
                   </div>
-                  <div className="text-right w-24">
-                      <span className="text-xs font-semibold text-[#3D2B1F] block">${c.revenueARS.toLocaleString()} ARS</span>
-                      <span className="text-[10px] text-[#A08060] block">${c.revenueAUD.toLocaleString()} AUD</span>
+                  <div className="text-right w-28">
+                      <span className="text-xs font-semibold text-[#3D2B1F] block">{c.count} venta{c.count !== 1 ? 's' : ''}</span>
+                      <span className="text-[10px] text-[#A08060] block">${c.revenueByCurrency.ARS.toLocaleString()} ARS · ${c.revenueByCurrency.AUD.toLocaleString()} AUD</span>
                   </div>
                 </div>
               ))}
@@ -118,8 +118,9 @@ export default function AdminSales() {
                         </div>
                       </td>
                       <td className="px-4 py-3 text-right">
-                        <p className="font-semibold text-[#7A9E7E] text-sm">${p.course.priceARS.toLocaleString()} ARS</p>
-                        <p className="text-xs text-[#A08060]">${p.course.priceAUD.toLocaleString()} AUD</p>
+                        <p className="font-semibold text-[#7A9E7E] text-sm">
+                          {formatMoney(p.total ?? p.course.priceARS, p.user?.country === 'AUD' ? 'AUD' : 'ARS')}
+                        </p>
                       </td>
                     </tr>
                   ))}
@@ -128,8 +129,8 @@ export default function AdminSales() {
               <div className="px-4 py-3 border-t border-[#F5EFE6] flex justify-between items-center">
                 <span className="text-xs text-[#A08060]">{filtered.length} registro{filtered.length !== 1 ? 's' : ''}</span>
                 <div className="text-right">
-                    <p className="font-bold text-[#3D2B1F] text-sm">Total: ${totalRevenueARS.toLocaleString()} ARS</p>
-                    <p className="font-bold text-[#6B4C3B] text-xs">${totalRevenueAUD.toLocaleString()} AUD</p>
+                    <p className="font-bold text-[#3D2B1F] text-sm">Total: ${revenueFiltered.ARS.toLocaleString()} ARS</p>
+                    <p className="font-bold text-[#6B4C3B] text-xs">${revenueFiltered.AUD.toLocaleString()} AUD</p>
                 </div>
               </div>
             </>

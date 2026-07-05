@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useCourses } from '../../context/CoursesContext';
+import { formatMoney } from '../../utils/currency';
 
 export default function AdminRequests() {
   const { getPendingRequests, approvePurchase, denyPurchase } = useCourses();
@@ -52,7 +53,7 @@ export default function AdminRequests() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F9F5F0]">
+    <div className="max-w-6xl mx-auto px-4">
       <div className="bg-[#F5EFE6] py-8 px-4 border-b border-[#EDE4D6]">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-3xl font-bold text-[#6B4C3B]">Panel de Solicitudes</h1>
@@ -77,7 +78,7 @@ export default function AdminRequests() {
                 <div key={req.id} className="bg-[#F9F5F0] rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
                     <p className="font-medium text-[#3D2B1F]">{req.user?.name} <span className="text-xs text-[#A08060]">({req.user?.email})</span></p>
-                    <p className="text-xs text-[#6B4C3B]">Curso: {req.course?.title} — {req.course?.priceARS ? `$${req.course.priceARS.toLocaleString()}` : ''}</p>
+                    <p className="text-xs text-[#6B4C3B]">Curso: {req.course?.title} — {formatMoney(req.total ?? req.course?.priceARS, req.user?.country === 'AUD' ? 'AUD' : 'ARS')}</p>
                     <p className="text-xs text-[#A08060]">Solicitado: {new Date(req.createdAt).toLocaleString()}</p>
                   </div>
                   <div className="flex gap-2">

@@ -30,7 +30,11 @@ export class UsersService {
         createdAt: true,
         purchases: {
           select: { courseId: true }
-        }
+        },
+        progress: {
+          where: { completed: true },
+          select: { lessonId: true },
+        },
       },
       orderBy: { createdAt: 'desc' },
     });

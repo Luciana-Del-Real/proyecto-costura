@@ -292,47 +292,21 @@ export function CoursesProvider({ children }) {
       }
       return await get(`/purchases/user/${user.id}`);
     } catch (err) {
-      console.error('getAllPurchases error, falling back to local', err);
-      const rawUsers = JSON.parse(localStorage.getItem('costura_users') || '[]');
-      const users = rawUsers.map(u => ({ ...u, role: u.role ? String(u.role).toUpperCase() : u.role }));
-      const result = [];
-      users.forEach(u => {
-        if (u.role === 'ADMIN') return;
-        const data = JSON.parse(localStorage.getItem(`costura_data_${u.id}`) || '{}');
-        const userPurchases = data.purchases || [];
-        userPurchases.forEach(courseId => {
-          const course = courses.find(c => c.id === courseId);
-          if (course) result.push({ user: u, course, date: u.createdAt });
-        });
-      });
-      return result;
+      console.error('getAllPurchases error', err);
+      return [];
     }
   };
 
-  const deleteUser = (userId) => {
-    const users = JSON.parse(localStorage.getItem('costura_users') || '[]');
-    const updated = users.filter(u => u.id !== userId);
-    localStorage.setItem('costura_users', JSON.stringify(updated));
-    localStorage.removeItem(`costura_data_${userId}`);
+  const deleteUser = async (userId) => {
+    await del(`/users/${userId}`);
   };
 
-  const toggleUserActive = (userId) => {
-    const users = JSON.parse(localStorage.getItem('costura_users') || '[]');
-    const updated = users.map(u =>
-      u.id === userId ? { ...u, active: u.active === false ? true : false } : u
-    );
-    localStorage.setItem('costura_users', JSON.stringify(updated));
+  const toggleUserActive = async (userId) => {
+    return patch(`/users/${userId}/active`);
   };
 
-  const getAllUsers = () => {
-    const rawUsers = JSON.parse(localStorage.getItem('costura_users') || '[]');
-    const users = rawUsers.map(u => ({ ...u, role: u.role ? String(u.role).toUpperCase() : u.role }));
-    return users
-      .filter(u => u.role !== 'ADMIN')
-      .map(u => {
-        const data = JSON.parse(localStorage.getItem(`costura_data_${u.id}`) || '{}');
-        return { ...u, purchases: data.purchases || [], progress: data.progress || {} };
-      });
+  const getAllUsers = async () => {
+    return get('/users');
   };
 
   const getPendingRequests = async (page = 1, limit = 100) => {
@@ -340,19 +314,7 @@ export function CoursesProvider({ children }) {
       if (isAdmin || user?.role === 'ADMIN') {
         return await get(`/purchases/pending?page=${page}&limit=${limit}`);
       }
-      const rawUsers = JSON.parse(localStorage.getItem('costura_users') || '[]');
-      const users = rawUsers.map(u => ({ ...u, role: u.role ? String(u.role).toUpperCase() : u.role }));
-      const result = [];
-      users.forEach(u => {
-        if (u.role === 'ADMIN') return;
-        const data = JSON.parse(localStorage.getItem(`costura_data_${u.id}`) || '{}');
-        const requests = data.pendingPurchases || [];
-        requests.forEach(courseId => {
-          const course = courses.find(c => c.id === courseId);
-          if (course) result.push({ user: u, course, date: u.createdAt });
-        });
-      });
-      return result;
+      return [];
     } catch (err) {
       console.error('getPendingRequests error', err);
       return [];

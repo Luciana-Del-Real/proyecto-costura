@@ -2,6 +2,7 @@ import { useMemo, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useCourses } from '../../context/CoursesContext';
+import { sumByCurrency } from '../../utils/currency';
 
 export default function AdminDashboard() {
   const { user } = useAuth();
@@ -19,8 +20,7 @@ export default function AdminDashboard() {
     load();
   }, [getAllPurchases, getAllUsers, getPendingRequests]);
 
-  const totalARS = allPurchases.reduce((sum, p) => sum + (p.course?.priceARS || 0), 0);
-  const totalAUD = allPurchases.reduce((sum, p) => sum + (p.course?.priceAUD || 0), 0);
+  const revenueByCurrency = sumByCurrency(allPurchases);
   const topCourses = courses
     .map(c => ({ ...c, buyers: allPurchases.filter(p => p.course?.id === c.id).length }))
     .sort((a, b) => b.buyers - a.buyers)
@@ -29,7 +29,7 @@ export default function AdminDashboard() {
   const stats = [
     { 
       label: 'Ingresos totales', 
-      values: { ars: totalARS, aud: totalAUD }, // Pasamos el objeto con ambos valores
+      values: { ars: revenueByCurrency.ARS, aud: revenueByCurrency.AUD },
       icon: '💰', 
       color: 'bg-[#EAF0EA] text-[#5E8262]' 
     },
@@ -39,7 +39,7 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="min-h-screen auth-page-bg px-4 py-12 flex justify-center">
+    <div className="max-w-6xl mx-auto auth-page-bg px-4 py-12 flex justify-center">
       <div className="w-full max-w-6xl animate-fade-up">
         
         {/* Cabecera interna */}
