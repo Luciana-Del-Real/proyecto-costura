@@ -12,6 +12,7 @@ import { LessonProgressModule } from './lesson-progress/lesson-progress.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { MailModule } from './mail/mail.module';
+import { AttachmentsModule } from './attachments/attachments.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { MailModule } from './mail/mail.module';
     NotificationsModule,
     FavoritesModule,
     MailModule,
+    AttachmentsModule,
   ],
   controllers: [],
   providers: [],

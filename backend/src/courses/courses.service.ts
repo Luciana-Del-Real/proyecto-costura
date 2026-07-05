@@ -1,68 +1,42 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { AttachmentsService } from '../attachments/attachments.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 
 @Injectable()
 export class CoursesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly attachmentsService: AttachmentsService,
+  ) {}
+
+  // NOTA: las lecciones de un curso ya NO se crean/editan desde acá.
+  // Se manejan exclusivamente a través del módulo de Lessons
+  // (POST/PUT/DELETE /courses/:courseId/lessons/...), que es el que
+  // valida y guarda correctamente cada lección de forma individual.
+  // Antes existía acá un mecanismo que borraba TODAS las lecciones del
+  // curso (`deleteMany: {}`) cada vez que se actualizaba el curso con un
+  // parámetro `lessons` en la URL — eso era lo que podía hacer desaparecer
+  // lecciones creadas previamente. Se eliminó por seguridad.
 
   async create(dto: CreateCourseDto) {
-    const { lessons, ...courseData } = dto;
-    let lessonsArray = [];
-    if (lessons) {
-      try {
-        lessonsArray = JSON.parse(lessons as string);
-      } catch (e) {
-        console.error("Error al parsear lecciones:", e);
-      }
-    }
-
     return this.prisma.course.create({
-      data: {
-        ...courseData,
-        lessons: {
-          create: lessonsArray.map((l: any) => ({
-            title: l.title,
-            description: l.description,
-          })),
-        },
-      },
+      data: { ...dto },
       include: { lessons: true, attachments: true },
     });
   }
 
-  // Corregido: Nombre cambiado de updateCourse a update
   async update(id: string, dto: UpdateCourseDto) {
-    const { lessons, ...courseData } = dto;
-    
-    // Preparamos el objeto de actualización
-    const updatePayload: any = { ...courseData };
-
-    if (lessons) {
-      const parsedLessons = typeof lessons === 'string' ? JSON.parse(lessons) : lessons;
-      
-      // Estrategia: borrar las existentes y crear las nuevas
-      updatePayload.lessons = {
-        deleteMany: {}, 
-        create: parsedLessons.map((l: any) => ({
-          title: l.title,
-          description: l.description,
-        })),
-      };
-    }
-
-    return await this.prisma.course.update({
+    return this.prisma.course.update({
       where: { id },
-      data: updatePayload as any, // Forzamos el tipo para evitar conflicto con la estructura relacional
+      data: { ...dto },
       include: { lessons: true, attachments: true },
     });
   }
 
-  async createManyAttachments(data: { filename: string, url: string, courseId: string }[]) {
-    return this.prisma.attachment.createMany({
-      data: data,
-    });
+  async addAttachments(courseId: string, files: Express.Multer.File[]) {
+    return this.attachmentsService.createManyForCourse(courseId, files);
   }
 
   async findAll(featured?: boolean, page = 1, limit = 20) {
@@ -75,9 +49,9 @@ export class CoursesService {
 
     return this.prisma.course.findMany({
       where: featured ? { featured: true, active: true } : { active: true },
-      include: { 
-        lessons: { orderBy: { order: 'asc' } },
-        attachments: true 
+      include: {
+        lessons: { orderBy: { order: 'asc' }, include: { attachments: true } },
+        attachments: true,
       },
       orderBy: { createdAt: 'desc' },
       skip,
@@ -88,9 +62,9 @@ export class CoursesService {
   async findOne(id: string) {
     const course = await this.prisma.course.findUnique({
       where: { id },
-      include: { 
-        lessons: { orderBy: { order: 'asc' } },
-        attachments: true 
+      include: {
+        lessons: { orderBy: { order: 'asc' }, include: { attachments: true } },
+        attachments: true,
       },
     });
 

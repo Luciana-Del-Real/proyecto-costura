@@ -74,9 +74,8 @@ export default function App() {
             <Route path="/admin/usuarios" element={<AdminRoute><AdminLayout><AdminUsers /></AdminLayout></AdminRoute>} />
             <Route path="/admin/solicitudes" element={<AdminRoute><AdminLayout><AdminRequests /></AdminLayout></AdminRoute>} />
             <Route path="/admin/ventas" element={<AdminRoute><AdminLayout><AdminSales /></AdminLayout></AdminRoute>} />
-            <Route path="/admin/courses" element={<AdminCourses />} />
-            <Route path="/admin/courses/new" element={<AdminCourseForm />} />
-            <Route path="/admin/courses/edit/:id" element={<AdminCourseForm />} />
+            <Route path="/admin/courses/new" element={<AdminRoute><AdminLayout><AdminCourseForm /></AdminLayout></AdminRoute>} />
+            <Route path="/admin/courses/edit/:id" element={<AdminRoute><AdminLayout><AdminCourseForm /></AdminLayout></AdminRoute>} />
           </Routes>
         </CoursesProvider>
       </AuthProvider>

@@ -19,14 +19,20 @@ export default function AdminDashboard() {
     load();
   }, [getAllPurchases, getAllUsers, getPendingRequests]);
 
-  const totalRevenue = allPurchases.reduce((sum, p) => sum + (p.course?.priceARS || 0), 0);
+  const totalARS = allPurchases.reduce((sum, p) => sum + (p.course?.priceARS || 0), 0);
+  const totalAUD = allPurchases.reduce((sum, p) => sum + (p.course?.priceAUD || 0), 0);
   const topCourses = courses
     .map(c => ({ ...c, buyers: allPurchases.filter(p => p.course?.id === c.id).length }))
     .sort((a, b) => b.buyers - a.buyers)
     .slice(0, 5);
 
   const stats = [
-    { label: 'Ingresos totales', value: `$${totalRevenue.toLocaleString()}`, icon: '💰', color: 'bg-[#EAF0EA] text-[#5E8262]' },
+    { 
+      label: 'Ingresos totales', 
+      values: { ars: totalARS, aud: totalAUD }, // Pasamos el objeto con ambos valores
+      icon: '💰', 
+      color: 'bg-[#EAF0EA] text-[#5E8262]' 
+    },
     { label: 'Ventas totales', value: allPurchases.length, icon: '🛒', color: 'bg-[#F5E8E2] text-[#A85E42]' },
     { label: 'Solicitudes pendientes', value: pendingRequests.length, icon: '⏳', color: 'bg-[#F5E8E2] text-[#A36700]' },
     { label: 'Alumnos', value: allUsers.length, icon: '👩‍🎓', color: 'bg-[#EDE4D6] text-[#6B4C3B]' },
@@ -42,15 +48,29 @@ export default function AdminDashboard() {
           <p className="text-theme mt-1">Resumen general de Grow-Creative Education Studio</p>
         </div>
 
-        {/* Stats Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {stats.map((s, i) => (
-            <div key={i} className="bg-white rounded-xl p-5 border border-theme shadow-sm hover:shadow-md transition-all">
-              <div className={`inline-flex items-center justify-center w-10 h-10 rounded-xl text-xl mb-3 ${s.color}`}>
-                {s.icon}
+            <div key={i} className="bg-white rounded-xl p-5 border border-theme shadow-sm hover:shadow-md transition-all flex flex-col h-full">
+              
+              {/* Contenedor flex para alinear icono y label */}
+              <div className="flex items-center gap-3 mb-3">
+                <div className={`flex items-center justify-center w-10 h-10 rounded-xl text-xl ${s.color}`}>
+                  {s.icon}
+                </div>
+                <p className="text-theme text-sm font-medium">{s.label}</p>
               </div>
-              <p className="text-2xl font-bold text-theme">{s.value}</p>
-              <p className="text-theme text-sm">{s.label}</p>
+
+              {/* Valores */}
+              <div className="flex-grow">
+                {s.label === 'Ingresos totales' ? (
+                  <div className="flex flex-col">
+                    <p className="text-lg font-bold text-theme">${s.values.ars.toLocaleString()} ARS</p>
+                    <p className="text-lg font-bold text-theme">${s.values.aud.toLocaleString()} AUD</p>
+                  </div>
+                ) : (
+                  <p className="text-2xl font-bold text-theme">{s.value}</p>
+                )}
+              </div>
             </div>
           ))}
         </div>
@@ -60,8 +80,8 @@ export default function AdminDashboard() {
           {/* Top courses */}
           <div className="bg-white rounded-xl border border-theme p-6 shadow-sm">
             <div className="flex items-center justify-between mb-5">
-              <h2 className="font-bold text-[#6B4C3B]">Cursos más vendidos</h2>
-              <Link to="/admin/cursos" className="text-accent text-sm hover:underline">Ver todos →</Link>
+              <h2 className="font-bold text-black text-xl">Cursos</h2>
+              <Link to="/admin/cursos" className="text-[#A08060] text-sm mt-0.5 hover:underline">Ver todos →</Link>
             </div>
             {topCourses.length === 0 ? (
               <p className="text-theme text-sm">Sin ventas aún.</p>
@@ -70,12 +90,18 @@ export default function AdminDashboard() {
                 {topCourses.map((c, i) => (
                   <div key={c.id} className="flex items-center gap-3">
                     <span className="text-theme text-sm w-5">{i + 1}</span>
-                    <img src={c.image} alt={c.title} className="w-10 h-10 rounded-lg object-cover" />
+                    <img 
+                      src={c.image ? `http://localhost:3000${c.image}` : '/placeholder-portada.png'} 
+                      alt={c.title} 
+                      className="w-10 h-10 rounded-lg object-cover" 
+                      onError={(e) => { e.target.src = '/placeholder-portada.png' }}
+                    />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-theme truncate">{c.title}</p>
                       <p className="text-xs text-theme opacity-70">{c.buyers} venta{c.buyers !== 1 ? 's' : ''}</p>
                     </div>
-                    <span className="text-sm font-semibold text-accent">${c.priceARS.toLocaleString()}</span>
+                    <span className="text-sm font-semibold text-accent">${c.priceARS.toLocaleString()} ARS</span>
+                    <span className="text-sm text-theme">${c.priceAUD.toLocaleString()} AUD</span>
                   </div>
                 ))}
               </div>
@@ -85,8 +111,8 @@ export default function AdminDashboard() {
           {/* Recent users */}
           <div className="bg-white rounded-xl border border-theme p-6 shadow-sm">
             <div className="flex items-center justify-between mb-5">
-              <h2 className="font-bold text-[#6B4C3B]">Alumnos recientes</h2>
-              <Link to="/admin/usuarios" className="text-accent text-sm hover:underline">Ver todos →</Link>
+              <h2 className="font-bold text-black text-xl">Alumnos</h2>
+              <Link to="/admin/usuarios" className="text-[#A08060] text-sm mt-0.5 hover:underline">Ver todos →</Link>
             </div>
             {allUsers.length === 0 ? (
               <p className="text-theme text-sm">Sin alumnos registrados aún.</p>

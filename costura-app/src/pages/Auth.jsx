@@ -115,9 +115,9 @@ export default function Auth({ defaultTab = 'login' }) {
           </form>
         </div>
 
-        <p className="text-center text-sm mt-6 text-gray-600">
+        <p className="text-center text-sm mt-6 text-[#6B4C3B]">
           {tab === 'login' ? '¿No tenés cuenta? ' : '¿Ya tenés cuenta? '}
-          <span className="text-[#4E6D5B] font-bold cursor-pointer hover:underline" onClick={() => switchTab(tab === 'login' ? 'register' : 'login')}>
+          <span className="text-[#6B4C3B] font-bold cursor-pointer hover:underline" onClick={() => switchTab(tab === 'login' ? 'register' : 'login')}>
             {tab === 'login' ? 'Registrate gratis' : 'Iniciá sesión'}
           </span>
         </p>

@@ -1,15 +1,18 @@
 import {
   Injectable,
   NotFoundException,
-  BadRequestException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { AttachmentsService } from '../attachments/attachments.service';
 import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
 
 @Injectable()
 export class LessonsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly attachmentsService: AttachmentsService,
+  ) {}
 
   async create(dto: CreateLessonDto) {
     // Validate course exists
@@ -30,7 +33,12 @@ export class LessonsService {
         courseId: dto.courseId,
         pdf: (dto as any).pdf,
       },
+      include: { attachments: true },
     });
+  }
+
+  async addAttachments(lessonId: string, files: Express.Multer.File[]) {
+    return this.attachmentsService.createManyForLesson(lessonId, files);
   }
 
   async findByCourse(courseId: string) {
@@ -45,12 +53,14 @@ export class LessonsService {
     return this.prisma.lesson.findMany({
       where: { courseId },
       orderBy: { order: 'asc' },
+      include: { attachments: true },
     });
   }
 
   async findOne(id: string) {
     const lesson = await this.prisma.lesson.findUnique({
       where: { id },
+      include: { attachments: true },
     });
 
     if (!lesson) {
@@ -83,6 +93,7 @@ export class LessonsService {
         courseId: dto.courseId,
         pdf: (dto as any).pdf,
       },
+      include: { attachments: true },
     });
   }
 

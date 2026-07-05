@@ -18,16 +18,27 @@ import { AdminGuard } from '../auth/guards/admin.guard';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import { mkdirSync } from 'fs';
+
+const uploadsDir = './uploads/lessons';
+mkdirSync(uploadsDir, { recursive: true });
 
 const storageOptions = {
   storage: diskStorage({
-    destination: './uploads/lessons',
+    destination: uploadsDir,
     filename: (req, file, cb) => {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
       cb(null, `${file.fieldname}-${uniqueSuffix}${extname(file.originalname)}`);
     },
   }),
 };
+
+// - pdf: PDF principal de la lección, se mantiene por compatibilidad (1 solo)
+// - pdfs: PDFs adicionales de la lección, ahora se puede subir más de uno
+const lessonFileFields = FileFieldsInterceptor([
+  { name: 'pdf', maxCount: 1 },
+  { name: 'pdfs', maxCount: 10 },
+], storageOptions);
 
 @Controller('courses/:courseId/lessons')
 export class LessonsController {
@@ -45,13 +56,11 @@ export class LessonsController {
 
   @Post()
   @UseGuards(JwtAuthGuard, AdminGuard)
-  @UseInterceptors(FileFieldsInterceptor([
-    { name: 'pdf', maxCount: 1 },
-  ], storageOptions))
+  @UseInterceptors(lessonFileFields)
   async create(
     @Param('courseId') courseId: string,
     @Body() dto: CreateLessonDto,
-    @UploadedFiles() files: { pdf?: Express.Multer.File[] },
+    @UploadedFiles() files: { pdf?: Express.Multer.File[]; pdfs?: Express.Multer.File[] },
   ) {
     // Ensure courseId in params matches DTO
     if (dto.courseId !== courseId) {
@@ -60,19 +69,23 @@ export class LessonsController {
     if (files?.pdf?.length) {
       (dto as any).pdf = `/uploads/lessons/${files.pdf[0].filename}`;
     }
-    return this.lessonsService.create(dto);
+    const lesson = await this.lessonsService.create(dto);
+
+    if (files?.pdfs?.length) {
+      await this.lessonsService.addAttachments(lesson.id, files.pdfs);
+    }
+
+    return this.lessonsService.findOne(lesson.id);
   }
 
   @Put(':id')
   @UseGuards(JwtAuthGuard, AdminGuard)
-  @UseInterceptors(FileFieldsInterceptor([
-    { name: 'pdf', maxCount: 1 },
-  ], storageOptions))
+  @UseInterceptors(lessonFileFields)
   async update(
     @Param('courseId') courseId: string,
     @Param('id') id: string,
     @Body() dto: UpdateLessonDto,
-    @UploadedFiles() files: { pdf?: Express.Multer.File[] },
+    @UploadedFiles() files: { pdf?: Express.Multer.File[]; pdfs?: Express.Multer.File[] },
   ) {
     // Validate lesson belongs to course
     const lesson = await this.lessonsService.findOne(id);
@@ -82,7 +95,13 @@ export class LessonsController {
     if (files?.pdf?.length) {
       (dto as any).pdf = `/uploads/lessons/${files.pdf[0].filename}`;
     }
-    return this.lessonsService.update(id, dto);
+    await this.lessonsService.update(id, dto);
+
+    if (files?.pdfs?.length) {
+      await this.lessonsService.addAttachments(id, files.pdfs);
+    }
+
+    return this.lessonsService.findOne(id);
   }
 
   @Delete(':id')

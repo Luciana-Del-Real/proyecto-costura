@@ -50,10 +50,4 @@ export class CreateCourseDto {
   })
   @IsBoolean()
   featured?: boolean;
-
-  // --- AGREGA ESTO ---
-  @IsOptional()
-  @IsString() // Se acepta como string porque llega de FormData como JSON
-  lessons?: string; 
-  // -------------------
 }

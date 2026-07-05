@@ -55,7 +55,7 @@ export default function AdminRequests() {
     <div className="min-h-screen bg-[#F9F5F0]">
       <div className="bg-[#F5EFE6] py-8 px-4 border-b border-[#EDE4D6]">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-2xl font-bold text-[#3D2B1F]">Panel de Solicitudes</h1>
+          <h1 className="text-3xl font-bold text-[#6B4C3B]">Panel de Solicitudes</h1>
           <p className="text-[#A08060] text-sm mt-0.5">Gestioná las solicitudes de pago pendientes.</p>
         </div>
       </div>
@@ -63,7 +63,7 @@ export default function AdminRequests() {
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="bg-white rounded-2xl border border-[#EDE4D6] p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-bold text-[#3D2B1F]">Solicitudes pendientes</h2>
+            <h2 className="font-bold text-black text-xl">Solicitudes pendientes</h2>
             <div className="text-xs text-[#A08060]">Página {page}</div>
           </div>
 
@@ -92,7 +92,6 @@ export default function AdminRequests() {
           )}
 
           <div className="flex items-center justify-between mt-6">
-            <div className="text-xs text-[#A08060]">Mostrar {limit} por página</div>
             <div className="flex gap-2">
               <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
                 className="px-3 py-1.5 text-xs bg-white border border-[#EDE4D6] rounded-lg disabled:opacity-50">Anterior</button>

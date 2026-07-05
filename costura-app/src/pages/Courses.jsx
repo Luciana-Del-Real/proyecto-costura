@@ -27,7 +27,7 @@ export default function Courses() {
       {/* CORREGIDO: Reducimos padding vertical (pt-10 pb-5) y quitamos mb-8 */}
       <div className="bg-[#FDF8FA] pt-10 pb-5 px-4 border-b border-gray-100">
         <div className="max-w-6xl mx-auto">
-          <h1 className="text-3xl md:text-4xl font-bold text-[#4E6D5B] mb-2">Todos los cursos</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-[#6B4C3B] mb-2">Todos los cursos</h1>
           <p className="text-gray-600">Encontrá el curso perfecto para vos</p>
         </div>
       </div>

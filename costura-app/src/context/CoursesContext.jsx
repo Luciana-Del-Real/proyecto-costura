@@ -190,6 +190,7 @@ export function CoursesProvider({ children }) {
     try {
       const updatedCourse = await putForm(`/courses/${courseId}`, formData);
       setCourses(courses.map(c => c.id === courseId ? updatedCourse : c));
+      return updatedCourse;
     } catch (e) {
       console.error(e);
       throw e;
@@ -200,6 +201,7 @@ export function CoursesProvider({ children }) {
     try {
       const newCourse = await postForm('/courses', formData);
       setCourses([...courses, newCourse]);
+      return newCourse;
     } catch (e) {
       console.error(e);
       throw e;
@@ -209,9 +211,10 @@ export function CoursesProvider({ children }) {
   const deleteCourse = async (courseId) => {
     try {
       await del(`/courses/${courseId}`);
-      setCourses(courses.filter(c => c.id !== courseId));
+      setCourses(prev => prev.filter(c => c.id !== courseId));
     } catch (e) {
-      console.error(e);
+      console.error("Error al eliminar el curso:", e);
+      throw e;
     }
   };
 
@@ -368,5 +371,4 @@ export function CoursesProvider({ children }) {
       {children}
     </CoursesContext.Provider>
   );
-}
-export const useCourses = () => useContext(CoursesContext);
+}export const useCourses = () => useContext(CoursesContext);

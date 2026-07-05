@@ -2,13 +2,13 @@ import { useCourses } from '../../context/CoursesContext';
 import { Link } from 'react-router-dom';
 
 export default function AdminCourses() {
-  const { courses } = useCourses();
-
+  const { courses, deleteCourse } = useCourses();
+  
   return (
     <div className="min-h-screen bg-[#F9F5F0]">
       <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl font-bold text-[#6B4C3B]">Gestión de cursos</h1>
+        <div className="flex items-center justify-between mb-8 w-full">
+          <h1 className="text-3xl font-bold text-[#6B4C3B] m-0 p-0 leading-tight">Gestión de cursos</h1>
           <Link 
             to="/admin/courses/new" 
             className="bg-[#4E6D5B] !text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-[#3d5a4a] transition-all"
@@ -44,6 +44,16 @@ export default function AdminCourses() {
               >
                 Editar
               </Link>
+              <button 
+                onClick={async () => {
+                  if (window.confirm("¿Estás seguro de que quieres eliminar este curso?")) {
+                    await deleteCourse(course.id);
+                  }
+                }} 
+                className="bg-[#bf6b6b] text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-[#bf5b6b] transition-colors"
+              >
+                Eliminar
+              </button>
             </div>
           ))}
         </div>

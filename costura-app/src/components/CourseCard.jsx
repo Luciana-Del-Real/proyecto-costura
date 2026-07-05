@@ -17,7 +17,7 @@ export default function CourseCard({ course }) {
   const pending = user && isPending(course.id);
   const fav = user && isFavorite(course.id);
   const prog = owned ? getProgress(course.id, course.lessons.length) : 0;
-
+console.log("Datos del usuario:", user);
   return (
     // Tarjeta con sombras profundas difuminadas en hover y bordes suaves sin líneas duras
     <div className="bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 overflow-hidden hover:shadow-[0_12px_30px_rgba(78,109,91,0.08)] hover:-translate-y-1.5 transition-all duration-300 group flex flex-col justify-between">
@@ -56,19 +56,26 @@ export default function CourseCard({ course }) {
 
         {/* Información de la Tarjeta */}
         <div className="p-5">
-          <h3 className="font-bold text-gray-800 text-base mb-1.5 leading-snug group-hover:text-[#4E6D5B] transition-colors line-clamp-1">
+          <h3 className="font-bold text-black text-xl mb-1.5 leading-snug line-clamp-1">
             {course.title}
           </h3>
           <p className="text-gray-500 text-xs mb-4 line-clamp-2 leading-relaxed">
             {course.description}
           </p>
 
-          {/* Estadísticas / Badges inferiores */}
-          <div className="flex items-center gap-4 text-[11px] font-semibold text-gray-400 mb-2 border-t border-gray-50 pt-3">
-            <span className="flex items-center gap-1 text-amber-500">⭐ <span className="text-gray-600">{course.rating}</span></span>
-            <span className="flex items-center gap-1">👩‍🎓 <span className="text-gray-600">{course.students.toLocaleString()}</span></span>
-            <span className="flex items-center gap-1">🕐 <span className="text-gray-600">{course.duration}</span></span>
-          </div>
+          {/* LÓGICA DE PRECIO: Solo visible si el usuario está logueado */}
+          {user && !owned && (
+            <div className="mt-2 mb-4">
+              <p className="text-sm text-gray-400 font-medium">Inversión:</p>
+              <p className="text-2xl font-bold text-[#3D2B1F]">
+                {/* Cambiamos la comparación a 'ARS' según los datos de tu consola */}
+                {user.country === 'ARS' 
+                  ? `$${course.priceARS.toLocaleString()} ARS` 
+                  : `$${course.priceAUD.toLocaleString()} AUD`
+                }
+              </p>
+            </div>
+          )}
         </div>
       </div>
 
@@ -87,15 +94,6 @@ export default function CourseCard({ course }) {
         )}
 
         <div className="flex items-center justify-between gap-3 pt-2">
-          {!owned && (
-            <div className="flex flex-col">
-              <span className="text-[10px] uppercase tracking-wider font-bold text-gray-400 leading-none">Inversión</span>
-              <span className="font-extrabold text-gray-800 text-xl tracking-tight mt-0.5">
-                ${course.priceARS.toLocaleString()}
-              </span>
-            </div>
-          )}
-          
           {owned ? (
             <Link
               to={`/curso/${course.id}`}
@@ -110,7 +108,7 @@ export default function CourseCard({ course }) {
           ) : (
             <Link
               to={user ? `/checkout/${course.id}` : '/login'}
-              className="bg-[#4E6D5B] !text-white text-xs px-5 py-2.5 rounded-xl hover:bg-[#3d5648] hover:shadow-md transition-all font-bold tracking-wide ml-auto"
+              className="bg-[#4E6D5B] !text-white text-xs px-5 py-2.5 rounded-xl hover:bg-[#3d5648] hover:shadow-md transition-all font-bold tracking-wide w-full flex justify-center items-center"
             >
               Inscribirme
             </Link>
