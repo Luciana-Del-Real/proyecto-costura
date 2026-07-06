@@ -20,7 +20,7 @@ export default function CourseCard({ course }) {
 console.log("Datos del usuario:", user);
   return (
     // Tarjeta con sombras profundas difuminadas en hover y bordes suaves sin líneas duras
-    <div className="bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 overflow-hidden hover:shadow-[0_12px_30px_rgba(78,109,91,0.08)] hover:-translate-y-1.5 transition-all duration-300 group flex flex-col justify-between">
+    <div className="bg-[#F4F1ED] rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 overflow-hidden hover:shadow-[0_12px_30px_rgba(78,109,91,0.08)] hover:-translate-y-1.5 transition-all duration-300 group flex flex-col justify-between">
       <div>
         {/* Contenedor de la Imagen con efecto Zoom */}
         <div className="relative overflow-hidden aspect-video bg-gray-50">
@@ -102,7 +102,7 @@ console.log("Datos del usuario:", user);
               Continuar curso →
             </Link>
           ) : pending ? (
-            <button className="w-full text-center bg-gray-100 text-gray-400 text-xs py-2.5 rounded-xl cursor-not-allowed font-medium" disabled>
+            <button className="w-full text-center bg-[#4E6D5B] text-gray-400 text-xs py-2.5 rounded-xl cursor-not-allowed font-medium" disabled>
               Solicitud en revisión
             </button>
           ) : (

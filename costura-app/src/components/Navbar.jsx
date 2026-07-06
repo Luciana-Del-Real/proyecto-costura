@@ -37,20 +37,20 @@ export default function Navbar() {
   return (
     <>
       <BackToHome />
-      <nav className={`${isHome ? 'absolute inset-x-0 top-0 z-50 nav-on-hero' : 'sticky top-0 z-50 bg-white border-b border-theme shadow-sm'}`}>
-      <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-        <Link to={user ? (isAdmin ? "/admin" : "/dashboard") : "/"} className="flex items-center gap-3">
-          <img src="/Images/logo-nuevo-grow.png" alt="Grow" className="w-9 h-9 object-contain" />
-          <div className="flex flex-col">
-            <span className="text-[10px] uppercase tracking-widest text-theme">Creative Education Studio</span>
-          </div>
-        </Link>
+        <nav className={`${isHome ? 'absolute inset-x-0 top-0 z-50 nav-on-hero' : 'sticky top-0 z-50 bg-white border-b border-theme shadow-sm'}`}>
+        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+          <Link to={user ? (isAdmin ? "/admin" : "/dashboard") : "/"} className="flex items-center gap-3">
+            <img src="/Images/logo-nuevo-grow.png" alt="Grow" className="w-9 h-9 object-contain" />
+            <div className="flex flex-col">
+              <span className="text-[10px] uppercase tracking-widest text-theme">Creative Education Studio</span>
+            </div>
+          </Link>
 
-        {/* Desktop */}
-        {(!isSimplified || user) && (
-        <div className="hidden md:flex items-center gap-6">
-          {user ? (
-            <>
+          {/* Desktop */}
+          {(!isSimplified || user) && (
+          <div className="hidden md:flex items-center gap-6">
+            {user ? (
+              <>
               <Link to="/dashboard" className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${pathname === '/dashboard' ? 'bg-theme/10 text-secondary' : 'text-theme hover:text-secondary hover:bg-theme/5'}`}>Inicio</Link>
               <Link to="/cursos" className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${pathname === '/cursos' ? 'bg-theme/10 text-secondary' : 'text-theme hover:text-secondary hover:bg-theme/5'}`}>Cursos disponibles</Link>
               <Link to="/favoritos" className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${pathname === '/favoritos' ? 'bg-theme/10 text-secondary' : 'text-theme hover:text-secondary hover:bg-theme/5'}`}>Favoritos</Link>
@@ -59,7 +59,7 @@ export default function Navbar() {
               <div className="relative" ref={profileRef}>
                 <button
                   onClick={() => setProfileOpen(!profileOpen)}
-                  className="flex items-center gap-2 text-[#6B4C3B] hover:text-[#7A9E7E] transition-colors text-sm font-medium"
+                  className="flex py-1 rounded-lg items-center text-white text-sm font-medium"
                 >
                   <div className="w-7 h-7 bg-secondary rounded-full flex items-center justify-center text-white text-xs font-bold">
                     {user.name?.charAt(0).toUpperCase()}
@@ -84,10 +84,10 @@ export default function Navbar() {
                       className="flex items-center gap-2 px-4 py-2.5 text-sm text-theme hover:bg-soft transition-colors">
                       📚 Mis cursos
                     </Link>
-                    <div className="border-t border-[#F5EFE6] mt-1">
+                    <div className="border-t border-[#F5EFE6] py-3 px-3 mt-1">
                       <button onClick={handleLogout}
-                        className="w-full text-left flex items-center gap-2 px-4 py-2.5 text-sm text-brown-accent hover:bg-soft transition-colors">
-                        🚪 Cerrar sesión
+                        className="w-full items-center px-4 py-1.5 text-sm text-white font-medium bg-[#A63D57]">
+                        Cerrar sesión
                       </button>
                     </div>
                   </div>

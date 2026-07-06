@@ -6,8 +6,8 @@ export default function AdminCourses() {
   
   return (
     <div className="min-h-screen bg-[#F9F5F0]">
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-8 w-full">
+      <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
+        <div className="bg-[#F9F5F0] rounded-2xl shadow-sm border border-gray-100 px-4 py-10 animate-fade-up mt-5 mb-5 flex items-center justify-between">
           <h1 className="text-3xl font-bold text-[#6B4C3B] m-0 p-0 leading-tight">Gestión de cursos</h1>
           <Link 
             to="/admin/courses/new" 
@@ -19,7 +19,7 @@ export default function AdminCourses() {
 
         <div className="space-y-4">
           {courses.map((course) => (
-            <div key={course.id} className="bg-white rounded-2xl border border-[#EDE4D6] p-5 flex items-center gap-6 shadow-sm">
+            <div key={course.id} className="bg-[#F9F5F0] rounded-2xl border border-[#EDE4D6] p-5 flex items-center gap-6 shadow-sm">
               {/* Portada */}
               <div className="w-24 h-16 bg-[#EDE4D6] rounded-lg overflow-hidden flex-shrink-0">
                 {course.image && <img 

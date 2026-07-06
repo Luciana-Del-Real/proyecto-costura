@@ -23,9 +23,9 @@ export default function Courses() {
   });
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA] animate-fade-up">
+    <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
       {/* CORREGIDO: Reducimos padding vertical (pt-10 pb-5) y quitamos mb-8 */}
-      <div className="bg-[#FDF8FA] pt-10 pb-5 px-4 border-b border-gray-100">
+      <div className="bg-[#F4F1ED] rounded-2xl shadow-sm border border-gray-100 px-4 py-10 animate-fade-up mt-5 mb-5">
         <div className="max-w-6xl mx-auto">
           <h1 className="text-3xl md:text-4xl font-bold text-[#6B4C3B] mb-2">Todos los cursos</h1>
           <p className="text-gray-600">Encontrá el curso perfecto para vos</p>

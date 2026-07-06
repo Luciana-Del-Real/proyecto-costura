@@ -53,18 +53,18 @@ export default function AdminRequests() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4">
-      <div className="bg-[#F5EFE6] py-8 px-4 border-b border-[#EDE4D6]">
+    <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
+      <div className="bg-[#F9F5F0] rounded-2xl shadow-sm border border-gray-100 px-6 py-10 animate-fade-up mt-5">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-3xl font-bold text-[#6B4C3B]">Panel de Solicitudes</h1>
           <p className="text-[#A08060] text-sm mt-0.5">Gestioná las solicitudes de pago pendientes.</p>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-2xl border border-[#EDE4D6] p-6">
+      <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
+        <div className="bg-[#F9F5F0] rounded-2xl shadow-sm border border-gray-100 px-6 py-10 animate-fade-up mt-5">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-bold text-black text-xl">Solicitudes pendientes</h2>
+            <h2 className="font-bold text-[#6B4C3B] text-xl">Solicitudes pendientes</h2>
             <div className="text-xs text-[#A08060]">Página {page}</div>
           </div>
 
@@ -95,9 +95,9 @@ export default function AdminRequests() {
           <div className="flex items-center justify-between mt-6">
             <div className="flex gap-2">
               <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
-                className="px-3 py-1.5 text-xs bg-white border border-[#EDE4D6] rounded-lg disabled:opacity-50">Anterior</button>
+                className="bg-[#4E6D5B] text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-[#3d5a4a] transition-all shadow-sm">Anterior</button>
               <button onClick={() => setPage(p => p + 1)} disabled={requests.length < limit}
-                className="px-3 py-1.5 text-xs bg-white border border-[#EDE4D6] rounded-lg disabled:opacity-50">Siguiente</button>
+                className="bg-[#4E6D5B] text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-[#3d5a4a] transition-all shadow-sm">Siguiente</button>
             </div>
           </div>
         </div>

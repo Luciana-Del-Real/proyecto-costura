@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useCourses } from '../context/CoursesContext';
 import { useAuth } from '../context/AuthContext';
 import ReactPlayer from 'react-player';
+import { getImageUrl } from '../utils/media';
 
 export default function CourseDetail() {
   const { id } = useParams();
@@ -42,7 +43,7 @@ export default function CourseDetail() {
         <div className="max-w-4xl mx-auto px-4 py-10">
           <Link to="/cursos" className="text-accent text-sm hover:text-accent mb-6 inline-block">← Volver a cursos</Link>
           <div className="card rounded-2xl overflow-hidden">
-            <img src={course.image} alt={course.title} className="w-full h-64 object-cover" />
+            <img src={getImageUrl(course.image)} alt={course.title} className="w-full h-64 object-cover" />
             <div className="p-8">
               <span className="text-xs font-semibold bg-soft text-accent px-3 py-1 rounded-full">{course.level}</span>
               <h1 className="text-3xl font-bold text-theme mt-3 mb-2">{course.title}</h1>

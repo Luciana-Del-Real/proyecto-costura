@@ -148,8 +148,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Sección 'Cursos destacados' eliminada por pedido del equipo */}
-
       {/* Testimonials */}
       <section className="py-16 px-4 bg-white">
         <div className="max-w-6xl mx-auto">

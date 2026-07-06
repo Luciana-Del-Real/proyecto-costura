@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useCourses } from '../context/CoursesContext';
 import { courses } from '../data/courses';
+import { getImageUrl } from '../utils/media';
 
 export default function Profile() {
   const { user, updateUser } = useAuth();
@@ -22,23 +23,22 @@ export default function Profile() {
   };
 
   return (
-    <div className="min-h-screen bg-soft">
-      <div className="bg-secondary py-12 px-4 animate-fade-up">
-        <div className="max-w-3xl mx-auto flex items-center gap-5">
-          <div className="w-16 h-16 bg-white/30 rounded-full flex items-center justify-center text-2xl font-bold text-white">
+    <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
+      <div className="bg-[#F4F1ED] rounded-2xl shadow-sm border border-gray-100 px-4 py-10 animate-fade-up mt-5 mb-5 flex justify-center">
+        <div className="flex flex-col items-center gap-4 text-center">
+          <div className="w-16 h-16 bg-[#E5EADD] rounded-full flex items-center justify-center text-2xl font-bold text-text-[#6B4C3B]">
             {user?.name?.charAt(0).toUpperCase()}
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-white">{user?.name}</h1>
-            <p className="text-white text-sm">{user?.email}</p>
+            <h1 className="text-2xl font-bold text-[#6B4C3B]">{user?.name}</h1>
           </div>
         </div>
       </div>
 
-      <div className="max-w-3xl mx-auto px-4 py-8 space-y-6 animate-fade-up-delay-1">
-        <div className="bg-white rounded-2xl shadow-sm border border-theme p-6">
+      <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
+        <div className="bg-[#F4F1ED] rounded-2xl shadow-sm border border-gray-100 px-4 py-10 animate-fade-up mt-5 mb-5">
           <div className="flex items-center justify-between mb-5">
-            <h2 className="font-bold text-theme">Información personal</h2>
+            <h2 className="font-bold text-[#6B4C3B] text-xl">Información personal</h2>
             {!editing && (
               <button onClick={() => setEditing(true)} className="text-theme text-sm font-medium">
                 Editar
@@ -94,24 +94,22 @@ export default function Profile() {
                 <span className="text-theme font-medium">{user?.email}</span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-theme text-sm w-16">Miembro</span>
-                <span className="text-theme font-medium">
-                  {user?.createdAt ? new Date(user.createdAt).toLocaleDateString('es-AR', { year: 'numeric', month: 'long', day: 'numeric' }) : '-'}
-                </span>
+                <span className="text-theme text-sm w-16">País</span>
+                <span className="text-theme font-medium">{user?.country || 'No especificado'}</span>
               </div>
             </div>
           )}
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-theme p-6">
-          <h2 className="font-bold text-theme mb-5">Historial de compras</h2>
+        <div className="bg-[#F4F1ED] rounded-2xl shadow-sm border border-gray-100 px-4 py-10 animate-fade-up mt-5 mb-5">
+          <h2 className="font-bold text-[#6B4C3B] text-xl">Historial de compras</h2>
           {myCourses.length === 0 ? (
             <p className="text-theme text-sm">Todavía no realizaste ninguna compra.</p>
           ) : (
             <div className="space-y-3">
               {myCourses.map(course => (
                 <div key={course.id} className="flex items-center gap-4 py-3 border-b border-theme last:border-0">
-                  <img src={course.image} alt={course.title} className="w-12 h-12 rounded-xl object-cover flex-shrink-0" />
+                  <img src={getImageUrl(course.image)} alt={course.title} className="w-12 h-12 rounded-xl object-cover flex-shrink-0" />
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-theme text-sm truncate">{course.title}</p>
                     <p className="text-theme text-xs">{course.level}</p>

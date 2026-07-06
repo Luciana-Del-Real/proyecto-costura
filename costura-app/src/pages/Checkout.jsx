@@ -2,6 +2,23 @@ import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useCourses } from '../context/CoursesContext';
 import { useAuth } from '../context/AuthContext';
+import { getCoursePrice } from '../utils/currency';
+import { getImageUrl } from '../utils/media';
+
+// Datos de transferencia según el país/moneda del comprador.
+// TODO: reemplazar estos valores de ejemplo por los datos reales de la cuenta en AUD.
+const PAYMENT_INFO = {
+  ARS: [
+    { key: 'cvu', label: 'CVU / CBU', value: '0000000000000000000000' },
+    { key: 'alias', label: 'Alias', value: 'grow.costura' },
+    { key: 'accountName', label: 'Nombre de cuenta', value: 'Daiana Belén Lubo' }
+  ],
+  AUD: [
+    { key: 'account', label: 'CBU', value: '00000000' },
+    { key: 'accountAlias', label: 'Alias', value: 'Grow Costura' },
+    { key: 'accountName', label: 'Nombre de cuenta', value: 'Daiana Belén Lubo' },
+  ],
+};
 
 export default function Checkout() {
   const { id } = useParams();
@@ -30,7 +47,7 @@ export default function Checkout() {
   if (isPending(course.id) || requested) {
     const userIdentifier = user?.name || user?.email || 'mi usuario';
     const whatsappMessage = `¡Hola! Acabo de abonar el curso "${course.title}". Mi usuario es ${userIdentifier}. ¡Les paso mi comprobante!`;
-    const whatsappUrl = `https://wa.me/5491112345678?text=${encodeURIComponent(whatsappMessage)}`;
+    const whatsappUrl = `https://wa.me/5493447404952?text=${encodeURIComponent(whatsappMessage)}`;
 
     return (
       <div className="min-h-screen flex items-center justify-center bg-soft px-4">
@@ -75,17 +92,15 @@ export default function Checkout() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="card p-6 h-fit">
             <h2 className="font-bold text-theme text-lg mb-4">Resumen del pedido</h2>
-            <img src={course.image} alt={course.title} className="w-full h-40 object-cover rounded-xl mb-4" />
+            <img src={getImageUrl(course.image)} alt={course.title} className="w-full h-40 object-cover rounded-xl mb-4" />
             <h3 className="font-semibold text-theme mb-1">{course.title}</h3>
             <p className="text-theme text-sm mb-4">{course.description}</p>
             <div className="flex items-center gap-4 text-sm text-brown-accent mb-4">
-              <span>🕐 {course.duration}</span>
               <span>📚 {course.lessons.length} lecciones</span>
-              <span>⭐ {course.rating}</span>
             </div>
             <div className="border-t border-theme pt-4 flex justify-between items-center">
               <span className="text-theme font-medium">Total</span>
-              <span className="text-2xl font-bold text-theme">${course.priceARS.toLocaleString()}</span>
+              <span className="text-2xl font-bold text-theme">${getCoursePrice(course, user).toLocaleString()}</span>
             </div>
           </div>
 
@@ -96,39 +111,24 @@ export default function Checkout() {
               <p className="mb-3"><strong>1) Transferí a la cuenta:</strong></p>
               
               <div className="space-y-3 mb-4">
-                <div className="flex items-center justify-between bg-white rounded-lg p-3 border border-theme">
-                  <div>
-                    <span className="text-xs text-[#A08060] block mb-0.5">CVU / CBU</span>
-                    <span className="font-mono text-[#3D2B1F] font-semibold">0000000000000000000000</span>
+                {(PAYMENT_INFO[user?.country === 'AUD' ? 'AUD' : 'ARS']).map((field) => (
+                  <div key={field.key} className="flex items-center justify-between bg-white rounded-lg p-3 border border-theme">
+                    <div>
+                      <span className="text-xs text-[#A08060] block mb-0.5">{field.label}</span>
+                      <span className="font-mono text-[#3D2B1F] font-semibold">{field.value}</span>
+                    </div>
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(field.value);
+                        setCopied(field.key);
+                        setTimeout(() => setCopied(''), 2000);
+                      }}
+                      className="flex items-center gap-1.5 text-secondary hover:text-secondary-dark font-semibold text-xs bg-soft hover:bg-soft px-3 py-1.5 rounded-lg transition-colors"
+                    >
+                      {copied === field.key ? '¡Copiado!' : '📋 Copiar'}
+                    </button>
                   </div>
-                  <button 
-                    onClick={() => {
-                      navigator.clipboard.writeText('0000000000000000000000');
-                      setCopied('cvu');
-                      setTimeout(() => setCopied(''), 2000);
-                    }}
-                    className="flex items-center gap-1.5 text-secondary hover:text-secondary-dark font-semibold text-xs bg-soft hover:bg-soft px-3 py-1.5 rounded-lg transition-colors"
-                  >
-                    {copied === 'cvu' ? '¡Copiado!' : '📋 Copiar'}
-                  </button>
-                </div>
-
-                <div className="flex items-center justify-between bg-white rounded-lg p-3 border border-theme">
-                  <div>
-                    <span className="text-xs text-[#A08060] block mb-0.5">Alias</span>
-                    <span className="font-mono text-[#3D2B1F] font-semibold">grow.costura</span>
-                  </div>
-                  <button 
-                    onClick={() => {
-                      navigator.clipboard.writeText('grow.costura');
-                      setCopied('alias');
-                      setTimeout(() => setCopied(''), 2000);
-                    }}
-                    className="flex items-center gap-1.5 text-secondary hover:text-secondary-dark font-semibold text-xs bg-soft hover:bg-soft px-3 py-1.5 rounded-lg transition-colors"
-                  >
-                    {copied === 'alias' ? '¡Copiado!' : '📋 Copiar'}
-                  </button>
-                </div>
+                ))}
               </div>
 
               <p><strong>2) Hacé clic en "Solicitar acceso"</strong> debajo para registrar tu pedido en la plataforma.</p>
