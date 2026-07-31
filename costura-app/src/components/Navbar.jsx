@@ -42,7 +42,7 @@ export default function Navbar() {
           <Link to={user ? (isAdmin ? "/admin" : "/dashboard") : "/"} className="flex items-center gap-3">
             <img src="/Images/logo-nuevo-grow.png" alt="Grow" className="w-9 h-9 object-contain" />
             <div className="flex flex-col">
-              <span className="text-[10px] uppercase tracking-widest text-theme">Creative Education Studio</span>
+              <span className="text-[10px] uppercase tracking-widest text-black">Creative Education Studio</span>
             </div>
           </Link>
 
@@ -51,9 +51,9 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-6">
             {user ? (
               <>
-              <Link to="/dashboard" className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${pathname === '/dashboard' ? 'bg-theme/10 text-secondary' : 'text-theme hover:text-secondary hover:bg-theme/5'}`}>Inicio</Link>
-              <Link to="/cursos" className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${pathname === '/cursos' ? 'bg-theme/10 text-secondary' : 'text-theme hover:text-secondary hover:bg-theme/5'}`}>Cursos disponibles</Link>
-              <Link to="/favoritos" className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${pathname === '/favoritos' ? 'bg-theme/10 text-secondary' : 'text-theme hover:text-secondary hover:bg-theme/5'}`}>Favoritos</Link>
+              <Link to="/dashboard" className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${pathname === '/dashboard' ? 'bg-theme/10 text-black' : 'text-theme hover:text-secondary hover:bg-theme/5'}`}>Inicio</Link>
+              <Link to="/cursos" className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${pathname === '/cursos' ? 'bg-theme/10 text-black' : 'text-theme hover:text-secondary hover:bg-theme/5'}`}>Cursos disponibles</Link>
+              <Link to="/favoritos" className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${pathname === '/favoritos' ? 'bg-theme/10 text-black' : 'text-theme hover:text-secondary hover:bg-theme/5'}`}>Favoritos</Link>
 
               {/* Profile dropdown */}
               <div className="relative" ref={profileRef}>
@@ -98,8 +98,8 @@ export default function Navbar() {
             <>
               {!isSimplified && (
                 <>
-                  <Link to="/cursos" className="text-theme hover:text-secondary transition-colors text-sm font-medium">Cursos</Link>
-                  <Link to="/login" className="text-sm text-theme hover:text-secondary transition-colors font-medium">Iniciar sesión</Link>
+                  <Link to="/cursos" className="text-black transition-colors text-sm font-medium">Cursos</Link>
+                  <Link to="/login" className="text-sm text-black transition-colors font-medium">Iniciar sesión</Link>
                   <Link to="/registro" className="text-sm bg-secondary text-white px-4 py-1.5 rounded-full hover:bg-secondary-dark transition-colors btn">
                     Registrarse
                   </Link>
@@ -144,8 +144,8 @@ export default function Navbar() {
           ) : (
             !isSimplified && (
               <>
-                <Link to="/cursos" onClick={() => setMenuOpen(false)} className="text-theme text-sm font-medium">Cursos</Link>
-                <Link to="/login" onClick={() => setMenuOpen(false)} className="text-theme text-sm font-medium">Iniciar sesión</Link>
+                  <Link to="/cursos" onClick={() => setMenuOpen(false)} className="text-black text-sm font-medium">Cursos</Link>
+                  <Link to="/login" onClick={() => setMenuOpen(false)} className="text-black text-sm font-medium">Iniciar sesión</Link>
                 <Link to="/registro" onClick={() => setMenuOpen(false)} className="text-sm bg-secondary text-white px-4 py-1.5 rounded-full hover:bg-secondary-dark transition-colors btn">Registrarse</Link>
               </>
             )

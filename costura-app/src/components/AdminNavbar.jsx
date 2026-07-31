@@ -30,7 +30,7 @@ export default function AdminNavbar() {
           <Link to="/admin" className="flex items-center gap-3">
             <img src="/Images/logo-nuevo-grow.png" alt="Grow" className="w-9 h-9 object-contain" />
             <div className="flex flex-col">
-              <span className="text-[10px] uppercase tracking-widest text-theme">Creative Education Studio</span>
+              <span className="text-[10px] uppercase tracking-widest text-black">Creative Education Studio</span>
             </div>
           </Link>
 

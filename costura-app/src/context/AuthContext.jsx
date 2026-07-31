@@ -9,17 +9,19 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     // Check if user is logged in on app start
-    const token = localStorage.getItem('costura_token');
-    const storedUser = localStorage.getItem('costura_user');
+    const token = sessionStorage.getItem('costura_token');
+    const storedUser = sessionStorage.getItem('costura_user');
     if (token && storedUser) {
       try {
         const parsed = JSON.parse(storedUser);
-        // Normalize role to uppercase to avoid casing mismatches
         if (parsed && parsed.role) parsed.role = String(parsed.role).toUpperCase();
         setUser(parsed);
       } catch (e) {
-        setUser(JSON.parse(storedUser));
+        logout(); // Si falla el parseo, limpiamos todo
       }
+    } else {
+      // Si no hay datos, aseguramos que el estado esté limpio
+      setUser(null);
     }
     setLoading(false);
   }, []);
@@ -29,8 +31,8 @@ export function AuthProvider({ children }) {
       const response = await post('/auth/register', { name, email, password, country });
       const { token, user: userData } = response;
       const normalized = { ...userData, role: userData.role ? String(userData.role).toUpperCase() : userData.role };
-      localStorage.setItem('costura_token', token);
-      localStorage.setItem('costura_user', JSON.stringify(normalized));
+      sessionStorage.setItem('costura_token', token);
+      sessionStorage.setItem('costura_user', JSON.stringify(normalized)); 
       setUser(normalized);
       return userData;
     } catch (error) {
@@ -43,8 +45,8 @@ export function AuthProvider({ children }) {
       const response = await post('/auth/login', { email, password });
       const { token, user: userData } = response;
       const normalized = { ...userData, role: userData.role ? String(userData.role).toUpperCase() : userData.role };
-      localStorage.setItem('costura_token', token);
-      localStorage.setItem('costura_user', JSON.stringify(normalized));
+      sessionStorage.setItem('costura_token', token);
+      sessionStorage.setItem('costura_user', JSON.stringify(normalized));
       setUser(normalized);
       return normalized;
     } catch (error) {
@@ -54,14 +56,14 @@ export function AuthProvider({ children }) {
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('costura_token');
-    localStorage.removeItem('costura_user');
+    sessionStorage.removeItem('costura_token');
+    sessionStorage.removeItem('costura_user');
   };
 
   const updateUser = (data) => {
     const updated = { ...user, ...data };
     setUser(updated);
-    localStorage.setItem('costura_user', JSON.stringify(updated));
+    sessionStorage.setItem('costura_user', JSON.stringify(updated));
   };
 
   const isAdmin = user?.role === 'ADMIN';

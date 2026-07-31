@@ -1,13 +1,18 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export default function Auth({ defaultTab = 'login' }) {
   const navigate = useNavigate();
-  const { login, register } = useAuth();
+  const { login, register, logout } = useAuth();
   const [tab, setTab] = useState(defaultTab);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  useEffect(() => {
+    // Si entras a la página de Auth, cerramos la sesión actual 
+    // para que no se superpongan estados
+    logout(); 
+  }, []);
   
   // Agregamos 'country' al estado inicial del formulario
   const [form, setForm] = useState({ 

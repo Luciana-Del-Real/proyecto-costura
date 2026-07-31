@@ -3,7 +3,7 @@ const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 async function apiFetch(path, options = {}) {
   try {
     const url = path.startsWith('http') ? path : `${BASE_URL}${path}`;
-    const token = localStorage.getItem('costura_token');
+    const token = sessionStorage.getItem('costura_token');
 
     const defaultHeaders = {
       'Accept': 'application/json',

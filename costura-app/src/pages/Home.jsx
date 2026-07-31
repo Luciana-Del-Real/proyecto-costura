@@ -21,6 +21,7 @@ const categories = [
 
 const delays = ['', 'reveal-delay-1', 'reveal-delay-2', 'reveal-delay-3'];
 
+
 export default function Home() {
   const { courses } = useCourses();
   const featured = courses.slice(0, 3);
@@ -61,51 +62,50 @@ export default function Home() {
       </section>
 
       {/* Combined About section: side-by-side on md+ */}
-      <section className="py-16 px-4">
-          <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
-          <div className="bg-white rounded-2xl border border-theme p-8">
-            <RevealSection>
-              <div className="text-left">
-                <h2 className="text-2xl md:text-3xl font-bold text-[#6B4C3B]   mb-4">¿Qué es Grow?</h2>
-                <p className="text-theme text-base leading-relaxed mb-6">
-                  GROW es un estudio creativo dedicado a la costura, el bordado y el diseño, pensado para acompañarte paso a paso en tu aprendizaje. Acá vas a encontrar clases, herramientas, inspiración y una comunidad que crece junto a vos.
-                </p>
-                <p className="text-secondary font-medium text-lg">
-                  ¿Te quedás a descubrir todo lo que podrías lograr con tus propias manos?
-                </p>
-              </div>
-            </RevealSection>
-          </div>
-
-          <div className="bg-soft rounded-2xl border border-theme p-8 h-full flex items-start">
-            <div ref={daiaRef} className={`flex flex-col md:flex-row md:items-start gap-6`}>
-              <div className={`w-28 h-28 rounded-full overflow-hidden flex-shrink-0 reveal-scale visible border border-theme`}>
-                    <img
-                      src="/Images/IMG_7148.jpg"
-                      alt="Daia"
-                      className="w-full h-full object-cover object-center"
-                      loading="lazy"
-                      decoding="async"
-                      onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/Images/IMG_7148.jpg'; }}
-                    />
+      <section className="bg-white py-16 px-4">
+          <div className="max-w-6xl mx-auto grid grid-cols-2 gap-8">
+            <div className="bg-soft rounded-2xl border border-theme p-8 h-full flex items-start">
+              <RevealSection>
+                <div className="text-left">
+                  <h2 className="font-montserrat font-bold text-2xl text-black mb-4">¿Qué es Grow?</h2>
+                  <p className="text-theme text-base leading-relaxed mb-6">
+                    GROW es un estudio creativo dedicado a la costura, el bordado y el diseño, pensado para acompañarte paso a paso en tu aprendizaje. Acá vas a encontrar clases, herramientas, inspiración y una comunidad que crece junto a vos.
+                  </p>
+                  <p className="text-secondary font-medium text-lg">
+                    ¿Te quedás a descubrir todo lo que podrías lograr con tus propias manos?
+                  </p>
                 </div>
-                <div className={`reveal-right ${daiaInView ? 'visible' : ''}`}>
-                <span className="text-secondary text-sm font-medium">¿Quién está detrás de Grow?</span>
-                <h3 className="font-montserrat text-2xl font-bold text-[#6B4C3B] mt-1 mb-3">Hola, soy Daia</h3>
-                <p className="text-theme opacity-90 leading-relaxed">
-                  Diseñadora de indumentaria, diseñadora gráfica, modista y apasionada del bordado en todas sus formas. Tengo más de diez años de experiencia compartiendo lo que sé y aprendiendo siempre. En Grow no tenés que adaptarte a un sistema rígido: nosotros nos adaptamos a vos, a tu ritmo, a tus tiempos, a tus ganas de crear.
-                </p>
+              </RevealSection>
+            </div>
+
+            <div className="bg-soft rounded-2xl border border-theme p-8 h-full flex items-start">
+              <div ref={daiaRef} className={`flex flex-row md:items-start gap-6`}>
+                <div className={`w-28 h-28 rounded-full overflow-hidden flex-shrink-0 reveal-scale visible border border-theme`}>
+                      <img
+                        src="/Images/IMG_7148.jpg"
+                        alt="Daia"
+                        className="w-full h-full object-cover object-center"
+                        loading="lazy"
+                        decoding="async"
+                        onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/Images/IMG_7148.jpg'; }}
+                      />
+                  </div>
+                  <div className={`reveal-right ${daiaInView ? 'visible' : ''}`}>
+                  <span className="text-secondary text-sm font-medium">¿Quién está detrás de Grow?</span>
+                  <h3 className="font-montserrat text-2xl font-bold text-black mt-1 mb-3">Hola, soy Daia</h3>
+                  <p className="text-theme opacity-90 leading-relaxed">
+                    Diseñadora de indumentaria, diseñadora gráfica, modista y apasionada del bordado en todas sus formas. Tengo más de diez años de experiencia compartiendo lo que sé y aprendiendo siempre. En Grow no tenés que adaptarte a un sistema rígido: nosotros nos adaptamos a vos, a tu ritmo, a tus tiempos, a tus ganas de crear.
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
         </div>
       </section>
 
       {/* Benefits */}
-      <section className="py-16 px-4 bg-soft">
-        <div className="max-w-6xl mx-auto">
+      <section className="bg-[#F7F2EF] rounded-2xl border border-theme py-10 px-4">
           <RevealSection>
-            <h2 className="text-2xl md:text-3xl font-bold text-[#6B4C3B] text-center mb-10">¿Por qué elegirnos?</h2>
+            <h2 className="font-montserrat font-bold text-3xl text-black text-center mb-10">¿Por qué elegirnos?</h2>
           </RevealSection>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
             {benefits.map((b, i) => (
@@ -122,14 +122,12 @@ export default function Home() {
               </RevealSection>
             ))}
           </div>
-        </div>
       </section>
 
       {/* Categories */}
-      <section className="py-16 px-4 bg-soft">
-        <div className="max-w-6xl mx-auto">
+      <section className="bg-white rounded-2xl border border-theme py-10 px-4">
           <RevealSection>
-            <h2 className="text-2xl md:text-3xl font-bold text-[#6B4C3B] text-center mb-10">Nuestras especialidades</h2>
+            <h2 className="font-montserrat font-bold text-3xl text-black text-center mb-10">Nuestras especialidades</h2>
           </RevealSection>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {categories.map((cat, i) => (
@@ -137,7 +135,7 @@ export default function Home() {
                 <Link to="/cursos" className="block bg-white rounded-2xl p-6 text-center border border-theme hover:border-[#C4785A] hover:-translate-y-1 hover:shadow-md transition-all duration-300 feature-card">
                   <div className="flex items-center justify-center mb-2">
                     <div className="icon-wrapper" aria-hidden>
-                      <cat.Icon className="specialty-icon" color="#4E6D5B" aria-hidden />
+                      <cat.Icon className="specialty-icon" color="#E83E8C" aria-hidden />
                     </div>
                   </div>
                   <p className="font-medium text-theme text-sm">{cat.label}</p>
@@ -145,19 +143,17 @@ export default function Home() {
               </RevealSection>
             ))}
           </div>
-        </div>
       </section>
 
       {/* Testimonials */}
-      <section className="py-16 px-4 bg-white">
-        <div className="max-w-6xl mx-auto">
+      <section className="bg-[#F7F2EF] rounded-2xl border border-theme py-10 px-4">
           <RevealSection>
-            <h2 className="text-2xl md:text-3xl font-bold text-[#6B4C3B] text-center mb-10">Lo que dicen nuestras alumnas</h2>
+            <h2 className="font-montserrat font-bold text-3xl text-black text-center mb-10">Lo que dicen nuestras alumnas</h2>
           </RevealSection>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
             {testimonials.map((t, i) => (
-              <RevealSection key={t.id} animation="reveal" delay={delays[i]}>
-                <div className="bg-soft rounded-2xl p-6 border border-theme hover:-translate-y-1 hover:shadow-sm transition-all duration-300 h-full">
+              <RevealSection key={t.id} animation="reveal" delay={delays[i]} className="h-full">
+                <div className="bg-white rounded-2xl p-6 border border-theme hover:-translate-y-1 hover:shadow-sm transition-all duration-300 h-full flex flex-col justify-between">
                   <p className="text-theme text-sm mb-4 italic leading-relaxed">"{t.text}"</p>
                   <div>
                     <p className="font-semibold text-theme text-sm">{t.name}</p>
@@ -167,21 +163,22 @@ export default function Home() {
               </RevealSection>
             ))}
           </div>
-        </div>
       </section>
 
       {/* CTA */}
-      <RevealSection animation="reveal-scale">
-        <section className="py-16 px-4 bg-secondary">
-          <div className="max-w-2xl mx-auto text-center">
-            <h2 className="text-3xl font-bold text-[#6B4C3B] mb-4">En Grow, siempre hay un espacio para vos</h2>
-            <p className="text-white mb-8">Registrate gratis y comenzá tu primer curso hoy.</p>
-            <Link to="/registro" className="btn-theme btn-hero transition-all duration-200 hover:scale-105 active:scale-95">
-              Empezar ahora
-            </Link>
-          </div>
-        </section>
-      </RevealSection>
+      <section className="bg-white rounded-2xl border border-theme">
+        <RevealSection animation="reveal-scale">
+          <section className="py-16 px-4 bg-secondary">
+            <div className="max-w-2xl mx-auto text-center">
+              <h2 className="font-montserrat font-bold text-2xl text-black mb-4">En Grow, siempre hay un espacio para vos</h2>
+              <p className="text-white mb-8">Registrate gratis y comenzá tu primer curso hoy.</p>
+              <Link to="/registro" className="btn-theme btn-hero transition-all duration-200 hover:scale-105 active:scale-95">
+                Empezar ahora
+              </Link>
+            </div>
+          </section>
+        </RevealSection>
+      </section>
     </div>
   );
 }

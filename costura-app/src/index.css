@@ -1,6 +1,31 @@
 @import "tailwindcss";
 @import './fonts-local.css';
 
+/* ==========================================================================
+   ÍNDICE DE ESTE ARCHIVO (no mueve nada, es solo para ubicarte rápido)
+   --------------------------------------------------------------------------
+   1. Variables de diseño (colores, tipografías, radios)               [~L15]
+   2. Tema de Tailwind (@theme)                                        [~L48]
+   3. Reset base (body, encabezados, botones, inputs)                  [~L57]
+   4. Animaciones (fade, reveal, stagger)                              [~L120]
+   5. ⚠️ OVERRIDES: mapeo de clases hex viejas -> variables (!important) [~L245]
+      Si cambiás un color en un componente y "no se ve", populariza
+      buscar acá primero: puede haber una regla con ese mismo hex
+      forzando otro color con !important.
+   6. Helpers / clases base reutilizables (.card, .btn-*, .btn-eye)     [~L285]
+   7. ⚠️ FORZADO GLOBAL de color en botones (afecta TODO <button>)      [~L305]
+      Ver nota en esa sección: es la causa más común de "edité el botón
+      y no cambió nada".
+   8. Utilidades semánticas (.text-theme, .bg-theme, .text-secondary)  [~L330]
+   9. Estilos de Auth (login/registro)                                 [~L360]
+   10. Hero / logo circular / tarjeta hero                             [~L420]
+   11. Sección "visual-style" (iconos, textos de presentación)         [~L450]
+   12. Paneles centrados por sección (bg-soft, bg-secondary, etc.)     [~L510]
+   13. Navbar sobre el hero (.nav-on-hero)                             [~L560]
+   14. Botones de filtro (niveles: Principiante/Intermedio/Avanzado)   [~L580]
+   15. Animación stagger de tarjetas                                   [~L605]
+   ========================================================================== */
+
 /* Optional local font registration for `Simple Handmade`.
    If you have the font file (woff2), place it in `public/fonts/SimpleHandmade.woff2`
    and uncomment the rule below to load the font. Until then the stylesheet
@@ -26,7 +51,7 @@
   --cta: #E83E8C; /* CTA principal -> Fucsia */
   --secondary: #4E6D5B; /* Verde secundario */
   --secondary-dark: #3C5A4B; /* Verde oscuro para hover */
-  --soft: #F9F5F0; /* Rosa claro para fondos y toques */
+  --soft: #eee6e6; /* Rosa claro para fondos y toques */
   --surface: #FFFFFF; /* Superficies / tarjetas */
   --radius: 12px;
   --shadow: 0 4px 15px rgba(0,0,0,0.05);
@@ -46,12 +71,12 @@
   --accent-font: var(--font-dancing);
   --handmade-font: var(--font-handmade);
 
-  /* Colores de marca adicionales (marrones/dorados usados en footer/admin) */
-  --brown: #3D2B1F;
-  --brown-soft: #C4A882;
-  --brown-dark: #5C3D2A;
-  --brown-muted: #4A2E1A;
-  --brown-accent: #C4785A;
+  /* Colores de marca adicionales */
+  --black: #000000;
+  --black-soft: #2e2820;
+  --black-dark: #110b08;
+  --black-muted: #0f0702;
+  --black-accent: #C4785A;
 }
 
 @theme {
@@ -108,6 +133,12 @@
   }
 
   /* Estilo base unificado para botones/CTAs (aplicado globalmente) */
+  /* ⚠️ ATENCIÓN: esta regla aplica a TODOS los <button> del proyecto, en
+     cualquier página o componente, salvo que el botón tenga la clase
+     "custom-btn". Si le cambiás el color/fondo a un botón en un componente
+     y no ves el cambio, es casi seguro por esto: el fondo/color que pusiste
+     está siendo pisado acá abajo. Para que un botón use SU PROPIO estilo,
+     agregale la clase "custom-btn" (ver ejemplo en AdminCourses.jsx). */
   button:not(.custom-btn), 
   a.btn:not(.custom-btn), 
   input[type="button"]:not(.custom-btn),
@@ -267,6 +298,11 @@
 .stagger-item:nth-child(6) { animation: fadeUp 0.5s ease 0.55s both; }
 
 /* Theme overrides for legacy hex-based Tailwind utilities (map old hex to new variables) */
+/* ⚠️ ATENCIÓN: todo lo de acá abajo usa selectores tipo [class*="bg-[#F5EFE6]"].
+   Eso significa que SI un componente usa ese hex exacto como clase de Tailwind
+   (ej. bg-[#F5EFE6]), el color que se ve NO es el que puso Tailwind, sino el
+   que dice acá, forzado con !important. Si editás un color en un componente
+   y ves que "no cambia nada", revisá primero si ese hex está listado acá abajo. */
 /* Pastel / beige backgrounds -> rosa suave */
 [class*="bg-[#F5EFE6]"] { background-color: var(--soft) !important; }
 [class*="bg-[#FFF4E5]"] { background-color: var(--soft) !important; }
@@ -343,6 +379,11 @@
 .btn-theme:hover { background-color: var(--secondary-dark); }
 
 /* Forzar texto blanco en botones para consistencia visual (excluye variantes transparentes/iconos) */
+/* ⚠️ NOTA: a diferencia de la regla de arriba, ESTA no respeta ".custom-btn"
+   (no tiene ":not(.custom-btn)"). Es decir: aunque le agregues "custom-btn"
+   a un botón, el TEXTO igual se fuerza a blanco acá. Si necesitás un botón
+   con texto de otro color, hoy por hoy hay que agregar una excepción acá
+   también (avisame y lo ajustamos con cuidado para no romper los demás botones). */
 button,
 a.btn,
 input[type="button"],
@@ -398,15 +439,15 @@ a.btn.text-white,
 .hover\:text-accent:hover { color: var(--accent) !important; }
 
 /* Utilidades para la paleta 'brown' (footer/admin) */
-.bg-brown { background-color: var(--brown) !important; }
-.bg-brown-dark { background-color: var(--brown-dark) !important; }
-.bg-brown-muted { background-color: var(--brown-muted) !important; }
+.bg-black { background-color: var(--black) !important; }
+.bg-black-dark { background-color: var(--black-dark) !important; }
+.bg-black-muted { background-color: var(--black-muted) !important; }
 
 /* Nota: la definición del fondo de auth se aplica más abajo (con un degradado verde). */
 
 /* Forzar texto blanco en el footer con fondo marrón, sin alterar el fondo */
-footer.bg-brown,
-footer.bg-brown * {
+footer.bg-black,
+footer.bg-black * {
   color: #ffffff !important;
 }
 
@@ -416,7 +457,6 @@ footer.bg-brown * {
   height: 16rem;
   border-radius: 9999px;
 }
-.auth-card { padding: 1.5rem; }
 
 /* Fondo verde difuminado invertido (de derecha a izquierda) para las páginas de auth */
 .auth-page-bg {
@@ -446,7 +486,6 @@ footer.bg-brown * {
 }
 .auth-input:focus { outline: none; border-color: var(--secondary); box-shadow: 0 6px 18px rgba(78,109,91,0.06); }
 
-.bg-beige { background: #F9F7F2 !important; }
 .auth-card { padding: 40px; }
 .auth-card .bg-accent { background: var(--accent) !important; }
 
@@ -459,11 +498,9 @@ footer.bg-brown * {
 
 @media (max-width: 768px) {
   .auth-card { padding: 40px; position: relative; }
-  .auth-card .bg-accent { background: var(--accent) !important; }
 
   /* Limitar ligeramente el ancho de inputs y botones dentro de la tarjeta para que "respiren" */
   .auth-card .w-full { max-width: 92%; margin-left: auto; margin-right: auto; display: block; }
-.auth-card .w-full { max-width: 92%; margin-left: auto; margin-right: auto; display: block; }
 }
 
 /* Centrar logo vertical y horizontalmente en la columna izquierda */
@@ -491,8 +528,6 @@ footer.bg-brown * {
 .text-rosa { color: var(--color-rosa) !important; }
 .border-brown-dark { border-color: var(--brown-dark) !important; }
 .border-brown-accent { border-color: var(--brown-accent) !important; }
-.hover\:bg-brown-muted:hover { background-color: var(--brown-muted) !important; }
-.hover\:bg-brown-dark:hover { background-color: var(--brown-dark) !important; }
 .hover\:text-rosa:hover { color: var(--color-rosa) !important; }
 
 /* Level badge helpers (mantener visual original pero con clases semánticas) */
@@ -522,7 +557,7 @@ footer.bg-brown * {
 
 /* Hero: tarjeta translúcida y logo circular */
 .hero-card {
-  background: rgba(255,255,255,0.52);
+  background: rgba(255, 255, 255, 0.52);
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   border-radius: 18px;
@@ -765,12 +800,7 @@ section.bg-brown-muted > div {
   color: var(--text);
 }
 
-/* Separador tipo hilo entre secciones: fine dashed top border simula una costura */
-section + section {
-  border-top: 2px dashed rgba(232, 62, 140, 0.3);
-  padding-top: 1.25rem;
-  margin-top: 1.25rem;
-}
+
 
 @media (max-width: 640px) {
   section + section {
@@ -804,7 +834,7 @@ section.hero-no-sep + section {
   box-shadow: none !important;
 }
 .nav-on-hero .logo-text { color: var(--brown-dark) !important; font-weight:600; }
-.nav-on-hero .text-theme,
+.nav-on-hero .text-black,
 .nav-on-hero .text-secondary,
 .nav-on-hero a,
 .nav-on-hero .nav-link,

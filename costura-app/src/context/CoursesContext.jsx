@@ -29,7 +29,6 @@ export function CoursesProvider({ children }) {
   const [progress, setProgress] = useState({});
   const [favorites, setFavorites] = useState([]);
 
-  // Load from localStorage whenever the user changes (handles login/logout and initial load)
   useEffect(() => {
     if (!storageKey) {
       setPurchases([]);
@@ -39,7 +38,7 @@ export function CoursesProvider({ children }) {
       return;
     }
     try {
-      const stored = JSON.parse(localStorage.getItem(storageKey) || '{}');
+      const stored = JSON.parse(sessionStorage.getItem(storageKey) || '{}');
       setPurchases(Array.isArray(stored.purchases) ? stored.purchases : []);
       setPendingPurchases(Array.isArray(stored.pendingPurchases) ? stored.pendingPurchases : []);
       setProgress(stored.progress && typeof stored.progress === 'object' ? stored.progress : {});
@@ -62,7 +61,7 @@ export function CoursesProvider({ children }) {
       favorites: Array.isArray(f) ? f : favorites,
     };
     try {
-      localStorage.setItem(storageKey, JSON.stringify(payload));
+      sessionStorage.setItem(storageKey, JSON.stringify(payload));
     } catch (e) {
       console.error('Error saving user data:', e);
     }
@@ -96,7 +95,7 @@ export function CoursesProvider({ children }) {
       save(purchases, updatedPending, progress, favorites);
       return res;
     } catch (err) {
-      // Fallback offline/localStorage behavior
+      
       console.error('Error creando solicitud en backend, guardando localmente', err);
       const updatedPending = [...(Array.isArray(pendingPurchases) ? pendingPurchases : []), courseId];
       setPendingPurchases(updatedPending);
