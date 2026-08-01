@@ -97,9 +97,11 @@ console.log("Datos del usuario:", user);
           {owned ? (
             <Link
               to={`/curso/${course.id}`}
+              target="_blank"
+              rel="noopener noreferrer"
               className="w-full text-center bg-[#4E6D5B] text-white text-xs py-2.5 rounded-xl hover:bg-[#3d5648] transition-all shadow-sm font-bold tracking-wide"
             >
-              Continuar curso →
+              Abrir curso →
             </Link>
           ) : pending ? (
             <button className="w-full text-center bg-[#4E6D5B] text-gray-400 text-xs py-2.5 rounded-xl cursor-not-allowed font-medium" disabled>

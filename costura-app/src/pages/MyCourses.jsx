@@ -43,9 +43,11 @@ export default function MyCourses() {
                     </div>
                     <Link
                       to={`/curso/${course.id}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="inline-block bg-accent text-white text-sm px-5 py-2 rounded-xl hover:bg-[#A85E42] transition-colors font-medium"
                     >
-                      {prog === 0 ? 'Comenzar' : prog === 100 ? 'Repasar' : 'Continuar'} →
+                      Abrir curso →
                     </Link>
                   </div>
                 </div>

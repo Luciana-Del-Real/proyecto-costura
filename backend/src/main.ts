@@ -86,7 +86,7 @@ async function seedAdmin() {
           email,
           password: hashedPassword,
           role: 'ADMIN', // Asegúrate de que tu modelo User tenga este campo role
-          name: process.env.ADMIN_NAME || 'Administrador', // Descomenta si tu modelo usa 'name'
+          name: process.env.ADMIN_NAME || 'Daiana Lubo Núñez', // Descomenta si tu modelo usa 'name'
         },
       });
       console.log('👑 Administrador creado automáticamente en la BD.');
