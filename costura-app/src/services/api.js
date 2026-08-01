@@ -71,11 +71,11 @@ export async function post(path, body) {
 }
 
 export async function forgotPassword(email) {
-  return post('/auth/forgot-password', { email });
+  return post('/api/auth/forgot-password', { email });
 }
 
 export async function resetPassword(token, password) {
-  return post('/auth/reset-password', { token, password });
+  return post('/api/auth/reset-password', { token, password });
 }
 
 export async function postForm(path, formData) {

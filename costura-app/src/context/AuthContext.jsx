@@ -28,7 +28,7 @@ export function AuthProvider({ children }) {
 
   const register = async (name, email, password, country) => {
     try {
-      const response = await post('/auth/register', { name, email, password, country });
+      const response = await post('/api/auth/register', { name, email, password, country });
       const { token, user: userData } = response;
       const normalized = { ...userData, role: userData.role ? String(userData.role).toUpperCase() : userData.role };
       sessionStorage.setItem('costura_token', token);
@@ -42,7 +42,7 @@ export function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     try {
-      const response = await post('/auth/login', { email, password });
+      const response = await post('/api/auth/login', { email, password });
       const { token, user: userData } = response;
       const normalized = { ...userData, role: userData.role ? String(userData.role).toUpperCase() : userData.role };
       sessionStorage.setItem('costura_token', token);
