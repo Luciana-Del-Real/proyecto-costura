@@ -5,8 +5,17 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { join } from 'path';
 import { AppModule } from './app.module';
+import { execSync } from 'child_process';
 
 async function bootstrap() {
+  try {
+    console.log('🔄 Sincronizando base de datos con Prisma...');
+    execSync('npx prisma db push --accept-data-loss', { stdio: 'inherit' });
+    console.log('✅ Base de datos sincronizada correctamente.');
+  } catch (error) {
+    console.error('❌ Error al sincronizar la base de datos:', error);
+  }
+  
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   // Servir archivos estáticos (imágenes y PDFs subidos)
