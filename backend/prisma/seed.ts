@@ -6,10 +6,17 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('🌱 Starting seed...');
 
-  // Check if admin exists
-  const adminEmail = process.env.ADMIN_EMAIL || 'daiana@grow.com';
-  const adminPassword = process.env.ADMIN_PASSWORD || 'Daiana2026';
-  const adminName = process.env.ADMIN_NAME || 'Daiana Lubo Nuñez';
+  // Admin credentials MUST come from the environment — no hardcoded fallbacks ship in source.
+  const adminEmail = process.env.ADMIN_EMAIL;
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  const adminName = process.env.ADMIN_NAME;
+
+  if (!adminEmail || !adminPassword || !adminName) {
+    console.error(
+      '❌ Seed requires ADMIN_EMAIL, ADMIN_PASSWORD and ADMIN_NAME environment variables. Refusing to proceed with a default admin.',
+    );
+    process.exit(1);
+  }
 
   const existingAdmin = await prisma.user.findUnique({
     where: { email: adminEmail },

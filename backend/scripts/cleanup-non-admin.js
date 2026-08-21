@@ -4,7 +4,11 @@ require('dotenv').config();
 const prisma = new PrismaClient();
 
 async function main() {
-  const adminEmail = process.env.ADMIN_EMAIL || 'daiana@grow.com';
+  const adminEmail = process.env.ADMIN_EMAIL;
+  if (!adminEmail) {
+    console.error('❌ cleanup-non-admin requires the ADMIN_EMAIL environment variable. Refusing to run with a default admin.');
+    process.exit(1);
+  }
 
   const admin = await prisma.user.findUnique({
     where: { email: adminEmail },

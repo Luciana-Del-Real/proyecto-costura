@@ -7,6 +7,7 @@ import { RegisterDto } from './dto/register.dto';
 import { MailService } from '../mail/mail.service';
 import { ConfigService } from '@nestjs/config';
 import * as crypto from 'crypto';
+import { jwtSecret } from '../config/jwt.config';
 
 @Injectable()
 export class AuthService {
@@ -148,7 +149,7 @@ export class AuthService {
     const token = crypto.randomBytes(32).toString('hex');
 
     // Hash HMAC-SHA256 del token usando secreto de servidor (no almacenar token en texto)
-    const resetSecret = this.config.get<string>('PASSWORD_RESET_SECRET') || this.config.get<string>('JWT_SECRET') || 'fallback-secret-key';
+    const resetSecret = this.config.get<string>('PASSWORD_RESET_SECRET') || jwtSecret(this.config);
     const tokenHash = crypto.createHmac('sha256', resetSecret).update(token).digest('hex');
 
     const minutes = Number(this.config.get<number>('PASSWORD_RESET_EXPIRATION_MINUTES')) || 15;
@@ -193,7 +194,7 @@ export class AuthService {
 
   // Valida token, actualiza contraseña y marca token(s) como usados
   async resetPassword(token: string, newPassword: string) {
-    const resetSecret = this.config.get<string>('PASSWORD_RESET_SECRET') || this.config.get<string>('JWT_SECRET') || 'fallback-secret-key';
+    const resetSecret = this.config.get<string>('PASSWORD_RESET_SECRET') || jwtSecret(this.config);
     const tokenHash = crypto.createHmac('sha256', resetSecret).update(token).digest('hex');
 
     const tokenRecord = await this.prisma.passwordResetToken.findFirst({
