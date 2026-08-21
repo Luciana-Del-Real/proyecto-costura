@@ -18,3 +18,26 @@ export function derivePurchaseState(records) {
       .filter(Boolean),
   };
 }
+
+/**
+ * Number of unread notifications in a list fetched from GET /notifications.
+ */
+export function unreadCountOf(list) {
+  return (Array.isArray(list) ? list : []).filter((n) => !n.read).length;
+}
+
+/**
+ * Mark a single notification as read, returning a new list.
+ */
+export function applyNotificationRead(list, notificationId) {
+  return (Array.isArray(list) ? list : []).map((n) =>
+    n.id === notificationId ? { ...n, read: true } : n,
+  );
+}
+
+/**
+ * Remove a notification, returning a new list.
+ */
+export function applyNotificationDelete(list, notificationId) {
+  return (Array.isArray(list) ? list : []).filter((n) => n.id !== notificationId);
+}

@@ -1,10 +1,12 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useNotifications } from '../context/NotificationsContext';
 import BackToHome from './BackToHome';
 
 export default function Navbar() {
   const { user, logout, isAdmin } = useAuth();
+  const { notifications, unreadCount, notificationsLoading, notificationsError, markAsRead, markAllAsRead } = useNotifications();
   const navigate = useNavigate();
   const location = useLocation();
   const pathname = location?.pathname || '';
@@ -14,20 +16,26 @@ export default function Navbar() {
   const isHome = pathname === '/';
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
   const profileRef = useRef(null);
+  const notifRef = useRef(null);
 
   const handleLogout = () => {
     logout();
     navigate('/');
     setMenuOpen(false);
     setProfileOpen(false);
+    setNotifOpen(false);
   };
 
-  // Close dropdown when clicking outside
+  // Close dropdowns when clicking outside
   useEffect(() => {
     const handler = (e) => {
       if (profileRef.current && !profileRef.current.contains(e.target)) {
         setProfileOpen(false);
+      }
+      if (notifRef.current && !notifRef.current.contains(e.target)) {
+        setNotifOpen(false);
       }
     };
     document.addEventListener('mousedown', handler);
@@ -54,6 +62,71 @@ export default function Navbar() {
               <Link to="/dashboard" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/dashboard' ? 'text-black transition-colors text-xl' : 'text-black transition-colors text-xl'}`}>Inicio</Link>
               <Link to="/cursos" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/cursos' ? 'text-black transition-colors text-xl' : 'text-black transition-colors text-xl'}`}>Cursos disponibles</Link>
               <Link to="/favoritos" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/favoritos' ? 'text-black transition-colors text-xl' : 'text-black transition-colors text-xl'}`}>Favoritos</Link>
+
+              {/* Notifications bell */}
+              <div className="relative" ref={notifRef}>
+                <button
+                  onClick={() => setNotifOpen(!notifOpen)}
+                  aria-label="Notificaciones"
+                  className="relative flex items-center justify-center w-9 h-9 rounded-full hover:bg-soft transition-colors"
+                >
+                  <svg className="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                  </svg>
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#B84A62] text-white text-[10px] font-bold flex items-center justify-center">
+                      {unreadCount}
+                    </span>
+                  )}
+                </button>
+
+                {notifOpen && (
+                  <div className="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-lg border border-theme overflow-hidden animate-slide-down z-50">
+                    <div className="px-4 py-3 border-b border-theme flex items-center justify-between">
+                      <p className="text-xs font-semibold text-theme">Notificaciones</p>
+                      {unreadCount > 0 && (
+                        <button
+                          onClick={() => markAllAsRead()}
+                          className="text-xs font-medium text-secondary hover:text-secondary-dark transition-colors"
+                        >
+                          Marcar todas como leídas
+                        </button>
+                      )}
+                    </div>
+                    <div className="max-h-80 overflow-y-auto">
+                      {notificationsLoading && (
+                        <p className="text-sm text-brown-accent px-4 py-3">Cargando...</p>
+                      )}
+                      {!notificationsLoading && notificationsError && (
+                        <p className="text-sm text-brown-accent px-4 py-3">
+                          No se pudieron cargar las notificaciones.
+                        </p>
+                      )}
+                      {!notificationsLoading && !notificationsError && notifications.length === 0 && (
+                        <p className="text-sm text-brown-accent px-4 py-3">Todavía no tenés notificaciones.</p>
+                      )}
+                      {!notificationsLoading && !notificationsError && notifications.length > 0 && (
+                        <ul>
+                          {notifications.slice(0, 5).map(n => (
+                            <li key={n.id} className="border-b border-theme last:border-0">
+                              <button
+                                onClick={() => { if (!n.read) markAsRead(n.id); }}
+                                className="w-full text-left px-4 py-3 hover:bg-soft transition-colors"
+                              >
+                                <p className="text-xs font-semibold text-theme flex items-center gap-2">
+                                  {!n.read && <span className="w-2 h-2 rounded-full bg-[#B84A62] flex-shrink-0" />}
+                                  {n.title}
+                                </p>
+                                <p className="text-xs text-brown-accent mt-0.5 line-clamp-2">{n.message}</p>
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
 
               {/* Profile dropdown */}
               <div className="relative" ref={profileRef}>
@@ -133,6 +206,11 @@ export default function Navbar() {
                   <p className="text-xs font-semibold text-theme">{user.name}</p>
                   <p className="text-xs text-brown-accent">{user.email}</p>
                 </div>
+                {unreadCount > 0 && (
+                  <span className="ml-auto text-[10px] font-bold bg-[#B84A62] text-white px-2 py-0.5 rounded-full">
+                    {unreadCount} nueva{unreadCount !== 1 ? 's' : ''}
+                  </span>
+                )}
               </div>
               <Link to="/dashboard" onClick={() => setMenuOpen(false)} className="text-theme text-sm font-medium">Inicio</Link>
               <Link to="/cursos" onClick={() => setMenuOpen(false)} className="text-theme text-sm font-medium">Cursos disponibles</Link>
