@@ -35,13 +35,13 @@ Para desarrollo local con Docker:
 docker-compose up -d
 ```
 
-### 3. Sincronizar Base de Datos
+### 3. Aplicar Migraciones (migrations-only — `db:push` was removed)
 
 ```bash
-# Crear schema en BD
-npm run db:push
+# Aplicar migraciones existentes (única vía de sincronización del schema)
+npx prisma migrate deploy
 
-# (Opcional) Crear usuario admin
+# (Opcional) Crear usuario admin — requiere ADMIN_EMAIL, ADMIN_PASSWORD y ADMIN_NAME en .env
 npm run db:seed
 ```
 
@@ -177,8 +177,8 @@ Authorization: Bearer <JWT_TOKEN>
 # Base de datos
 DATABASE_URL=postgresql://user:password@localhost:5432/db
 
-# JWT
-JWT_SECRET=<random-secret-key>
+# JWT — REQUIRED: boot fails fast without it (no fallback)
+JWT_SECRET=<long-random-secret>
 JWT_EXPIRATION=24h
 
 # Servidor
@@ -189,9 +189,15 @@ API_PREFIX=/api
 # CORS
 CORS_ORIGIN=http://localhost:5173
 
-# Admin seed (para script de inicialización)
-ADMIN_EMAIL=admin@costura.app
-ADMIN_PASSWORD=Admin123!
+# Admin provisioning — used by db:seed / db:create-admin ONLY; no defaults, bcrypt-only
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=change-me-to-a-strong-password
+ADMIN_NAME=Admin
+
+# Email (SendGrid) — sending is OFF by default; set "true" to enable
+MAIL_ENABLED=false
+SENDGRID_API_KEY=
+SENDGRID_FROM=no-reply@example.com
 ```
 
 ## Scripts Disponibles
@@ -200,10 +206,11 @@ ADMIN_PASSWORD=Admin123!
 npm run dev              # Modo desarrollo con watch
 npm run build           # Compilar a JavaScript
 npm start               # Ejecutar versión compilada
-npm run db:push         # Sincronizar schema con BD
 npm run db:studio       # Abrir Prisma Studio UI
-npm run db:seed         # Crear usuario admin inicial
-npm run db:migrate      # Crear y aplicar migración
+npm run db:seed         # Crear usuario admin inicial (requiere ADMIN_* env)
+npm run db:create-admin # Crear un admin adicional (ver scripts/create-admin.js)
+npm run db:migrate      # Crear y aplicar migración (schema sync: solo migraciones)
+npm run test            # Suite de tests (Jest + Supertest)
 npm run lint            # Linter con ESLint
 npm run typecheck       # Verificar tipos TypeScript
 ```
@@ -231,10 +238,11 @@ npm start
 ```
 
 ### Variables a configurar en producción
-- `JWT_SECRET` - Usar valor seguro generado aleatoriamente
+- `JWT_SECRET` - REQUERIDO: sin él el backend no arranca (fail-fast). Usar un valor largo y aleatorio
 - `DATABASE_URL` - Base de datos productiva
 - `NODE_ENV` - Cambiar a "production"
 - `CORS_ORIGIN` - Actualizar a dominio de producción
+- `MAIL_ENABLED` - Dejar en `false` salvo que se envíe email real
 
 ## Troubleshooting
 

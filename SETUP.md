@@ -48,16 +48,16 @@ docker-compose up -d
 # Opción B: PostgreSQL local
 # Editar .env con tus credenciales de PostgreSQL
 
-# 2.4 Sincronizar base de datos
-npm run db:push
+# 2.4 Aplicar migraciones (única vía de sincronización del schema; db:push fue eliminado)
+npx prisma migrate deploy
 
-# 2.5 Crear usuario admin
+# 2.5 Crear usuario admin (requiere ADMIN_EMAIL, ADMIN_PASSWORD y ADMIN_NAME en .env)
 npm run db:seed
 ```
 
-**Credenciales Admin Defecto:**
-- Email: `admin@costura.app`
-- Password: `Admin123!`
+**Credenciales Admin (no hay valores por defecto):**
+- Email: el que definas en `ADMIN_EMAIL` en el `.env`
+- Password: el que definas en `ADMIN_PASSWORD` en el `.env` (se guarda hasheado con bcrypt, nunca en texto plano)
 
 ### Paso 3: Setup del Frontend
 
@@ -118,7 +118,7 @@ npm run dev
 
 ### 3. Como Admin
 
-1. Login con: admin@costura.app / Admin123!
+1. Login con el email y la contraseña que definiste en `ADMIN_EMAIL` / `ADMIN_PASSWORD` en el `.env`
 2. Ir al panel admin → "/admin"
 3. En "Ventas" ver "Solicitudes pendientes de pago"
 4. Hacer clic en "Aprobar" → compra cambia a APPROVED
@@ -201,7 +201,7 @@ Proyecto-Kiro/
 # Base de datos
 DATABASE_URL="postgresql://costura_user:costura_password@localhost:5432/costura_db"
 
-# JWT
+# JWT — OBLIGATORIO: el backend NO arranca sin JWT_SECRET (fail-fast, sin fallback)
 JWT_SECRET="tu-secreto-super-seguro-cambia-en-prod"
 JWT_EXPIRATION="24h"
 
@@ -213,9 +213,15 @@ API_PREFIX="/api"
 # CORS
 CORS_ORIGIN="http://localhost:5173"
 
-# Admin seed
-ADMIN_EMAIL="admin@costura.app"
-ADMIN_PASSWORD="Admin123!"
+# Admin — solo para npm run db:seed / db:create-admin; sin valores por defecto, bcrypt-only
+ADMIN_EMAIL="admin@example.com"
+ADMIN_PASSWORD="cambia-por-una-clave-fuerte"
+ADMIN_NAME="Admin"
+
+# Email (SendGrid) — desactivado por defecto; pon "true" para habilitar el envío
+MAIL_ENABLED="false"
+SENDGRID_API_KEY=""
+SENDGRID_FROM="no-reply@example.com"
 ```
 
 Si usas PostgreSQL local en lugar de Docker, actualiza DATABASE_URL con tus credenciales.
@@ -235,6 +241,8 @@ Abre http://localhost:5555 en el navegador.
 ```bash
 npm run db:migrate
 ```
+
+> Las migraciones son la única vía de sincronización del schema — no usar `db:push` (eliminado).
 
 ### Reset de BD (⚠️ Borra todo)
 
@@ -260,8 +268,8 @@ curl -X POST http://localhost:3000/api/auth/register \
 curl -X POST http://localhost:3000/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{
-    "email": "admin@costura.app",
-    "password": "Admin123!"
+    "email": "<ADMIN_EMAIL>",
+    "password": "<ADMIN_PASSWORD>"
   }'
 ```
 
@@ -351,6 +359,7 @@ npm run dev
 ## 🔒 Seguridad Implementada
 
 ✅ **Passwords**: Hasheadas con bcrypt 12-round
+✅ **Secrets**: JWT_SECRET desde env (fail-fast al boot, sin fallback); admin solo vía `ADMIN_*` (bcrypt, sin credenciales por defecto)
 ✅ **JWT**: Expiración 24 horas
 ✅ **CORS**: Restringido solo a localhost:5173
 ✅ **Helmet**: Headers HTTP defensivos
