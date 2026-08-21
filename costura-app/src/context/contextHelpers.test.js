@@ -4,6 +4,10 @@ import {
   unreadCountOf,
   applyNotificationRead,
   applyNotificationDelete,
+  favoriteIdsFromRecords,
+  toggleFavoritesState,
+  readFavoritesFromSession,
+  assertAuthenticated,
 } from './contextHelpers';
 
 describe('derivePurchaseState', () => {
@@ -73,5 +77,67 @@ describe('applyNotificationDelete', () => {
   it('returns the list unchanged for unknown ids', () => {
     const list = [{ id: 'n1', read: false }];
     expect(applyNotificationDelete(list, 'missing')).toEqual(list);
+  });
+});
+
+describe('favoriteIdsFromRecords', () => {
+  it('extracts course ids from backend favorite records', () => {
+    const records = [
+      { courseId: 'c1', course: { id: 'c1' } },
+      { course: { id: 'c2' } },
+    ];
+    expect(favoriteIdsFromRecords(records)).toEqual(['c1', 'c2']);
+  });
+
+  it('handles empty or missing data', () => {
+    expect(favoriteIdsFromRecords([])).toEqual([]);
+    expect(favoriteIdsFromRecords(undefined)).toEqual([]);
+  });
+});
+
+describe('toggleFavoritesState', () => {
+  it('adds a course that is not favorited', () => {
+    expect(toggleFavoritesState(['c1'], 'c2')).toEqual(['c1', 'c2']);
+  });
+
+  it('removes a course that is favorited', () => {
+    expect(toggleFavoritesState(['c1', 'c2'], 'c1')).toEqual(['c2']);
+  });
+
+  it('tolerates a missing list', () => {
+    expect(toggleFavoritesState(undefined, 'c1')).toEqual(['c1']);
+  });
+});
+
+describe('readFavoritesFromSession', () => {
+  const fakeStorage = {
+    getItem(key) {
+      return this.data?.[key] ?? null;
+    },
+  };
+
+  it('reads the stored favorites for the user id', () => {
+    fakeStorage.data = { costura_data_u1: JSON.stringify({ favorites: ['c1', 'c2'] }) };
+    expect(readFavoritesFromSession(fakeStorage, 'u1')).toEqual(['c1', 'c2']);
+  });
+
+  it('returns null when nothing usable is stored', () => {
+    fakeStorage.data = {};
+    expect(readFavoritesFromSession(fakeStorage, 'u1')).toBeNull();
+    expect(readFavoritesFromSession(fakeStorage, undefined)).toBeNull();
+    expect(readFavoritesFromSession(null, 'u1')).toBeNull();
+  });
+
+  it('returns null on corrupt storage', () => {
+    fakeStorage.data = { costura_data_u1: 'not-json' };
+    expect(readFavoritesFromSession(fakeStorage, 'u1')).toBeNull();
+  });
+});
+
+describe('assertAuthenticated', () => {
+  it('allows authenticated users and rejects the rest', () => {
+    expect(assertAuthenticated({ id: 'u1' })).toBeNull();
+    expect(assertAuthenticated(null)).toMatch(/iniciar sesión/i);
+    expect(assertAuthenticated(undefined)).toMatch(/iniciar sesión/i);
   });
 });

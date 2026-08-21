@@ -4,7 +4,7 @@ import { useFavorites } from '../context/FavoritesContext';
 import CourseCard from '../components/CourseCard';
 
 export default function Favorites() {
-  const { favorites } = useFavorites();
+  const { favorites, favoritesLoading, favoritesError } = useFavorites();
   const { courses } = useCourseCatalog();
   const favCourses = courses.filter(c => favorites.includes(c.id));
 
@@ -18,7 +18,17 @@ export default function Favorites() {
       </div>
 
       <div className="max-w-6xl mx-auto px-1 py-8">
-        {favCourses.length === 0 ? (
+        {favoritesLoading ? (
+          <div className="text-center py-20">
+            <p className="text-theme">Cargando tus favoritos...</p>
+          </div>
+        ) : favoritesError ? (
+          <div className="text-center py-20">
+            <span className="text-6xl">⚠️</span>
+            <h2 className="text-xl font-bold text-theme mt-4 mb-2">No se pudieron cargar tus favoritos</h2>
+            <p className="text-theme mb-6">Verificá tu conexión e intentá de nuevo más tarde.</p>
+          </div>
+        ) : favCourses.length === 0 ? (
           <div className="text-center py-20">
             <span className="text-6xl">❤️</span>
             <h2 className="text-xl font-bold text-theme mt-4 mb-2">Todavía no tenés favoritos</h2>

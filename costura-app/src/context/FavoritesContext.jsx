@@ -1,66 +1,97 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useAuth } from './AuthContext';
+import { get, post, del } from '../services/api';
+import {
+  favoriteIdsFromRecords,
+  toggleFavoritesState,
+  readFavoritesFromSession,
+  assertAuthenticated,
+} from './contextHelpers';
 
 const FavoritesContext = createContext(null);
 
 export function FavoritesProvider({ children }) {
   const { user } = useAuth();
-  // Backend read/write wiring lands in task 4.4; for now favorites keep their
-  // previous per-user sessionStorage behavior so the split changes no behavior.
-  const storageKey = user ? `costura_data_${user.id}` : null;
 
-  const [favorites, setFavorites] = useState(() => {
-    if (!storageKey) return [];
-    try {
-      const stored = JSON.parse(sessionStorage.getItem(storageKey) || '{}');
-      return Array.isArray(stored.favorites) ? stored.favorites : [];
-    } catch {
-      return [];
+  // Favorites course ids. The backend is the source of truth; sessionStorage is
+  // used only as a temporary read-only fallback during the backend rollout
+  // (task 6.1 removes it after staging validation).
+  const [favorites, setFavorites] = useState([]);
+  const [favoritesLoading, setFavoritesLoading] = useState(false);
+  const [favoritesError, setFavoritesError] = useState(null);
+
+  const refreshFavorites = useCallback(async () => {
+    if (!user) {
+      setFavorites([]);
+      setFavoritesError(null);
+      return;
     }
-  });
+    setFavoritesLoading(true);
+    try {
+      const records = await get('/favorites');
+      setFavorites(favoriteIdsFromRecords(records));
+      setFavoritesError(null);
+    } catch (e) {
+      console.error('Error cargando favoritos:', e);
+      // Fallback de solo lectura mientras dura el rollout del backend.
+      const stored = readFavoritesFromSession(
+        typeof sessionStorage !== 'undefined' ? sessionStorage : null,
+        user.id,
+      );
+      if (stored) {
+        console.warn('[favorites] Backend unavailable; using read-only sessionStorage fallback.', e.message);
+        setFavorites(stored);
+      } else {
+        setFavorites([]);
+      }
+      setFavoritesError(e.message || 'No se pudieron cargar tus favoritos.');
+    } finally {
+      setFavoritesLoading(false);
+    }
+  }, [user]);
 
   useEffect(() => {
-    if (!storageKey) return;
     let cancelled = false;
-    (async () => {
-      let next = [];
-      try {
-        const stored = JSON.parse(sessionStorage.getItem(storageKey) || '{}');
-        next = Array.isArray(stored.favorites) ? stored.favorites : [];
-      } catch (e) {
-        console.error('Error parsing stored user data:', e);
-      }
-      if (!cancelled) setFavorites(next);
-    })();
+    Promise.resolve().then(() => {
+      if (cancelled) return undefined;
+      return refreshFavorites();
+    });
     return () => { cancelled = true; };
-  }, [storageKey]);
+  }, [refreshFavorites]);
 
-  const saveLocal = (f) => {
-    if (!storageKey) return;
-    const payload = {
-      favorites: Array.isArray(f) ? f : favorites,
-    };
-    try {
-      sessionStorage.setItem(storageKey, JSON.stringify(payload));
-    } catch (e) {
-      console.error('Error saving user data:', e);
+  // La backend guarda/borra el favorito y recién después actualizamos el
+  // estado local: nunca hay mutación local sin confirmación del backend.
+  const toggleFavorite = useCallback(async (courseId) => {
+    const authError = assertAuthenticated(user);
+    if (authError) {
+      setFavoritesError(authError);
+      return false;
     }
-  };
+    const isFav = favorites.includes(courseId);
+    try {
+      if (isFav) {
+        await del(`/favorites/courses/${courseId}`);
+      } else {
+        await post(`/favorites/courses/${courseId}`, {});
+      }
+      setFavorites(prev => toggleFavoritesState(prev, courseId));
+      setFavoritesError(null);
+      return true;
+    } catch (e) {
+      console.error('Error actualizando favorito:', e);
+      setFavoritesError(e.message || 'No se pudo actualizar el favorito.');
+      return false;
+    }
+  }, [user, favorites]);
 
-  const toggleFavorite = (courseId) => {
-    const updated = Array.isArray(favorites) && favorites.includes(courseId)
-      ? favorites.filter(id => id !== courseId)
-      : [...(Array.isArray(favorites) ? favorites : []), courseId];
-    setFavorites(updated);
-    saveLocal(updated);
-  };
-
-  const isFavorite = (courseId) => Array.isArray(favorites) && favorites.includes(courseId);
+  const isFavorite = useCallback((courseId) => {
+    return Array.isArray(favorites) && favorites.includes(courseId);
+  }, [favorites]);
 
   return (
     <FavoritesContext.Provider value={{
-      favorites,
-      toggleFavorite, isFavorite,
+      favorites, favoritesLoading, favoritesError,
+      refreshFavorites, toggleFavorite, isFavorite,
     }}>
       {children}
     </FavoritesContext.Provider>
