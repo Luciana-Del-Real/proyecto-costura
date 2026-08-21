@@ -1,28 +1,42 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import sgMail from '@sendgrid/mail';
 
-// Usar require dinámico para evitar fallo de compilación si la dependencia no está instalada
-let sgMail: any = null;
-try {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  sgMail = require('@sendgrid/mail');
-} catch (e) {
-  sgMail = null;
-}
-
+/**
+ * Transactional email delivery via SendGrid.
+ *
+ * Sending is env-gated and OFF by default: `MAIL_ENABLED` must be exactly
+ * `true` for the service to attempt a send. Disabled sends are logged as
+ * skipped; enabled sends that fail are logged and rethrown so callers can
+ * never mistake a failed delivery for a successful one.
+ */
 @Injectable()
 export class MailService {
   private readonly logger = new Logger(MailService.name);
   private from: string;
 
   constructor(private config: ConfigService) {
+    this.from =
+      this.config.get<string>('SENDGRID_FROM') || 'no-reply@example.com';
+
     const apiKey = this.config.get<string>('SENDGRID_API_KEY');
-    this.from = this.config.get<string>('SENDGRID_FROM') || 'no-reply@example.com';
-    if (!apiKey || !sgMail) {
-      this.logger.warn('SENDGRID_API_KEY not set or @sendgrid/mail missing; emails will be skipped.');
-    } else {
+
+    // Fail fast when the gate is open but the credential is missing:
+    // misconfiguration must be loud, never silently hidden.
+    if (this.isMailEnabled() && !apiKey) {
+      throw new Error(
+        'MAIL_ENABLED is set to true but SENDGRID_API_KEY is not set. ' +
+          'Provide SENDGRID_API_KEY or disable MAIL_ENABLED.',
+      );
+    }
+
+    if (apiKey) {
       sgMail.setApiKey(apiKey);
     }
+  }
+
+  private isMailEnabled(): boolean {
+    return this.config.get<string>('MAIL_ENABLED')?.trim().toLowerCase() === 'true';
   }
 
   async sendEmail(
@@ -32,9 +46,10 @@ export class MailService {
     templateId?: string,
     dynamicTemplateData?: Record<string, any>,
   ) {
-    const apiKey = this.config.get<string>('SENDGRID_API_KEY');
-    if (!apiKey || !sgMail) {
-      this.logger.warn(`Skipping sendEmail to ${to}: SENDGRID_API_KEY not configured or @sendgrid/mail not installed`);
+    if (!this.isMailEnabled()) {
+      this.logger.log(
+        `Email sending is disabled (MAIL_ENABLED is not "true"); skipping email to ${to} (subject: ${subject})`,
+      );
       return;
     }
 
@@ -55,9 +70,12 @@ export class MailService {
 
     try {
       await sgMail.send(msg);
-      this.logger.debug(`Email sent to ${to}`);
+      this.logger.log(`Email sent to ${to} (subject: ${subject})`);
     } catch (error) {
-      this.logger.error('Error sending email', error as any);
+      this.logger.error(
+        `Error sending email to ${to} (subject: ${subject})`,
+        error as any,
+      );
       throw error;
     }
   }
