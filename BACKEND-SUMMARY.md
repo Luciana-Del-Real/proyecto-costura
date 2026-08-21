@@ -125,7 +125,7 @@ Ver `ENDPOINTS.md` para documentación completa con ejemplos curl.
 cd backend
 npm install
 docker-compose up -d     # PostgreSQL
-npm run db:push          # Create schema
+npm run db:migrate       # Apply migrations (only schema sync path)
 npm run db:seed          # Create admin user
 npm run dev              # Start development server
 ```

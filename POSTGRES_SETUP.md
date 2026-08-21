@@ -32,7 +32,7 @@ docker run --name postgres-costura -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=
 
 Después de instalar PostgreSQL, ejecuta en el backend:
 ```bash
-npm run db:push
+npm run db:migrate
 npm run db:seed
 ```
 

@@ -193,7 +193,7 @@ cd backend
 npm install
 docker-compose up -d  # Start PostgreSQL
 cp .env.example .env
-npm run db:push       # Create schema
+npm run db:migrate    # Apply migrations (only schema sync path)
 npm run db:seed       # Create admin user
 npm run dev           # Start backend
 
@@ -234,7 +234,7 @@ npm run dev           # Start frontend
 npm run dev              # Development with watch
 npm run build           # Compile to JavaScript
 npm start               # Run compiled version
-npm run db:push         # Sync schema with PostgreSQL
+npm run db:migrate      # Apply migrations (only schema sync path)
 npm run db:studio       # Open Prisma Studio
 npm run db:seed         # Create admin user
 npm run db:migrate      # Create migration

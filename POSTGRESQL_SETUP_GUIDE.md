@@ -67,7 +67,7 @@ Una vez que PostgreSQL y la base de datos estén creados:
 
 ```bash
 cd backend
-npm run db:push
+npm run db:migrate
 npm run db:seed
 ```
 
