@@ -4,7 +4,6 @@ import { get, post, del } from '../services/api';
 import {
   favoriteIdsFromRecords,
   toggleFavoritesState,
-  readFavoritesFromSession,
   assertAuthenticated,
 } from './contextHelpers';
 
@@ -13,9 +12,7 @@ const FavoritesContext = createContext(null);
 export function FavoritesProvider({ children }) {
   const { user } = useAuth();
 
-  // Favorites course ids. The backend is the source of truth; sessionStorage is
-  // used only as a temporary read-only fallback during the backend rollout
-  // (task 6.1 removes it after staging validation).
+  // Favorites course ids. The backend is the source of truth.
   const [favorites, setFavorites] = useState([]);
   const [favoritesLoading, setFavoritesLoading] = useState(false);
   const [favoritesError, setFavoritesError] = useState(null);
@@ -33,17 +30,7 @@ export function FavoritesProvider({ children }) {
       setFavoritesError(null);
     } catch (e) {
       console.error('Error cargando favoritos:', e);
-      // Fallback de solo lectura mientras dura el rollout del backend.
-      const stored = readFavoritesFromSession(
-        typeof sessionStorage !== 'undefined' ? sessionStorage : null,
-        user.id,
-      );
-      if (stored) {
-        console.warn('[favorites] Backend unavailable; using read-only sessionStorage fallback.', e.message);
-        setFavorites(stored);
-      } else {
-        setFavorites([]);
-      }
+      setFavorites([]);
       setFavoritesError(e.message || 'No se pudieron cargar tus favoritos.');
     } finally {
       setFavoritesLoading(false);
