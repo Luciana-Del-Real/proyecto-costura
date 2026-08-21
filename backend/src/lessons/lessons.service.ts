@@ -27,6 +27,7 @@ export class LessonsService {
     return this.prisma.lesson.create({
       data: {
         title: dto.title,
+        description: dto.description,
         duration: dto.duration,
         videoUrl: dto.videoUrl,
         order: dto.order,
@@ -87,6 +88,7 @@ export class LessonsService {
       where: { id },
       data: {
         title: dto.title,
+        description: dto.description,
         duration: dto.duration,
         videoUrl: dto.videoUrl,
         order: dto.order,

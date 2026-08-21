@@ -5,6 +5,10 @@ export class CreateLessonDto {
   @IsNotEmpty()
   title!: string;
 
+  @IsOptional()
+  @IsString()
+  description?: string;
+
   @IsString()
   @IsNotEmpty()
   duration!: string;

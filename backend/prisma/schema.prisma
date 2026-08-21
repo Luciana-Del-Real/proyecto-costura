@@ -75,6 +75,7 @@ model User {
   model Lesson {
     id        String   @id @default(cuid())
     title     String
+    description String?
     duration  String
     videoUrl  String
     pdf       String?
