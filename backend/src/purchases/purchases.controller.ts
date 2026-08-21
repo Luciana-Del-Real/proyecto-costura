@@ -8,6 +8,7 @@ import {
   UseGuards,
   Request,
   Query,
+  ForbiddenException,
 } from '@nestjs/common';
 import { PurchasesService } from './purchases.service';
 import { CreatePurchaseDto } from './dto/create-purchase.dto';
@@ -67,7 +68,12 @@ export class PurchasesController {
 
   @Get('user/:userId')
   @UseGuards(JwtAuthGuard)
-  async getUserPurchases(@Param('userId') userId: string) {
+  async getUserPurchases(@Param('userId') userId: string, @Request() req: any) {
+    const isOwner = req.user?.id === userId;
+    const isAdmin = req.user?.role === 'ADMIN';
+    if (!isOwner && !isAdmin) {
+      throw new ForbiddenException('No podés ver las compras de otro usuario');
+    }
     return this.purchasesService.getUserPurchases(userId);
   }
 }
