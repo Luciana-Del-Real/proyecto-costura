@@ -10,7 +10,6 @@ export default function ResetPassword() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Aquí irá tu lógica de envío al backend
-    console.log("Token:", token, "Password:", form.password);
   };
 
   return (
