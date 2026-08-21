@@ -3,16 +3,22 @@ const bcrypt = require('bcrypt');
 
 const prisma = new PrismaClient();
 
-function parseArg(name, defaultValue) {
+function parseArg(name) {
   const arg = process.argv.find((item) => item.startsWith(`--${name}=`));
-  if (!arg) return defaultValue;
-  return arg.split('=')[1];
+  return arg ? arg.split('=')[1] : undefined;
 }
 
 async function main() {
-  const email = parseArg('email', process.env.ADMIN_EMAIL || 'admin@costura.app');
-  const password = parseArg('password', process.env.ADMIN_PASSWORD || 'Admin123!');
-  const name = parseArg('name', 'Admin User');
+  const email = parseArg('email') || process.env.ADMIN_EMAIL;
+  const password = parseArg('password') || process.env.ADMIN_PASSWORD;
+  const name = parseArg('name') || process.env.ADMIN_NAME;
+
+  if (!email || !password || !name) {
+    console.error(
+      '❌ create-admin requires ADMIN_EMAIL, ADMIN_PASSWORD and ADMIN_NAME environment variables (or --email, --password, --name arguments). Refusing to create an admin with a default password.',
+    );
+    process.exit(1);
+  }
 
   const existing = await prisma.user.findUnique({
     where: { email },

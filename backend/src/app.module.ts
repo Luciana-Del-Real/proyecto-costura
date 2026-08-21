@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
+import { jwtConfig } from './config/jwt.config';
 import { PassportModule } from '@nestjs/passport';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
@@ -22,10 +23,10 @@ import { CertificatesModule } from './certificates/certificates.module';
       isGlobal: true,
       envFilePath: '.env',
     }),
-    JwtModule.register({
+    JwtModule.registerAsync({
       global: true,
-      secret: process.env.JWT_SECRET || 'fallback-secret-key',
-      signOptions: { expiresIn: process.env.JWT_EXPIRATION || '24h' },
+      useFactory: jwtConfig,
+      inject: [ConfigService],
     }),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     PrismaModule,

@@ -69,7 +69,7 @@ function httpPostJson(url, data) {
 
     // generate token and insert hashed record
     const token = crypto.randomBytes(32).toString('hex');
-    const resetSecret = process.env.PASSWORD_RESET_SECRET || process.env.JWT_SECRET || 'fallback-secret-key';
+    const resetSecret = process.env.PASSWORD_RESET_SECRET || process.env.JWT_SECRET;
     const tokenHash = crypto.createHmac('sha256', resetSecret).update(token).digest('hex');
     const minutes = Number(process.env.PASSWORD_RESET_EXPIRATION_MINUTES) || 15;
     const expiresAt = new Date(Date.now() + minutes * 60 * 1000);
