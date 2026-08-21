@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useCourses } from '../context/CoursesContext';
+import { usePurchases } from '../context/PurchaseContext';
+import { useFavorites } from '../context/FavoritesContext';
+import { useProgress } from '../context/ProgressContext';
 
 // Colores suaves de fondo y texto legibles para las etiquetas de nivel
 const levelClasses = {
@@ -11,13 +13,15 @@ const levelClasses = {
 
 export default function CourseCard({ course }) {
   const { user } = useAuth();
-  const { hasCourse, isPending, isFavorite, toggleFavorite, getProgress } = useCourses();
-  
+  const { hasCourse, isPending } = usePurchases();
+  const { isFavorite, toggleFavorite } = useFavorites();
+  const { getProgress } = useProgress();
+
   const owned = user && hasCourse(course.id);
   const pending = user && isPending(course.id);
   const fav = user && isFavorite(course.id);
   const prog = owned ? getProgress(course.id, course.lessons.length) : 0;
-console.log("Datos del usuario:", user);
+
   return (
     // Tarjeta con sombras profundas difuminadas en hover y bordes suaves sin líneas duras
     <div className="bg-soft rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 overflow-hidden hover:shadow-[0_12px_30px_rgba(78,109,91,0.08)] hover:-translate-y-1.5 transition-all duration-300 group flex flex-col justify-between">

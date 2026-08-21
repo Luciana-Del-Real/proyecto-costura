@@ -1,6 +1,11 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
-import { CoursesProvider } from './context/CoursesContext';
+import { CourseCatalogProvider } from './context/CourseCatalogContext';
+import { PurchaseProvider } from './context/PurchaseContext';
+import { ProgressProvider } from './context/ProgressContext';
+import { FavoritesProvider } from './context/FavoritesContext';
+import { NotificationsProvider } from './context/NotificationsContext';
+import { AdminProvider } from './context/AdminContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import AdminNavbar from './components/AdminNavbar';
@@ -50,8 +55,13 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <CoursesProvider>
-          <Routes>
+        <CourseCatalogProvider>
+          <PurchaseProvider>
+            <ProgressProvider>
+              <FavoritesProvider>
+                <NotificationsProvider>
+                  <AdminProvider>
+                    <Routes>
             {/* Público */}
             <Route path="/" element={<Layout><Home /></Layout>} />
             <Route path="/login" element={<Layout><Auth defaultTab="login" /></Layout>} />
@@ -77,7 +87,12 @@ export default function App() {
             <Route path="/admin/courses/new" element={<AdminRoute><AdminLayout><AdminCourseForm /></AdminLayout></AdminRoute>} />
             <Route path="/admin/courses/edit/:id" element={<AdminRoute><AdminLayout><AdminCourseForm /></AdminLayout></AdminRoute>} />
           </Routes>
-        </CoursesProvider>
+                  </AdminProvider>
+                </NotificationsProvider>
+              </FavoritesProvider>
+            </ProgressProvider>
+          </PurchaseProvider>
+        </CourseCatalogProvider>
       </AuthProvider>
     </BrowserRouter>
   );

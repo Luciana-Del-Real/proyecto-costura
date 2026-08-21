@@ -1,17 +1,24 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useCourses } from '../context/CoursesContext';
-import { courses } from '../data/courses';
+import { usePurchases } from '../context/PurchaseContext';
+import { formatMoney } from '../utils/currency';
 import { getImageUrl } from '../utils/media';
 
 export default function Profile() {
   const { user, updateUser } = useAuth();
-  const { purchases } = useCourses();
+  const { purchaseRecords, purchasesLoading, purchasesError } = usePurchases();
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({ name: user?.name || '', email: user?.email || '' });
   const [saved, setSaved] = useState(false);
 
-  const myCourses = courses.filter(c => purchases.includes(c.id));
+  // Historial real: solo las compras aprobadas que devuelve el backend.
+  const approvedRecords = Array.isArray(purchaseRecords)
+    ? purchaseRecords.filter(r => r.status === 'APPROVED')
+    : [];
+  const totalInvested = approvedRecords.reduce(
+    (sum, r) => sum + (r.total ?? r.course?.priceARS ?? 0),
+    0,
+  );
 
   const handleSave = (e) => {
     e.preventDefault();
@@ -103,23 +110,35 @@ export default function Profile() {
 
         <div className="bg-[#F4F1ED] rounded-2xl shadow-sm border border-gray-100 px-4 py-10 animate-fade-up mt-5 mb-5">
           <h2 className="font-bold text-[#6B4C3B] text-xl">Historial de compras</h2>
-          {myCourses.length === 0 ? (
+          {purchasesLoading ? (
+            <p className="text-theme text-sm">Cargando tus compras...</p>
+          ) : purchasesError ? (
+            <p className="text-theme text-sm">No se pudieron cargar tus compras. Verificá tu conexión e intentá de nuevo más tarde.</p>
+          ) : approvedRecords.length === 0 ? (
             <p className="text-theme text-sm">Todavía no realizaste ninguna compra.</p>
           ) : (
             <div className="space-y-3">
-              {myCourses.map(course => (
-                <div key={course.id} className="flex items-center gap-4 py-3 border-b border-theme last:border-0">
-                  <img src={getImageUrl(course.image)} alt={course.title} className="w-12 h-12 rounded-xl object-cover flex-shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-theme text-sm truncate">{course.title}</p>
-                    <p className="text-theme text-xs">{course.level}</p>
+              {approvedRecords.map(record => {
+                const course = record.course || {};
+                return (
+                  <div key={record.id} className="flex items-center gap-4 py-3 border-b border-theme last:border-0">
+                    <img src={getImageUrl(course.image)} alt={course.title} className="w-12 h-12 rounded-xl object-cover flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-theme text-sm truncate">{course.title}</p>
+                      <p className="text-theme text-xs">{course.level}</p>
+                      {record.createdAt && (
+                        <p className="text-theme text-xs">{new Date(record.createdAt).toLocaleDateString()}</p>
+                      )}
+                    </div>
+                    <span className="font-semibold text-theme text-sm flex-shrink-0">
+                      {formatMoney(record.total ?? course.priceARS ?? 0, user?.country === 'AUD' ? 'AUD' : 'ARS')}
+                    </span>
                   </div>
-                  <span className="font-semibold text-theme text-sm flex-shrink-0">${course.priceARS.toLocaleString()}</span>
-                </div>
-              ))}
+                );
+              })}
               <div className="pt-2 flex justify-between text-sm font-semibold text-[#3D2B1F]">
                 <span>Total invertido</span>
-                <span>${myCourses.reduce((sum, c) => sum + c.priceARS, 0).toLocaleString()}</span>
+                <span>{formatMoney(totalInvested, user?.country === 'AUD' ? 'AUD' : 'ARS')}</span>
               </div>
             </div>
           )}

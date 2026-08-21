@@ -1,12 +1,16 @@
 import { useMemo, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { useCourses } from '../../context/CoursesContext';
+import { useCourseCatalog } from '../../context/CourseCatalogContext';
+import { usePurchases } from '../../context/PurchaseContext';
+import { useAdmin } from '../../context/AdminContext';
 import { sumByCurrency } from '../../utils/currency';
 
 export default function AdminDashboard() {
   const { user } = useAuth();
-  const { courses, getAllPurchases, getAllUsers, getPendingRequests } = useCourses();
+  const { courses } = useCourseCatalog();
+  const { getAllPurchases, getPendingRequests } = usePurchases();
+  const { getAllUsers } = useAdmin();
   const [allPurchases, setAllPurchases] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
   const [pendingRequests, setPendingRequests] = useState([]);

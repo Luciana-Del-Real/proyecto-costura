@@ -1,10 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useCourses } from '../../context/CoursesContext';
+import { useCourseCatalog } from '../../context/CourseCatalogContext';
+import { useAdmin } from '../../context/AdminContext';
 import { getCoursePrice, getCurrencyCode } from '../../utils/currency';
 import { getImageUrl } from '../../utils/media';
 
 export default function AdminUsers() {
-  const { courses, getAllUsers, toggleUserActive } = useCourses();
+  const { courses } = useCourseCatalog();
+  const { getAllUsers, toggleUserActive } = useAdmin();
   const [allUsers, setAllUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
