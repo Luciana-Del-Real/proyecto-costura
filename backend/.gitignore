@@ -11,3 +11,10 @@ dist/
 *.log
 coverage/
 .prisma/
+
+# Archivos subidos por usuarios (imágenes, PDFs de cursos/lecciones)
+uploads/
+
+# Artefactos compilados de prisma/seed.ts
+prisma/seed.js
+prisma/seed.d.ts
