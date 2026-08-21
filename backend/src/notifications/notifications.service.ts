@@ -1,5 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { Principal, isOwnerOrAdmin } from '../common/principal';
 
 @Injectable()
 export class NotificationsService {
@@ -19,13 +24,19 @@ export class NotificationsService {
     return { unreadCount: count };
   }
 
-  async markAsRead(notificationId: string) {
+  async markAsRead(notificationId: string, principal: Principal) {
     const notification = await this.prisma.notification.findUnique({
       where: { id: notificationId },
     });
 
     if (!notification) {
       throw new NotFoundException('Notification not found');
+    }
+
+    if (!isOwnerOrAdmin(principal, notification.userId)) {
+      throw new ForbiddenException(
+        'Access denied. You can only manage your own notifications.',
+      );
     }
 
     return this.prisma.notification.update({
@@ -41,13 +52,19 @@ export class NotificationsService {
     });
   }
 
-  async deleteNotification(notificationId: string) {
+  async deleteNotification(notificationId: string, principal: Principal) {
     const notification = await this.prisma.notification.findUnique({
       where: { id: notificationId },
     });
 
     if (!notification) {
       throw new NotFoundException('Notification not found');
+    }
+
+    if (!isOwnerOrAdmin(principal, notification.userId)) {
+      throw new ForbiddenException(
+        'Access denied. You can only manage your own notifications.',
+      );
     }
 
     return this.prisma.notification.delete({

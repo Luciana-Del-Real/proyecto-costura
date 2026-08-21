@@ -1,4 +1,12 @@
-import { Controller, Get, Patch, Delete, Param, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Patch,
+  Delete,
+  Param,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { AdminGuard } from '../auth/guards/admin.guard';
@@ -9,8 +17,8 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return this.usersService.findOne(id);
+  async findOne(@Param('id') id: string, @Request() req: any) {
+    return this.usersService.findOne(id, req.user);
   }
 
   @Get()
