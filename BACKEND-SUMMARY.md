@@ -130,9 +130,8 @@ npm run db:seed          # Create admin user
 npm run dev              # Start development server
 ```
 
-### Admin Default
-- Email: `admin@costura.app`
-- Password: `Admin123!`
+### Admin
+No default admin is created at boot. Create it with `npm run db:seed` using the `ADMIN_EMAIL` and `ADMIN_PASSWORD` environment variables (no defaults).
 
 ### Acceso
 - API: http://localhost:3000/api
@@ -191,7 +190,7 @@ Archivos importantes:
 ```bash
 curl -X POST http://localhost:3000/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"admin@costura.app","password":"Admin123!"}'
+  -d '{"email":"<ADMIN_EMAIL>","password":"<ADMIN_PASSWORD>"}'
 ```
 
 ### Obtener Cursos
