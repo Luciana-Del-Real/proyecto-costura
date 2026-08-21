@@ -13,6 +13,7 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { MailModule } from './mail/mail.module';
 import { AttachmentsModule } from './attachments/attachments.module';
+import { LessonCommentsModule } from './lesson-comments/lesson-comments.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { AttachmentsModule } from './attachments/attachments.module';
     FavoritesModule,
     MailModule,
     AttachmentsModule,
+    LessonCommentsModule,
   ],
   controllers: [],
   providers: [],
