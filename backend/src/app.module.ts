@@ -14,6 +14,7 @@ import { FavoritesModule } from './favorites/favorites.module';
 import { MailModule } from './mail/mail.module';
 import { AttachmentsModule } from './attachments/attachments.module';
 import { LessonCommentsModule } from './lesson-comments/lesson-comments.module';
+import { CertificatesModule } from './certificates/certificates.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { LessonCommentsModule } from './lesson-comments/lesson-comments.module';
     MailModule,
     AttachmentsModule,
     LessonCommentsModule,
+    CertificatesModule,
   ],
   controllers: [],
   providers: [],

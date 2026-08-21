@@ -37,6 +37,7 @@
     "lucide-react": "^1.23.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
+    "pdfkit": "^0.15.0",
     "pg": "^8.20.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1"
@@ -50,6 +51,7 @@
     "@types/multer": "^2.2.0",
     "@types/node": "^20.10.6",
     "@types/passport-jwt": "^3.0.13",
+    "@types/pdfkit": "^0.13.4",
     "@typescript-eslint/eslint-plugin": "^6.17.0",
     "@typescript-eslint/parser": "^6.17.0",
     "eslint": "^8.56.0",
