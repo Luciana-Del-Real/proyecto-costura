@@ -20,7 +20,7 @@ export default function CourseCard({ course }) {
 console.log("Datos del usuario:", user);
   return (
     // Tarjeta con sombras profundas difuminadas en hover y bordes suaves sin líneas duras
-    <div className="bg-[#F4F1ED] rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 overflow-hidden hover:shadow-[0_12px_30px_rgba(78,109,91,0.08)] hover:-translate-y-1.5 transition-all duration-300 group flex flex-col justify-between">
+    <div className="bg-soft rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 overflow-hidden hover:shadow-[0_12px_30px_rgba(78,109,91,0.08)] hover:-translate-y-1.5 transition-all duration-300 group flex flex-col justify-between">
       <div>
         {/* Contenedor de la Imagen con efecto Zoom */}
         <div className="relative overflow-hidden aspect-video bg-gray-50">
@@ -39,7 +39,7 @@ console.log("Datos del usuario:", user);
           {user && (
             <button
               onClick={() => toggleFavorite(course.id)}
-              className="absolute top-3 right-3 bg-white/90 backdrop-blur-md rounded-full p-2 shadow-sm hover:bg-white hover:scale-110 transition-all duration-200"
+              className="absolute top-3 right-3 backdrop-blur-md rounded-full p-2 shadow-sm hover:bg-white hover:scale-110 transition-all duration-200 bg-gray-100 text-gray-700"
               aria-label={fav ? 'Quitar de favoritos' : 'Agregar a favoritos'}
             >
               <svg 
@@ -56,7 +56,7 @@ console.log("Datos del usuario:", user);
 
         {/* Información de la Tarjeta */}
         <div className="p-5">
-          <h3 className="font-bold text-black text-xl mb-1.5 leading-snug line-clamp-1">
+          <h3 className=" text-black text-2xl mb-1.5 leading-snug line-clamp-1">
             {course.title}
           </h3>
           <p className="text-gray-500 text-xs mb-4 line-clamp-2 leading-relaxed">
@@ -83,7 +83,7 @@ console.log("Datos del usuario:", user);
       <div className="px-5 pb-5 pt-1">
         {owned && (
           <div className="mb-4 bg-[#FDF8FA] p-2.5 rounded-xl border border-[#4E6D5B]/5">
-            <div className="flex justify-between text-[11px] font-bold text-[#4E6D5B] mb-1">
+            <div className="flex justify-between text-[11px] font-bold text-black mb-1">
               <span>Tu progreso</span>
               <span>{prog}%</span>
             </div>
@@ -97,11 +97,9 @@ console.log("Datos del usuario:", user);
           {owned ? (
             <Link
               to={`/curso/${course.id}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full text-center bg-[#4E6D5B] text-white text-xs py-2.5 rounded-xl hover:bg-[#3d5648] transition-all shadow-sm font-bold tracking-wide"
+              className="bg-[#4E6D5B] !text-white text-l px-5 py-2.5 rounded-xl hover:bg-[#3d5648] hover:shadow-md transition-all tracking-wide w-full flex justify-center items-center"
             >
-              Abrir curso →
+              Abrir curso
             </Link>
           ) : pending ? (
             <button className="w-full text-center bg-[#4E6D5B] text-gray-400 text-xs py-2.5 rounded-xl cursor-not-allowed font-medium" disabled>
@@ -110,7 +108,7 @@ console.log("Datos del usuario:", user);
           ) : (
             <Link
               to={user ? `/checkout/${course.id}` : '/login'}
-              className="bg-[#4E6D5B] !text-white text-xs px-5 py-2.5 rounded-xl hover:bg-[#3d5648] hover:shadow-md transition-all font-bold tracking-wide w-full flex justify-center items-center"
+              className="bg-[#4E6D5B] !text-white text-l px-5 py-2.5 rounded-xl hover:bg-[#3d5648] hover:shadow-md transition-all tracking-wide w-full flex justify-center items-center"
             >
               Inscribirme
             </Link>

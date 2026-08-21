@@ -10,12 +10,12 @@ export default function Favorites() {
     <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
       <div className="bg-[#F4F1ED] rounded-2xl shadow-sm border border-gray-100 px-4 py-10 animate-fade-up mt-5 mb-5">
         <div className="max-w-6xl mx-auto">
-          <h1 className="text-3xl font-bold text-[#6B4C3B]">Mis favoritos</h1>
-          <p className="text-[#6B4C3B] mt-1">{favCourses.length} curso{favCourses.length !== 1 ? 's' : ''} guardado{favCourses.length !== 1 ? 's' : ''}</p>
+          <h1 className="text-3xl md:text-4xl font-bold text-black mb-2">Mis favoritos</h1>
+          <p className="text-gray-600">{favCourses.length} curso{favCourses.length !== 1 ? 's' : ''} guardado{favCourses.length !== 1 ? 's' : ''}</p>
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 py-8">
+      <div className="max-w-6xl mx-auto px-1 py-8">
         {favCourses.length === 0 ? (
           <div className="text-center py-20">
             <span className="text-6xl">❤️</span>
@@ -26,7 +26,7 @@ export default function Favorites() {
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {favCourses.map(course => (
               <div key={course.id} className="stagger-item">
                 <CourseCard course={course} />

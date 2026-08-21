@@ -40,9 +40,9 @@ export default function Navbar() {
         <nav className={`${isHome ? 'absolute inset-x-0 top-0 z-50 nav-on-hero' : 'sticky top-0 z-50 bg-white border-b border-theme shadow-sm'}`}>
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <Link to={user ? (isAdmin ? "/admin" : "/dashboard") : "/"} className="flex items-center gap-3">
-            <img src="/Images/logo-nuevo-grow.png" alt="Grow" className="w-9 h-9 object-contain" />
+            <img src="/Images/Logo%20sin%20Slogan.png" alt="Grow" className="w-9 h-9 object-contain" />
             <div className="flex flex-col">
-              <span className="text-[10px] uppercase tracking-widest text-black">Creative Education Studio</span>
+              <span className="text-sm uppercase tracking-widest text-black">Creative Education Studio</span>
             </div>
           </Link>
 
@@ -51,9 +51,9 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-6">
             {user ? (
               <>
-              <Link to="/dashboard" className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${pathname === '/dashboard' ? 'bg-theme/10 text-black' : 'text-theme hover:text-secondary hover:bg-theme/5'}`}>Inicio</Link>
-              <Link to="/cursos" className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${pathname === '/cursos' ? 'bg-theme/10 text-black' : 'text-theme hover:text-secondary hover:bg-theme/5'}`}>Cursos disponibles</Link>
-              <Link to="/favoritos" className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${pathname === '/favoritos' ? 'bg-theme/10 text-black' : 'text-theme hover:text-secondary hover:bg-theme/5'}`}>Favoritos</Link>
+              <Link to="/dashboard" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/dashboard' ? 'text-black transition-colors text-xl' : 'text-black transition-colors text-xl'}`}>Inicio</Link>
+              <Link to="/cursos" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/cursos' ? 'text-black transition-colors text-xl' : 'text-black transition-colors text-xl'}`}>Cursos disponibles</Link>
+              <Link to="/favoritos" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/favoritos' ? 'text-black transition-colors text-xl' : 'text-black transition-colors text-xl'}`}>Favoritos</Link>
 
               {/* Profile dropdown */}
               <div className="relative" ref={profileRef}>
@@ -61,7 +61,7 @@ export default function Navbar() {
                   onClick={() => setProfileOpen(!profileOpen)}
                   className="flex py-1 rounded-lg items-center text-white text-sm font-medium"
                 >
-                  <div className="w-7 h-7 bg-secondary rounded-full flex items-center justify-center text-white text-xs font-bold">
+                  <div className="w-7 h-7 bg-soft rounded-full flex items-center justify-center text-black text-xs font-bold">
                     {user.name?.charAt(0).toUpperCase()}
                   </div>
                   Perfil
@@ -98,9 +98,9 @@ export default function Navbar() {
             <>
               {!isSimplified && (
                 <>
-                  <Link to="/cursos" className="text-black transition-colors text-sm font-medium">Cursos</Link>
-                  <Link to="/login" className="text-sm text-black transition-colors font-medium">Iniciar sesión</Link>
-                  <Link to="/registro" className="text-sm bg-secondary text-white px-4 py-1.5 rounded-full hover:bg-secondary-dark transition-colors btn">
+                  <Link to="/cursos" className="text-black transition-colors text-xl">Cursos</Link>
+                  <Link to="/login" className="text-xl text-black transition-colors">Iniciar sesión</Link>
+                  <Link to="/registro" className="btn-theme text-white transition-all duration-200 hover:scale-105 text-sm">
                     Registrarse
                   </Link>
                 </>

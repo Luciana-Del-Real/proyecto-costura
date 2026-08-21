@@ -13,10 +13,10 @@ const benefits = [
 ];
 
 const categories = [
-  { Icon: Scissors, label: 'Costura' },
-  { Icon: Feather, label: 'Bordado' },
-  { Icon: Palette, label: 'Diseño Textil' },
-  { Icon: Shirt, label: 'Workshops' },
+  { Icon: Scissors, label: 'COSTURA' },
+  { Icon: Feather, label: 'BORDADO' },
+  { Icon: Palette, label: 'DISEÑO TEXTIL' },
+  { Icon: Shirt, label: 'WORKSHOPS' },
 ];
 
 const delays = ['', 'reveal-delay-1', 'reveal-delay-2', 'reveal-delay-3'];
@@ -46,7 +46,7 @@ export default function Home() {
                 Creá con tus<br />
                 <span style={{ color: 'var(--accent)' }}>propias manos</span>
               </h1>
-              <p className="animate-fade-up-delay-2 text-base md:text-lg mb-4 max-w-xl md:mx-0 opacity-95">
+              <p className="font-montserrat animate-fade-up-delay-2 text-base md:text-lg mb-4 max-w-xl md:mx-0 opacity-95">
                 Cursos online de costura, bordado y diseño textil para todos los niveles. A tu ritmo, con acompañamiento profesional.
               </p>
               <p className="animate-fade-up-delay-3 text-sm mb-6 max-w-lg md:mx-0 italic opacity-85">
@@ -67,11 +67,11 @@ export default function Home() {
             <div className="bg-soft rounded-2xl border border-theme p-8 h-full flex items-start">
               <RevealSection>
                 <div className="text-left">
-                  <h2 className="font-montserrat font-bold text-2xl text-black mb-4">¿Qué es Grow?</h2>
+                  <h2 className="font-bebas font-bold text-3xl text-black mb-4">¿Qué es Grow?</h2>
                   <p className="text-theme text-base leading-relaxed mb-6">
                     GROW es un estudio creativo dedicado a la costura, el bordado y el diseño, pensado para acompañarte paso a paso en tu aprendizaje. Acá vas a encontrar clases, herramientas, inspiración y una comunidad que crece junto a vos.
                   </p>
-                  <p className="text-secondary font-medium text-lg">
+                  <p className="text-primary font-medium text-lg">
                     ¿Te quedás a descubrir todo lo que podrías lograr con tus propias manos?
                   </p>
                 </div>
@@ -92,7 +92,7 @@ export default function Home() {
                   </div>
                   <div className={`reveal-right ${daiaInView ? 'visible' : ''}`}>
                   <span className="text-secondary text-sm font-medium">¿Quién está detrás de Grow?</span>
-                  <h3 className="font-montserrat text-2xl font-bold text-black mt-1 mb-3">Hola, soy Daia</h3>
+                  <h3 className="text-3xl font-bold text-black mt-1 mb-3">Hola, soy Daia</h3>
                   <p className="text-theme opacity-90 leading-relaxed">
                     Diseñadora de indumentaria, diseñadora gráfica, modista y apasionada del bordado en todas sus formas. Tengo más de diez años de experiencia compartiendo lo que sé y aprendiendo siempre. En Grow no tenés que adaptarte a un sistema rígido: nosotros nos adaptamos a vos, a tu ritmo, a tus tiempos, a tus ganas de crear.
                   </p>
@@ -103,9 +103,9 @@ export default function Home() {
       </section>
 
       {/* Benefits */}
-      <section className="bg-[#F7F2EF] rounded-2xl border border-theme py-10 px-4">
+      <section className="rounded-2xl border border-theme py-10 px-4">
           <RevealSection>
-            <h2 className="font-montserrat font-bold text-3xl text-black text-center mb-10">¿Por qué elegirnos?</h2>
+            <h2 className="font-bold text-4xl text-black text-center mb-10">¿Por qué elegirnos?</h2>
           </RevealSection>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
             {benefits.map((b, i) => (
@@ -116,8 +116,8 @@ export default function Home() {
                       <b.Icon className="benefit-icon" color="#E83E8C" aria-hidden />
                     </div>
                   </div>
-                  <h3 className="font-semibold text-theme mb-2">{b.title}</h3>
-                  <p className="text-theme text-sm">{b.desc}</p>
+                  <h3 className="font-montserrat text-black text-lg font-bold mb-2 leading-tight">{b.title}</h3>
+                  <p className="font-montserrat text-theme text-sm leading-relaxed">{b.desc}</p>
                 </div>
               </RevealSection>
             ))}
@@ -127,7 +127,7 @@ export default function Home() {
       {/* Categories */}
       <section className="bg-white rounded-2xl border border-theme py-10 px-4">
           <RevealSection>
-            <h2 className="font-montserrat font-bold text-3xl text-black text-center mb-10">Nuestras especialidades</h2>
+            <h2 className="font-bold text-4xl text-black text-center mb-10">Nuestras especialidades</h2>
           </RevealSection>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {categories.map((cat, i) => (
@@ -138,7 +138,7 @@ export default function Home() {
                       <cat.Icon className="specialty-icon" color="#E83E8C" aria-hidden />
                     </div>
                   </div>
-                  <p className="font-medium text-theme text-sm">{cat.label}</p>
+                  <p className="font-montserrat text-black text-lg font-bold mb-2 leading-tight">{cat.label}</p>
                 </Link>
               </RevealSection>
             ))}
@@ -146,9 +146,9 @@ export default function Home() {
       </section>
 
       {/* Testimonials */}
-      <section className="bg-[#F7F2EF] rounded-2xl border border-theme py-10 px-4">
+      <section className="rounded-2xl border border-theme py-10 px-4">
           <RevealSection>
-            <h2 className="font-montserrat font-bold text-3xl text-black text-center mb-10">Lo que dicen nuestras alumnas</h2>
+            <h2 className="font-bold text-4xl text-black text-center mb-10">Lo que dicen nuestras alumnas</h2>
           </RevealSection>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
             {testimonials.map((t, i) => (
@@ -166,17 +166,15 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <section className="bg-white rounded-2xl border border-theme">
+      <section className="bg-white rounded-2xl border border-theme py-10 px-4">
         <RevealSection animation="reveal-scale">
-          <section className="py-16 px-4 bg-secondary">
             <div className="max-w-2xl mx-auto text-center">
-              <h2 className="font-montserrat font-bold text-2xl text-black mb-4">En Grow, siempre hay un espacio para vos</h2>
+              <h2 className="font-bold text-4xl text-black mb-4">En Grow, siempre hay un espacio para vos</h2>
               <p className="text-white mb-8">Registrate gratis y comenzá tu primer curso hoy.</p>
               <Link to="/registro" className="btn-theme btn-hero transition-all duration-200 hover:scale-105 active:scale-95">
                 Empezar ahora
               </Link>
             </div>
-          </section>
         </RevealSection>
       </section>
     </div>

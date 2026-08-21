@@ -27,20 +27,20 @@ export default function Courses() {
       {/* CORREGIDO: Reducimos padding vertical (pt-10 pb-5) y quitamos mb-8 */}
       <div className="bg-[#F4F1ED] rounded-2xl shadow-sm border border-gray-100 px-4 py-10 animate-fade-up mt-5 mb-5">
         <div className="max-w-6xl mx-auto">
-          <h1 className="text-3xl md:text-4xl font-bold text-[#6B4C3B] mb-2">Todos los cursos</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-black mb-2">Todos los cursos</h1>
           <p className="text-gray-600">Encontrá el curso perfecto para vos</p>
         </div>
       </div>
 
       {/* CONTENEDOR UNIFICADO: Agregamos mt-6 para controlar la distancia exacta con el texto */}
-      <div className="max-w-6xl mx-auto px-4 mt-6 mb-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="max-w-6xl mx-auto px-1 mt-6 mb-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         {/* Filtros por Nivel */}
         <div className="flex flex-wrap gap-3">
           {levels.map(l => (
             <button
               key={l}
               onClick={() => setLevel(l)}
-              className={`px-5 py-2 rounded-full text-sm font-semibold tracking-wide transition-all duration-300 shadow-sm ${
+              className={`px-5 py-2 rounded-full text-sm tracking-wide transition-all duration-300 shadow-sm ${
                 level === l
                   ? '!bg-[#4E6D5B] !text-white shadow-md scale-105'
                   : '!bg-white !text-[#4E6D5B] border border-[#4E6D5B]/30 hover:border-[#4E6D5B] hover:bg-[#FDF8FA]'
@@ -67,14 +67,14 @@ export default function Courses() {
       </div>
 
       {/* Contenedor del listado de cursos */}
-      <div className="max-w-6xl mx-auto px-4 pb-16">
+      <div className="max-w-6xl mx-auto px-1 pb-16">
         {filtered.length === 0 ? (
           <div className="text-center py-16 bg-white rounded-2xl border border-gray-100 shadow-sm">
             <span className="text-5xl">🔍</span>
             <p className="text-gray-500 mt-4">No encontramos cursos con esa búsqueda.</p>
             <button 
               onClick={() => { setSearch(''); setLevel('Todos'); }} 
-              className="mt-3 text-[#4E6D5B] text-sm font-medium underline hover:text-[#3d5648]"
+              className="mt-3 text-[#4E6D5B] text-sm font-medium hover:text-[#3d5648]"
             >
               Limpiar filtros
             </button>

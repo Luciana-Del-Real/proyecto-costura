@@ -36,7 +36,7 @@ export default function Checkout() {
         <div className="text-center">
           <span className="text-5xl">✅</span>
           <h2 className="text-xl font-bold text-theme mt-4">Ya tenés este curso</h2>
-          <Link to={`/curso/${course.id}`} target="_blank" rel="noopener noreferrer" className="mt-4 inline-block btn-theme text-white px-6 py-2.5 rounded-xl hover:bg-secondary-dark transition-colors">
+          <Link to={`/curso/${course.id}`} className="mt-4 inline-block btn-theme text-white px-6 py-2.5 rounded-xl hover:bg-secondary-dark transition-colors">
             Abrir curso
           </Link>
         </div>

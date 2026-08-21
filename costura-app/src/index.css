@@ -51,7 +51,7 @@
   --cta: #E83E8C; /* CTA principal -> Fucsia */
   --secondary: #4E6D5B; /* Verde secundario */
   --secondary-dark: #3C5A4B; /* Verde oscuro para hover */
-  --soft: #eee6e6; /* Rosa claro para fondos y toques */
+  --soft: #dddddd; /* Rosa claro para fondos y toques */
   --surface: #FFFFFF; /* Superficies / tarjetas */
   --radius: 12px;
   --shadow: 0 4px 15px rgba(0,0,0,0.05);
@@ -579,7 +579,6 @@ footer.bg-black * {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
   font-size: 1.05rem;
 }
 .logo-circle {
@@ -873,7 +872,7 @@ section.hero-no-sep + section {
 .filter-container button,
 .filter-btn {
     background-color: #FFFFFF !important; /* Fondo blanco para resaltar sobre el rosa */
-    color: #4E6D5B !important;            /* Texto en color verde GROW */
+    color: #4E6D5B ;       /* Texto en color verde GROW */
     border: 1px solid rgba(78, 109, 91, 0.2) !important;
     padding: 10px 24px !important;
     border-radius: 25px !important;       /* Bordes redondeados sutiles */

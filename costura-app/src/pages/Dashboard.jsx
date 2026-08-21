@@ -16,7 +16,6 @@ export default function Dashboard() {
         <div className="max-w-6xl mx-auto">
           <p className="text-black text-sm mb-3">Bienvenida de vuelta 👋</p>
           <h1 className="text-3xl md:text-4xl font-bold text-[#6B4C3B] mb-2">{user?.name}</h1>
-          <p className="text-black mt- text-sm">{user?.email}</p>
         </div>
       </div>
 
@@ -24,9 +23,9 @@ export default function Dashboard() {
         {/* My courses */}
         {myCourses.length > 0 && (
           <div className="mb-10">
-            <div className="flex items-center justify-between mb-5">
-              <h2 className="font-bold text-[#6B4C3B] text-xl">Mis cursos</h2>
-              <Link to="/mis-cursos" className="text-secondary text-sm hover:text-[#5E8262]">Ver todos →</Link>
+            <div className="flex items-center justify-between mt-5 mb-5">
+              <h2 className="text-black text-3xl">Mis cursos</h2>
+              <Link to="/mis-cursos" className="!text-black text-sm hover:text-[#5E8262]">Ver todos →</Link>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {myCourses.slice(0, 3).map(course => (

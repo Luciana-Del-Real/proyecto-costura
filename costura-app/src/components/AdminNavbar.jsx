@@ -28,7 +28,7 @@ export default function AdminNavbar() {
           
           {/* Logo y Nombre unificado */}
           <Link to="/admin" className="flex items-center gap-3">
-            <img src="/Images/logo-nuevo-grow.png" alt="Grow" className="w-9 h-9 object-contain" />
+            <img src="/Images/Logo%20sin%20Slogan.png" alt="Grow" className="w-9 h-9 object-contain" />
             <div className="flex flex-col">
               <span className="text-[10px] uppercase tracking-widest text-black">Creative Education Studio</span>
             </div>
