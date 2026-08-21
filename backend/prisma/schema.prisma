@@ -52,8 +52,8 @@ model User {
     longDescription   String?
     image             String?
     pdfGuide          String?
-    priceARS          Float
-    priceAUD          Float
+    priceARS          Float     @default(0)
+    priceAUD          Float     @default(0)
     level             CourseLevel @default(PRINCIPIANTE)
     instructor        String?
     duration          String?
@@ -103,6 +103,7 @@ model User {
     lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
     user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+    @@index([lessonId, createdAt])
     @@map("lesson_comments")
   }
 
