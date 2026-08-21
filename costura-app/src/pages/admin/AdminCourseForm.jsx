@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useCourses } from '../../context/CoursesContext';
 import { useNavigate, useParams } from 'react-router-dom';
-import { get, postForm, putForm, del } from '../../services/api';
+import { get, post, postForm, putForm, del } from '../../services/api';
 
 const EMPTY_COURSE = {
   title: '', description: '', priceARS: '', priceAUD: '', level: 'Principiante',
@@ -110,6 +110,7 @@ export default function AdminCourseForm() {
     try {
       const formData = new FormData();
       formData.append('title', getLessonField(lesson, 'title'));
+      formData.append('description', getLessonField(lesson, 'description') || '');
       formData.append('duration', getLessonField(lesson, 'duration'));
       formData.append('videoUrl', getLessonField(lesson, 'videoUrl'));
       formData.append('order', String(lesson.order ?? 0));
@@ -155,12 +156,53 @@ export default function AdminCourseForm() {
   const [newLessonPdfs, setNewLessonPdfs] = useState([]);
   const [creatingLesson, setCreatingLesson] = useState(false);
 
+  // --- Preguntas de alumnas, por lección ---
+  const [openQuestionsFor, setOpenQuestionsFor] = useState(null);
+  const [commentsByLesson, setCommentsByLesson] = useState({});
+  const [replyDraft, setReplyDraft] = useState({});
+  const [sendingReplyFor, setSendingReplyFor] = useState(null);
+
+  const toggleQuestions = async (lessonId) => {
+    const willOpen = openQuestionsFor !== lessonId;
+    setOpenQuestionsFor(willOpen ? lessonId : null);
+    if (willOpen && !commentsByLesson[lessonId]?.loaded) {
+      setCommentsByLesson(prev => ({ ...prev, [lessonId]: { loaded: false, loading: true, items: [] } }));
+      try {
+        const items = await get(`/lessons/${lessonId}/comments`);
+        setCommentsByLesson(prev => ({ ...prev, [lessonId]: { loaded: true, loading: false, items } }));
+      } catch (err) {
+        console.error(err);
+        setCommentsByLesson(prev => ({ ...prev, [lessonId]: { loaded: true, loading: false, items: [] } }));
+      }
+    }
+  };
+
+  const handleReply = async (lessonId) => {
+    const message = (replyDraft[lessonId] || '').trim();
+    if (!message) return;
+    setSendingReplyFor(lessonId);
+    try {
+      const created = await post(`/lessons/${lessonId}/comments`, { message });
+      setCommentsByLesson(prev => ({
+        ...prev,
+        [lessonId]: { loaded: true, loading: false, items: [...(prev[lessonId]?.items || []), created] },
+      }));
+      setReplyDraft(prev => ({ ...prev, [lessonId]: '' }));
+    } catch (err) {
+      console.error(err);
+      alert('No se pudo enviar la respuesta');
+    } finally {
+      setSendingReplyFor(null);
+    }
+  };
+
   const handleCreateLesson = async (e) => {
     e.preventDefault();
     setCreatingLesson(true);
     try {
       const formData = new FormData();
       formData.append('title', newLesson.title);
+      formData.append('description', newLesson.description || '');
       formData.append('duration', newLesson.duration);
       formData.append('videoUrl', newLesson.videoUrl);
       formData.append('order', String((course?.lessons?.length || 0)));
@@ -271,10 +313,9 @@ export default function AdminCourseForm() {
                     className="w-full p-2 rounded-lg border border-[#EDE4D6]"
                   />
                   <textarea
-                    required
                     placeholder="Descripción"
-                    value={newLesson.description || ''}
-                    onChange={e => setNewLesson({ ...newLesson, description: e.target.value })}
+                    value={getLessonField(lesson, 'description') || ''}
+                    onChange={e => setLessonField(lesson.id, 'description', e.target.value)}
                     className="w-full p-2 rounded-lg border border-[#EDE4D6] h-20"
                   />
                   <div className="grid grid-cols-2 gap-3">
@@ -323,6 +364,54 @@ export default function AdminCourseForm() {
                     >
                       {savingLessonId === lesson.id ? 'Guardando...' : 'Guardar lección'}
                     </button>
+                  </div>
+
+                  {/* Preguntas de alumnas sobre esta lección */}
+                  <div className="pt-2 border-t border-[#EDE4D6]">
+                    <button
+                      type="button"
+                      onClick={() => toggleQuestions(lesson.id)}
+                      className="text-xs font-bold text-[#4E6D5B] hover:underline"
+                    >
+                      💬 {openQuestionsFor === lesson.id ? 'Ocultar preguntas de alumnas' : 'Ver preguntas de alumnas'}
+                    </button>
+
+                    {openQuestionsFor === lesson.id && (
+                      <div className="mt-3 bg-white rounded-xl border border-[#EDE4D6] p-3">
+                        {commentsByLesson[lesson.id]?.loading && (
+                          <p className="text-xs text-[#6B4C3B]">Cargando...</p>
+                        )}
+                        {commentsByLesson[lesson.id]?.loaded && commentsByLesson[lesson.id].items.length === 0 && (
+                          <p className="text-xs text-[#6B4C3B]">Todavía no hay preguntas en esta lección.</p>
+                        )}
+                        {commentsByLesson[lesson.id]?.loaded && commentsByLesson[lesson.id].items.length > 0 && (
+                          <div className="space-y-2 max-h-56 overflow-y-auto pr-1 mb-3">
+                            {commentsByLesson[lesson.id].items.map(c => (
+                              <div key={c.id} className={`rounded-lg p-2.5 text-xs border ${c.user?.role === 'ADMIN' ? 'bg-[#EAF0EA] border-[#cfe0cf]' : 'bg-[#F9F5F0] border-[#EDE4D6]'}`}>
+                                <p className="font-bold text-[#6B4C3B] mb-0.5">{c.user?.role === 'ADMIN' ? 'Vos (profesora)' : c.user?.name}</p>
+                                <p className="text-[#3D2B1F]">{c.message}</p>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        <div className="flex gap-2">
+                          <input
+                            value={replyDraft[lesson.id] || ''}
+                            onChange={e => setReplyDraft(prev => ({ ...prev, [lesson.id]: e.target.value }))}
+                            placeholder="Responder..."
+                            className="flex-1 p-2 rounded-lg border border-[#EDE4D6] text-sm"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => handleReply(lesson.id)}
+                            disabled={sendingReplyFor === lesson.id}
+                            className="bg-[#4E6D5B] text-white px-3 py-2 rounded-lg text-xs font-bold disabled:opacity-60"
+                          >
+                            Enviar
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}

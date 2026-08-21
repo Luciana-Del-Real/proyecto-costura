@@ -97,3 +97,30 @@ export async function patch(path, body) {
 export async function del(path) {
   return apiFetch(path, { method: 'DELETE' });
 }
+
+// Para descargar archivos binarios (ej. el PDF del certificado), que no
+// son JSON y necesitan el token de sesión igual que cualquier otro pedido.
+export async function downloadFile(path, filename) {
+  const url = path.startsWith('http') ? path : `${BASE_URL}${path}`;
+  const token = sessionStorage.getItem('costura_token');
+  const response = await fetch(url, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
+  if (!response.ok) {
+    let message = `${response.status} ${response.statusText}`;
+    try {
+      const body = await response.json();
+      if (body?.message) message = body.message;
+    } catch (e) { /* la respuesta no era JSON */ }
+    throw new Error(message);
+  }
+  const blob = await response.blob();
+  const blobUrl = window.URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = blobUrl;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.URL.revokeObjectURL(blobUrl);
+}
