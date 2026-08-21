@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useAuth } from './AuthContext';
 import { get, postForm, putForm, post, put, patch, del } from '../services/api';
 
@@ -6,10 +6,12 @@ const CoursesContext = createContext(null);
 
 export function CoursesProvider({ children }) {
   const { user, isAdmin } = useAuth();
+  // Favoritos y progreso siguen guardándose por usuario en el navegador
+  // (todavía no están conectados al backend real: ver informe de producción, punto 1).
   const storageKey = user ? `costura_data_${user.id}` : null;
 
   const [courses, setCourses] = useState([]);
-  
+
   // Fetch courses from backend when initializing
   useEffect(() => {
     const fetchCourses = async () => {
@@ -23,41 +25,89 @@ export function CoursesProvider({ children }) {
     fetchCourses();
   }, []);
 
-  // State for user-scoped data. We'll load/normalize when `user` changes to avoid stale initializers.
+  // purchases / pendingPurchases: se cargan SIEMPRE desde el backend real
+  // (antes se guardaban en el navegador; por eso una vez que el admin
+  // aprobaba una compra, la alumna nunca se enteraba sin cerrar y volver
+  // a entrar). progress y favorites, por ahora, se mantienen locales.
   const [purchases, setPurchases] = useState([]);
   const [pendingPurchases, setPendingPurchases] = useState([]);
   const [progress, setProgress] = useState({});
   const [favorites, setFavorites] = useState([]);
 
-  useEffect(() => {
-    if (!storageKey) {
+  const refreshMyPurchases = useCallback(async () => {
+    if (!user) {
       setPurchases([]);
       setPendingPurchases([]);
-      setProgress({});
+      return [];
+    }
+    try {
+      const data = await get(`/purchases/user/${user.id}`);
+      const approved = data.filter(p => p.status === 'APPROVED').map(p => p.course.id);
+      const pending = data.filter(p => p.status === 'PENDING').map(p => p.course.id);
+      setPurchases(approved);
+      setPendingPurchases(pending);
+      return approved;
+    } catch (e) {
+      console.error('Error cargando tus compras:', e);
+      return [];
+    }
+  }, [user]);
+
+  // Progreso real de lecciones, por curso (viene del backend, ya no del navegador)
+  const refreshMyProgress = useCallback(async (courseIds) => {
+    if (!user || !courseIds?.length) return;
+    try {
+      const entries = await Promise.all(
+        courseIds.map(async (courseId) => {
+          const data = await get(`/progress/courses/${courseId}`);
+          const completed = data.lessons.filter(l => l.completed).map(l => l.id);
+          return [courseId, { completed, lastLesson: completed[completed.length - 1] || 0 }];
+        })
+      );
+      setProgress(prev => ({ ...prev, ...Object.fromEntries(entries) }));
+    } catch (e) {
+      console.error('Error cargando tu progreso:', e);
+    }
+  }, [user]);
+
+  // Cargar compras y progreso reales al iniciar sesión / cambiar de usuario
+  useEffect(() => {
+    (async () => {
+      const approved = await refreshMyPurchases();
+      await refreshMyProgress(approved);
+    })();
+  }, [refreshMyPurchases, refreshMyProgress]);
+
+  // Si la alumna vuelve a la pestaña (por ejemplo, después de que el admin
+  // le aprobó la compra en otro momento), refrescamos el estado real.
+  useEffect(() => {
+    if (!user) return;
+    const onFocus = async () => {
+      const approved = await refreshMyPurchases();
+      await refreshMyProgress(approved);
+    };
+    window.addEventListener('focus', onFocus);
+    return () => window.removeEventListener('focus', onFocus);
+  }, [user, refreshMyPurchases, refreshMyProgress]);
+
+  // Favoritos: se cargan desde el navegador (ver nota arriba)
+  useEffect(() => {
+    if (!storageKey) {
       setFavorites([]);
       return;
     }
     try {
       const stored = JSON.parse(sessionStorage.getItem(storageKey) || '{}');
-      setPurchases(Array.isArray(stored.purchases) ? stored.purchases : []);
-      setPendingPurchases(Array.isArray(stored.pendingPurchases) ? stored.pendingPurchases : []);
-      setProgress(stored.progress && typeof stored.progress === 'object' ? stored.progress : {});
       setFavorites(Array.isArray(stored.favorites) ? stored.favorites : []);
     } catch (e) {
       console.error('Error parsing stored user data:', e);
-      setPurchases([]);
-      setPendingPurchases([]);
-      setProgress({});
       setFavorites([]);
     }
   }, [storageKey]);
 
-  const save = (p, pp, pr, f) => {
+  const saveLocal = (f) => {
     if (!storageKey) return;
     const payload = {
-      purchases: Array.isArray(p) ? p : purchases,
-      pendingPurchases: Array.isArray(pp) ? pp : pendingPurchases,
-      progress: pr && typeof pr === 'object' ? pr : progress,
       favorites: Array.isArray(f) ? f : favorites,
     };
     try {
@@ -72,98 +122,38 @@ export function CoursesProvider({ children }) {
   };
 
   // --- Alumno ---
-  const buyCourse = (courseId) => {
-    if (purchases.includes(courseId)) return;
-    const updated = [...purchases, courseId];
-    const updatedProgress = { ...progress, [courseId]: { completed: [], lastLesson: 0 } };
-    setPurchases(updated);
-    setPendingPurchases(pendingPurchases.filter(id => id !== courseId));
-    save(updated, pendingPurchases.filter(id => id !== courseId), updatedProgress, favorites);
-  };
-
   const requestPurchase = async (courseId) => {
     if (!user) throw new Error('Debes iniciar sesión para solicitar un curso');
-    if (Array.isArray(purchases) && purchases.includes(courseId)) return;
-    if (Array.isArray(pendingPurchases) && pendingPurchases.includes(courseId)) return;
+    if (purchases.includes(courseId) || pendingPurchases.includes(courseId)) return;
 
-    try {
-      // Intentar crear la solicitud en el backend
-      const res = await post('/purchases', { courseId });
-      // Actualizar estado local
-      const updatedPending = [...(Array.isArray(pendingPurchases) ? pendingPurchases : []), courseId];
-      setPendingPurchases(updatedPending);
-      save(purchases, updatedPending, progress, favorites);
-      return res;
-    } catch (err) {
-      
-      console.error('Error creando solicitud en backend, guardando localmente', err);
-      const updatedPending = [...(Array.isArray(pendingPurchases) ? pendingPurchases : []), courseId];
-      setPendingPurchases(updatedPending);
-      save(purchases, updatedPending, progress, favorites);
-      throw err;
-    }
+    const res = await post('/purchases', { courseId });
+    // Volvemos a pedirle al backend el estado real, en vez de asumirlo local
+    await refreshMyPurchases();
+    return res;
   };
 
-  const approvePurchase = async (idOrCourseId) => {
-    try {
-      if (isAdmin) {
-        // idOrCourseId is purchase id
-        const res = await patch(`/purchases/${idOrCourseId}/approve`);
-        return res;
-      }
-
-      // Fallback for student/local: idOrCourseId is courseId
-      const courseId = idOrCourseId;
-      if (Array.isArray(purchases) && purchases.includes(courseId)) return;
-      const updated = [...(Array.isArray(purchases) ? purchases : []), courseId];
-      const updatedPending = (Array.isArray(pendingPurchases) ? pendingPurchases : []).filter(id => id !== courseId);
-      const updatedProgress = { ...progress, [courseId]: { completed: [], lastLesson: 0 } };
-      setPurchases(updated);
-      setPendingPurchases(updatedPending);
-      setProgress(updatedProgress);
-      save(updated, updatedPending, updatedProgress, favorites);
-    } catch (err) {
-      console.error('approvePurchase error', err);
-      throw err;
-    }
+  const approvePurchase = async (purchaseId) => {
+    const res = await patch(`/purchases/${purchaseId}/approve`);
+    return res;
   };
 
-  const denyPurchase = async (idOrCourseId) => {
-    try {
-      if (isAdmin) {
-        // idOrCourseId is purchase id
-        const res = await patch(`/purchases/${idOrCourseId}/reject`);
-        return res;
-      }
-
-      // Fallback local
-      const courseId = idOrCourseId;
-      const updatedPending = (Array.isArray(pendingPurchases) ? pendingPurchases : []).filter(id => id !== courseId);
-      setPendingPurchases(updatedPending);
-      save(purchases, updatedPending, progress, favorites);
-    } catch (err) {
-      console.error('denyPurchase error', err);
-      throw err;
-    }
+  const denyPurchase = async (purchaseId) => {
+    const res = await patch(`/purchases/${purchaseId}/reject`);
+    return res;
   };
 
-  const completeLesson = (courseId, lessonId) => {
+  const completeLesson = async (courseId, lessonId) => {
     const cp = progress[courseId] || { completed: [], lastLesson: 0 };
     if (cp.completed.includes(lessonId)) return;
 
-    const course = courses.find(c => c.id === courseId);
-    if (!course) return;
-
-    const lessonIndex = course.lessons.findIndex(l => l.id === lessonId);
-    if (lessonIndex === -1) return;
-
-    // Secuencia obligatoria: solo se puede completar si la lecciÃƒÂ³n anterior estÃƒÂ¡ completa
-    if (lessonIndex > 0 && !cp.completed.includes(course.lessons[lessonIndex - 1].id)) return;
+    // El backend ya valida el orden secuencial (no se puede completar una
+    // lección sin haber completado la anterior), así que confiamos en su
+    // respuesta en vez de duplicar esa lógica acá.
+    await patch(`/progress/lessons/${lessonId}`, { completed: true });
 
     const completed = [...cp.completed, lessonId];
     const updatedProgress = { ...progress, [courseId]: { ...cp, completed, lastLesson: lessonId } };
     setProgress(updatedProgress);
-    save(purchases, pendingPurchases, updatedProgress, favorites);
   };
 
   const toggleFavorite = (courseId) => {
@@ -171,7 +161,7 @@ export function CoursesProvider({ children }) {
       ? favorites.filter(id => id !== courseId)
       : [...(Array.isArray(favorites) ? favorites : []), courseId];
     setFavorites(updated);
-    save(purchases, pendingPurchases, progress, updated);
+    saveLocal(updated);
   };
 
   const getProgress = (courseId, totalLessons) => {
@@ -184,7 +174,7 @@ export function CoursesProvider({ children }) {
   const isPending = (courseId) => Array.isArray(pendingPurchases) && pendingPurchases.includes(courseId);
   const isFavorite = (courseId) => Array.isArray(favorites) && favorites.includes(courseId);
 
-  // --- Admin: gestiÃƒÂ³n de cursos ---
+  // --- Admin: gestión de cursos ---
   const updateCourse = async (courseId, formData) => {
     try {
       const updatedCourse = await putForm(`/courses/${courseId}`, formData);
@@ -219,7 +209,6 @@ export function CoursesProvider({ children }) {
 
   const addLesson = async (courseId, lesson) => {
     try {
-      // Find the current course to determine the next order index
       const targetCourse = courses.find(c => c.id === courseId);
       const nextOrder = targetCourse && targetCourse.lessons ? targetCourse.lessons.length + 1 : 1;
       if (lesson && lesson._pdfFile) {
@@ -282,7 +271,7 @@ export function CoursesProvider({ children }) {
     }
   };
 
-  // --- Admin: estadÃƒsticas globales ---
+  // --- Admin: estadísticas globales ---
   const getAllPurchases = async () => {
     try {
       if (!user) return [];
@@ -323,7 +312,8 @@ export function CoursesProvider({ children }) {
     <CoursesContext.Provider value={{
       courses,
       purchases, progress, favorites,
-      buyCourse, requestPurchase, approvePurchase, denyPurchase, completeLesson, toggleFavorite,
+      requestPurchase, approvePurchase, denyPurchase, completeLesson, toggleFavorite,
+      refreshMyPurchases,
       getProgress, hasCourse, isFavorite, isPending,
       updateCourse, addCourse, deleteCourse,
       addLesson, updateLesson, deleteLesson,
@@ -332,4 +322,5 @@ export function CoursesProvider({ children }) {
       {children}
     </CoursesContext.Provider>
   );
-}export const useCourses = () => useContext(CoursesContext);
+}
+export const useCourses = () => useContext(CoursesContext);
