@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useCourses } from '../../context/CoursesContext';
+import { usePurchases } from '../../context/PurchaseContext';
 import { formatMoney } from '../../utils/currency';
 
 export default function AdminRequests() {
-  const { getPendingRequests, approvePurchase, denyPurchase } = useCourses();
+  const { getPendingRequests, approvePurchase, denyPurchase } = usePurchases();
   const [requests, setRequests] = useState([]);
   const [page, setPage] = useState(1);
   const [limit] = useState(10);

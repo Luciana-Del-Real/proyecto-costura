@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { useCourses } from '../context/CoursesContext';
+import { useCourseCatalog } from '../context/CourseCatalogContext';
 import CourseCard from '../components/CourseCard';
 
 const levels = ['Todos', 'Principiante', 'Intermedio', 'Avanzado'];
 
 export default function Courses() {
-  const { courses } = useCourses();
+  const { courses } = useCourseCatalog();
   const [search, setSearch] = useState('');
   const [level, setLevel] = useState('Todos');
 

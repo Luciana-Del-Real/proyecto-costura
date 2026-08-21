@@ -1,8 +1,8 @@
-import { useCourses } from '../../context/CoursesContext';
+import { useCourseCatalog } from '../../context/CourseCatalogContext';
 import { Link } from 'react-router-dom';
 
 export default function AdminCourses() {
-  const { courses, deleteCourse } = useCourses();
+  const { courses, deleteCourse } = useCourseCatalog();
   
   return (
     <div className="min-h-screen bg-[#F9F5F0]">

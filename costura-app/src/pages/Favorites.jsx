@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom';
-import { useCourses } from '../context/CoursesContext';
+import { useCourseCatalog } from '../context/CourseCatalogContext';
+import { useFavorites } from '../context/FavoritesContext';
 import CourseCard from '../components/CourseCard';
 
 export default function Favorites() {
-  const { favorites, courses } = useCourses();
+  const { favorites } = useFavorites();
+  const { courses } = useCourseCatalog();
   const favCourses = courses.filter(c => favorites.includes(c.id));
 
   return (

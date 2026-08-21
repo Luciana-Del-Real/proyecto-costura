@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useCourses } from '../../context/CoursesContext';
+import { useCourseCatalog } from '../../context/CourseCatalogContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import { get, post, postForm, putForm, del } from '../../services/api';
 
@@ -9,7 +9,7 @@ const EMPTY_COURSE = {
 const EMPTY_LESSON = { title: '', duration: '', videoUrl: '' };
 
 export default function AdminCourseForm() {
-  const { addCourse, updateCourse } = useCourses();
+  const { addCourse, updateCourse } = useCourseCatalog();
   const { id } = useParams();
   const navigate = useNavigate();
   const isEditing = Boolean(id);

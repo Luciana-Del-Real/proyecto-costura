@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Video, Smartphone, Infinity as InfinityIcon, GraduationCap, Scissors, Feather, Palette, Shirt } from 'lucide-react';
 import { testimonials } from '../data/courses';
-import { useCourses } from '../context/CoursesContext';
+import { useCourseCatalog } from '../context/CourseCatalogContext';
 import CourseCard from '../components/CourseCard';
 import RevealSection from '../components/RevealSection';
 import { useInView } from '../hooks/useInView';
@@ -23,7 +23,7 @@ const delays = ['', 'reveal-delay-1', 'reveal-delay-2', 'reveal-delay-3'];
 
 
 export default function Home() {
-  const { courses } = useCourses();
+  const { courses } = useCourseCatalog();
   const featured = courses.slice(0, 3);
   const [daiaRef, daiaInView] = useInView(0.2);
 

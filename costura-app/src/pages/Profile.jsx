@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useCourses } from '../context/CoursesContext';
+import { usePurchases } from '../context/PurchaseContext';
 import { courses } from '../data/courses';
 import { getImageUrl } from '../utils/media';
 
 export default function Profile() {
   const { user, updateUser } = useAuth();
-  const { purchases } = useCourses();
+  const { purchases } = usePurchases();
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({ name: user?.name || '', email: user?.email || '' });
   const [saved, setSaved] = useState(false);

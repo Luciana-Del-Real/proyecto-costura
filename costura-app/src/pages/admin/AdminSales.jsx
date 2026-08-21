@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useCourses } from '../../context/CoursesContext';
+import { useCourseCatalog } from '../../context/CourseCatalogContext';
+import { usePurchases } from '../../context/PurchaseContext';
 import { sumByCurrency, formatMoney } from '../../utils/currency';
 import { getImageUrl } from '../../utils/media';
 
 export default function AdminSales() {
-  const { courses, getAllPurchases, getPendingRequests, approvePurchase, denyPurchase } = useCourses();
+  const { courses } = useCourseCatalog();
+  const { getAllPurchases, getPendingRequests, approvePurchase, denyPurchase } = usePurchases();
   const [allPurchases, setAllPurchases] = useState([]);
   const [pendingRequests, setPendingRequests] = useState([]);
   const [filter, setFilter] = useState('todos');

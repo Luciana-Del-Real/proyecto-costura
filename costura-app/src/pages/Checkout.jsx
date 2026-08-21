@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { useCourses } from '../context/CoursesContext';
+import { useCourseCatalog } from '../context/CourseCatalogContext';
+import { usePurchases } from '../context/PurchaseContext';
 import { useAuth } from '../context/AuthContext';
 import { getCoursePrice } from '../utils/currency';
 import { getImageUrl } from '../utils/media';
@@ -22,7 +23,8 @@ const PAYMENT_INFO = {
 
 export default function Checkout() {
   const { id } = useParams();
-  const { courses, hasCourse, isPending, requestPurchase } = useCourses();
+  const { courses } = useCourseCatalog();
+  const { hasCourse, isPending, requestPurchase } = usePurchases();
   const course = courses.find(c => String(c.id) === String(id));
   const [requested, setRequested] = useState(false);
   const [copied, setCopied] = useState('');

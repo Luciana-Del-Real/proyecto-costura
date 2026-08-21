@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { useCourses } from '../context/CoursesContext';
+import { useCourseCatalog } from '../context/CourseCatalogContext';
+import { usePurchases } from '../context/PurchaseContext';
+import { useProgress } from '../context/ProgressContext';
 import { useAuth } from '../context/AuthContext';
 import ReactPlayer from 'react-player';
 import { getImageUrl } from '../utils/media';
@@ -11,7 +13,9 @@ export default function CourseDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { courses, hasCourse, progress, getProgress, completeLesson } = useCourses();
+  const { courses } = useCourseCatalog();
+  const { hasCourse } = usePurchases();
+  const { progress, getProgress, completeLesson } = useProgress();
   const course = courses.find(c => String(c.id) === String(id));
 
   if (!course) {

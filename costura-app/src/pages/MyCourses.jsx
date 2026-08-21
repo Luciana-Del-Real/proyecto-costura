@@ -1,9 +1,13 @@
 import { Link } from 'react-router-dom';
-import { useCourses } from '../context/CoursesContext';
+import { useCourseCatalog } from '../context/CourseCatalogContext';
+import { usePurchases } from '../context/PurchaseContext';
+import { useProgress } from '../context/ProgressContext';
 import { getImageUrl } from '../utils/media';
 
 export default function MyCourses() {
-  const { purchases, getProgress, courses } = useCourses();
+  const { purchases } = usePurchases();
+  const { getProgress } = useProgress();
+  const { courses } = useCourseCatalog();
   const myCourses = courses.filter(c => purchases.includes(c.id));
 
   return (

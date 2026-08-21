@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useCourses } from '../context/CoursesContext';
+import { useCourseCatalog } from '../context/CourseCatalogContext';
+import { usePurchases } from '../context/PurchaseContext';
 import CourseCard from '../components/CourseCard';
 export default function Dashboard() {
   const { user } = useAuth();
-  const { purchases, courses } = useCourses();
+  const { purchases } = usePurchases();
+  const { courses } = useCourseCatalog();
 
   const myCourses = courses.filter(c => purchases.includes(c.id));
   const suggested = courses.filter(c => !purchases.includes(c.id)).slice(0, 3);
