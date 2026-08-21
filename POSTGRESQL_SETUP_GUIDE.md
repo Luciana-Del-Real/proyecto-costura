@@ -84,7 +84,7 @@ El backend debería iniciar en http://localhost:3000
 ```bash
 curl -X POST http://localhost:3000/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"admin@costura.app","password":"Admin123!"}'
+  -d '{"email":"<ADMIN_EMAIL>","password":"<ADMIN_PASSWORD>"}'
 ```
 
 ## 🔍 Solucionar problemas:

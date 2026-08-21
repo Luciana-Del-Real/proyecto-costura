@@ -207,7 +207,7 @@ npm run dev           # Start frontend
 - Backend API: http://localhost:3000/api
 - Frontend: http://localhost:5173
 - Prisma Studio: http://localhost:5555 (run: npm run db:studio)
-- Admin login: admin@costura.app / Admin123!
+- Admin login: created via seed with ADMIN_EMAIL / ADMIN_PASSWORD env (no default)
 
 ## Integration Status with Frontend
 

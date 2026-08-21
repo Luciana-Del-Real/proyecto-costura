@@ -120,13 +120,13 @@ docker-compose up -d
 ```bash
 # backend/.env
 DATABASE_URL="postgresql://costura_user:costura_password@localhost:5432/costura_db"
-JWT_SECRET="your-super-secret-key"
+JWT_SECRET="replace-with-a-long-random-secret"
 JWT_EXPIRATION="24h"
 NODE_ENV="development"
 PORT=3000
 CORS_ORIGIN="http://localhost:5173"
-ADMIN_EMAIL="admin@costura.app"
-ADMIN_PASSWORD="Admin123!"
+ADMIN_EMAIL="admin@example.com"
+ADMIN_PASSWORD="change-me-to-a-strong-password"
 ```
 
 ### Paso 4: Sincronizar Base de Datos
