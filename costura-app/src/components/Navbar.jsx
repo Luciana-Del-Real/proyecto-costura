@@ -111,7 +111,7 @@ export default function Navbar() {
                             <li key={n.id} className="border-b border-theme last:border-0">
                               <button
                                 onClick={() => { if (!n.read) markAsRead(n.id); }}
-                                className="w-full text-left px-4 py-3 hover:bg-soft transition-colors"
+                                className="w-full text-left px-4 py-3 hover:bg-bg-soft transition-colors"
                               >
                                 <p className="text-xs font-semibold text-theme flex items-center gap-2">
                                   {!n.read && <span className="w-2 h-2 rounded-full bg-[#B84A62] flex-shrink-0" />}
@@ -150,11 +150,11 @@ export default function Navbar() {
                       <p className="text-xs text-brown-accent truncate">{user.email}</p>
                     </div>
                     <Link to="/perfil" onClick={() => setProfileOpen(false)}
-                      className="flex items-center gap-2 px-4 py-2.5 text-sm text-theme hover:bg-soft transition-colors">
+                      className="flex items-center gap-2 px-4 py-2.5 text-sm text-theme hover:bg-bg-soft transition-colors">
                       👤 Mi perfil
                     </Link>
                     <Link to="/mis-cursos" onClick={() => setProfileOpen(false)}
-                      className="flex items-center gap-2 px-4 py-2.5 text-sm text-theme hover:bg-soft transition-colors">
+                      className="flex items-center gap-2 px-4 py-2.5 text-sm text-theme hover:bg-bg-soft transition-colors">
                       📚 Mis cursos
                     </Link>
                     <div className="border-t border-[#F5EFE6] py-3 px-3 mt-1">

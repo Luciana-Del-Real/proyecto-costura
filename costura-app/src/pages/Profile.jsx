@@ -136,7 +136,7 @@ export default function Profile() {
                   </div>
                 );
               })}
-              <div className="pt-2 flex justify-between text-sm font-semibold text-[#3D2B1F]">
+              <div className="pt-2 flex justify-between text-sm font-semibold text-text-ink">
                 <span>Total invertido</span>
                 <span>{formatMoney(totalInvested, user?.country === 'AUD' ? 'AUD' : 'ARS')}</span>
               </div>

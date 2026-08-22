@@ -4,26 +4,16 @@
 /* ==========================================================================
    ÍNDICE DE ESTE ARCHIVO (no mueve nada, es solo para ubicarte rápido)
    --------------------------------------------------------------------------
-   1. Variables de diseño (colores, tipografías, radios)               [~L15]
-   2. Tema de Tailwind (@theme)                                        [~L48]
-   3. Reset base (body, encabezados, botones, inputs)                  [~L57]
-   4. Animaciones (fade, reveal, stagger)                              [~L120]
-   5. ⚠️ OVERRIDES: mapeo de clases hex viejas -> variables (!important) [~L245]
-      Si cambiás un color en un componente y "no se ve", populariza
-      buscar acá primero: puede haber una regla con ese mismo hex
-      forzando otro color con !important.
-   6. Helpers / clases base reutilizables (.card, .btn-*, .btn-eye)     [~L285]
-   7. ⚠️ FORZADO GLOBAL de color en botones (afecta TODO <button>)      [~L305]
-      Ver nota en esa sección: es la causa más común de "edité el botón
-      y no cambió nada".
-   8. Utilidades semánticas (.text-theme, .bg-theme, .text-secondary)  [~L330]
-   9. Estilos de Auth (login/registro)                                 [~L360]
-   10. Hero / logo circular / tarjeta hero                             [~L420]
-   11. Sección "visual-style" (iconos, textos de presentación)         [~L450]
-   12. Paneles centrados por sección (bg-soft, bg-secondary, etc.)     [~L510]
-   13. Navbar sobre el hero (.nav-on-hero)                             [~L560]
-   14. Botones de filtro (niveles: Principiante/Intermedio/Avanzado)   [~L580]
-   15. Animación stagger de tarjetas                                   [~L605]
+   1. Tema de Tailwind (@theme static): tokens semánticos + animaciones   [~L15]
+   2. Legacy alias bridge (var(--brown*) -> tokens; PR3 quitó la paleta
+      black y las reglas .bg-black*; el resto vive hasta PR4/PR5)          [~L60]
+   3. Reset base (body, encabezados, inputs, tablas)                      [~L95]
+   4. Sistema de botones (.btn + variantes, PR2)                          [~L145]
+   5. Animaciones manuales (fade, reveal, stagger)                        [~L225]
+   6. ⚠️ OVERRIDES: shims hex -> variables para ADMIN (los públicos ya
+      migraron a tokens en PR3). Se eliminan en PR4.                      [~L330]
+   7. Helpers / clases base (.card, .text-theme, .bg-soft, .text-brown-*) [~L370]
+   8. Navbar sobre el hero (.nav-on-hero)                                 [~L430]
    ========================================================================== */
 
 /* Optional local font registration for `Simple Handmade`.
@@ -85,20 +75,16 @@
   /* Shadows */
   --shadow-soft: 0 4px 15px rgba(107, 76, 59, 0.08);
   --shadow-card: 0 12px 30px rgba(78, 109, 91, 0.08);
-
-  /* Animations */
-  --animate-fade-up: fadeUp 0.5s ease both;
-  --animate-fade-in: fadeIn 0.4s ease both;
-  --animate-slide-down: slideDown 0.2s ease both;
-  --animate-stagger: slideUpFade 0.6s ease-out forwards;
 }
 
 /* ==========================================================================
    LEGACY ALIAS BRIDGE (transitional)
    Maps the old variable names onto the new semantic tokens so the remaining
-   override/helper rules (removed in PR2/PR3) keep resolving during PR1.
-   Removed together with those rules. Unused legacy vars (--bg-gradient,
-   --cta, --accent-font, --handmade-font) were deleted instead of aliased.
+   override/helper rules (removed in PR4) keep resolving. PR3 removed the
+   black palette (--black*) together with the .bg-black* helper rules and
+   the forced footer.bg-black utility override; Tailwind's own bg-black now
+   resolves to the --color-black token (#1D1D1B). Unused legacy vars
+   (--bg-gradient, --cta, --accent-font, --handmade-font) stay deleted.
    ========================================================================== */
 :root {
   --bg: var(--color-bg-surface);
@@ -123,15 +109,6 @@
   --heading-font: var(--font-display);
   --subtitle-font: var(--font-serif);
   --body-font: var(--font-body);
-
-  /* Black palette retained ONLY because the kept footer/helper rules
-     (footer.bg-black, .bg-black*) still reference it in PR1. Removed with
-     those rules in PR2/PR3. */
-  --black: #000000;
-  --black-soft: #2e2820;
-  --black-dark: #110b08;
-  --black-muted: #0f0702;
-  --black-accent: #000000;
 }
 
 @layer base {
@@ -148,30 +125,18 @@
 
   h1, h2, h3 {
     font-family: var(--heading-font);
-    color: var(--secondary);
     margin-top: 0;
     margin-bottom: 0.6rem;
     line-height: 1.08;
     /* Open-question resolution (PR1): headings default to sentence-case.
        Brand displays (.font-bebas, .title, .visual-title, logo spans) keep
-       their own uppercase. */
+       their own uppercase. PR3: no forced heading color — JSX sets colors
+       explicitly (text-[#6B4C3B], text-theme, etc.) and utilities win. */
   }
 
-  img, .object-cover {
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    transition: var(--transition);
-  }
-
-  /* Superficie uniforme: aplicar borde redondeado y sombra consistente a tarjetas/panels */
-  /* Evitar aplicar a secciones de layout (section, main, header, footer) para no crear cajas pesadas */
-  .bg-white, .card, .surface, .panel, .panel-card, .rounded-xl, .rounded-2xl {
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    transition: var(--transition);
-    border: 1px solid rgba(0,0,0,0.06);
-    background-clip: padding-box;
-  }
+  /* Superficie uniforme: PR3 removed the global card/bg-white/rounded
+     border+shadow rule — utilities win. .card/.card-soft carry their own
+     treatment below; components style their own surfaces explicitly. */
 
   a, button {
     transition: var(--transition);
@@ -179,25 +144,17 @@
   }
 
   /* Estilo base unificado para botones/CTAs (aplicado globalmente) */
-  /* ⚠️ ATENCIÓN: esta regla aplica a TODOS los <button> del proyecto, en
-     cualquier página o componente, salvo que el botón tenga la clase
-     "custom-btn". Si le cambiás el color/fondo a un botón en un componente
-     y no ves el cambio, es casi seguro por esto: el fondo/color que pusiste
-     está siendo pisado acá abajo. Para que un botón use SU PROPIO estilo,
-     agregale la clase "custom-btn" (ver ejemplo en AdminCourses.jsx). */
-  /* PR2 (button-system): this global rule was REMOVED. Buttons are styled
-     ONLY by explicit `.btn` classes (see @layer components below). */
+  /* ⚠️ ATENCIÓN: PR2 (button-system) removed the global button rule.
+     Buttons are styled ONLY by explicit `.btn` classes (see @layer
+     components below). PR3: stale escape-hatch comment removed. */
 
   /* Color de acento para elementos de énfasis */
   .text-accent, .accent, .badge-accent {
     color: var(--accent);
   }
 
-  /* Dejar que Tailwind controle paddings por defecto; aumentar márgenes donde convenga */
-  .mb-6 { margin-bottom: 1.5rem !important; }
-
-  /* Borde más suave */
-  .border { border-color: rgba(0,0,0,0.06) !important; }
+  /* PR3: removed .mb-6 and .border !important overrides — Tailwind's own
+     mb-6 utility and border utilities win (REQ-2 utilities-win). */
 
   /* Ajustes para tablas y cards */
   table { border-collapse: separate; border-spacing: 0 0.6rem; }
@@ -395,63 +352,33 @@
 .stagger-item:nth-child(6) { animation: fadeUp 0.5s ease 0.55s both; }
 
 /* Theme overrides for legacy hex-based Tailwind utilities (map old hex to new variables) */
-/* ⚠️ ATENCIÓN: todo lo de acá abajo usa selectores tipo [class*="bg-[#F5EFE6]"].
-   Eso significa que SI un componente usa ese hex exacto como clase de Tailwind
-   (ej. bg-[#F5EFE6]), el color que se ve NO es el que puso Tailwind, sino el
-   que dice acá, forzado con !important. Si editás un color en un componente
-   y ves que "no cambia nada", revisá primero si ese hex está listado acá abajo. */
-/* Pastel / beige backgrounds -> rosa suave */
-[class*="bg-[#F5EFE6]"] { background-color: var(--soft) !important; }
-[class*="bg-[#FFF4E5]"] { background-color: var(--soft) !important; }
+/* ⚠️ ATENCIÓN: PR3 deleted the DEAD shims (no JSX consumer) and migrated the
+   PUBLIC pages' live hexes to tokens (bg-bg-surface, text-text-ink, ...).
+   What remains below is ONLY for ADMIN pages (they migrate in PR4). Si
+   editás un color en un componente y ves que "no cambia nada", revisá si el
+   hex está listado acá abajo (todavía forzado con !important para admin). */
+
+/* Pastel / beige backgrounds -> rosa suave (ADMIN only, PR4) */
 [class*="bg-[#F9F5F0]"] { background-color: var(--soft) !important; }
 [class*="bg-[#EAF0EA]"] { background-color: var(--soft) !important; }
 [class*="bg-[#F5E8E2]"] { background-color: var(--soft) !important; }
 [class*="bg-[#EDE4D6]"] { background-color: var(--soft) !important; }
 
-/* Borders */
+/* Borders (ADMIN only, PR4) */
 [class*="border-[#EDE4D6]"] { border-color: var(--border) !important; }
-[class*="border-[#F3CAA8]"] { border-color: var(--border) !important; }
 
-/* Text color mappings */
-/* Brown-ref rules that would ACTIVATE dormant overrides and change live
-   rendering were DELETED in PR1 to preserve visual parity (e.g.
-   text-[#6B4C3B]/[#A08060]/[#A85E42]); PR4 hex-sweep migrates JSX hexes
-   to tokens instead. */
+/* Text color mappings (ADMIN only, PR4) */
 [class*="text-[#3D2B1F]"] { color: var(--text) !important; }
-[class*="text-[#874A1D]"] { color: var(--color-text-ink) !important; }
-[class*="text-[#C4A882]"] { color: var(--color-bg-soft) !important; }
 
-/* Greens */
+/* Greens (ADMIN only, PR4) */
 [class*="bg-[#7A9E7E]"] { background-color: var(--secondary) !important; }
-[class*="bg-[#25D366]"] { background-color: var(--secondary) !important; }
 [class*="bg-[#7A9E7E]"]:hover { background-color: var(--secondary-dark) !important; }
-[class*="hover:bg-[#5E8262]"]:hover { background-color: var(--secondary-dark) !important; }
-
-/* Hover adjustments */
-[class*="text[#A08060]"]:hover { color: var(--color-accent) !important; }
-
-/* Brown / admin palette */
-[class*="bg-[#3D2B1F]"] { background-color: var(--color-text-ink) !important; }
-[class*="bg-[#2E1F15]"] { background-color: var(--color-text-muted) !important; }
-[class*="bg-[#4A2E1A]"] { background-color: var(--color-text-muted) !important; }
-[class*="bg-[#5C3D2A]"] { background-color: var(--color-text-cocoa) !important; }
-[class*="border-[#5C3D2A]"] { border-color: var(--color-text-cocoa) !important; }
-[class*="text-[#C4785A]"] { color: var(--color-accent) !important; }
-
-/* Fallback for inline styles */
-[style*="#F5EFE6"] { background-color: var(--soft) !important; }
-[style*="#F9F5F0"] { background-color: var(--soft) !important; }
-[style*="#FFF4E5"] { background-color: var(--soft) !important; }
-[style*="#EDE4D6"] { background-color: var(--soft) !important; }
 
 /* Helpers / base component classes */
 .card, .card-soft { background: var(--soft); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1rem; color: var(--text); }
-.input-default { background: var(--color-white); border: 1px solid var(--border); border-radius: calc(var(--radius) - 4px); padding: 0.7rem 0.85rem; }
 
-/* PR2 (button-system): legacy button helpers (.btn-primary, .btn-theme,
-   .btn-ghost, .icon-btn, .btn-eye, forced-white, .btn.text-white hacks)
-   were REMOVED. Buttons now use the canonical .btn classes in
-   @layer components. */
+/* PR3: .input-default deleted (no consumers); legacy button helpers were
+   removed in PR2 (buttons use the canonical .btn classes). */
 
 /* Simple helper classes for components to opt into theme */
 .text-theme { color: var(--text); }
@@ -462,22 +389,13 @@
 .border-theme { border-color: var(--border) !important; }
 .bg-secondary { background-color: var(--secondary) !important; }
 .text-secondary { color: var(--secondary) !important; }
-.text-accent { color: var(--accent) !important; }
-.bg-accent { background-color: var(--accent) !important; }
 
-/* Hover utilities para utilidades semánticas (escape de colon para nombres tipo Tailwind) */
-.hover\:bg-secondary:hover { background-color: var(--secondary) !important; }
-.hover\:bg-secondary-dark:hover { background-color: var(--secondary-dark) !important; }
-.hover\:bg-soft:hover { background-color: var(--soft) !important; }
-.hover\:bg-accent:hover { background-color: var(--accent) !important; }
-.hover\:bg-brown-dark:hover { background-color: var(--color-text-cocoa) !important; }
-.hover\:bg-brown-muted:hover { background-color: var(--color-text-muted) !important; }
-.hover\:text-accent:hover { color: var(--accent) !important; }
-
-/* Utilidades para la paleta 'brown' (footer/admin) */
-.bg-black { background-color: var(--black) !important; }
-.bg-black-dark { background-color: var(--black-dark) !important; }
-.bg-black-muted { background-color: var(--black-muted) !important; }
+/* PR3: removed duplicate .text-accent/.bg-accent !important helpers —
+   Tailwind generates text-accent/bg-accent from the --color-accent token
+   (utilities win). Removed dead .hover\:bg-* helpers: Navbar/CourseDetail
+   now use the generated hover:bg-bg-soft utilities. Removed .bg-black*
+   helpers — bg-black now resolves to the --color-black token (#1D1D1B);
+   footer keeps its white-text rule below. */
 
 /* Nota: la definición del fondo de auth se aplica más abajo (con un degradado verde). */
 
@@ -487,106 +405,39 @@ footer.bg-black * {
   color: #ffffff !important;
 }
 
-/* Helpers para layout de autenticación */
-.auth-logo-wrapper {
-  width: 16rem;
-  height: 16rem;
-  border-radius: 9999px;
-}
+/* PR3: removed dead auth helpers (.auth-logo-wrapper, .auth-tabs, .auth-tab,
+   .auth-input, .auth-card, .auth-left, and their media queries) — no JSX
+   consumers remain; Auth.jsx uses utility classes now. */
 
-/* Fondo verde difuminado invertido (de derecha a izquierda) para las páginas de auth */
+/* Fondo neutro para las páginas de auth (todavía usado por admin) */
 .auth-page-bg {
   /* Fondo neutro: blanco/crema según variable */
   background-color: var(--auth-bg);
   background-image: none;
 }
 
-/* Estilos para los tabs y inputs en la tarjeta de auth (para parecerse al mockup) */
-.auth-tabs { padding: 6px; }
-.auth-tab { border-radius: var(--radius); font-weight: 600; padding: 0.5rem 0; text-transform: none; }
+/* PR3: kept the semantic brown helpers that ARE used (text-brown-accent,
+   text-brown-muted, border-brown-dark); removed text-brown-soft and
+   border-brown-accent (no consumers). */
 
-/* Active tab: fondo verde seco + texto blanco */
-.auth-tab.active { background: var(--secondary); color: #ffffff; box-shadow: none; }
-
-/* Inactive variant for register/login when not active: texto fucsia o línea fina abajo */
-.auth-tab.register-tab:not(.active) { color: var(--accent); background: transparent; border-bottom: 2px solid var(--accent); }
-.auth-tab.login-tab:not(.active) { color: var(--text); background: transparent; }
-
-.auth-input {
-  background: #ffffff;
-  border: 2px solid rgba(29,29,27,0.06);
-  padding: 10px 12px;
-  border-radius: var(--radius);
-  box-shadow: none;
-  box-sizing: border-box;
-}
-.auth-input:focus { outline: none; border-color: var(--secondary); box-shadow: 0 6px 18px rgba(78,109,91,0.06); }
-
-.auth-card { padding: 40px; }
-.auth-card .bg-accent { background: var(--accent) !important; }
-
-/* PR2 (button-system): .auth-card button/.btn radius override removed —
-   the canonical .btn geometry owns button radius now. */
-.auth-card .w-full { max-width: 100%; }
-
-@media (max-width: 768px) {
-  .auth-card { padding: 40px; position: relative; }
-
-  /* Limitar ligeramente el ancho de inputs y botones dentro de la tarjeta para que "respiren" */
-  .auth-card .w-full { max-width: 92%; margin-left: auto; margin-right: auto; display: block; }
-}
-
-/* Centrar logo vertical y horizontalmente en la columna izquierda */
-.auth-left {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-@media (max-width: 768px) {
-  .auth-logo-wrapper { width: 11rem; height: 11rem; margin: 0 auto; }
-  .auth-left { order: 2; text-align: center; display:block; }
-  .auth-card { order: 1; padding: 1.25rem; }
-}
-
-/* Asegurar que el logo no se estire y se muestre nítido dentro del wrapper */
-.auth-logo-wrapper img { display: block; max-width: 72%; max-height: 72%; width: auto; height: auto; }
-
-/* Mejora de contraste para CTA en auth */
-.auth-card .bg-accent { background-color: var(--accent) !important; color: #fff !important; }
-
-.text-brown-soft { color: var(--color-bg-soft) !important; }
 .text-brown-muted { color: var(--color-text-muted) !important; }
 .text-brown-accent { color: var(--color-accent) !important; }
 .border-brown-dark { border-color: var(--color-text-cocoa) !important; }
-.border-brown-accent { border-color: var(--color-accent) !important; }
 
-/* Level badge helpers (mantener visual original pero con clases semánticas) */
-.lvl-principiante { background-color: #EAF0EA !important; color: #5E8262 !important; }
-.lvl-intermedio { background-color: #F5E8E2 !important; color: #A85E42 !important; }
-.lvl-avanzado { background-color: #EDE4D6 !important; color: var(--color-text-ink) !important; }
-.bg-beige { background-color: #EDE4D6 !important; }
-.fill-brown-accent { fill: var(--color-accent) !important; }
+/* PR3: removed dead level-badge helpers (.lvl-*), .bg-beige and
+   .fill-brown-accent (no JSX consumers). */
 
 /* Tipografía: utilidades para aplicar las familias solicitadas */
 .font-bebas { font-family: var(--font-bebas); letter-spacing: 0.08em; text-transform: uppercase; }
-.font-playfair { font-family: var(--font-playfair); }
 .font-montserrat { font-family: var(--font-montserrat); }
-.font-dancing { font-family: var(--font-dancing); }
-.font-handmade { font-family: var(--font-handmade); }
 
-/* Title utility - large headings */
-.title { font-family: var(--font-bebas); color: var(--secondary); text-transform: uppercase; }
+/* PR3: removed unused .font-playfair/.font-dancing/.font-handmade,
+   .title/.accent-script/.subtitle/.body-text — no JSX consumers. */
 
-/* Accent script for informal highlights */
-.accent-script { font-family: var(--font-dancing); color: var(--accent); }
-
-/* Atajos semánticos */
+/* Atajo semántico */
 .heading-display { font-family: var(--heading-font); }
-.subtitle { font-family: var(--subtitle-font); }
-.body-text { font-family: var(--body-font); }
 
-/* Hero: tarjeta translúcida y logo circular */
+/* Hero: tarjeta translúcida (usado por Home.jsx) */
 .hero-card {
   background: rgba(255, 255, 255, 0.52);
   -webkit-backdrop-filter: blur(8px);
@@ -603,90 +454,10 @@ footer.bg-black * {
 }
 .hero-card .badge { display: inline-block; }
 .hero-card .actions { display:flex; gap:0.75rem; justify-content:center; align-items:center; margin-top:0.5rem; }
-/* PR2 (button-system): old .btn-hero pill rule removed; .btn-hero is now a
-   size modifier on top of .btn (same 12px radius, wider presence). */
-.logo-circle {
-  width: 180px;
-  height: 180px;
-  border-radius: 9999px;
-  background: rgba(255,255,255,0.96);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 14px 40px rgba(0,0,0,0.16);
-  border: 6px solid rgba(255,255,255,0.9);
-  text-align: center;
-}
-@media (min-width: 768px) {
-  .logo-circle { width: 220px; height: 220px; }
-}
 
-/* Visual style section - inspirado en el ejemplo (iconos, raya punteada, acentos) */
-.visual-style {
-  padding-top: 1rem;
-  padding-bottom: 2rem;
-}
-.visual-style .section-top-dash {
-  border-top: 3px dashed var(--soft);
-  padding-top: 0.75rem;
-  margin-bottom: 1rem;
-}
-.visual-title {
-  font-family: var(--font-bebas);
-  color: var(--secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  display: inline-block;
-  font-size: 1rem;
-  position: relative;
-  margin-bottom: 0.5rem;
-}
-.visual-title::after {
-  content: '';
-  display: block;
-  height: 4px;
-  width: 56px;
-  background: var(--soft);
-  margin-top: 6px;
-  border-radius: 4px;
-}
-.visual-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-  align-items: center;
-}
-.visual-icons {
-  display:flex;
-  gap:1rem;
-  align-items:center;
-  justify-content:flex-start;
-  flex-wrap:wrap;
-}
-.visual-icon {
-  width:72px;
-  height:72px;
-  border-radius:9999px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background: transparent;
-  border: 2px solid var(--soft);
-  color: var(--secondary);
-  font-size: 1.8rem;
-  padding: 8px;
-}
-.visual-icon:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 30px rgba(0,0,0,0.08);
-}
-.visual-icon.small {
-  width:56px;
-  height:56px;
-  font-size:1.5rem;
-  padding:6px;
-}
-/* Nuevo: contenedor de iconos embebidos en tarjetas */
+/* PR3: removed dead .logo-circle helpers (no JSX consumers). */
+
+/* Icon helpers usados por Home.jsx (beneficios y especialidades) */
 .icon-wrapper {
   width: 70px;
   height: 70px;
@@ -712,118 +483,16 @@ footer.bg-black * {
   transform: scale(1.08);
   box-shadow: 0 10px 30px rgba(0,0,0,0.08);
 }
-.visual-text p {
-  color: var(--text);
-  font-family: var(--body-font);
-  line-height: 1.6;
-}
-.visual-text .lead {
-  color: var(--text);
-  font-weight:600;
-  font-size:1rem;
-  margin-bottom:0.5rem;
-}
-.visual-text .muted {
-  color: rgba(29,29,27,0.66);
-}
-.visual-style .icons-compact {
-  display:flex;
-  gap:1.25rem;
-  align-items:center;
-}
-.icon-outline-pink { border-color: var(--soft); color: var(--accent); }
-.icon-outline-green { border-color: var(--secondary); color: var(--secondary); }
 
-/* ------------------------------------------------------------------
-   Secciones como tarjetas centradas (fondo general blanco/crema)
-   En lugar de pintar toda la sección con color, dibujamos un panel
-   centrado y sutil por detrás del contenido para generar relieve.
-   Afecta a: section.bg-soft, section.bg-secondary, section.bg-accent,
-   section.bg-brown, section.bg-brown-muted
-   ------------------------------------------------------------------ */
+/* PR3: removed the dead .visual-* section (visual-style, visual-title,
+   visual-row, visual-icons, visual-icon, visual-text, icons-compact,
+   icon-outline-pink/green, section-top-dash) — no JSX consumers. */
 
-:root {
-  --section-card-max-width: 1100px;
-  --section-card-shadow: 0 8px 30px rgba(0,0,0,0.04);
-  --section-card-border: 1px solid rgba(0,0,0,0.03);
-}
-
-/* Mantener fondo de la página blanco/crema suave (usa --bg definido arriba) */
-body { background-color: var(--bg); }
-
-/* Transformar fondos de sección en paneles centrados y sutiles */
-section.bg-soft,
-section.bg-secondary,
-section.bg-accent,
-section.bg-brown,
-section.bg-brown-muted {
-  background: transparent !important;
-  position: relative;
-  overflow: visible;
-}
-
-section.bg-soft::before,
-section.bg-secondary::before,
-section.bg-accent::before,
-section.bg-brown::before,
-section.bg-brown-muted::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  top: 0.6rem;
-  bottom: 0.6rem;
-  width: min(var(--section-card-max-width), calc(100% - 2rem));
-  border-radius: calc(var(--radius) + 6px);
-  box-shadow: var(--section-card-shadow);
-  border: var(--section-card-border);
-  z-index: 0;
-  pointer-events: none;
-}
-
-/* Tintes desactivados: dejamos el panel sin tintes para que las cards
-  (fondo rosa) sean la fuente del color. Mantener el pseudo-elemento
-  para sombra solamente. */
-section.bg-soft::before { background: transparent; }
-section.bg-secondary::before { background: transparent; }
-section.bg-accent::before { background: transparent; }
-section.bg-brown::before { background: transparent; }
-section.bg-brown-muted::before { background: transparent; }
-
-/* Elevar el contenido por encima del panel */
-section.bg-soft > div,
-section.bg-secondary > div,
-section.bg-accent > div,
-section.bg-brown > div,
-section.bg-brown-muted > div {
-  position: relative;
-  z-index: 1;
-}
-
-@media (max-width: 640px) {
-  section.bg-soft::before,
-  section.bg-secondary::before,
-  section.bg-accent::before {
-    top: 0.4rem;
-    bottom: 0.4rem;
-    width: calc(100% - 1rem);
-    border-radius: calc(var(--radius) + 4px);
-  }
-}
-
-/* Utilidad: forzar un card centrado dentro de cualquier sección */
-.section-centered-card > .card,
-.section-centered-card > .card-soft {
-  margin-left: auto;
-  margin-right: auto;
-  max-width: var(--section-card-max-width);
-  background: var(--soft);
-  box-shadow: var(--section-card-shadow);
-  border: var(--section-card-border);
-  color: var(--text);
-}
-
-
+/* PR3: removed the dead section.bg-* centered-panel machinery and
+   .section-centered-card (zero <section> consumers; sections in JSX use
+   bg-white/rounded-2xl/border-theme utilities). Also removed the duplicate
+   `body` background rule and the redundant media-query duplicate of
+   section.hero-no-sep + section (base rule below covers all widths). */
 
 @media (max-width: 640px) {
   section + section {
@@ -836,12 +505,6 @@ section.bg-brown-muted > div {
 /* Excluir el separador inmediatamente después del hero */
 section.hero-no-sep + section {
   border-top: none !important;
-}
-
-@media (max-width: 640px) {
-  section.hero-no-sep + section {
-    border-top: none !important;
-  }
 }
 
 /* Navbar variant for when it overlays the hero background */
@@ -861,14 +524,13 @@ section.hero-no-sep + section {
 .nav-on-hero .text-secondary,
 .nav-on-hero a,
 .nav-on-hero .nav-link,
-.nav-on-hero .text-brown-soft,
 .nav-on-hero .text-brown-muted {
   color: var(--color-text-cocoa) !important;
 }
 .nav-on-hero .border-theme { border-color: transparent !important; }
 .nav-on-hero .bg-theme { background: transparent !important; }
-/* PR2 (button-system): .nav-on-hero .btn color rule removed — the .btn
-   variants carry their own color (btn-primary white on sage, ghost/icon ink). */
+/* PR3: .nav-on-hero .text-brown-soft selector dropped (class deleted). The
+   .btn variants carry their own color (btn-primary white on sage, ghost/icon ink). */
 
 /* When navbar overlays the hero, add top padding to the hero so content doesn't hide under the nav */
 .nav-on-hero + main .hero-no-sep {
@@ -879,13 +541,9 @@ section.hero-no-sep + section {
     padding-top: 3.5rem;
   }
 }
-/* ==========================================================================
-   CORRECCIÓN DE VISIBILIDAD: BOTONES DE FILTRO (NIVELES)
-   ========================================================================== */
-
-/* PR2 (button-system): the .filter-container button / .filter-btn block was
-   REMOVED. Level filters in Courses.jsx now use the canonical .btn classes
-   (.btn btn-primary active, .btn btn-ghost inactive), same 44px/12px shape. */
+/* Animación stagger de tarjetas (PR3: removed the stale filter-button
+   comment header — the .filter-container/.filter-btn block was removed
+   in PR2; level filters use the canonical .btn classes). */
 @keyframes slideUpFade {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
