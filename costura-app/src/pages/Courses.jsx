@@ -43,7 +43,7 @@ export default function Courses() {
               className={`btn text-sm tracking-wide transition-all duration-300 shadow-sm ${
                 level === l
                   ? 'btn-primary shadow-md scale-105'
-                  : 'btn-ghost bg-white text-primary border border-primary/30 hover:border-primary hover:bg-white'
+                  : 'btn-ghost border border-primary/30 hover:border-primary'
               }`}
             >
               {l}
