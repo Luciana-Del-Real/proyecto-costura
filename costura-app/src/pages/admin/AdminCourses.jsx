@@ -5,10 +5,10 @@ export default function AdminCourses() {
   const { courses, deleteCourse } = useCourseCatalog();
   
   return (
-    <div className="min-h-screen bg-[#F9F5F0]">
+    <div className="min-h-screen bg-bg-surface">
       <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
-        <div className="bg-[#F9F5F0] rounded-2xl shadow-sm border border-gray-100 px-4 py-10 animate-fade-up mt-5 mb-5 flex items-center justify-between">
-          <h1 className="text-3xl font-bold text-[#6B4C3B] m-0 p-0 leading-tight">Gestión de cursos</h1>
+        <div className="bg-bg-soft rounded-2xl shadow-sm border border-gray-100 px-4 py-10 animate-fade-up mt-5 mb-5 flex items-center justify-between">
+          <h1 className="text-3xl font-bold text-text-ink m-0 p-0 leading-tight">Gestión de cursos</h1>
           <Link 
             to="/admin/courses/new" 
             className="btn btn-primary text-sm"
@@ -19,9 +19,9 @@ export default function AdminCourses() {
 
         <div className="space-y-4">
           {courses.map((course) => (
-            <div key={course.id} className="bg-[#F9F5F0] rounded-2xl border border-[#EDE4D6] p-5 flex items-center gap-6 shadow-sm">
+            <div key={course.id} className="bg-bg-soft rounded-2xl border border-border p-5 flex items-center gap-6 shadow-sm">
               {/* Portada */}
-              <div className="w-24 h-16 bg-[#EDE4D6] rounded-lg overflow-hidden flex-shrink-0">
+              <div className="w-24 h-16 bg-bg-soft rounded-lg overflow-hidden flex-shrink-0">
                 {course.image && <img 
                 src={`http://localhost:3000${course.image.startsWith('/') ? '' : '/'}${course.image}`} 
                 alt={course.title} 
@@ -30,7 +30,7 @@ export default function AdminCourses() {
 
               {/* Información */}
               <div className="flex-grow">
-                <h3 className="font-bold text-black text-xl">{course.title}</h3>
+                <h3 className="font-bold text-text-ink text-xl">{course.title}</h3>
                 <div className="flex gap-4 text-xs text-black/70 font-medium">
                   <span>ARS: ${course.priceARS}</span>
                   <span>AUD: ${course.priceAUD}</span>
@@ -50,7 +50,7 @@ export default function AdminCourses() {
                     await deleteCourse(course.id);
                   }
                 }} 
-                className="btn bg-danger text-white text-sm hover:bg-danger-hover"
+                className="btn btn-danger text-sm"
               >
                 Eliminar
               </button>

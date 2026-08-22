@@ -10,8 +10,9 @@
    3. Reset base (body, encabezados, inputs, tablas)                      [~L95]
    4. Sistema de botones (.btn + variantes, PR2)                          [~L145]
    5. Animaciones manuales (fade, reveal, stagger)                        [~L225]
-   6. ⚠️ OVERRIDES: shims hex -> variables para ADMIN (los públicos ya
-      migraron a tokens en PR3). Se eliminan en PR4.                      [~L330]
+   6. Helpers / clases base (.card, .text-theme, .bg-soft, .text-brown-*) [~L330]
+      (los shims hex -> variables de ADMIN se eliminaron en PR4: grep
+       `[class*=` sobre src/ = 0)
    7. Helpers / clases base (.card, .text-theme, .bg-soft, .text-brown-*) [~L370]
    8. Navbar sobre el hero (.nav-on-hero)                                 [~L430]
    ========================================================================== */
@@ -228,6 +229,14 @@
     background-color: var(--color-accent-hover);
   }
 
+  .btn-danger {
+    background-color: var(--color-danger);
+    color: #ffffff;
+  }
+  .btn-danger:hover:not(:disabled) {
+    background-color: var(--color-danger-hover);
+  }
+
   .btn-ghost {
     background-color: transparent;
     color: var(--color-text-ink);
@@ -352,27 +361,13 @@
 .stagger-item:nth-child(6) { animation: fadeUp 0.5s ease 0.55s both; }
 
 /* Theme overrides for legacy hex-based Tailwind utilities (map old hex to new variables) */
-/* ⚠️ ATENCIÓN: PR3 deleted the DEAD shims (no JSX consumer) and migrated the
-   PUBLIC pages' live hexes to tokens (bg-bg-surface, text-text-ink, ...).
-   What remains below is ONLY for ADMIN pages (they migrate in PR4). Si
-   editás un color en un componente y ves que "no cambia nada", revisá si el
-   hex está listado acá abajo (todavía forzado con !important para admin). */
-
-/* Pastel / beige backgrounds -> rosa suave (ADMIN only, PR4) */
-[class*="bg-[#F9F5F0]"] { background-color: var(--soft) !important; }
-[class*="bg-[#EAF0EA]"] { background-color: var(--soft) !important; }
-[class*="bg-[#F5E8E2]"] { background-color: var(--soft) !important; }
-[class*="bg-[#EDE4D6]"] { background-color: var(--soft) !important; }
-
-/* Borders (ADMIN only, PR4) */
-[class*="border-[#EDE4D6]"] { border-color: var(--border) !important; }
-
-/* Text color mappings (ADMIN only, PR4) */
-[class*="text-[#3D2B1F]"] { color: var(--text) !important; }
-
-/* Greens (ADMIN only, PR4) */
-[class*="bg-[#7A9E7E]"] { background-color: var(--secondary) !important; }
-[class*="bg-[#7A9E7E]"]:hover { background-color: var(--secondary-dark) !important; }
+/* ⚠️ ATENCIÓN: PR3 deleted the DEAD shims and migrated the PUBLIC pages' live
+   hexes to tokens. PR4 (global-reset-admin) migrated every ADMIN hex usage to
+   semantic utilities (bg-bg-surface, bg-bg-soft, bg-primary-soft, text-text-ink,
+   text-success, bg-primary, border-border) and deleted the remaining 8 shim
+   rules below — grep `[class*=` over src/ now returns zero. Si editás un color
+   en un componente y ves que "no cambia nada", revisá si quedó un hex suelto
+   listado en PR5 hex-sweep, no acá. */
 
 /* Helpers / base component classes */
 .card, .card-soft { background: var(--soft); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1rem; color: var(--text); }
@@ -409,7 +404,9 @@ footer.bg-black * {
    .auth-input, .auth-card, .auth-left, and their media queries) — no JSX
    consumers remain; Auth.jsx uses utility classes now. */
 
-/* Fondo neutro para las páginas de auth (todavía usado por admin) */
+/* Fondo neutro para las páginas de auth (PR4: AdminDashboard migró al
+   token bg-bg-surface; sin consumidores desde PR4 — PR5 hex-sweep puede
+   eliminar esta regla junto con la limpieza de CSS muerto) */
 .auth-page-bg {
   /* Fondo neutro: blanco/crema según variable */
   background-color: var(--auth-bg);

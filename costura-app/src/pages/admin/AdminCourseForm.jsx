@@ -222,70 +222,70 @@ export default function AdminCourseForm() {
   };
 
   if (loadingCourse) {
-    return <div className="min-h-screen bg-[#F9F5F0] flex items-center justify-center"><span className="text-4xl">🧵</span></div>;
+    return <div className="min-h-screen bg-bg-surface flex items-center justify-center"><span className="text-4xl">🧵</span></div>;
   }
 
   return (
-    <div className="min-h-screen bg-[#F9F5F0] py-12 px-4">
+    <div className="min-h-screen bg-bg-surface py-12 px-4">
       <div className="max-w-2xl mx-auto">
         <button onClick={() => navigate('/admin/cursos')} className="btn btn-ghost mb-6 text-sm">← Volver al listado</button>
 
-        <div className="bg-white rounded-2xl border border-[#EDE4D6] p-8 shadow-sm mb-8">
-          <h2 className="font-bold text-[#6B4C3B] text-2xl mb-8 border-b pb-4">{isEditing ? 'Editar curso' : 'Nuevo curso'}</h2>
-          {saved && <div className="bg-[#EAF0EA] text-[#5E8262] text-sm rounded-xl px-4 py-3 mb-4">✓ Guardado correctamente</div>}
+        <div className="bg-white rounded-2xl border border-border p-8 shadow-sm mb-8">
+          <h2 className="font-bold text-text-ink text-2xl mb-8 border-b pb-4">{isEditing ? 'Editar curso' : 'Nuevo curso'}</h2>
+          {saved && <div className="bg-primary-soft text-success text-sm rounded-xl px-4 py-3 mb-4">✓ Guardado correctamente</div>}
 
           <form onSubmit={handleSaveCourse} className="space-y-6">
             <div>
               <label className="block text-sm font-bold text-black mb-1.5">Título y Descripción</label>
-              <input required value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder="Título" className="w-full border-2 border-[#EDE4D6] rounded-xl px-4 py-3 mb-3" />
-              <textarea required value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="Descripción general" className="w-full border-2 border-[#EDE4D6] rounded-xl px-4 py-3" />
+              <input required value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder="Título" className="w-full border-2 border-border rounded-xl px-4 py-3 mb-3" />
+              <textarea required value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="Descripción general" className="w-full border-2 border-border rounded-xl px-4 py-3" />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <input type="number" required min={0} placeholder="Precio ARS" value={form.priceARS} onChange={e => setForm({ ...form, priceARS: e.target.value })} className="border-2 border-[#EDE4D6] rounded-xl px-4 py-3" />
-              <input type="number" required min={0} placeholder="Precio AUD" value={form.priceAUD} onChange={e => setForm({ ...form, priceAUD: e.target.value })} className="border-2 border-[#EDE4D6] rounded-xl px-4 py-3" />
+              <input type="number" required min={0} placeholder="Precio ARS" value={form.priceARS} onChange={e => setForm({ ...form, priceARS: e.target.value })} className="border-2 border-border rounded-xl px-4 py-3" />
+              <input type="number" required min={0} placeholder="Precio AUD" value={form.priceAUD} onChange={e => setForm({ ...form, priceAUD: e.target.value })} className="border-2 border-border rounded-xl px-4 py-3" />
             </div>
 
             <div>
               <label className="block text-sm font-bold text-black mb-1.5">Nivel</label>
-              <select value={form.level} onChange={e => setForm({ ...form, level: e.target.value })} className="w-full border-2 border-[#EDE4D6] rounded-xl px-4 py-3">
+              <select value={form.level} onChange={e => setForm({ ...form, level: e.target.value })} className="w-full border-2 border-border rounded-xl px-4 py-3">
                 <option>Principiante</option>
                 <option>Intermedio</option>
                 <option>Avanzado</option>
               </select>
             </div>
 
-            <div className="bg-[#F9F5F0] p-4 rounded-xl border border-[#EDE4D6] md:col-span-2">
+            <div className="bg-bg-soft p-4 rounded-xl border border-border md:col-span-2">
               <label className="block text-sm font-bold text-black mb-2">🖼️ Portada</label>
               <input 
                 type="file" 
                 lang="es" 
                 accept="image/*" 
                 onChange={e => setImageFile(e.target.files[0])} 
-                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#4E6D5B] file:text-white hover:file:bg-[#3e5849] cursor-pointer" 
+                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-hover cursor-pointer" 
               />
             </div>
             {/* PDFs adicionales del curso (multiples) */}
-            <div className="bg-[#F9F5F0] p-4 rounded-xl border border-[#EDE4D6]">
+            <div className="bg-bg-soft p-4 rounded-xl border border-border">
               <label className="block text-sm font-bold text-black mb-2">📎 PDF's (podés elegir varios)</label>
               <input
                 type="file"
                 accept=".pdf"
                 multiple
                 onChange={e => setCoursePdfFiles(Array.from(e.target.files))}
-                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#4E6D5B] file:text-white hover:file:bg-[#3e5849] cursor-pointer"
+                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-hover cursor-pointer"
               />
               {coursePdfFiles.length > 0 && (
-                <p className="text-xs text-[#6B4C3B] mt-2">{coursePdfFiles.length} archivo(s) seleccionados para subir al guardar.</p>
+                <p className="text-xs text-text-ink mt-2">{coursePdfFiles.length} archivo(s) seleccionados para subir al guardar.</p>
               )}
 
               {isEditing && course?.attachments?.length > 0 && (
                 <div className="mt-4 space-y-2">
-                  <p className="text-xs font-bold text-[#6B4C3B]">PDFs ya subidos:</p>
+                  <p className="text-xs font-bold text-text-ink">PDFs ya subidos:</p>
                   {course.attachments.map(att => (
-                    <div key={att.id} className="flex items-center justify-between bg-white rounded-lg px-3 py-2 border border-[#EDE4D6]">
-                      <a href={`http://localhost:3000${att.url}`} target="_blank" rel="noreferrer" className="text-sm text-[#4E6D5B] underline truncate">{att.filename}</a>
-                      <button type="button" onClick={() => handleDeleteCourseAttachment(att.id)} className="text-red-600 text-xs font-bold hover:underline flex-shrink-0 ml-3">Eliminar</button>
+                    <div key={att.id} className="flex items-center justify-between bg-white rounded-lg px-3 py-2 border border-border">
+                      <a href={`http://localhost:3000${att.url}`} target="_blank" rel="noreferrer" className="text-sm text-primary underline truncate">{att.filename}</a>
+                      <button type="button" onClick={() => handleDeleteCourseAttachment(att.id)} className="text-danger text-xs font-bold hover:underline flex-shrink-0 ml-3">Eliminar</button>
                     </div>
                   ))}
                 </div>
@@ -300,54 +300,54 @@ export default function AdminCourseForm() {
 
         {/* Lecciones: solo disponible una vez que el curso ya existe */}
         {isEditing && (
-          <div className="bg-white rounded-2xl border border-[#EDE4D6] p-8 shadow-sm">
-            <h3 className="font-bold text-[#6B4C3B] text-xl mb-6 border-b pb-4">Lecciones</h3>
+          <div className="bg-white rounded-2xl border border-border p-8 shadow-sm">
+            <h3 className="font-bold text-text-ink text-xl mb-6 border-b pb-4">Lecciones</h3>
 
             <div className="space-y-4 mb-8">
               {(course?.lessons || []).map((lesson) => (
-                <div key={lesson.id} className="bg-[#F9F5F0] p-4 rounded-xl space-y-3 border border-[#EDE4D6]">
+                <div key={lesson.id} className="bg-bg-soft p-4 rounded-xl space-y-3 border border-border">
                   <input
                     placeholder="Título"
                     value={getLessonField(lesson, 'title')}
                     onChange={e => setLessonField(lesson.id, 'title', e.target.value)}
-                    className="w-full p-2 rounded-lg border border-[#EDE4D6]"
+                    className="w-full p-2 rounded-lg border border-border"
                   />
                   <textarea
                     placeholder="Descripción"
                     value={getLessonField(lesson, 'description') || ''}
                     onChange={e => setLessonField(lesson.id, 'description', e.target.value)}
-                    className="w-full p-2 rounded-lg border border-[#EDE4D6] h-20"
+                    className="w-full p-2 rounded-lg border border-border h-20"
                   />
                   <div className="grid grid-cols-2 gap-3">
                     <input
                       placeholder="Duración (ej. 12 min)"
                       value={getLessonField(lesson, 'duration')}
                       onChange={e => setLessonField(lesson.id, 'duration', e.target.value)}
-                      className="w-full p-2 rounded-lg border border-[#EDE4D6]"
+                      className="w-full p-2 rounded-lg border border-border"
                     />
                     <input
                       placeholder="Link de video"
                       value={getLessonField(lesson, 'videoUrl')}
                       onChange={e => setLessonField(lesson.id, 'videoUrl', e.target.value)}
-                      className="w-full p-2 rounded-lg border border-[#EDE4D6]"
+                      className="w-full p-2 rounded-lg border border-border"
                     />
                   </div>
 
-                  <div className="p-3 bg-white rounded-xl border border-[#EDE4D6]">
-                    <label className="block text-xs font-bold text-[#6B4C3B] mb-2">📎 Agregar PDFs a esta lección (podés elegir varios)</label>
+                  <div className="p-3 bg-white rounded-xl border border-border">
+                    <label className="block text-xs font-bold text-text-ink mb-2">📎 Agregar PDFs a esta lección (podés elegir varios)</label>
                     <input
                       type="file"
                       accept=".pdf"
                       multiple
                       onChange={e => setLessonPdfFiles(prev => ({ ...prev, [lesson.id]: Array.from(e.target.files) }))}
-                      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#4E6D5B] file:text-white hover:file:bg-[#3e5849] cursor-pointer"
+                      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-hover cursor-pointer"
                     />
                     {lesson.attachments?.length > 0 && (
                       <div className="mt-3 space-y-2">
                         {lesson.attachments.map(att => (
-                          <div key={att.id} className="flex items-center justify-between bg-[#F9F5F0] rounded-lg px-3 py-2">
-                            <a href={`http://localhost:3000${att.url}`} target="_blank" rel="noreferrer" className="text-sm text-[#4E6D5B] underline truncate">{att.filename}</a>
-                            <button type="button" onClick={() => handleDeleteLessonAttachment(att.id)} className="text-red-600 text-xs font-bold hover:underline flex-shrink-0 ml-3">Eliminar</button>
+                          <div key={att.id} className="flex items-center justify-between bg-bg-soft rounded-lg px-3 py-2">
+                            <a href={`http://localhost:3000${att.url}`} target="_blank" rel="noreferrer" className="text-sm text-primary underline truncate">{att.filename}</a>
+                            <button type="button" onClick={() => handleDeleteLessonAttachment(att.id)} className="text-danger text-xs font-bold hover:underline flex-shrink-0 ml-3">Eliminar</button>
                           </div>
                         ))}
                       </div>
@@ -355,19 +355,19 @@ export default function AdminCourseForm() {
                   </div>
 
                   <div className="flex items-center justify-between pt-1">
-                    <button type="button" onClick={() => handleDeleteLesson(lesson.id)} className="btn bg-danger text-white text-sm hover:bg-danger-hover">Eliminar lección</button>
+                    <button type="button" onClick={() => handleDeleteLesson(lesson.id)} className="btn btn-danger text-sm">Eliminar lección</button>
                     <button
                       type="button"
                       onClick={() => handleSaveLesson(lesson)}
                       disabled={savingLessonId === lesson.id}
-                      className="btn btn-ghost text-sm text-red-600"
+                      className="btn btn-ghost text-sm text-danger"
                     >
                       {savingLessonId === lesson.id ? 'Guardando...' : 'Guardar lección'}
                     </button>
                   </div>
 
                   {/* Preguntas de alumnas sobre esta lección */}
-                  <div className="pt-2 border-t border-[#EDE4D6]">
+                  <div className="pt-2 border-t border-border">
                     <button
                       type="button"
                       onClick={() => toggleQuestions(lesson.id)}
@@ -377,19 +377,19 @@ export default function AdminCourseForm() {
                     </button>
 
                     {openQuestionsFor === lesson.id && (
-                      <div className="mt-3 bg-white rounded-xl border border-[#EDE4D6] p-3">
+                      <div className="mt-3 bg-white rounded-xl border border-border p-3">
                         {commentsByLesson[lesson.id]?.loading && (
-                          <p className="text-xs text-[#6B4C3B]">Cargando...</p>
+                          <p className="text-xs text-text-ink">Cargando...</p>
                         )}
                         {commentsByLesson[lesson.id]?.loaded && commentsByLesson[lesson.id].items.length === 0 && (
-                          <p className="text-xs text-[#6B4C3B]">Todavía no hay preguntas en esta lección.</p>
+                          <p className="text-xs text-text-ink">Todavía no hay preguntas en esta lección.</p>
                         )}
                         {commentsByLesson[lesson.id]?.loaded && commentsByLesson[lesson.id].items.length > 0 && (
                           <div className="space-y-2 max-h-56 overflow-y-auto pr-1 mb-3">
                             {commentsByLesson[lesson.id].items.map(c => (
-                              <div key={c.id} className={`rounded-lg p-2.5 text-xs border ${c.user?.role === 'ADMIN' ? 'bg-[#EAF0EA] border-[#cfe0cf]' : 'bg-[#F9F5F0] border-[#EDE4D6]'}`}>
-                                <p className="font-bold text-[#6B4C3B] mb-0.5">{c.user?.role === 'ADMIN' ? 'Vos (profesora)' : c.user?.name}</p>
-                                <p className="text-[#3D2B1F]">{c.message}</p>
+                              <div key={c.id} className={`rounded-lg p-2.5 text-xs border ${c.user?.role === 'ADMIN' ? 'bg-primary-soft border-[#cfe0cf]' : 'bg-bg-soft border-border'}`}>
+                                <p className="font-bold text-text-ink mb-0.5">{c.user?.role === 'ADMIN' ? 'Vos (profesora)' : c.user?.name}</p>
+                                <p className="text-text-ink">{c.message}</p>
                               </div>
                             ))}
                           </div>
@@ -399,7 +399,7 @@ export default function AdminCourseForm() {
                             value={replyDraft[lesson.id] || ''}
                             onChange={e => setReplyDraft(prev => ({ ...prev, [lesson.id]: e.target.value }))}
                             placeholder="Responder..."
-                            className="flex-1 p-2 rounded-lg border border-[#EDE4D6] text-sm"
+                            className="flex-1 p-2 rounded-lg border border-border text-sm"
                           />
                           <button
                             type="button"
@@ -417,26 +417,26 @@ export default function AdminCourseForm() {
               ))}
 
               {(!course?.lessons || course.lessons.length === 0) && (
-                <p className="text-sm text-[#6B4C3B]">Este curso todavía no tiene lecciones.</p>
+                <p className="text-sm text-text-ink">Este curso todavía no tiene lecciones.</p>
               )}
             </div>
 
             {/* Nueva lección */}
-            <form onSubmit={handleCreateLesson} className="bg-[#F9F5F0] p-4 rounded-xl space-y-3 border-2 border-dashed border-[#EDE4D6]">
-              <p className="text-sm font-bold text-[#6B4C3B]">+ Agregar nueva lección</p>
+            <form onSubmit={handleCreateLesson} className="bg-bg-soft p-4 rounded-xl space-y-3 border-2 border-dashed border-border">
+              <p className="text-sm font-bold text-text-ink">+ Agregar nueva lección</p>
               <input
                 required
                 placeholder="Título"
                 value={newLesson.title}
                 onChange={e => setNewLesson({ ...newLesson, title: e.target.value })}
-                className="w-full p-2 rounded-lg border border-[#EDE4D6]"
+                className="w-full p-2 rounded-lg border border-border"
               />
               <textarea
                 required
                 placeholder="Descripción"
                 value={newLesson.description || ''}
                 onChange={e => setNewLesson({ ...newLesson, description: e.target.value })}
-                className="w-full p-2 rounded-lg border border-[#EDE4D6] h-20"
+                className="w-full p-2 rounded-lg border border-border h-20"
               />
               <div className="grid grid-cols-2 gap-3">
                 <input
@@ -444,24 +444,24 @@ export default function AdminCourseForm() {
                   placeholder="Duración (ej. 12 min)"
                   value={newLesson.duration}
                   onChange={e => setNewLesson({ ...newLesson, duration: e.target.value })}
-                  className="w-full p-2 rounded-lg border border-[#EDE4D6]"
+                  className="w-full p-2 rounded-lg border border-border"
                 />
                 <input
                   required
                   placeholder="Link de video"
                   value={newLesson.videoUrl}
                   onChange={e => setNewLesson({ ...newLesson, videoUrl: e.target.value })}
-                  className="w-full p-2 rounded-lg border border-[#EDE4D6]"
+                  className="w-full p-2 rounded-lg border border-border"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-[#6B4C3B] mb-2">📎 PDFs de la lección (podés elegir varios)</label>
+                <label className="block text-xs font-bold text-text-ink mb-2">📎 PDFs de la lección (podés elegir varios)</label>
                 <input
                   type="file"
                   accept=".pdf"
                   multiple
                   onChange={e => setNewLessonPdfs(Array.from(e.target.files))}
-                  className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#4E6D5B] file:text-white hover:file:bg-[#3e5849] cursor-pointer"
+                  className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-hover cursor-pointer"
                 />
               </div>
               <button type="submit" disabled={creatingLesson} className="btn btn-primary w-full text-sm">
