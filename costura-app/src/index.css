@@ -65,6 +65,7 @@
   --color-danger-hover: #BF5B6B; /* destructive hover */
   --color-success: #5E8262; /* positive feedback */
   --color-success-hover: #4E6D5B; /* success hover */
+  --color-ring: rgba(78, 109, 91, 0.4); /* focus-visible ring for .btn (PR2) */
 
   /* Tailwind default-color parity keepers (utilities used across JSX) */
   --color-white: #FFFFFF;
@@ -184,43 +185,8 @@
      y no ves el cambio, es casi seguro por esto: el fondo/color que pusiste
      está siendo pisado acá abajo. Para que un botón use SU PROPIO estilo,
      agregale la clase "custom-btn" (ver ejemplo en AdminCourses.jsx). */
-  button:not(.custom-btn), 
-  a.btn:not(.custom-btn), 
-  input[type="button"]:not(.custom-btn),
-  input[type="submit"],
-  input[type="reset"],
-  .btn,
-  [role="button"] {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    background: var(--secondary);
-    color: #ffffff;
-    border: none;
-    padding: 0.75rem 1.125rem;
-    border-radius: calc(var(--radius) - 2px);
-    cursor: pointer;
-    box-shadow: var(--shadow);
-    font-weight: 700;
-    letter-spacing: 0.2px;
-    text-decoration: none;
-    -webkit-appearance: none;
-    appearance: none;
-    vertical-align: middle;
-    line-height: 1;
-    transition: var(--transition);
-  }
-
-  button:hover,
-  a.btn:hover,
-  .btn:hover,
-  input[type="button"]:hover,
-  input[type="submit"]:hover,
-  input[type="reset"]:hover,
-  [role="button"]:hover {
-    background-color: var(--secondary-dark);
-  }
+  /* PR2 (button-system): this global rule was REMOVED. Buttons are styled
+     ONLY by explicit `.btn` classes (see @layer components below). */
 
   /* Color de acento para elementos de énfasis */
   .text-accent, .accent, .badge-accent {
@@ -243,6 +209,91 @@
     border: 1px solid rgba(0,0,0,0.09);
     padding: 0.7rem 0.85rem;
     font-family: var(--body-font);
+  }
+}
+
+/* ==========================================================================
+   BUTTON SYSTEM (PR2 — user directive: all buttons same shape)
+   One canonical geometry, applied ONLY via explicit `.btn` classes.
+   No global button rule exists anymore; variants differ only in color.
+   ========================================================================== */
+@layer components {
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    height: 2.75rem;              /* 44px canonical */
+    padding: 0 1.5rem;
+    border-radius: 12px;
+    font-weight: 500;
+    line-height: 1;
+    cursor: pointer;
+    border: 1px solid transparent;
+    font-family: var(--body-font);
+    text-decoration: none;
+    white-space: nowrap;
+    vertical-align: middle;
+    -webkit-appearance: none;
+    appearance: none;
+    transition: background-color 0.18s ease, color 0.18s ease,
+                border-color 0.18s ease, box-shadow 0.18s ease,
+                opacity 0.18s ease, transform 0.18s ease;
+  }
+
+  .btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--color-ring);
+  }
+
+  .btn:disabled,
+  .btn[disabled],
+  .btn[aria-disabled="true"] {
+    opacity: 0.55;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .btn-primary {
+    background-color: var(--color-primary);
+    color: #ffffff;
+  }
+  .btn-primary:hover:not(:disabled) {
+    background-color: var(--color-primary-hover);
+  }
+
+  .btn-accent {
+    background-color: var(--color-accent);
+    color: #ffffff;
+  }
+  .btn-accent:hover:not(:disabled) {
+    background-color: var(--color-accent-hover);
+  }
+
+  .btn-ghost {
+    background-color: transparent;
+    color: var(--color-text-ink);
+    border-color: var(--color-border);
+  }
+  .btn-ghost:hover:not(:disabled) {
+    background-color: var(--color-bg-soft);
+  }
+
+  .btn-icon {
+    width: 2.75rem;               /* square icon button, same radius */
+    padding: 0;
+    background-color: transparent;
+    color: var(--color-text-ink);
+    border-color: transparent;
+  }
+  .btn-icon:hover:not(:disabled) {
+    background-color: var(--color-bg-soft);
+  }
+
+  /* Hero CTA — same canonical shape, wider presence */
+  .btn-hero {
+    min-width: 150px;
+    font-size: 1.05rem;
   }
 }
 
@@ -395,74 +446,15 @@
 /* Helpers / base component classes */
 .card, .card-soft { background: var(--soft); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1rem; color: var(--text); }
 .input-default { background: var(--color-white); border: 1px solid var(--border); border-radius: calc(var(--radius) - 4px); padding: 0.7rem 0.85rem; }
-.btn-primary, .btn-theme { background: var(--secondary); color: #fff; }
-.btn-primary:hover, .btn-theme:hover { background: var(--secondary-dark); }
-.btn-ghost { background: transparent; color: var(--text); border: none; }
-.icon-btn { background: transparent; border: none; padding: 0; display:inline-flex; align-items:center; justify-content:center; }
-.btn-eye {
-  background: transparent !important;
-  border: none !important;
-  padding: 0 !important;
-  box-shadow: none !important;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  cursor: pointer;
-  color: var(--text) !important;
-}
-.btn-eye svg { width: 1.1rem; height: 1.1rem; }
-.btn-eye:hover { opacity: 0.95; background: transparent !important; }
+
+/* PR2 (button-system): legacy button helpers (.btn-primary, .btn-theme,
+   .btn-ghost, .icon-btn, .btn-eye, forced-white, .btn.text-white hacks)
+   were REMOVED. Buttons now use the canonical .btn classes in
+   @layer components. */
 
 /* Simple helper classes for components to opt into theme */
 .text-theme { color: var(--text); }
 .bg-theme { background-color: var(--surface); }
-.btn-theme { background-color: var(--secondary); color: #fff; padding: 0.6rem 1rem; border-radius: calc(var(--radius) - 2px); transition: background-color 0.18s ease; }
-.btn-theme:hover { background-color: var(--secondary-dark); }
-
-/* Forzar texto blanco en botones para consistencia visual (excluye variantes transparentes/iconos) */
-/* ⚠️ NOTA: a diferencia de la regla de arriba, ESTA no respeta ".custom-btn"
-   (no tiene ":not(.custom-btn)"). Es decir: aunque le agregues "custom-btn"
-   a un botón, el TEXTO igual se fuerza a blanco acá. Si necesitás un botón
-   con texto de otro color, hoy por hoy hay que agregar una excepción acá
-   también (avisame y lo ajustamos con cuidado para no romper los demás botones). */
-button,
-a.btn,
-input[type="button"],
-input[type="submit"],
-input[type="reset"],
-.btn,
-.btn-theme,
-.btn-primary,
-.btn-hero,
-[role="button"] {
-  color: #ffffff !important;
-}
-
-/* Convertir utilidad text-white a color de texto por defecto (negro),
-   pero preservar blanco dentro de botones/links con clase .btn */
-.text-white { color: var(--text) !important; }
-
-button .text-white,
-a.btn .text-white,
-.btn .text-white,
-.btn-theme .text-white,
-.btn-primary .text-white,
-.btn-hero .text-white,
-[role="button"] .text-white {
-  color: #ffffff !important;
-}
-
-/* Casos donde la clase text-white se aplica en el mismo elemento que .btn */
-.btn.text-white,
-button.text-white,
-a.btn.text-white,
-.btn-theme.text-white,
-.btn-primary.text-white,
-.btn-hero.text-white {
-  color: #ffffff !important;
-}
 
 /* Semantic helpers for replacing hard-coded hex colors */
 .bg-soft { background-color: var(--soft) !important; color: var(--text) !important; }
@@ -532,11 +524,8 @@ footer.bg-black * {
 .auth-card { padding: 40px; }
 .auth-card .bg-accent { background: var(--accent) !important; }
 
-/* Botones dentro de la tarjeta: radio unificado y dimensionado */
-.auth-card button,
-.auth-card .btn {
-  border-radius: var(--radius) !important;
-}
+/* PR2 (button-system): .auth-card button/.btn radius override removed —
+   the canonical .btn geometry owns button radius now. */
 .auth-card .w-full { max-width: 100%; }
 
 @media (max-width: 768px) {
@@ -613,15 +602,8 @@ footer.bg-black * {
 }
 .hero-card .badge { display: inline-block; }
 .hero-card .actions { display:flex; gap:0.75rem; justify-content:center; align-items:center; margin-top:0.5rem; }
-.btn-hero {
-  padding: 0.75rem 1.25rem;
-  border-radius: 9999px;
-  min-width: 150px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.05rem;
-}
+/* PR2 (button-system): old .btn-hero pill rule removed; .btn-hero is now a
+   size modifier on top of .btn (same 12px radius, wider presence). */
 .logo-circle {
   width: 180px;
   height: 180px;
@@ -884,8 +866,8 @@ section.hero-no-sep + section {
 }
 .nav-on-hero .border-theme { border-color: transparent !important; }
 .nav-on-hero .bg-theme { background: transparent !important; }
-.nav-on-hero .btn { color: #ffffff !important; }
-.nav-on-hero .btn:hover { opacity: 0.95; }
+/* PR2 (button-system): .nav-on-hero .btn color rule removed — the .btn
+   variants carry their own color (btn-primary white on sage, ghost/icon ink). */
 
 /* When navbar overlays the hero, add top padding to the hero so content doesn't hide under the nav */
 .nav-on-hero + main .hero-no-sep {
@@ -900,48 +882,9 @@ section.hero-no-sep + section {
    CORRECCIÓN DE VISIBILIDAD: BOTONES DE FILTRO (NIVELES)
    ========================================================================== */
 
-/* Contenedor que agrupa los botones */
-.filter-container {
-    display: flex !important;
-    gap: 12px !important;
-    margin: 25px 0 !important;
-    flex-wrap: wrap;
-    align-items: center;
-}
-
-/* Estilo para que el texto "Principiante, Intermedio, Avanzado" se VEA */
-.filter-container button,
-.filter-btn {
-    background-color: #FFFFFF !important; /* Fondo blanco para resaltar sobre el rosa */
-    color: #4E6D5B ;       /* Texto en color verde GROW */
-    border: 1px solid rgba(78, 109, 91, 0.2) !important;
-    padding: 10px 24px !important;
-    border-radius: 25px !important;       /* Bordes redondeados sutiles */
-    font-size: 14px !important;
-    font-weight: 600 !important;          /* Mayor grosor para que sea legible */
-    cursor: pointer;
-    display: inline-block !important;
-    visibility: visible !important;       /* Fuerza a que no se oculte */
-    opacity: 1 !important;
-    transition: all 0.3s ease;
-}
-
-/* Efecto al pasar el mouse por arriba */
-.filter-container button:hover,
-.filter-btn:hover {
-    background-color: #FDF8FA !important; 
-    color: #E83E8C !important;            /* El texto cambia a fucsia */
-    border-color: #E83E8C !important;
-}
-
-/* El botón activo (en este caso "Todos") queda resaltado en verde */
-.filter-container button.active,
-.filter-btn.active {
-    background-color: #4E6D5B !important; /* Fondo verde */
-    color: #FFFFFF !important;            /* Texto blanco */
-    border-color: #4E6D5B !important;
-    box-shadow: 0 4px 10px rgba(78, 109, 91, 0.2);
-}
+/* PR2 (button-system): the .filter-container button / .filter-btn block was
+   REMOVED. Level filters in Courses.jsx now use the canonical .btn classes
+   (.btn btn-primary active, .btn btn-ghost inactive), same 44px/12px shape. */
 @keyframes slideUpFade {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }

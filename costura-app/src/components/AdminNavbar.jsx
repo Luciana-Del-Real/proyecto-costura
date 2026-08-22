@@ -55,13 +55,13 @@ export default function AdminNavbar() {
               <p className="text-theme text-[10px] uppercase">Administradora</p>
             </div>
             <button onClick={handleLogout}
-              className="text-xs text-white bg-[#4E6D5B] border border-accent px-3 py-1.5 rounded-lg hover:bg-accent/5 transition-colors">
+              className="btn btn-primary text-xs">
               Salir
             </button>
           </div>
 
           {/* Mobile menu button */}
-          <button className="md:hidden text-theme" onClick={() => setMenuOpen(!menuOpen)}>
+          <button className="btn btn-icon md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {menuOpen
                 ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -79,7 +79,7 @@ export default function AdminNavbar() {
                 <span>{link.icon}</span>{link.label}
               </Link>
             ))}
-            <button onClick={handleLogout} className="text-left text-accent text-sm mt-2 border-t border-theme pt-2">
+            <button onClick={handleLogout} className="btn btn-ghost w-full justify-start text-sm text-accent mt-2 border-t border-theme pt-0">
               Cerrar sesión
             </button>
           </div>

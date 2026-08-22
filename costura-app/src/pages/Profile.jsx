@@ -47,7 +47,7 @@ export default function Profile() {
           <div className="flex items-center justify-between mb-5">
             <h2 className="font-bold text-[#6B4C3B] text-xl">Información personal</h2>
             {!editing && (
-              <button onClick={() => setEditing(true)} className="text-theme text-sm font-medium">
+              <button onClick={() => setEditing(true)} className="btn btn-ghost text-sm">
                 Editar
               </button>
             )}
@@ -82,10 +82,10 @@ export default function Profile() {
                 />
               </div>
               <div className="flex gap-3">
-                <button type="submit" className="bg-secondary text-white px-5 py-2 rounded-xl text-sm font-medium hover:bg-[#5E8262] transition-colors">
+                <button type="submit" className="btn btn-primary text-sm">
                   Guardar cambios
                 </button>
-                <button type="button" onClick={() => { setEditing(false); setForm({ name: user.name, email: user.email }); }} className="text-theme text-sm">
+                <button type="button" onClick={() => { setEditing(false); setForm({ name: user.name, email: user.email }); }} className="btn btn-ghost text-sm">
                   Cancelar
                 </button>
               </div>

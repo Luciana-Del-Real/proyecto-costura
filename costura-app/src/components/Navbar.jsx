@@ -68,7 +68,7 @@ export default function Navbar() {
                 <button
                   onClick={() => setNotifOpen(!notifOpen)}
                   aria-label="Notificaciones"
-                  className="relative flex items-center justify-center w-9 h-9 rounded-full hover:bg-soft transition-colors"
+                  className="btn btn-icon relative"
                 >
                   <svg className="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
@@ -87,7 +87,7 @@ export default function Navbar() {
                       {unreadCount > 0 && (
                         <button
                           onClick={() => markAllAsRead()}
-                          className="text-xs font-medium text-secondary hover:text-secondary-dark transition-colors"
+                          className="btn btn-ghost text-xs text-secondary hover:text-secondary-dark"
                         >
                           Marcar todas como leídas
                         </button>
@@ -132,7 +132,7 @@ export default function Navbar() {
               <div className="relative" ref={profileRef}>
                 <button
                   onClick={() => setProfileOpen(!profileOpen)}
-                  className="flex py-1 rounded-lg items-center text-white text-sm font-medium"
+                  className="btn btn-ghost text-sm"
                 >
                   <div className="w-7 h-7 bg-soft rounded-full flex items-center justify-center text-black text-xs font-bold">
                     {user.name?.charAt(0).toUpperCase()}
@@ -159,7 +159,7 @@ export default function Navbar() {
                     </Link>
                     <div className="border-t border-[#F5EFE6] py-3 px-3 mt-1">
                       <button onClick={handleLogout}
-                        className="w-full items-center px-4 py-1.5 text-sm text-white font-medium bg-[#A63D57]">
+                        className="btn btn-accent w-full text-sm">
                         Cerrar sesión
                       </button>
                     </div>
@@ -173,7 +173,7 @@ export default function Navbar() {
                 <>
                   <Link to="/cursos" className="text-black transition-colors text-xl">Cursos</Link>
                   <Link to="/login" className="text-xl text-black transition-colors">Iniciar sesión</Link>
-                  <Link to="/registro" className="btn-theme text-white transition-all duration-200 hover:scale-105 text-sm">
+                  <Link to="/registro" className="btn btn-primary text-sm transition-all duration-200 hover:scale-105">
                     Registrarse
                   </Link>
                 </>
@@ -184,7 +184,7 @@ export default function Navbar() {
         )}
 
         {/* Mobile toggle */}
-        <button className="md:hidden text-theme" onClick={() => setMenuOpen(!menuOpen)}>
+        <button className="btn btn-icon md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             {menuOpen
               ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -217,14 +217,14 @@ export default function Navbar() {
               <Link to="/favoritos" onClick={() => setMenuOpen(false)} className="text-theme text-sm font-medium">Favoritos</Link>
               <Link to="/perfil" onClick={() => setMenuOpen(false)} className="text-theme text-sm font-medium">Perfil</Link>
               <Link to="/mis-cursos" onClick={() => setMenuOpen(false)} className="text-theme text-sm font-medium">Mis cursos</Link>
-              <button onClick={handleLogout} className="text-left text-brown-accent text-sm font-medium">Cerrar sesión</button>
+              <button onClick={handleLogout} className="btn btn-ghost w-full justify-start text-sm text-accent">Cerrar sesión</button>
             </>
           ) : (
             !isSimplified && (
               <>
                   <Link to="/cursos" onClick={() => setMenuOpen(false)} className="text-black text-sm font-medium">Cursos</Link>
                   <Link to="/login" onClick={() => setMenuOpen(false)} className="text-black text-sm font-medium">Iniciar sesión</Link>
-                <Link to="/registro" onClick={() => setMenuOpen(false)} className="text-sm bg-secondary text-white px-4 py-1.5 rounded-full hover:bg-secondary-dark transition-colors btn">Registrarse</Link>
+                <Link to="/registro" onClick={() => setMenuOpen(false)} className="btn btn-primary text-sm">Registrarse</Link>
               </>
             )
           )}

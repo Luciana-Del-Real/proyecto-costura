@@ -60,7 +60,7 @@ export default function ForgotPassword() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#4E6D5B] text-white py-3 rounded-xl font-semibold hover:bg-[#3d5648] transition-colors disabled:opacity-60"
+            className="btn btn-primary w-full font-semibold"
           >
             {loading ? 'Enviando...' : 'Enviar instrucciones'}
           </button>

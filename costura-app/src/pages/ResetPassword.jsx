@@ -38,7 +38,7 @@ export default function ResetPassword() {
               className="w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-[#4E6D5B] outline-none"
               onChange={e => setForm({...form, confirmPassword: e.target.value})}
             />
-            <button className="w-full bg-[#4E6D5B] text-white py-3 rounded-xl font-semibold hover:bg-[#3D5749] transition-colors">
+            <button className="btn btn-primary w-full font-semibold">
               {loading ? 'Actualizando...' : 'Actualizar contraseña'}
             </button>
           </form>

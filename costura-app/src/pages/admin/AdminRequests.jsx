@@ -83,9 +83,9 @@ export default function AdminRequests() {
                   </div>
                   <div className="flex gap-2">
                     <button onClick={() => handleApprove(req.id)} disabled={processingId === req.id}
-                      className="px-3 py-1.5 text-xs bg-[#7A9E7E] text-white rounded-lg hover:bg-[#5E8262] disabled:opacity-50">{processingId === req.id ? 'Procesando...' : 'Aprobar'}</button>
+                      className="btn btn-primary text-xs">{processingId === req.id ? 'Procesando...' : 'Aprobar'}</button>
                     <button onClick={() => handleReject(req.id)} disabled={processingId === req.id}
-                      className="px-3 py-1.5 text-xs bg-[#EDE4D6] text-[#6B4C3B] rounded-lg hover:bg-[#D4C2B5] disabled:opacity-50">{processingId === req.id ? 'Procesando...' : 'Rechazar'}</button>
+                      className="btn btn-ghost text-xs bg-bg-soft text-text-ink hover:bg-border">{processingId === req.id ? 'Procesando...' : 'Rechazar'}</button>
                   </div>
                 </div>
               ))}
@@ -95,9 +95,9 @@ export default function AdminRequests() {
           <div className="flex items-center justify-between mt-6">
             <div className="flex gap-2">
               <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
-                className="bg-[#4E6D5B] text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-[#3d5a4a] transition-all shadow-sm">Anterior</button>
+                className="btn btn-primary text-xs shadow-sm">Anterior</button>
               <button onClick={() => setPage(p => p + 1)} disabled={requests.length < limit}
-                className="bg-[#4E6D5B] text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-[#3d5a4a] transition-all shadow-sm">Siguiente</button>
+                className="btn btn-primary text-xs shadow-sm">Siguiente</button>
             </div>
           </div>
         </div>

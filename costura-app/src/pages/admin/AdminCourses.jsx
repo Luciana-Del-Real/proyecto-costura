@@ -11,7 +11,7 @@ export default function AdminCourses() {
           <h1 className="text-3xl font-bold text-[#6B4C3B] m-0 p-0 leading-tight">Gestión de cursos</h1>
           <Link 
             to="/admin/courses/new" 
-            className="bg-[#4E6D5B] !text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-[#3d5a4a] transition-all"
+            className="btn btn-primary text-sm"
           >
             + Nuevo curso
           </Link>
@@ -40,7 +40,7 @@ export default function AdminCourses() {
               {/* Botón de acción */}
               <Link 
                 to={`/admin/courses/edit/${course.id}`} 
-                className="bg-[#4E6D5B] !text-white px-6 py-2 rounded-xl text-sm font-bold hover:bg-[#3d5a4a] transition-all"
+                className="btn btn-primary text-sm"
               >
                 Editar
               </Link>
@@ -50,7 +50,7 @@ export default function AdminCourses() {
                     await deleteCourse(course.id);
                   }
                 }} 
-                className="bg-[#bf6b6b] text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-[#bf5b6b] transition-colors"
+                className="btn bg-danger text-white text-sm hover:bg-danger-hover"
               >
                 Eliminar
               </button>

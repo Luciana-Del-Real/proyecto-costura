@@ -53,8 +53,8 @@ export default function Home() {
                 "Creemos que todas las personas pueden crear, incluso si empiezan desde cero."
               </p>
               <div className="animate-fade-up-delay-4 actions">
-                <Link to="/cursos" className="btn-theme btn-hero transition-all duration-200 hover:scale-105 active:scale-95">Ver cursos</Link>
-                <Link to="/registro" className="btn-theme btn-hero transition-all duration-200 hover:scale-105 active:scale-95">Registrarse gratis</Link>
+                <Link to="/cursos" className="btn btn-primary btn-hero transition-all duration-200 hover:scale-105 active:scale-95">Ver cursos</Link>
+                <Link to="/registro" className="btn btn-primary btn-hero transition-all duration-200 hover:scale-105 active:scale-95">Registrarse gratis</Link>
               </div>
             </div>
           </div>
@@ -170,8 +170,8 @@ export default function Home() {
         <RevealSection animation="reveal-scale">
             <div className="max-w-2xl mx-auto text-center">
               <h2 className="font-bold text-4xl text-black mb-4">En Grow, siempre hay un espacio para vos</h2>
-              <p className="text-white mb-8">Registrate gratis y comenzá tu primer curso hoy.</p>
-              <Link to="/registro" className="btn-theme btn-hero transition-all duration-200 hover:scale-105 active:scale-95">
+              <p className="text-theme mb-8">Registrate gratis y comenzá tu primer curso hoy.</p>
+              <Link to="/registro" className="btn btn-primary btn-hero transition-all duration-200 hover:scale-105 active:scale-95">
                 Empezar ahora
               </Link>
             </div>
