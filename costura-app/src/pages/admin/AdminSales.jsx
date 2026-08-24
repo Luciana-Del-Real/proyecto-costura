@@ -23,6 +23,23 @@ export default function AdminSales() {
       ? allPurchases
       : allPurchases.filter(p => p.course.id === filter);
 
+  const reload = async () => {
+    setAllPurchases(await getAllPurchases());
+    setPendingRequests(await getPendingRequests());
+  };
+
+  const handleReapprove = async (p) => {
+    if (!window.confirm(`¿Reaprobar el acceso de ${p.user.name} al curso ${p.course.title}?`)) return;
+    await approvePurchase(p.id);
+    await reload();
+  };
+
+  const handleDeny = async (p) => {
+    if (!window.confirm(`¿Denegar y revocar el acceso de ${p.user.name} al curso ${p.course.title}?`)) return;
+    await denyPurchase(p.id);
+    await reload();
+  };
+
   const revenueFiltered = sumByCurrency(filtered);
 
   // Ventas por curso para el mini gráfico (cantidad de ventas, ya que sumar
@@ -117,6 +134,7 @@ export default function AdminSales() {
                   <tr className="border-b border-gray-100 bg-gray-50/50">
                     <th className="text-left px-8 py-4 text-text-ink font-bold text-xs uppercase tracking-wider">Alumna</th>
                     <th className="text-left px-4 py-4 text-text-ink font-bold text-xs uppercase tracking-wider hidden md:table-cell">Curso</th>
+                    <th className="text-left px-4 py-4 text-text-ink font-bold text-xs uppercase tracking-wider">Estado</th>
                     <th className="text-right px-8 py-4 text-text-ink font-bold text-xs uppercase tracking-wider">Monto</th>
                   </tr>
                 </thead>
@@ -131,6 +149,27 @@ export default function AdminSales() {
                         <div className="flex items-center gap-3">
                           <img src={getImageUrl(p.course.image)} alt={p.course.title} className="w-8 h-8 rounded-lg object-cover flex-shrink-0" />
                           <span className="text-text-ink font-medium truncate max-w-[180px]">{p.course.title}</span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-4">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className={`text-xs font-bold px-2 py-0.5 rounded-full whitespace-nowrap ${
+                            p.status === 'APPROVED' ? 'bg-primary-soft text-primary' :
+                            p.status === 'PENDING' ? 'bg-bg-soft text-text-tan' :
+                            'bg-red-50 text-danger'
+                          }`}>
+                            {p.status === 'APPROVED' ? 'Aprobada' : p.status === 'PENDING' ? 'Pendiente' : 'Denegada'}
+                          </span>
+                          {p.status === 'APPROVED' && (
+                            <button onClick={() => handleDeny(p)} className="text-xs font-semibold text-danger hover:text-danger-hover whitespace-nowrap">
+                              Denegar
+                            </button>
+                          )}
+                          {p.status === 'REJECTED' && (
+                            <button onClick={() => handleReapprove(p)} className="text-xs font-semibold text-primary hover:text-primary-hover whitespace-nowrap">
+                              Reaprobar
+                            </button>
+                          )}
                         </div>
                       </td>
                       <td className="px-8 py-4 text-right">
