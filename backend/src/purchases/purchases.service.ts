@@ -246,8 +246,11 @@ export class PurchasesService {
   }
 
   async getAllPurchases() {
+    // Todas las compras no eliminadas, sin filtrar por estado: el listado del
+    // admin debe mostrar PENDING/APPROVED/REJECTED para poder re-aprobar o
+    // denegar desde la tabla (los totales financieros se calculan en el front).
     return this.prisma.purchase.findMany({
-      where: { status: PurchaseStatus.APPROVED, deletedAt: null },
+      where: { deletedAt: null },
       include: {
         course: true,
         user: {
