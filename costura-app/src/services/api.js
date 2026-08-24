@@ -32,12 +32,8 @@ async function apiFetch(path, options = {}) {
       },
     };
 
-    console.log('📤 Request:', { url, method: options.method });
-    
     const response = await fetch(url, config);
     const contentType = response.headers.get('content-type');
-
-    console.log('📥 Response:', { status: response.status, contentType });
 
     if (!response.ok) {
       let errorMessage = `${response.status} ${response.statusText}`;
@@ -50,9 +46,7 @@ async function apiFetch(path, options = {}) {
     }
 
     if (contentType?.includes('application/json')) {
-      const data = await response.json();
-      console.log('✅ Response Data:', data);
-      return data;
+      return response.json();
     }
 
     return response.text();
@@ -68,14 +62,6 @@ export async function get(path) {
 
 export async function post(path, body) {
   return apiFetch(path, { method: 'POST', body: JSON.stringify(body) });
-}
-
-export async function forgotPassword(email) {
-  return post('/api/auth/forgot-password', { email });
-}
-
-export async function resetPassword(token, password) {
-  return post('/api/auth/reset-password', { token, password });
 }
 
 export async function postForm(path, formData) {
