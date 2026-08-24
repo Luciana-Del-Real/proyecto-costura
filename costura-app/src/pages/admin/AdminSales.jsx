@@ -40,14 +40,18 @@ export default function AdminSales() {
     await reload();
   };
 
-  const revenueFiltered = sumByCurrency(filtered);
+  // Solo las compras aprobadas cuentan como venta real para los resúmenes
+  // financieros; el detalle de la tabla muestra todos los estados.
+  const approved = allPurchases.filter(p => p.status === 'APPROVED');
+
+  const revenueFiltered = sumByCurrency(filtered.filter(p => p.status === 'APPROVED'));
 
   // Ventas por curso para el mini gráfico (cantidad de ventas, ya que sumar
   // ARS y AUD directamente en una sola barra no tendría sentido)
   const salesPerCourse = courses.map(c => ({
     ...c,
-    revenueByCurrency: sumByCurrency(allPurchases.filter(p => p.course.id === c.id)),
-    count: allPurchases.filter(p => p.course.id === c.id).length,
+    revenueByCurrency: sumByCurrency(approved.filter(p => p.course.id === c.id)),
+    count: approved.filter(p => p.course.id === c.id).length,
   })).filter(c => c.count > 0).sort((a, b) => b.count - a.count);
 
   const maxCount = salesPerCourse[0]?.count || 1;
@@ -73,7 +77,7 @@ export default function AdminSales() {
           {/* Card de Total de Ventas */}
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 animate-fade-up-delay-1">
             <p className="text-xs uppercase tracking-wider font-bold text-text-tan mb-2">Total de ventas</p>
-            <p className="text-3xl font-bold text-text-ink">{allPurchases.length}</p>
+            <p className="text-3xl font-bold text-text-ink">{approved.length}</p>
           </div>
         </div>
 
