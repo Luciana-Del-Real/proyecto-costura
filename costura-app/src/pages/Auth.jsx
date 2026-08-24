@@ -76,6 +76,7 @@ export default function Auth({ defaultTab = 'login' }) {
             {/* Selector de país - Solo visible en registro */}
             {tab === 'register' && (
               <select 
+                required
                 className="w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-primary outline-none bg-white text-gray-600"
                 value={form.country}
                 onChange={e => setForm({...form, country: e.target.value})}

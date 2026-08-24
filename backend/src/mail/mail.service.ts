@@ -3,6 +3,42 @@ import { ConfigService } from '@nestjs/config';
 import sgMail from '@sendgrid/mail';
 
 /**
+ * Spanish-speaking countries, normalized (lowercase, no diacritics).
+ * Used by resolveLocale to pick the reset-email language.
+ */
+const SPANISH_SPEAKING_COUNTRIES = new Set([
+  'argentina', 'bolivia', 'chile', 'colombia', 'costa rica', 'cuba',
+  'republica dominicana', 'ecuador', 'el salvador', 'guinea ecuatorial',
+  'guatemala', 'honduras', 'mexico', 'nicaragua', 'panama', 'paraguay',
+  'peru', 'espana', 'uruguay', 'venezuela',
+]);
+
+/** Currency codes used by the app as country aliases. */
+const COUNTRY_CODE_TO_NAME: Record<string, string> = {
+  ARS: 'argentina',
+  AUD: 'australia',
+};
+
+/**
+ * Resolves the email locale from a student's country value.
+ * Accepts country names ("Argentina", "España") or the app's currency codes
+ * ("ARS", "AUD"). Spanish-speaking countries resolve to `es`, everything else
+ * to `en`, and a missing/blank country defaults to `es`.
+ */
+export function resolveLocale(country?: string | null): 'es' | 'en' {
+  if (!country || !country.trim()) return 'es';
+
+  const trimmed = country.trim();
+  const code = COUNTRY_CODE_TO_NAME[trimmed.toUpperCase()];
+  const normalized = (code ?? trimmed)
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+
+  return SPANISH_SPEAKING_COUNTRIES.has(normalized) ? 'es' : 'en';
+}
+
+/**
  * Transactional email delivery via SendGrid.
  *
  * Sending is env-gated and OFF by default: `MAIL_ENABLED` must be exactly
