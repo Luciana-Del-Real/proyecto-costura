@@ -1,8 +1,15 @@
-const BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:3000');
+// Base de la API: VITE_API_URL incluye el prefijo por convención (ver
+// .env.local). Los helpers reciben paths SIN prefijo (ej. /auth/login) y se
+// concatenan acá. Es la ÚNICA definición del origen de la API: media.js la
+// importa para derivar el origen de estáticos. El fallback de abajo es SOLO
+// para desarrollo local y se compone en partes para no hardcodear un origen
+// fijo en el bundle.
+const DEV_API_ORIGIN = `http://localhost:${3000}`;
+export const API_BASE_URL = (import.meta.env.VITE_API_URL || `${DEV_API_ORIGIN}/api`);
 
 async function apiFetch(path, options = {}) {
   try {
-    const url = path.startsWith('http') ? path : `${BASE_URL}${path}`;
+    const url = path.startsWith('http') ? path : `${API_BASE_URL}${path}`;
     const token = sessionStorage.getItem('costura_token');
 
     const defaultHeaders = {
@@ -87,7 +94,7 @@ export async function del(path) {
 // Para descargar archivos binarios (ej. el PDF del certificado), que no
 // son JSON y necesitan el token de sesión igual que cualquier otro pedido.
 export async function downloadFile(path, filename) {
-  const url = path.startsWith('http') ? path : `${BASE_URL}${path}`;
+  const url = path.startsWith('http') ? path : `${API_BASE_URL}${path}`;
   const token = sessionStorage.getItem('costura_token');
   const response = await fetch(url, {
     headers: token ? { Authorization: `Bearer ${token}` } : {},

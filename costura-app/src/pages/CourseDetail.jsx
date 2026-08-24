@@ -6,6 +6,8 @@ import { useProgress } from '../context/ProgressContext';
 import { useAuth } from '../context/AuthContext';
 import ReactPlayer from 'react-player';
 import { getImageUrl } from '../utils/media';
+import { getLevelLabel } from '../utils/levels';
+import CourseCover from '../components/CourseCover';
 import { getCoursePrice } from '../utils/currency';
 import { get, post, downloadFile } from '../services/api';
 
@@ -49,9 +51,9 @@ export default function CourseDetail() {
         <div className="max-w-4xl mx-auto px-4 py-10">
           <Link to="/cursos" className="text-accent text-sm hover:text-accent mb-6 inline-block">← Volver a cursos</Link>
           <div className="card rounded-2xl overflow-hidden">
-            <img src={getImageUrl(course.image)} alt={course.title} className="w-full h-64 object-cover" />
+            <CourseCover course={course} className="w-full h-64 object-cover" />
             <div className="p-8">
-              <span className="text-xs font-semibold bg-bg-soft text-accent px-3 py-1 rounded-full">{course.level}</span>
+              <span className="text-xs font-semibold bg-bg-soft text-accent px-3 py-1 rounded-full">{getLevelLabel(course.level)}</span>
               <h1 className="font-display text-3xl font-bold text-text-ink mt-3 mb-2">{course.title}</h1>
               <p className="text-text-ink mb-4">{course.longDescription}</p>
               <div className="flex flex-wrap gap-4 text-sm text-text-ink mb-6">
@@ -236,13 +238,12 @@ function CourseLearningView({ course, progress, getProgress, completeLesson }) {
 
         {/* Encabezado del curso */}
         <div className="bg-white rounded-3xl border border-border shadow-sm overflow-hidden mb-6">
-          {course.image && (
-            <img src={getImageUrl(course.image)} alt={course.title} className="w-full h-48 lg:h-64 object-cover" />
-          )}
+          {/* Portada: CourseCover muestra el nombre del curso si no hay imagen */}
+          <CourseCover course={course} className="w-full h-48 lg:h-64 object-cover" />
           <div className="p-6 lg:p-8">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="flex-1 min-w-[240px]">
-                <span className="text-xs font-semibold bg-bg-soft text-accent px-3 py-1 rounded-full">{course.level}</span>
+                <span className="text-xs font-semibold bg-bg-soft text-accent px-3 py-1 rounded-full">{getLevelLabel(course.level)}</span>
                 <h1 className="font-display text-3xl md:text-4xl font-bold text-text-ink mt-3">{course.title}</h1>
                 <p className="text-text-ink mt-2 max-w-2xl">{course.longDescription || course.description}</p>
                 <div className="flex flex-wrap gap-4 text-sm text-text-ink mt-4">
