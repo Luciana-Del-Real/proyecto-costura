@@ -3,24 +3,18 @@ import {
   NotFoundException,
   BadRequestException,
   ForbiddenException,
-  Logger,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePurchaseDto } from './dto/create-purchase.dto';
 import { PurchaseStatus } from '../common/enums';
-import { MailService } from '../mail/mail.service';
-import { ConfigService } from '@nestjs/config';
 import { Principal, isOwnerOrAdmin } from '../common/principal';
 import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class PurchasesService {
-  private readonly logger = new Logger(PurchasesService.name);
   constructor(
     private prisma: PrismaService,
-    private mailService: MailService,
-    private config: ConfigService,
     private notificationsService: NotificationsService,
   ) {}
 
@@ -155,24 +149,10 @@ export class PurchasesService {
       },
     );
 
-    // Enviar correo transaccional fuera de la transacción para no bloquear la BD
-    try {
-      const frontend = this.config.get<string>('FRONTEND_URL') || 'http://localhost:5173';
-      const courseUrl = `${frontend}/courses/${updatedPurchase.course.id}`;
-      const subject = 'Pago aprobado - Acceso al curso';
-      const html = `
-        <p>Hola ${updatedPurchase.user.name || ''},</p>
-        <p>Tu pago para el curso "${updatedPurchase.course.title}" ha sido aprobado. Ya puedes acceder al curso.</p>
-        <p><a href="${courseUrl}">Ir al curso</a></p>
-        <p>Gracias por tu compra.</p>
-      `;
-
-      await this.mailService.sendEmail(updatedPurchase.user.email, subject, html);
-    } catch (err) {
-      // Loguear el fallo pero no revertir la transacción ya confirmada
-      this.logger.warn('Fallo al enviar email de confirmación de compra', err as any);
-    }
-
+    // Decisión del owner: NO se envía email de compra (el link que se armaba
+    // apuntaba a /courses/:id, una ruta inexistente — la real es /curso/:id).
+    // El acceso se desbloquea con la notificación in-app creada en la
+    // transacción. El email de reset-password sigue intacto en auth.service.
     return updatedPurchase;
   }
 
