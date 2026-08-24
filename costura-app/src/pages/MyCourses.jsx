@@ -27,7 +27,7 @@ export default function MyCourses() {
             <span className="text-6xl">📚</span>
             <h2 className="text-xl font-bold text-theme mt-4 mb-2">Todavía no tenés cursos</h2>
             <p className="text-theme mb-6">Explorá nuestro catálogo y empezá a aprender hoy.</p>
-            <Link to="/cursos" className="bg-secondary !text-white px-6 py-3 rounded-xl hover:bg-[#5E8262] transition-colors font-medium">
+            <Link to="/cursos" className="btn btn-primary font-medium">
               Ver cursos disponibles
             </Link>
           </div>
@@ -49,7 +49,7 @@ export default function MyCourses() {
                     </div>
                     <Link
                       to={`/curso/${course.id}`}
-                      className="inline-block bg-accent text-white text-sm px-5 py-2 rounded-xl hover:bg-[#A85E42] transition-colors font-medium"
+                      className="btn btn-accent text-sm font-medium"
                     >
                       Abrir curso →
                     </Link>
@@ -69,7 +69,7 @@ export default function MyCourses() {
             {unreadCount > 0 && (
               <button
                 onClick={() => markAllAsRead()}
-                className="text-sm font-medium text-secondary hover:text-secondary-dark transition-colors"
+                className="btn btn-ghost text-sm text-secondary hover:text-secondary-dark"
               >
                 Marcar todas como leídas
               </button>
@@ -108,14 +108,14 @@ export default function MyCourses() {
                     {!n.read && (
                       <button
                         onClick={() => markAsRead(n.id)}
-                        className="text-xs font-medium text-secondary hover:text-secondary-dark transition-colors"
+                        className="btn btn-ghost text-xs text-secondary hover:text-secondary-dark"
                       >
                         Marcar como leída
                       </button>
                     )}
                     <button
                       onClick={() => deleteNotification(n.id)}
-                      className="text-xs font-medium text-red-500 hover:text-red-600 transition-colors"
+                      className="btn btn-ghost text-xs text-red-500 hover:text-red-600"
                     >
                       Eliminar
                     </button>

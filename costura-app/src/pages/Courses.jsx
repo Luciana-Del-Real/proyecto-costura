@@ -40,10 +40,10 @@ export default function Courses() {
             <button
               key={l}
               onClick={() => setLevel(l)}
-              className={`px-5 py-2 rounded-full text-sm tracking-wide transition-all duration-300 shadow-sm ${
+              className={`btn text-sm tracking-wide transition-all duration-300 shadow-sm ${
                 level === l
-                  ? '!bg-[#4E6D5B] !text-white shadow-md scale-105'
-                  : '!bg-white !text-[#4E6D5B] border border-[#4E6D5B]/30 hover:border-[#4E6D5B] hover:bg-[#FDF8FA]'
+                  ? 'btn-primary shadow-md scale-105'
+                  : 'btn-ghost border border-primary/30 hover:border-primary'
               }`}
             >
               {l}
@@ -74,7 +74,7 @@ export default function Courses() {
             <p className="text-gray-500 mt-4">No encontramos cursos con esa búsqueda.</p>
             <button 
               onClick={() => { setSearch(''); setLevel('Todos'); }} 
-              className="mt-3 text-[#4E6D5B] text-sm font-medium hover:text-[#3d5648]"
+              className="btn btn-ghost mt-3 text-sm text-primary hover:text-primary-hover"
             >
               Limpiar filtros
             </button>

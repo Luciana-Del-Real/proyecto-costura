@@ -228,7 +228,7 @@ export default function AdminCourseForm() {
   return (
     <div className="min-h-screen bg-[#F9F5F0] py-12 px-4">
       <div className="max-w-2xl mx-auto">
-        <button onClick={() => navigate('/admin/cursos')} className="text-white mb-6 hover:underline font-bold">← Volver al listado</button>
+        <button onClick={() => navigate('/admin/cursos')} className="btn btn-ghost mb-6 text-sm">← Volver al listado</button>
 
         <div className="bg-white rounded-2xl border border-[#EDE4D6] p-8 shadow-sm mb-8">
           <h2 className="font-bold text-[#6B4C3B] text-2xl mb-8 border-b pb-4">{isEditing ? 'Editar curso' : 'Nuevo curso'}</h2>
@@ -292,7 +292,7 @@ export default function AdminCourseForm() {
               )}
             </div>
 
-            <button type="submit" disabled={saving} className="w-full bg-[#4E6D5B] text-white py-3 rounded-xl font-bold disabled:opacity-60">
+            <button type="submit" disabled={saving} className="btn btn-primary w-full">
               {saving ? 'Guardando...' : (isEditing ? 'Guardar' : 'Crear curso')}
             </button>
           </form>
@@ -355,12 +355,12 @@ export default function AdminCourseForm() {
                   </div>
 
                   <div className="flex items-center justify-between pt-1">
-                    <button type="button" onClick={() => handleDeleteLesson(lesson.id)} className="bg-[#bf6b6b] text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-[#bf5b6b] transition-colors">Eliminar lección</button>
+                    <button type="button" onClick={() => handleDeleteLesson(lesson.id)} className="btn bg-danger text-white text-sm hover:bg-danger-hover">Eliminar lección</button>
                     <button
                       type="button"
                       onClick={() => handleSaveLesson(lesson)}
                       disabled={savingLessonId === lesson.id}
-                      className="text-red-600 px-4 py-2 rounded-lg text-sm font-bold"
+                      className="btn btn-ghost text-sm text-red-600"
                     >
                       {savingLessonId === lesson.id ? 'Guardando...' : 'Guardar lección'}
                     </button>
@@ -371,7 +371,7 @@ export default function AdminCourseForm() {
                     <button
                       type="button"
                       onClick={() => toggleQuestions(lesson.id)}
-                      className="text-xs font-bold text-[#4E6D5B] hover:underline"
+                      className="btn btn-ghost text-xs text-primary"
                     >
                       💬 {openQuestionsFor === lesson.id ? 'Ocultar preguntas de alumnas' : 'Ver preguntas de alumnas'}
                     </button>
@@ -405,7 +405,7 @@ export default function AdminCourseForm() {
                             type="button"
                             onClick={() => handleReply(lesson.id)}
                             disabled={sendingReplyFor === lesson.id}
-                            className="bg-[#4E6D5B] text-white px-3 py-2 rounded-lg text-xs font-bold disabled:opacity-60"
+                            className="btn btn-primary text-xs"
                           >
                             Enviar
                           </button>
@@ -464,7 +464,7 @@ export default function AdminCourseForm() {
                   className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#4E6D5B] file:text-white hover:file:bg-[#3e5849] cursor-pointer"
                 />
               </div>
-              <button type="submit" disabled={creatingLesson} className="w-full py-3 bg-[#4E6D5B] text-white font-bold rounded-xl text-sm disabled:opacity-60">
+              <button type="submit" disabled={creatingLesson} className="btn btn-primary w-full text-sm">
                 {creatingLesson ? 'Creando...' : '+ Crear lección'}
               </button>
             </form>

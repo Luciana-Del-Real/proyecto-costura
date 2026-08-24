@@ -33,7 +33,7 @@ export default function Favorites() {
             <span className="text-6xl">❤️</span>
             <h2 className="text-xl font-bold text-theme mt-4 mb-2">Todavía no tenés favoritos</h2>
             <p className="text-theme mb-6">Hacé clic en el corazón de cualquier curso para guardarlo acá.</p>
-            <Link to="/cursos" className="bg-secondary !text-white px-6 py-3 rounded-xl hover:bg-[#5E8262] transition-colors font-medium">
+            <Link to="/cursos" className="btn btn-primary font-medium">
               Explorar cursos
             </Link>
           </div>

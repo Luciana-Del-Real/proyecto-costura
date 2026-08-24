@@ -101,14 +101,14 @@ export default function AdminUsers() {
               </p>
               <div className="flex justify-center items-center gap-3">
                 <button onClick={handleToggle}
-                  className={`text-white px-5 py-2 rounded-xl text-sm font-medium transition-colors ${
+                  className={`btn text-sm font-medium ${
                     confirmToggle.action === 'deactivate'
-                      ? 'bg-red-500 hover:bg-red-600'
-                      : 'bg-[#7A9E7E] hover:bg-[#5E8262]'
+                      ? 'bg-red-500 text-white hover:bg-red-600'
+                      : 'btn-primary'
                   }`}>
                   {confirmToggle.action === 'deactivate' ? 'Dar de baja' : 'Reactivar'}
                 </button>
-                <button onClick={() => setConfirmToggle(null)} className=" font-medium text-white text-sm hover:text-[#6B4C3B]">Cancelar</button>
+                <button onClick={() => setConfirmToggle(null)} className="btn btn-ghost text-sm">Cancelar</button>
               </div>
             </div>
           </div>
@@ -133,7 +133,7 @@ export default function AdminUsers() {
                     <p className="text-[#A08060] text-xs">{selected.email}</p>
                   </div>
                 </div>
-                <button onClick={() => setSelected(null)} className="text-white hover:text-[#6B4C3B] text-xl leading-none">×</button>
+                <button onClick={() => setSelected(null)} className="btn btn-icon text-xl leading-none">×</button>
               </div>
 
               <div className="grid grid-cols-2 gap-3 mb-5">
@@ -183,13 +183,13 @@ export default function AdminUsers() {
                 {isActive(selected) ? (
                   <button
                     onClick={() => setConfirmToggle({ user: selected, action: 'deactivate' })}
-                    className="w-full text-center text-sm text-red-500 border border-red-200 py-2.5 rounded-xl transition-colors font-medium">
+                    className="btn btn-ghost w-full text-sm text-red-500 border-red-200">
                     Dar de baja esta cuenta
                   </button>
                 ) : (
                   <button
                     onClick={() => setConfirmToggle({ user: selected, action: 'activate' })}
-                    className="w-full text-center text-sm text-red-500 border border-red-200 py-2.5 rounded-xl transition-colors font-medium">
+                    className="btn btn-ghost w-full text-sm text-red-500 border-red-200">
                     Reactivar esta cuenta
                   </button>
                 )}
@@ -238,7 +238,7 @@ export default function AdminUsers() {
                     <td className="px-6 py-4 text-right">
                       <button 
                         onClick={() => setSelected(u)} 
-                        className="bg-[#4E6D5B] text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-[#3d5a4a] transition-all shadow-sm"
+                        className="btn btn-primary text-xs shadow-sm"
                       >
                         Ver detalle
                       </button>

@@ -43,7 +43,7 @@ export default function CourseCard({ course }) {
           {user && (
             <button
               onClick={() => toggleFavorite(course.id)}
-              className="absolute top-3 right-3 backdrop-blur-md rounded-full p-2 shadow-sm hover:bg-white hover:scale-110 transition-all duration-200 bg-gray-100 text-gray-700"
+              className="btn btn-icon absolute top-3 right-3 backdrop-blur-md shadow-sm hover:scale-110 transition-all duration-200 bg-gray-100/70 text-gray-700"
               aria-label={fav ? 'Quitar de favoritos' : 'Agregar a favoritos'}
             >
               <svg 
@@ -101,18 +101,18 @@ export default function CourseCard({ course }) {
           {owned ? (
             <Link
               to={`/curso/${course.id}`}
-              className="bg-[#4E6D5B] !text-white text-l px-5 py-2.5 rounded-xl hover:bg-[#3d5648] hover:shadow-md transition-all tracking-wide w-full flex justify-center items-center"
+              className="btn btn-primary w-full hover:shadow-md tracking-wide text-l"
             >
               Abrir curso
             </Link>
           ) : pending ? (
-            <button className="w-full text-center bg-[#4E6D5B] text-gray-400 text-xs py-2.5 rounded-xl cursor-not-allowed font-medium" disabled>
+            <button className="btn btn-primary w-full text-xs cursor-not-allowed" disabled>
               Solicitud en revisión
             </button>
           ) : (
             <Link
               to={user ? `/checkout/${course.id}` : '/login'}
-              className="bg-[#4E6D5B] !text-white text-l px-5 py-2.5 rounded-xl hover:bg-[#3d5648] hover:shadow-md transition-all tracking-wide w-full flex justify-center items-center"
+              className="btn btn-primary w-full hover:shadow-md tracking-wide text-l"
             >
               Inscribirme
             </Link>

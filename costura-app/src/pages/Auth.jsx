@@ -92,7 +92,7 @@ export default function Auth({ defaultTab = 'login' }) {
                 className="bg-white w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-[#4E6D5B] outline-none pr-16" 
                 onChange={e => setForm({...form, password: e.target.value})} 
               />
-              <button type="button" className="absolute right-1 top-1/2 -translate-y-1/2 text-sm font-medium text-[#4E6D5B] hover:opacity-70" onClick={() => setShowPassword(!showPassword)}>
+              <button type="button" className="btn btn-ghost absolute right-1 top-1/2 -translate-y-1/2 text-sm text-primary" onClick={() => setShowPassword(!showPassword)}>
                 {showPassword ? "Ocultar" : "Ver"}
               </button>
             </div>
@@ -114,7 +114,7 @@ export default function Auth({ defaultTab = 'login' }) {
               </div>
             )}
 
-            <button type="submit" className="font-medium w-full bg-[#4E6D5B] text-white py-3.5 rounded-xl hover:bg-[#3d5648] transition-all mt-2">
+            <button type="submit" className="btn btn-primary w-full mt-2">
               {loading ? 'Procesando...' : (tab === 'login' ? 'Iniciar sesión' : 'Registrarse')}
             </button>
           </form>

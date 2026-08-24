@@ -35,7 +35,7 @@ export default function CourseDetail() {
           <span className="text-5xl">📚</span>
           <h2 className="text-xl font-bold text-theme mt-4 mb-2">Todavía no hay lecciones cargadas</h2>
           <p className="text-theme mb-6">Este curso está confirmado, pero la profesora todavía no subió ninguna clase. Volvé a entrar más adelante.</p>
-          <Link to="/mis-cursos" className="btn-theme px-6 py-3 rounded-xl font-semibold inline-block">
+          <Link to="/mis-cursos" className="btn btn-primary inline-block font-semibold">
             ← Volver a mis cursos
           </Link>
         </div>
@@ -64,7 +64,7 @@ export default function CourseDetail() {
                 <span className="text-3xl font-bold text-stone-800">${getCoursePrice(course, user).toLocaleString()}</span>
                 <button
                   onClick={() => navigate(user ? `/checkout/${course.id}` : '/login')}
-                  className="btn-theme px-8 py-3 rounded-xl font-semibold"
+                  className="btn btn-primary font-semibold"
                 >
                   Comprar curso
                 </button>
@@ -202,7 +202,7 @@ function CourseLearningView({ course, user, progress, getProgress, completeLesso
                   <button
                     onClick={handleDownloadCertificate}
                     disabled={downloadingCert}
-                    className="w-full mt-3 btn-theme py-2.5 rounded-xl text-sm font-semibold disabled:opacity-60"
+                    className="btn btn-primary w-full mt-3 text-sm font-semibold"
                   >
                     {downloadingCert ? 'Generando...' : '🎓 Descargar certificado'}
                   </button>
@@ -221,7 +221,7 @@ function CourseLearningView({ course, user, progress, getProgress, completeLesso
                       href={getImageUrl(att.url)}
                       target="_blank"
                       rel="noreferrer"
-                      className="flex items-center gap-2 bg-soft rounded-xl px-4 py-2.5 text-sm text-secondary hover:text-secondary-dark hover:bg-[#efe7dd] transition-colors"
+                      className="btn btn-ghost text-sm"
                     >
                       📄 {att.filename || 'Ver PDF'}
                     </a>
@@ -304,7 +304,7 @@ function CourseLearningView({ course, user, progress, getProgress, completeLesso
                               href={getImageUrl(att.url)}
                               target="_blank"
                               rel="noreferrer"
-                              className="flex items-center gap-2 bg-soft rounded-xl px-4 py-2.5 text-sm text-secondary hover:text-secondary-dark hover:bg-[#efe7dd] transition-colors w-fit"
+                              className="btn btn-ghost text-sm w-fit"
                             >
                               📄 {att.filename || 'Ver PDF'}
                             </a>
@@ -318,11 +318,11 @@ function CourseLearningView({ course, user, progress, getProgress, completeLesso
                       <button
                         onClick={() => handleCompleteLesson(lesson.id)}
                         disabled={!canComplete}
-                        className={`px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${
+                        className={`btn text-sm font-semibold ${
                           completed
                             ? 'bg-emerald-500 text-white'
                             : canComplete
-                            ? 'bg-secondary text-white hover:bg-secondary-dark'
+                            ? 'bg-primary text-white hover:bg-primary-hover'
                             : 'bg-stone-200 text-stone-500 cursor-not-allowed'
                         }`}
                       >
@@ -331,7 +331,7 @@ function CourseLearningView({ course, user, progress, getProgress, completeLesso
                       {completed && idx < course.lessons.length - 1 && (
                         <button
                           onClick={() => toggleLesson(course.lessons[idx + 1], false)}
-                          className="px-4 py-2 bg-soft text-theme rounded-xl text-sm hover:bg-[#efe7dd] transition-colors"
+                          className="btn btn-ghost text-sm"
                         >
                           Ir a la siguiente lección →
                         </button>
@@ -383,7 +383,7 @@ function CourseLearningView({ course, user, progress, getProgress, completeLesso
                         <button
                           type="submit"
                           disabled={sendingLessonId === lesson.id}
-                          className="btn-theme px-4 py-2 rounded-xl text-sm font-semibold disabled:opacity-60"
+                          className="btn btn-primary text-sm font-semibold"
                         >
                           {sendingLessonId === lesson.id ? 'Enviando...' : 'Enviar pregunta'}
                         </button>
