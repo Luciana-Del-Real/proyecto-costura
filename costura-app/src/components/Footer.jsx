@@ -8,10 +8,10 @@ export default function Footer() {
           <div className="flex items-center gap-3 mb-3">
             <img src="/Images/Logo%20sin%20Slogan.png" alt="Grow" className="w-12 h-12 object-contain" />
             <div>
-              <span className="font-bebas font-bold text-white text-lg block leading-tight">Creative Education Studio</span>
+              <span className="font-display uppercase tracking-widest font-bold text-white text-lg block leading-tight">Creative Education Studio</span>
             </div>
           </div>
-          <p className="font-montserrat text-sm text-white mt-2">
+          <p className="font-body text-sm text-white mt-2">
             Un estudio creativo dedicado a la costura, el bordado y el diseño. Aprendé a tu ritmo con acompañamiento profesional.
           </p>
           <div className="flex gap-3 mt-4">
@@ -37,7 +37,7 @@ export default function Footer() {
           <p className="text-sm text-white mt-1">🌐 Clases online disponibles</p>
         </div>
       </div>
-      <div className="border-t border-brown-dark text-center py-4 text-xs text-white">
+      <div className="border-t border-text-cocoa text-center py-4 text-xs text-white">
         © 2026 Creative Education Studio · Daiana Lubo Núñez · Todos los derechos reservados.
       </div>
     </footer>

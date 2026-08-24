@@ -6,9 +6,9 @@ import { useProgress } from '../context/ProgressContext';
 
 // Colores suaves de fondo y texto legibles para las etiquetas de nivel
 const levelClasses = {
-  'Principiante': 'bg-[#EAF2ED] text-[#4E6D5B]', // Verde pastel muy sutil
-  'Intermedio': 'bg-[#FDF3E7] text-[#C47D2B]',   // Naranja/Crema cálido
-  'Avanzado': 'bg-[#F9EBF0] text-[#B84A62]',     // Rosa/Fucsia pálido
+  'Principiante': 'bg-primary-soft text-primary', // Verde pastel muy sutil
+  'Intermedio': 'bg-bg-soft text-ochre',   // Naranja/Crema cálido
+  'Avanzado': 'bg-accent-soft text-accent',     // Rosa/Fucsia pálido
 };
 
 export default function CourseCard({ course }) {
@@ -24,7 +24,7 @@ export default function CourseCard({ course }) {
 
   return (
     // Tarjeta con sombras profundas difuminadas en hover y bordes suaves sin líneas duras
-    <div className="bg-soft rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 overflow-hidden hover:shadow-[0_12px_30px_rgba(78,109,91,0.08)] hover:-translate-y-1.5 transition-all duration-300 group flex flex-col justify-between">
+    <div className="bg-bg-soft rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-border overflow-hidden hover:shadow-card hover:-translate-y-1.5 transition-all duration-300 group flex flex-col justify-between">
       <div>
         {/* Contenedor de la Imagen con efecto Zoom */}
         <div className="relative overflow-hidden aspect-video bg-gray-50">
@@ -47,7 +47,7 @@ export default function CourseCard({ course }) {
               aria-label={fav ? 'Quitar de favoritos' : 'Agregar a favoritos'}
             >
               <svg 
-                className={`w-4 h-4 transition-colors ${fav ? 'text-[#B84A62] fill-[#B84A62]' : 'text-gray-400 hover:text-[#B84A62]'}`} 
+                className={`w-4 h-4 transition-colors ${fav ? 'text-accent fill-accent' : 'text-gray-400 hover:text-accent'}`} 
                 fill={fav ? 'currentColor' : 'none'} 
                 stroke="currentColor" 
                 viewBox="0 0 24 24"
@@ -60,17 +60,17 @@ export default function CourseCard({ course }) {
 
         {/* Información de la Tarjeta */}
         <div className="p-5">
-          <h3 className=" text-black text-2xl mb-1.5 leading-snug line-clamp-1">
+          <h3 className=" text-text-ink text-2xl mb-1.5 leading-snug line-clamp-1">
             {course.title}
           </h3>
-          <p className="text-gray-500 text-xs mb-4 line-clamp-2 leading-relaxed">
+          <p className="text-text-muted text-xs mb-4 line-clamp-2 leading-relaxed">
             {course.description}
           </p>
 
           {/* LÓGICA DE PRECIO: Solo visible si el usuario está logueado */}
           {user && !owned && (
             <div className="mt-2">
-              <p className="text-sm text-gray-400 font-medium">Precio:</p>
+              <p className="text-sm text-text-muted font-medium">Precio:</p>
               <p className="text-2xl font-bold text-text-ink">
                 {/* Cambiamos la comparación a 'ARS' según los datos de tu consola */}
                 {user.country === 'ARS' 
@@ -86,13 +86,13 @@ export default function CourseCard({ course }) {
       {/* Pie de Tarjeta (Precios y Acciones) siempre alineado abajo */}
       <div className="px-5 pb-5 pt-1">
         {owned && (
-          <div className="mb-4 bg-[#FDF8FA] p-2.5 rounded-xl border border-[#4E6D5B]/5">
-            <div className="flex justify-between text-[11px] font-bold text-black mb-1">
+          <div className="mb-4 bg-accent-soft/50 p-2.5 rounded-xl border border-primary/5">
+            <div className="flex justify-between text-[11px] font-bold text-text-ink mb-1">
               <span>Tu progreso</span>
               <span>{prog}%</span>
             </div>
             <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
-              <div className="bg-[#4E6D5B] h-1.5 rounded-full transition-all duration-500" style={{ width: `${prog}%` }} />
+              <div className="bg-primary h-1.5 rounded-full transition-all duration-500" style={{ width: `${prog}%` }} />
             </div>
           </div>
         )}

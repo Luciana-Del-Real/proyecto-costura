@@ -31,21 +31,21 @@ export default function Profile() {
 
   return (
     <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
-      <div className="bg-[#F4F1ED] rounded-2xl shadow-sm border border-gray-100 px-4 py-10 animate-fade-up mt-5 mb-5 flex justify-center">
+      <div className="bg-bg-soft rounded-2xl shadow-sm border border-gray-100 px-4 py-10 animate-fade-up mt-5 mb-5 flex justify-center">
         <div className="flex flex-col items-center gap-4 text-center">
-          <div className="w-16 h-16 bg-[#E5EADD] rounded-full flex items-center justify-center text-2xl font-bold text-text-[#6B4C3B]">
+          <div className="w-16 h-16 bg-primary-soft rounded-full flex items-center justify-center text-2xl font-bold text-text-ink">
             {user?.name?.charAt(0).toUpperCase()}
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-[#6B4C3B]">{user?.name}</h1>
+            <h1 className="font-display text-2xl font-bold text-text-ink">{user?.name}</h1>
           </div>
         </div>
       </div>
 
       <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
-        <div className="bg-[#F4F1ED] rounded-2xl shadow-sm border border-gray-100 px-4 py-10 animate-fade-up mt-5 mb-5">
+        <div className="bg-bg-soft rounded-2xl shadow-sm border border-gray-100 px-4 py-10 animate-fade-up mt-5 mb-5">
           <div className="flex items-center justify-between mb-5">
-            <h2 className="font-bold text-[#6B4C3B] text-xl">Información personal</h2>
+            <h2 className="font-display font-bold text-text-ink text-xl">Información personal</h2>
             {!editing && (
               <button onClick={() => setEditing(true)} className="btn btn-ghost text-sm">
                 Editar
@@ -54,7 +54,7 @@ export default function Profile() {
           </div>
 
           {saved && (
-            <div className="bg-soft border border-secondary text-secondary text-sm rounded-xl px-4 py-3 mb-4">
+            <div className="bg-bg-soft border border-primary text-primary text-sm rounded-xl px-4 py-3 mb-4">
               ✓ Cambios guardados correctamente
             </div>
           )}
@@ -62,23 +62,23 @@ export default function Profile() {
           {editing ? (
             <form onSubmit={handleSave} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-theme mb-1.5">Nombre</label>
+                <label className="block text-sm font-medium text-text-ink mb-1.5">Nombre</label>
                 <input
                   type="text"
                   required
                   value={form.name}
                   onChange={e => setForm({ ...form, name: e.target.value })}
-                  className="w-full border border-theme rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#7A9E7E] bg-soft"
+                  className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-secondary bg-bg-soft"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-theme mb-1.5">Email</label>
+                <label className="block text-sm font-medium text-text-ink mb-1.5">Email</label>
                 <input
                   type="email"
                   required
                   value={form.email}
                   onChange={e => setForm({ ...form, email: e.target.value })}
-                  className="w-full border border-theme rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#7A9E7E] bg-soft"
+                  className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-secondary bg-bg-soft"
                 />
               </div>
               <div className="flex gap-3">
@@ -93,44 +93,44 @@ export default function Profile() {
           ) : (
             <div className="space-y-3">
               <div className="flex items-center gap-3">
-                <span className="text-theme text-sm w-16">Nombre</span>
-                <span className="text-theme font-medium">{user?.name}</span>
+                <span className="text-text-ink text-sm w-16">Nombre</span>
+                <span className="text-text-ink font-medium">{user?.name}</span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-theme text-sm w-16">Email</span>
-                <span className="text-theme font-medium">{user?.email}</span>
+                <span className="text-text-ink text-sm w-16">Email</span>
+                <span className="text-text-ink font-medium">{user?.email}</span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-theme text-sm w-16">País</span>
-                <span className="text-theme font-medium">{user?.country || 'No especificado'}</span>
+                <span className="text-text-ink text-sm w-16">País</span>
+                <span className="text-text-ink font-medium">{user?.country || 'No especificado'}</span>
               </div>
             </div>
           )}
         </div>
 
-        <div className="bg-[#F4F1ED] rounded-2xl shadow-sm border border-gray-100 px-4 py-10 animate-fade-up mt-5 mb-5">
-          <h2 className="font-bold text-[#6B4C3B] text-xl">Historial de compras</h2>
+        <div className="bg-bg-soft rounded-2xl shadow-sm border border-gray-100 px-4 py-10 animate-fade-up mt-5 mb-5">
+          <h2 className="font-display font-bold text-text-ink text-xl">Historial de compras</h2>
           {purchasesLoading ? (
-            <p className="text-theme text-sm">Cargando tus compras...</p>
+            <p className="text-text-ink text-sm">Cargando tus compras...</p>
           ) : purchasesError ? (
-            <p className="text-theme text-sm">No se pudieron cargar tus compras. Verificá tu conexión e intentá de nuevo más tarde.</p>
+            <p className="text-text-ink text-sm">No se pudieron cargar tus compras. Verificá tu conexión e intentá de nuevo más tarde.</p>
           ) : approvedRecords.length === 0 ? (
-            <p className="text-theme text-sm">Todavía no realizaste ninguna compra.</p>
+            <p className="text-text-ink text-sm">Todavía no realizaste ninguna compra.</p>
           ) : (
             <div className="space-y-3">
               {approvedRecords.map(record => {
                 const course = record.course || {};
                 return (
-                  <div key={record.id} className="flex items-center gap-4 py-3 border-b border-theme last:border-0">
+                  <div key={record.id} className="flex items-center gap-4 py-3 border-b border-border last:border-0">
                     <img src={getImageUrl(course.image)} alt={course.title} className="w-12 h-12 rounded-xl object-cover flex-shrink-0" />
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-theme text-sm truncate">{course.title}</p>
-                      <p className="text-theme text-xs">{course.level}</p>
+                      <p className="font-medium text-text-ink text-sm truncate">{course.title}</p>
+                      <p className="text-text-ink text-xs">{course.level}</p>
                       {record.createdAt && (
-                        <p className="text-theme text-xs">{new Date(record.createdAt).toLocaleDateString()}</p>
+                        <p className="text-text-ink text-xs">{new Date(record.createdAt).toLocaleDateString()}</p>
                       )}
                     </div>
-                    <span className="font-semibold text-theme text-sm flex-shrink-0">
+                    <span className="font-semibold text-text-ink text-sm flex-shrink-0">
                       {formatMoney(record.total ?? course.priceARS ?? 0, user?.country === 'AUD' ? 'AUD' : 'ARS')}
                     </span>
                   </div>

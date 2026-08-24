@@ -34,10 +34,10 @@ export default function Checkout() {
 
   if (hasCourse(course.id)) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-soft px-4">
+      <div className="min-h-screen flex items-center justify-center bg-bg-surface px-4">
         <div className="text-center">
           <span className="text-5xl">✅</span>
-          <h2 className="text-xl font-bold text-theme mt-4">Ya tenés este curso</h2>
+          <h2 className="font-display text-xl font-bold text-text-ink mt-4">Ya tenés este curso</h2>
           <Link to={`/curso/${course.id}`} className="btn btn-primary mt-4 inline-block">
             Abrir curso
           </Link>
@@ -52,11 +52,11 @@ export default function Checkout() {
     const whatsappUrl = `https://wa.me/5493447404952?text=${encodeURIComponent(whatsappMessage)}`;
 
     return (
-      <div className="min-h-screen flex items-center justify-center bg-soft px-4">
-          <div className="text-center bg-white p-8 rounded-2xl shadow-sm border border-theme max-w-md w-full">
+      <div className="min-h-screen flex items-center justify-center bg-bg-surface px-4">
+          <div className="text-center bg-white p-8 rounded-2xl shadow-sm border border-border max-w-md w-full">
           <span className="text-5xl block mb-4">⏳</span>
-            <h2 className="text-2xl font-bold text-theme mb-3">Solicitud de compra enviada</h2>
-            <p className="text-theme mb-6">Tu comprobante está en revisión por el admin. Te notificaremos cuando se confirme.</p>
+            <h2 className="font-display text-2xl font-bold text-text-ink mb-3">Solicitud de compra enviada</h2>
+            <p className="text-text-ink mb-6">Tu comprobante está en revisión por el admin. Te notificaremos cuando se confirme.</p>
           
           <a 
             href={whatsappUrl}
@@ -70,7 +70,7 @@ export default function Checkout() {
             Enviar comprobante por WhatsApp
           </a>
 
-          <Link to="/mis-cursos" className="block text-secondary text-sm hover:text-secondary-dark transition-colors mt-2 text-center">
+          <Link to="/mis-cursos" className="block text-primary text-sm hover:text-primary-hover transition-colors mt-2 text-center">
             Ver mis cursos
           </Link>
         </div>
@@ -88,35 +88,35 @@ export default function Checkout() {
   };
 
   return (
-    <div className="min-h-screen bg-soft py-10 px-4">
+    <div className="min-h-screen bg-bg-surface py-10 px-4">
       <div className="max-w-4xl mx-auto">
-        <Link to="/cursos" className="text-secondary text-sm hover:text-secondary-dark mb-6 inline-block">← Volver a cursos</Link>
+        <Link to="/cursos" className="text-primary text-sm hover:text-primary-hover mb-6 inline-block">← Volver a cursos</Link>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="card p-6 h-fit">
-            <h2 className="font-bold text-theme text-lg mb-4">Resumen del pedido</h2>
+            <h2 className="font-display font-bold text-text-ink text-lg mb-4">Resumen del pedido</h2>
             <img src={getImageUrl(course.image)} alt={course.title} className="w-full h-40 object-cover rounded-xl mb-4" />
-            <h3 className="font-semibold text-theme mb-1">{course.title}</h3>
-            <p className="text-theme text-sm mb-4">{course.description}</p>
-            <div className="flex items-center gap-4 text-sm text-brown-accent mb-4">
+            <h3 className="font-semibold text-text-ink mb-1">{course.title}</h3>
+            <p className="text-text-ink text-sm mb-4">{course.description}</p>
+            <div className="flex items-center gap-4 text-sm text-accent mb-4">
               <span>📚 {course.lessons.length} lecciones</span>
             </div>
-            <div className="border-t border-theme pt-4 flex justify-between items-center">
-              <span className="text-theme font-medium">Total</span>
-              <span className="text-2xl font-bold text-theme">${getCoursePrice(course, user).toLocaleString()}</span>
+            <div className="border-t border-border pt-4 flex justify-between items-center">
+              <span className="text-text-ink font-medium">Total</span>
+              <span className="text-2xl font-bold text-text-ink">${getCoursePrice(course, user).toLocaleString()}</span>
             </div>
           </div>
 
           <div className="card p-6">
-            <h2 className="font-bold text-theme text-lg mb-4">Instrucciones de pago</h2>
+            <h2 className="font-display font-bold text-text-ink text-lg mb-4">Instrucciones de pago</h2>
             
-            <div className="bg-soft border border-theme rounded-xl p-4 mb-4 text-sm text-theme">
+            <div className="bg-bg-soft border border-border rounded-xl p-4 mb-4 text-sm text-text-ink">
               <p className="mb-3"><strong>1) Transferí a la cuenta:</strong></p>
               
               <div className="space-y-3 mb-4">
                 {(PAYMENT_INFO[user?.country === 'AUD' ? 'AUD' : 'ARS']).map((field) => (
-                  <div key={field.key} className="flex items-center justify-between bg-white rounded-lg p-3 border border-theme">
+                  <div key={field.key} className="flex items-center justify-between bg-white rounded-lg p-3 border border-border">
                     <div>
-                      <span className="text-xs text-[#A08060] block mb-0.5">{field.label}</span>
+                      <span className="text-xs text-text-tan block mb-0.5">{field.label}</span>
                       <span className="font-mono text-text-ink font-semibold">{field.value}</span>
                     </div>
                     <button
@@ -125,7 +125,7 @@ export default function Checkout() {
                         setCopied(field.key);
                         setTimeout(() => setCopied(''), 2000);
                       }}
-                      className="btn btn-ghost text-xs text-secondary hover:text-secondary-dark"
+                      className="btn btn-ghost text-xs text-primary hover:text-primary-hover"
                     >
                       {copied === field.key ? '¡Copiado!' : '📋 Copiar'}
                     </button>
@@ -137,13 +137,13 @@ export default function Checkout() {
             </div>
 
             <div className="card-soft rounded-xl p-4 mb-6 shadow-sm">
-              <div className="flex items-center gap-2 font-bold text-brown-accent mb-2 text-sm uppercase">
+              <div className="flex items-center gap-2 font-bold text-accent mb-2 text-sm uppercase">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
                   <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
                 </svg>
                 Importante
               </div>
-              <p className="text-sm text-brown-muted leading-relaxed">
+              <p className="text-sm text-text-muted leading-relaxed">
                 Una vez abonado el curso, <strong>deberás enviarle el comprobante a Daiana por WhatsApp</strong>. Sólo mediante ese paso podremos confirmar tu pago y darte de alta en el sistema para habilitar tus videoclases.
               </p>
             </div>

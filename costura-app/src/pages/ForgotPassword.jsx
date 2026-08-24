@@ -26,10 +26,10 @@ export default function ForgotPassword() {
   return (
     // Quitamos el min-h-screen aquí porque el Layout ya gestiona el alto
     <div className="flex items-center justify-center px-4 py-12">
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 w-full max-w-md">
+      <div className="bg-white rounded-2xl shadow-sm border border-border p-8 w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-[#6B4C3B] mb-2">Recuperar contraseña</h1>
-          <p className="text-gray-500 text-sm">Te enviaremos un correo con el enlace de recuperación</p>
+          <h1 className="font-display text-3xl font-bold text-text-ink mb-2">Recuperar contraseña</h1>
+          <p className="text-text-muted text-sm">Te enviaremos un correo con el enlace de recuperación</p>
         </div>
 
         {message && (
@@ -52,7 +52,7 @@ export default function ForgotPassword() {
               required
               value={email}
               onChange={e => setEmail(e.target.value)}
-              className="w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-[#4E6D5B] focus:border-transparent outline-none transition-all"
+              className="w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
               placeholder="tu@email.com"
             />
           </div>
@@ -66,7 +66,7 @@ export default function ForgotPassword() {
           </button>
 
           <div className="text-center mt-4">
-            <Link to="/login" className="text-sm text-[#4E6D5B] font-medium hover:underline">Volver al inicio de sesión</Link>
+            <Link to="/login" className="text-sm text-primary font-medium hover:underline">Volver al inicio de sesión</Link>
           </div>
         </form>
       </div>
