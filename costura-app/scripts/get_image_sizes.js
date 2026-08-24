@@ -47,7 +47,7 @@ for (const f of files) {
   try {
     const stat = fs.statSync(f);
     const size = getSize(f);
-    console.log(`${f.split(/[\\\/]/).pop()} ${stat.size} bytes - ${size.type} - ${size.width || '?'}x${size.height || '?'}`);
+    console.log(`${f.split(/[\\/]/).pop()} ${stat.size} bytes - ${size.type} - ${size.width || '?'}x${size.height || '?'}`);
   } catch (e) {
     console.error('ERR', f, e.message);
   }

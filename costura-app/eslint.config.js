@@ -26,4 +26,13 @@ export default defineConfig([
       'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
     },
   },
+  {
+    // Node scripts (scripts/*.js) run under Node, not the browser, so give them
+    // the Node globals (process, require, Buffer, __dirname, ...). Scoped to
+    // scripts/ only — src/ keeps the browser globals configured above.
+    files: ['scripts/**/*.js'],
+    languageOptions: {
+      globals: globals.node,
+    },
+  },
 ])
