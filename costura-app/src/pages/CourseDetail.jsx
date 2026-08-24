@@ -251,7 +251,7 @@ function CourseLearningView({ course, user, progress, getProgress, completeLesso
                 <button
                   onClick={() => toggleLesson(lesson, blocked)}
                   disabled={blocked}
-                  className={`w-full flex items-center gap-3 p-4 lg:p-5 text-left ${blocked ? 'opacity-60 cursor-not-allowed' : 'hover:bg-soft/60'} transition-colors`}
+                  className={`w-full flex items-center gap-3 p-4 lg:p-5 text-left ${blocked ? 'opacity-60 cursor-not-allowed' : 'hover:bg-bg-soft/60'} transition-colors`}
                 >
                   <div className={`w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-sm font-bold ${
                     completed ? 'bg-emerald-500 text-white' : blocked ? 'bg-stone-200 text-stone-400' : 'bg-soft text-theme'

@@ -43,10 +43,13 @@ Chain strategy: stacked-to-main
 
 ## Phase 3: global-reset-public (PR 3)
 
-- [ ] 3.1 Remove global heading/img/card/button rules (L105–178, L186–189) from `index.css`; migrate `Home.jsx`, `Courses.jsx`, `CourseDetail.jsx`, `Checkout.jsx`, `Auth.jsx`, `Dashboard.jsx`, `Profile.jsx`, `MyCourses.jsx`, `Favorites.jsx`, `ForgotPassword.jsx`, `ResetPassword.jsx`, `Navbar.jsx`, `Footer.jsx`, `CourseCard.jsx` to token utilities (`bg-bg-surface`, `text-text-ink`, `text-primary`).
-- [ ] 3.2 Fix `!`-prefix: `Courses.jsx` L45–46 (4), `CourseCard.jsx` L104/L115 (2), `MyCourses.jsx` L30, `Favorites.jsx` L36, `Dashboard.jsx` L30 → suffix `!` or token classes.
-- [ ] 3.3 Stage B public: Home cream canvas + cocoa-overlay hero, Bebas/Playfair headings sentence-case (brand displays excepted); cards, catalog, detail, checkout, authenticated pages.
-- [ ] 3.4 Verify: lint + build; manual pass per unit table; `text-white` intent preserved on CTAs/navbar/footer.
+- [x] 3.1 Remove global heading/img/card/button rules (L105–178, L186–189) from `index.css`; migrate `Home.jsx`, `Courses.jsx`, `CourseDetail.jsx`, `Checkout.jsx`, `Auth.jsx`, `Dashboard.jsx`, `Profile.jsx`, `MyCourses.jsx`, `Favorites.jsx`, `ForgotPassword.jsx`, `ResetPassword.jsx`, `Navbar.jsx`, `Footer.jsx`, `CourseCard.jsx` to token utilities (`bg-bg-surface`, `text-text-ink`, `text-primary`).
+  - Global rules removed: h1-h3 forced color, `img/.object-cover`, `.bg-white/.card/rounded-*/border+shadow` list, `.mb-6`/`.border` !important, `.auth-card/.auth-tab/.auth-input`, `.visual-*`, `.logo-circle`, `.lvl-*`, `.bg-beige`, `.fill-brown-accent`, `.input-default`, `.text-brown-soft`, `.border-brown-accent`, `.font-playfair/.font-dancing/.font-handmade`, `.title/.accent-script/.subtitle/.body-text`, section.bg-* panels, `.section-centered-card`, duplicate `body`, duplicate `section.hero-no-sep + section`, `--animate-*` tokens, `--black*` palette + `.bg-black*` helpers, `.hover\:bg-*` helpers, `.text-accent`/`.bg-accent` !important duplicates.
+  - Public JSX migrated to tokens: App shell `bg-[#F9F5F0]`→`bg-bg-surface`, CourseCard/Profile/Checkout `text-[#3D2B1F]`→`text-text-ink`, Dashboard `!text-black`→`text-text-ink`, Navbar/CourseDetail `hover:bg-soft(/)60`→`hover:bg-bg-soft(/)60`.
+  - NOTE: remaining non-shim arbitrary hexes in public JSX (`text-[#6B4C3B]`, `bg-[#F4F1ED]`, `text-[#A08060]`, `focus:ring-[#7A9E7E]`, hover borders) are NOT shim-covered and go to PR5 hex-sweep (5.1).
+- [x] 3.2 Fix `!`-prefix: `Courses.jsx` L45–46 (4), `CourseCard.jsx` L104/L115 (2), `MyCourses.jsx` L30, `Favorites.jsx` L36, `Dashboard.jsx` L30 → suffix `!` or token classes. (All but Dashboard L30 were already migrated in PR2's button sweep; Dashboard L30 `!text-black`→`text-text-ink` fixed in PR3. Grep over `src/` for v3 `!`-prefix classes now returns zero.)
+- [ ] 3.3 Stage B public: Home cream canvas + cocoa-overlay hero, Bebas/Playfair headings sentence-case (brand displays excepted); cards, catalog, detail, checkout, authenticated pages. — DEFERRED: not in PR3 global-reset playbook scope (only App canvas → bg-bg-surface and heading-color reset landed); editorial treatment overlaps PR5.
+- [x] 3.4 Verify: lint + build; manual pass per unit table; `text-white` intent preserved on CTAs/navbar/footer. (Lint: 22 problems = 20 errors + 2 warnings, IDENTICAL pre-existing baseline. Build PASSED. Manual pass checklist documented in apply-progress.)
 
 ## Phase 4: global-reset-admin (PR 4)
 

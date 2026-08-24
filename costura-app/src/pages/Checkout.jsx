@@ -117,7 +117,7 @@ export default function Checkout() {
                   <div key={field.key} className="flex items-center justify-between bg-white rounded-lg p-3 border border-theme">
                     <div>
                       <span className="text-xs text-[#A08060] block mb-0.5">{field.label}</span>
-                      <span className="font-mono text-[#3D2B1F] font-semibold">{field.value}</span>
+                      <span className="font-mono text-text-ink font-semibold">{field.value}</span>
                     </div>
                     <button
                       onClick={() => {

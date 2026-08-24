@@ -70,3 +70,11 @@ User directive: "make the shape of all buttons the same". System MUST define ONE
 - **Variants share geometry** — GIVEN `.btn-primary`, `.btn-accent`, `.btn-ghost`, or `.btn-icon` is applied, WHEN rendered, THEN each shares the exact canonical geometry and differs only in color treatment.
 - **Explicit only** — GIVEN a `<button>` element, WHEN rendered, THEN it is styled by its `btn` classes or a documented exception; no global button rule applies.
 - **Disabled state** — GIVEN a disabled button with the `btn` class, WHEN rendered, THEN it shows reduced opacity and no pointer events.
+
+### Requirement: Button text policy (PR3 amendment)
+
+System MUST follow the settled button-text policy: filled/action buttons render white text by default (from the `.btn` base + `.btn-primary`/`.btn-accent`), ghost/icon buttons MAY use readable semantic colors (ink/sage/berry/red), and NO button MAY use a white background to differentiate state (state differentiation uses ghost border + primary fill instead).
+
+- **Filled white text** — GIVEN a `.btn-primary` or `.btn-accent` button, WHEN rendered, THEN its text is white (default from the `.btn` base); no per-button `text-white` override is needed.
+- **Ghost semantic text** — GIVEN a `.btn-ghost` or `.btn-icon` button, WHEN rendered, THEN it MAY carry semantic text colors (ink/sage/berry/red) for readable emphasis.
+- **No white-bg states** — GIVEN a button needing a distinct state, WHEN a state is applied, THEN white background is never used to differentiate it; the state uses ghost border + primary fill (or a documented variant).

@@ -71,7 +71,7 @@ export default function CourseCard({ course }) {
           {user && !owned && (
             <div className="mt-2">
               <p className="text-sm text-gray-400 font-medium">Precio:</p>
-              <p className="text-2xl font-bold text-[#3D2B1F]">
+              <p className="text-2xl font-bold text-text-ink">
                 {/* Cambiamos la comparación a 'ARS' según los datos de tu consola */}
                 {user.country === 'ARS' 
                   ? `$${course.priceARS.toLocaleString()} ARS` 
