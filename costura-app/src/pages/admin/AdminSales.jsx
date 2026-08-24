@@ -48,14 +48,14 @@ export default function AdminSales() {
         <div className="grid grid-cols-2 gap-4 mb-8">
           {/* Card de Ingresos Totales */}
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 animate-fade-up">
-            <p className="text-xs uppercase tracking-wider font-bold text-[#A08060] mb-2">Ingresos totales</p>
+            <p className="text-xs uppercase tracking-wider font-bold text-text-tan mb-2">Ingresos totales</p>
             <p className="text-lg font-bold text-text-ink">${revenueFiltered.ARS.toLocaleString()} ARS</p>
             <p className="text-lg font-bold text-text-ink">${revenueFiltered.AUD.toLocaleString()} AUD</p>
           </div>
 
           {/* Card de Total de Ventas */}
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 animate-fade-up-delay-1">
-            <p className="text-xs uppercase tracking-wider font-bold text-[#A08060] mb-2">Total de ventas</p>
+            <p className="text-xs uppercase tracking-wider font-bold text-text-tan mb-2">Total de ventas</p>
             <p className="text-3xl font-bold text-text-ink">{allPurchases.length}</p>
           </div>
         </div>
@@ -83,7 +83,7 @@ export default function AdminSales() {
                   {/* Estadísticas */}
                   <div className="text-right w-32">
                     <span className="text-xs font-bold text-text-ink block">{c.count} venta{c.count !== 1 ? 's' : ''}</span>
-                    <span className="text-[10px] text-[#A08060] block font-medium">
+                    <span className="text-[10px] text-text-tan block font-medium">
                       ${c.revenueByCurrency.ARS.toLocaleString()} ARS · ${c.revenueByCurrency.AUD.toLocaleString()} AUD
                     </span>
                   </div>
@@ -108,7 +108,7 @@ export default function AdminSales() {
 
           {filtered.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-[#A08060] text-sm">Sin ventas para mostrar.</p>
+              <p className="text-text-tan text-sm">Sin ventas para mostrar.</p>
             </div>
           ) : (
             <>
@@ -125,7 +125,7 @@ export default function AdminSales() {
                     <tr key={i} className="hover:bg-gray-50/50 transition-colors">
                       <td className="px-8 py-4">
                         <p className="font-semibold text-text-ink">{p.user.name}</p>
-                        <p className="text-xs text-[#A08060]">{p.user.email}</p>
+                        <p className="text-xs text-text-tan">{p.user.email}</p>
                       </td>
                       <td className="px-4 py-4 hidden md:table-cell">
                         <div className="flex items-center gap-3">
@@ -145,7 +145,7 @@ export default function AdminSales() {
 
               {/* Pie de tabla con estilo limpio */}
               <div className="px-8 py-4 border-t border-gray-100 flex justify-between items-center bg-gray-50/50">
-                <span className="text-xs text-[#A08060]">{filtered.length} registro{filtered.length !== 1 ? 's' : ''}</span>
+                <span className="text-xs text-text-tan">{filtered.length} registro{filtered.length !== 1 ? 's' : ''}</span>
                 <div className="text-right">
                     <p className="font-bold text-text-ink text-sm">Total: ${revenueFiltered.ARS.toLocaleString()} ARS</p>
                     <p className="font-bold text-text-ink text-xs">${revenueFiltered.AUD.toLocaleString()} AUD</p>

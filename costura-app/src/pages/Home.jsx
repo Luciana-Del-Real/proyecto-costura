@@ -38,15 +38,15 @@ export default function Home() {
           backgroundSize: 'cover'
         }}
       >
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.28) 40%, rgba(0,0,0,0) 80%)' }} />
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(107,76,59,0.62) 0%, rgba(107,76,59,0.32) 40%, rgba(0,0,0,0) 80%)' }} />
         <div className="relative z-10 w-full">
           <div className="max-w-6xl mx-auto px-4 flex items-center justify-center">
-            <div className="hero-card text-theme mx-auto max-w-md">
-              <h1 className="animate-fade-up-delay-1 text-3xl md:text-5xl font-bold heading-display mb-4 leading-tight" style={{ textShadow: '0 8px 28px rgba(0,0,0,0.18)' }}>
+            <div className="hero-card text-text-ink mx-auto max-w-md">
+              <h1 className="animate-fade-up-delay-1 text-3xl md:text-5xl font-bold font-display mb-4 leading-tight" style={{ textShadow: '0 8px 28px rgba(0,0,0,0.18)' }}>
                 Creá con tus<br />
-                <span style={{ color: 'var(--accent)' }}>propias manos</span>
+                <span className="font-serif italic" style={{ color: 'var(--accent)' }}>propias manos</span>
               </h1>
-              <p className="font-montserrat animate-fade-up-delay-2 text-base md:text-lg mb-4 max-w-xl md:mx-0 opacity-95">
+              <p className="font-body animate-fade-up-delay-2 text-base md:text-lg mb-4 max-w-xl md:mx-0 opacity-95">
                 Cursos online de costura, bordado y diseño textil para todos los niveles. A tu ritmo, con acompañamiento profesional.
               </p>
               <p className="animate-fade-up-delay-3 text-sm mb-6 max-w-lg md:mx-0 italic opacity-85">
@@ -64,11 +64,11 @@ export default function Home() {
       {/* Combined About section: side-by-side on md+ */}
       <section className="bg-white py-16 px-4">
           <div className="max-w-6xl mx-auto grid grid-cols-2 gap-8">
-            <div className="bg-soft rounded-2xl border border-theme p-8 h-full flex items-start">
+            <div className="bg-bg-soft rounded-2xl border border-border p-8 h-full flex items-start">
               <RevealSection>
                 <div className="text-left">
-                  <h2 className="font-bebas font-bold text-3xl text-black mb-4">¿Qué es Grow?</h2>
-                  <p className="text-theme text-base leading-relaxed mb-6">
+                  <h2 className="font-display font-bold text-3xl text-text-ink mb-4">¿Qué es Grow?</h2>
+                  <p className="text-text-ink text-base leading-relaxed mb-6">
                     GROW es un estudio creativo dedicado a la costura, el bordado y el diseño, pensado para acompañarte paso a paso en tu aprendizaje. Acá vas a encontrar clases, herramientas, inspiración y una comunidad que crece junto a vos.
                   </p>
                   <p className="text-primary font-medium text-lg">
@@ -78,9 +78,9 @@ export default function Home() {
               </RevealSection>
             </div>
 
-            <div className="bg-soft rounded-2xl border border-theme p-8 h-full flex items-start">
+            <div className="bg-bg-soft rounded-2xl border border-border p-8 h-full flex items-start">
               <div ref={daiaRef} className={`flex flex-row md:items-start gap-6`}>
-                <div className={`w-28 h-28 rounded-full overflow-hidden flex-shrink-0 reveal-scale visible border border-theme`}>
+                <div className={`w-28 h-28 rounded-full overflow-hidden flex-shrink-0 reveal-scale visible border border-border`}>
                       <img
                         src="/Images/IMG_7148.jpg"
                         alt="Daia"
@@ -91,9 +91,9 @@ export default function Home() {
                       />
                   </div>
                   <div className={`reveal-right ${daiaInView ? 'visible' : ''}`}>
-                  <span className="text-secondary text-sm font-medium">¿Quién está detrás de Grow?</span>
-                  <h3 className="text-3xl font-bold text-black mt-1 mb-3">Hola, soy Daia</h3>
-                  <p className="text-theme opacity-90 leading-relaxed">
+                  <span className="text-primary text-sm font-medium">¿Quién está detrás de Grow?</span>
+                  <h3 className="font-display text-3xl font-bold text-text-ink mt-1 mb-3">Hola, soy Daia</h3>
+                  <p className="text-text-ink opacity-90 leading-relaxed">
                     Diseñadora de indumentaria, diseñadora gráfica, modista y apasionada del bordado en todas sus formas. Tengo más de diez años de experiencia compartiendo lo que sé y aprendiendo siempre. En Grow no tenés que adaptarte a un sistema rígido: nosotros nos adaptamos a vos, a tu ritmo, a tus tiempos, a tus ganas de crear.
                   </p>
                 </div>
@@ -103,21 +103,21 @@ export default function Home() {
       </section>
 
       {/* Benefits */}
-      <section className="rounded-2xl border border-theme py-10 px-4">
+      <section className="rounded-2xl border border-border py-10 px-4">
           <RevealSection>
-            <h2 className="font-bold text-4xl text-black text-center mb-10">¿Por qué elegirnos?</h2>
+            <h2 className="font-display font-bold text-4xl text-text-ink text-center mb-10">¿Por qué elegirnos?</h2>
           </RevealSection>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
             {benefits.map((b, i) => (
               <RevealSection key={i} animation="reveal-scale" delay={delays[i]}>
-                <div className="feature-card text-center p-6 rounded-2xl bg-white border border-theme hover:border-[#7A9E7E] hover:-translate-y-1 hover:shadow-md transition-all duration-300 h-full">
+                <div className="feature-card text-center p-6 rounded-2xl bg-white border border-border hover:border-secondary hover:-translate-y-1 hover:shadow-md transition-all duration-300 h-full">
                   <div className="flex items-center justify-center mb-3">
                     <div className="icon-wrapper" aria-hidden>
-                      <b.Icon className="benefit-icon" color="#E83E8C" aria-hidden />
+                      <b.Icon className="benefit-icon" color="#B84A62" aria-hidden />
                     </div>
                   </div>
-                  <h3 className="font-montserrat text-black text-lg font-bold mb-2 leading-tight">{b.title}</h3>
-                  <p className="font-montserrat text-theme text-sm leading-relaxed">{b.desc}</p>
+                  <h3 className="font-body text-text-ink text-lg font-bold mb-2 leading-tight">{b.title}</h3>
+                  <p className="font-body text-text-ink text-sm leading-relaxed">{b.desc}</p>
                 </div>
               </RevealSection>
             ))}
@@ -125,20 +125,20 @@ export default function Home() {
       </section>
 
       {/* Categories */}
-      <section className="bg-white rounded-2xl border border-theme py-10 px-4">
+      <section className="bg-white rounded-2xl border border-border py-10 px-4">
           <RevealSection>
-            <h2 className="font-bold text-4xl text-black text-center mb-10">Nuestras especialidades</h2>
+            <h2 className="font-display font-bold text-4xl text-text-ink text-center mb-10">Nuestras especialidades</h2>
           </RevealSection>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {categories.map((cat, i) => (
               <RevealSection key={i} animation="reveal" delay={delays[i]}>
-                <Link to="/cursos" className="block bg-white rounded-2xl p-6 text-center border border-theme hover:border-[#C4785A] hover:-translate-y-1 hover:shadow-md transition-all duration-300 feature-card">
+                <Link to="/cursos" className="block bg-white rounded-2xl p-6 text-center border border-border hover:border-terracotta hover:-translate-y-1 hover:shadow-md transition-all duration-300 feature-card">
                   <div className="flex items-center justify-center mb-2">
                     <div className="icon-wrapper" aria-hidden>
-                      <cat.Icon className="specialty-icon" color="#E83E8C" aria-hidden />
+                      <cat.Icon className="specialty-icon" color="#B84A62" aria-hidden />
                     </div>
                   </div>
-                  <p className="font-montserrat text-black text-lg font-bold mb-2 leading-tight">{cat.label}</p>
+                  <p className="font-body text-text-ink text-lg font-bold mb-2 leading-tight">{cat.label}</p>
                 </Link>
               </RevealSection>
             ))}
@@ -146,18 +146,18 @@ export default function Home() {
       </section>
 
       {/* Testimonials */}
-      <section className="rounded-2xl border border-theme py-10 px-4">
+      <section className="rounded-2xl border border-border py-10 px-4">
           <RevealSection>
-            <h2 className="font-bold text-4xl text-black text-center mb-10">Lo que dicen nuestras alumnas</h2>
+            <h2 className="font-display font-bold text-4xl text-text-ink text-center mb-10">Lo que dicen nuestras alumnas</h2>
           </RevealSection>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
             {testimonials.map((t, i) => (
               <RevealSection key={t.id} animation="reveal" delay={delays[i]} className="h-full">
-                <div className="bg-white rounded-2xl p-6 border border-theme hover:-translate-y-1 hover:shadow-sm transition-all duration-300 h-full flex flex-col justify-between">
-                  <p className="text-theme text-sm mb-4 italic leading-relaxed">"{t.text}"</p>
+                <div className="bg-white rounded-2xl p-6 border border-border hover:-translate-y-1 hover:shadow-sm transition-all duration-300 h-full flex flex-col justify-between">
+                  <p className="text-text-ink text-sm mb-4 italic leading-relaxed">"{t.text}"</p>
                   <div>
-                    <p className="font-semibold text-theme text-sm">{t.name}</p>
-                    <p className="text-theme text-xs">{t.course}</p>
+                    <p className="font-semibold text-text-ink text-sm">{t.name}</p>
+                    <p className="text-text-ink text-xs">{t.course}</p>
                   </div>
                 </div>
               </RevealSection>
@@ -166,11 +166,11 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <section className="bg-white rounded-2xl border border-theme py-10 px-4">
+      <section className="bg-white rounded-2xl border border-border py-10 px-4">
         <RevealSection animation="reveal-scale">
             <div className="max-w-2xl mx-auto text-center">
-              <h2 className="font-bold text-4xl text-black mb-4">En Grow, siempre hay un espacio para vos</h2>
-              <p className="text-theme mb-8">Registrate gratis y comenzá tu primer curso hoy.</p>
+              <h2 className="font-display font-bold text-4xl text-text-ink mb-4">En Grow, siempre hay un espacio para vos</h2>
+              <p className="text-text-ink mb-8">Registrate gratis y comenzá tu primer curso hoy.</p>
               <Link to="/registro" className="btn btn-primary btn-hero transition-all duration-200 hover:scale-105 active:scale-95">
                 Empezar ahora
               </Link>

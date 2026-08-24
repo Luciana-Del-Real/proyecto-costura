@@ -14,20 +14,20 @@ export default function Dashboard() {
   return (
     <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in mt-5 mb-8">
       {/* Header */}
-      <div className="bg-[#F4F1ED] rounded-2xl shadow-sm border border-gray-100 px-4 py-10 animate-fade-up mt-1 mb-5">
+      <div className="bg-bg-soft rounded-2xl shadow-sm border border-gray-100 px-4 py-10 animate-fade-up mt-1 mb-5">
         <div className="max-w-6xl mx-auto">
-          <p className="text-black text-sm mb-3">Bienvenida de vuelta 👋</p>
-          <h1 className="text-3xl md:text-4xl font-bold text-[#6B4C3B] mb-2">{user?.name}</h1>
+          <p className="text-text-ink text-sm mb-3">Bienvenida de vuelta 👋</p>
+          <h1 className="font-display text-3xl md:text-4xl font-bold text-text-ink mb-2">{user?.name}</h1>
         </div>
       </div>
 
-      <div className="bg-[#F4F1ED] rounded-2xl shadow-sm border border-gray-100 max-w-6xl mx-auto px-4 py-4">
+      <div className="bg-bg-soft rounded-2xl shadow-sm border border-gray-100 max-w-6xl mx-auto px-4 py-4">
         {/* My courses */}
         {myCourses.length > 0 && (
           <div className="mb-10">
             <div className="flex items-center justify-between mt-5 mb-5">
-              <h2 className="text-black text-3xl">Mis cursos</h2>
-              <Link to="/mis-cursos" className="text-text-ink text-sm hover:text-[#5E8262]">Ver todos →</Link>
+              <h2 className="font-display text-text-ink text-3xl">Mis cursos</h2>
+              <Link to="/mis-cursos" className="text-text-ink text-sm hover:text-success">Ver todos →</Link>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {myCourses.slice(0, 3).map(course => (
@@ -40,7 +40,7 @@ export default function Dashboard() {
         {/* Suggested */}
         {suggested.length > 0 && (
           <div>
-            <h2 className="font-bold text-[#6B4C3B] text-xl">
+            <h2 className="font-display font-bold text-text-ink text-xl">
               {myCourses.length === 0 ? 'Empezá con estos cursos' : 'Seguí aprendiendo'}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">

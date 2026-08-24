@@ -51,32 +51,32 @@ export default function Auth({ defaultTab = 'login' }) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-[#F8F9FA]">
+    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-bg-surface">
       <div className="w-full max-w-md animate-fade-up">
         
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-[#6B4C3B] mb-2">
+          <h1 className="font-display text-3xl font-bold text-text-ink mb-2">
             {tab === 'login' ? 'Bienvenida de nuevo' : 'Crear cuenta'}
           </h1>
-          <p className="text-gray-500">
+          <p className="text-text-muted">
             {tab === 'login' ? 'Ingresá para continuar aprendiendo' : 'Formá parte de nuestra comunidad'}
           </p>
         </div>
 
-        <div className="bg-soft rounded-2xl shadow-sm border border-gray-100 p-8">
+        <div className="bg-bg-soft rounded-2xl shadow-sm border border-gray-100 p-8">
           {error && <p className="text-red-500 text-sm mb-4 text-center">{error}</p>}
           
           <form onSubmit={handleSubmit} className="space-y-4">
             {tab === 'register' && (
-              <input type="text" placeholder="Nombre completo" className="bg-white w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-[#4E6D5B] outline-none" onChange={e => setForm({...form, name: e.target.value})} />
+              <input type="text" placeholder="Nombre completo" className="bg-white w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-primary outline-none" onChange={e => setForm({...form, name: e.target.value})} />
             )}
             
-            <input type="email" placeholder="Email" className="bg-white w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-[#4E6D5B] outline-none" onChange={e => setForm({...form, email: e.target.value})} />
+            <input type="email" placeholder="Email" className="bg-white w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-primary outline-none" onChange={e => setForm({...form, email: e.target.value})} />
 
             {/* Selector de país - Solo visible en registro */}
             {tab === 'register' && (
               <select 
-                className="w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-[#4E6D5B] outline-none bg-white text-gray-600"
+                className="w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-primary outline-none bg-white text-gray-600"
                 value={form.country}
                 onChange={e => setForm({...form, country: e.target.value})}
               >
@@ -89,7 +89,7 @@ export default function Auth({ defaultTab = 'login' }) {
               <input 
                 type={showPassword ? "text" : "password"} 
                 placeholder="Contraseña" 
-                className="bg-white w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-[#4E6D5B] outline-none pr-16" 
+                className="bg-white w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-primary outline-none pr-16" 
                 onChange={e => setForm({...form, password: e.target.value})} 
               />
               <button type="button" className="btn btn-ghost absolute right-1 top-1/2 -translate-y-1/2 text-sm text-primary" onClick={() => setShowPassword(!showPassword)}>
@@ -102,7 +102,7 @@ export default function Auth({ defaultTab = 'login' }) {
                 <input 
                   type={showConfirm ? "text" : "password"} 
                   placeholder="Confirmar contraseña" 
-                  className="bg-white w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-[#4E6D5B] outline-none" 
+                  className="bg-white w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-primary outline-none" 
                   onChange={e => setForm({...form, confirm: e.target.value})} 
                 />
               </div>
@@ -110,7 +110,7 @@ export default function Auth({ defaultTab = 'login' }) {
 
             {tab === 'login' && (
               <div className="text-right">
-                <Link to="/forgot-password" className="text-sm text-[#6B4C3B] hover:underline font-medium">¿Olvidaste tu contraseña?</Link>
+                <Link to="/forgot-password" className="text-sm text-text-ink hover:underline font-medium">¿Olvidaste tu contraseña?</Link>
               </div>
             )}
 
@@ -120,9 +120,9 @@ export default function Auth({ defaultTab = 'login' }) {
           </form>
         </div>
 
-        <p className="text-center text-sm mt-6 text-[#6B4C3B]">
+        <p className="text-center text-sm mt-6 text-text-ink">
           {tab === 'login' ? '¿No tenés cuenta? ' : '¿Ya tenés cuenta? '}
-          <span className="text-[#6B4C3B] font-bold cursor-pointer hover:underline" onClick={() => switchTab(tab === 'login' ? 'register' : 'login')}>
+          <span className="text-text-ink font-bold cursor-pointer hover:underline" onClick={() => switchTab(tab === 'login' ? 'register' : 'login')}>
             {tab === 'login' ? 'Registrate gratis' : 'Iniciá sesión'}
           </span>
         </p>

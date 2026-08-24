@@ -73,14 +73,14 @@ export default function AdminUsers() {
       <div className="bg-bg-soft rounded-2xl shadow-sm border border-gray-100 px-4 py-10 animate-fade-up mt-5">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-3xl font-bold text-text-ink">Alumnos</h1>
-          <p className="text-[#A08060] text-sm mt-0.5">{allUsers.length} alumna{allUsers.length !== 1 ? 's' : ''} registrada{allUsers.length !== 1 ? 's' : ''}</p>
+          <p className="text-text-tan text-sm mt-0.5">{allUsers.length} alumna{allUsers.length !== 1 ? 's' : ''} registrada{allUsers.length !== 1 ? 's' : ''}</p>
         </div>
       </div>
 
       <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in mt-4 mb-5">
         {/* Search */}
         <div className="relative max-w-sm mb-6">
-          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A08060]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-tan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Buscar alumna..."
@@ -94,7 +94,7 @@ export default function AdminUsers() {
               <h3 className="font-medium text-text-ink mb-2">
                 {confirmToggle.action === 'deactivate' ? '¿Dar de baja a esta alumna?' : '¿Reactivar esta cuenta?'}
               </h3>
-              <p className="text-[#A08060] text-sm mb-5">
+              <p className="text-text-tan text-sm mb-5">
                 {confirmToggle.action === 'deactivate'
                   ? 'La alumna no podrá iniciar sesión hasta que se reactive su cuenta.'
                   : 'La alumna podrá volver a iniciar sesión normalmente.'}
@@ -130,7 +130,7 @@ export default function AdminUsers() {
                         <span className="text-xs bg-red-50 text-red-400 border border-red-200 px-2 py-0.5 rounded-full">Suspendida</span>
                       )}
                     </div>
-                    <p className="text-[#A08060] text-xs">{selected.email}</p>
+                    <p className="text-text-tan text-xs">{selected.email}</p>
                   </div>
                 </div>
                 <button onClick={() => setSelected(null)} className="btn btn-icon text-xl leading-none">×</button>
@@ -139,19 +139,19 @@ export default function AdminUsers() {
               <div className="grid grid-cols-2 gap-3 mb-5">
                 <div className="bg-bg-soft rounded-xl p-3 text-center">
                   <p className="text-xl font-bold text-text-ink">{getPurchasedCourseIds(selected).length}</p>
-                  <p className="text-xs text-[#A08060]">Cursos comprados</p>
+                  <p className="text-xs text-text-tan">Cursos comprados</p>
                 </div>
                 <div className="bg-bg-soft rounded-xl p-3 text-center">
                   <p className="text-xl font-bold text-text-ink">
                     ${getUserCourses(selected).reduce((s, c) => s + getCoursePrice(c, selected), 0).toLocaleString()} {getCurrencyCode(selected)}
                   </p>
-                  <p className="text-xs text-[#A08060]">Total invertido</p>
+                  <p className="text-xs text-text-tan">Total invertido</p>
                 </div>
               </div>
 
               <h4 className="font-semibold text-text-ink text-sm mb-3">Cursos y progreso</h4>
               {getUserCourses(selected).length === 0 ? (
-                <p className="text-[#A08060] text-sm mb-5">Sin cursos aún.</p>
+                <p className="text-text-tan text-sm mb-5">Sin cursos aún.</p>
               ) : (
                 <div className="space-y-3 mb-5">
                   {getUserCourses(selected).map(course => {
@@ -165,7 +165,7 @@ export default function AdminUsers() {
                             <div className="flex-1 bg-bg-soft rounded-full h-1.5">
                               <div className="bg-primary h-1.5 rounded-full" style={{ width: `${prog}%` }} />
                             </div>
-                            <span className="text-xs text-[#A08060] flex-shrink-0">{prog}%</span>
+                            <span className="text-xs text-text-tan flex-shrink-0">{prog}%</span>
                           </div>
                         </div>
                       </div>
@@ -174,12 +174,12 @@ export default function AdminUsers() {
                 </div>
               )}
 
-              <p className="text-xs text-[#A08060] mb-5">
+              <p className="text-xs text-text-tan mb-5">
                 Registrada el {new Date(selected.createdAt).toLocaleDateString('es-AR', { year: 'numeric', month: 'long', day: 'numeric' })}
               </p>
 
               {/* Action button */}
-              <div className="border-t border-[#F5EFE6] pt-4">
+              <div className="border-t border-bg-soft pt-4">
                 {isActive(selected) ? (
                   <button
                     onClick={() => setConfirmToggle({ user: selected, action: 'deactivate' })}
@@ -200,14 +200,14 @@ export default function AdminUsers() {
 
         {filtered.length === 0 ? (
           <div className="text-center py-16">
-            <p className="text-[#A08060] mt-4">{allUsers.length === 0 ? 'Sin alumnos registrados aún.' : 'No se encontraron resultados.'}</p>
+            <p className="text-text-tan mt-4">{allUsers.length === 0 ? 'Sin alumnos registrados aún.' : 'No se encontraron resultados.'}</p>
           </div>
         ) : (
-          <div className="bg-bg-soft rounded-2xl shadow-sm border border-[#E5E0D8] overflow-hidden animate-fade-up">
+          <div className="bg-bg-soft rounded-2xl shadow-sm border border-border overflow-hidden animate-fade-up">
             <table className="w-full text-sm">
               <thead>
                 {/* Eliminamos el fondo del tr y dejamos que el bg del div principal sea el fondo */}
-                <tr className="border-b border-[#E5E0D8]">
+                <tr className="border-b border-border">
                   <th className="text-left px-8 py-4 text-text-ink font-bold text-xs uppercase tracking-wider">Alumna</th>
                   <th className="text-left px-4 py-4 text-text-ink font-bold text-xs uppercase tracking-wider hidden md:table-cell">Email</th>
                   <th className="text-center px-4 py-4 text-text-ink font-bold text-xs uppercase tracking-wider">Cursos</th>
@@ -215,24 +215,24 @@ export default function AdminUsers() {
                   <th className="px-4 py-4"></th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E5E0D8]">
+              <tbody className="divide-y divide-border">
                 {filtered.map((u) => (
-                  <tr key={u.id} className={`transition-colors ${isActive(u) ? 'hover:bg-[#F2EDE7]' : 'bg-red-50/30 hover:bg-red-50/50'}`}>
+                  <tr key={u.id} className={`transition-colors ${isActive(u) ? 'hover:bg-black/5' : 'bg-red-50/30 hover:bg-red-50/50'}`}>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${isActive(u) ? 'bg-[#E5EADD] text-success' : 'bg-red-100 text-red-400'}`}>
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${isActive(u) ? 'bg-primary-soft text-success' : 'bg-red-100 text-red-400'}`}>
                           {u.name?.charAt(0).toUpperCase()}
                         </div>
-                        <span className={`font-semibold ${isActive(u) ? 'text-text-ink' : 'text-[#A08060]'}`}>{u.name}</span>
+                        <span className={`font-semibold ${isActive(u) ? 'text-text-ink' : 'text-text-tan'}`}>{u.name}</span>
                       </div>
                     </td>
                     <td className="px-4 py-4 text-black hidden md:table-cell font-medium">{u.email}</td>
                     <td className="px-4 py-4 text-center">
-                      <span className="bg-[#E5E0D8] text-text-ink text-xs font-bold px-3 py-1 rounded-full">{getPurchasedCourseIds(u).length}</span>
+                      <span className="bg-border text-text-ink text-xs font-bold px-3 py-1 rounded-full">{getPurchasedCourseIds(u).length}</span>
                     </td>
                     <td className="px-4 py-4 text-center hidden sm:table-cell">
                       {isActive(u)
-                        ? <span className="text-[10px] font-bold uppercase tracking-wide bg-[#E5EADD] text-success px-2 py-1 rounded-full">Activa</span>
+                        ? <span className="text-[10px] font-bold uppercase tracking-wide bg-primary-soft text-success px-2 py-1 rounded-full">Activa</span>
                         : <span className="text-[10px] font-bold uppercase tracking-wide bg-red-100 text-red-400 px-2 py-1 rounded-full">Suspendida</span>}
                     </td>
                     <td className="px-6 py-4 text-right">

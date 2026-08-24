@@ -25,10 +25,10 @@ export default function Courses() {
   return (
     <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
       {/* CORREGIDO: Reducimos padding vertical (pt-10 pb-5) y quitamos mb-8 */}
-      <div className="bg-[#F4F1ED] rounded-2xl shadow-sm border border-gray-100 px-4 py-10 animate-fade-up mt-5 mb-5">
+      <div className="bg-bg-soft rounded-2xl shadow-sm border border-border px-4 py-10 animate-fade-up mt-5 mb-5">
         <div className="max-w-6xl mx-auto">
-          <h1 className="text-3xl md:text-4xl font-bold text-black mb-2">Todos los cursos</h1>
-          <p className="text-gray-600">Encontrá el curso perfecto para vos</p>
+          <h1 className="font-display text-3xl md:text-4xl font-bold text-text-ink mb-2">Todos los cursos</h1>
+          <p className="text-text-muted">Encontrá el curso perfecto para vos</p>
         </div>
       </div>
 
@@ -53,7 +53,7 @@ export default function Courses() {
 
         {/* Buscador compacto integrado */}
         <div className="relative w-full md:w-72 group">
-          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#4E6D5B]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
           <input
@@ -61,7 +61,7 @@ export default function Courses() {
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Buscar cursos..."
-            className="w-full pl-10 pr-4 py-2 text-sm border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-[#4E6D5B] bg-white text-gray-700 placeholder-gray-400 shadow-sm transition-all duration-300"
+            className="w-full pl-10 pr-4 py-2 text-sm border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-primary bg-white text-gray-700 placeholder-gray-400 shadow-sm transition-all duration-300"
           />
         </div>
       </div>
@@ -69,9 +69,9 @@ export default function Courses() {
       {/* Contenedor del listado de cursos */}
       <div className="max-w-6xl mx-auto px-1 pb-16">
         {filtered.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-2xl border border-gray-100 shadow-sm">
+          <div className="text-center py-16 bg-white rounded-2xl border border-border shadow-sm">
             <span className="text-5xl">🔍</span>
-            <p className="text-gray-500 mt-4">No encontramos cursos con esa búsqueda.</p>
+            <p className="text-text-muted mt-4">No encontramos cursos con esa búsqueda.</p>
             <button 
               onClick={() => { setSearch(''); setLevel('Todos'); }} 
               className="btn btn-ghost mt-3 text-sm text-primary hover:text-primary-hover"
@@ -81,7 +81,7 @@ export default function Courses() {
           </div>
         ) : (
           <>
-            <p className="text-gray-500 text-sm mb-6 font-medium pl-1">
+            <p className="text-text-muted text-sm mb-6 font-medium pl-1">
               {filtered.length} curso{filtered.length !== 1 ? 's' : ''} encontrado{filtered.length !== 1 ? 's' : ''}
             </p>
             {/* Grid dinámico responsivo fluido */}
