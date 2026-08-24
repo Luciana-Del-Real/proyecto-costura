@@ -10,11 +10,12 @@
    3. Reset base (body, encabezados, inputs, tablas)                      [~L95]
    4. Sistema de botones (.btn + variantes, PR2)                          [~L145]
    5. Animaciones manuales (fade, reveal, stagger)                        [~L225]
-   6. Helpers / clases base (.card, .text-theme, .bg-soft, .text-brown-*) [~L330]
-      (los shims hex -> variables de ADMIN se eliminaron en PR4: grep
-       `[class*=` sobre src/ = 0)
-   7. Helpers / clases base (.card, .text-theme, .bg-soft, .text-brown-*) [~L370]
-   8. Navbar sobre el hero (.nav-on-hero)                                 [~L430]
+   6. Helpers / clases base (.card, .card-soft, hero-card, nav-on-hero)     [~L310]
+      (los helpers .text-theme/.bg-theme/.bg-soft/.border-theme/.bg-secondary/
+       .text-secondary, .text-brown-*, .font-bebas/.font-montserrat/.heading-display
+       y .auth-page-bg se eliminaron en PR5 hex-sweep: consumidores migrados a
+       utilidades semánticas; grep de clases legacy sobre src/ = 0)
+    7. Secciones / navbar sobre el hero (.nav-on-hero)                      [~L330]
    ========================================================================== */
 
 /* Optional local font registration for `Simple Handmade`.
@@ -58,6 +59,16 @@
   --color-success-hover: #4E6D5B; /* success hover */
   --color-ring: rgba(78, 109, 91, 0.4); /* focus-visible ring for .btn (PR2) */
 
+  /* PR5 hex-sweep: warm accent tokens for the remaining one-off hexes
+     (design-system 5/5). Exact values preserved so admin surfaces keep
+     visual parity; utilities generate text-, border-, bg-, ring- and
+     divide- color names. */
+  --color-text-tan: #A08060;       /* muted tan for secondary labels */
+  --color-secondary: #7A9E7E;      /* pale sage secondary (hover borders, rings) */
+  --color-terracotta: #C4785A;     /* warm terracotta accent (Home hover borders) */
+  --color-ochre: #C47D2B;          /* warm ochre accent (level badges) */
+  --color-border-sage: #cfe0cf;    /* pale sage comment-bubble border */
+
   /* Tailwind default-color parity keepers (utilities used across JSX) */
   --color-white: #FFFFFF;
   --color-black: #1D1D1B;
@@ -91,20 +102,14 @@
   --bg: var(--color-bg-surface);
   --text: var(--color-text-ink);
   --accent: var(--color-accent);
-  --secondary: var(--color-primary);
-  --secondary-dark: var(--color-primary-hover);
   --soft: var(--color-bg-soft);
-  --surface: var(--color-bg-surface);
   --radius: var(--radius-md);
   --shadow: var(--shadow-soft);
   --border: var(--color-border);
-  --auth-bg: var(--color-bg-cream);
   --transition: all 0.3s ease;
 
   /* Tipografías del sistema de diseño (legacy names -> tokens) */
-  --font-bebas: var(--font-display);
   --font-playfair: var(--font-serif);
-  --font-montserrat: var(--font-body);
   --font-dancing: 'Dancing Script', cursive; /* acentos y detalles */
   --font-handmade: 'Simple Handmade', 'Patrick Hand', 'Homemade Apple', cursive; /* elementos artesanales */
   --heading-font: var(--font-display);
@@ -130,9 +135,10 @@
     margin-bottom: 0.6rem;
     line-height: 1.08;
     /* Open-question resolution (PR1): headings default to sentence-case.
-       Brand displays (.font-bebas, .title, .visual-title, logo spans) keep
-       their own uppercase. PR3: no forced heading color — JSX sets colors
-       explicitly (text-[#6B4C3B], text-theme, etc.) and utilities win. */
+       Brand displays (.font-display + uppercase, .title, .visual-title,
+       logo spans) keep their own uppercase. PR3/PR5: no forced heading color —
+       JSX sets colors explicitly with token utilities (text-text-ink,
+       text-primary, etc.) and utilities win. */
   }
 
   /* Superficie uniforme: PR3 removed the global card/bg-white/rounded
@@ -375,15 +381,12 @@
 /* PR3: .input-default deleted (no consumers); legacy button helpers were
    removed in PR2 (buttons use the canonical .btn classes). */
 
-/* Simple helper classes for components to opt into theme */
-.text-theme { color: var(--text); }
-.bg-theme { background-color: var(--surface); }
+/* PR5 (hex-sweep): deleted the legacy helper classes below — every consumer
+   was migrated to generated token utilities (text-text-ink, bg-bg-soft,
+   border-border, text-primary, bg-primary). Utilities now win (REQ-2). */
 
-/* Semantic helpers for replacing hard-coded hex colors */
-.bg-soft { background-color: var(--soft) !important; color: var(--text) !important; }
-.border-theme { border-color: var(--border) !important; }
-.bg-secondary { background-color: var(--secondary) !important; }
-.text-secondary { color: var(--secondary) !important; }
+/* PR5: removed .auth-page-bg (no consumers since PR4 — AdminDashboard uses
+   the bg-bg-surface utility). */
 
 /* PR3: removed duplicate .text-accent/.bg-accent !important helpers —
    Tailwind generates text-accent/bg-accent from the --color-accent token
@@ -404,35 +407,20 @@ footer.bg-black * {
    .auth-input, .auth-card, .auth-left, and their media queries) — no JSX
    consumers remain; Auth.jsx uses utility classes now. */
 
-/* Fondo neutro para las páginas de auth (PR4: AdminDashboard migró al
-   token bg-bg-surface; sin consumidores desde PR4 — PR5 hex-sweep puede
-   eliminar esta regla junto con la limpieza de CSS muerto) */
-.auth-page-bg {
-  /* Fondo neutro: blanco/crema según variable */
-  background-color: var(--auth-bg);
-  background-image: none;
-}
+/* PR5: removed .auth-page-bg (no consumers since PR4 — AdminDashboard uses
+   the bg-bg-surface utility). */
 
-/* PR3: kept the semantic brown helpers that ARE used (text-brown-accent,
-   text-brown-muted, border-brown-dark); removed text-brown-soft and
-   border-brown-accent (no consumers). */
-
-.text-brown-muted { color: var(--color-text-muted) !important; }
-.text-brown-accent { color: var(--color-accent) !important; }
-.border-brown-dark { border-color: var(--color-text-cocoa) !important; }
+/* PR5: removed the semantic brown helpers (text-brown-accent,
+   text-brown-muted, border-brown-dark) — consumers migrated to the
+   text-accent / text-text-muted / border-text-cocoa utilities. */
 
 /* PR3: removed dead level-badge helpers (.lvl-*), .bg-beige and
    .fill-brown-accent (no JSX consumers). */
 
-/* Tipografía: utilidades para aplicar las familias solicitadas */
-.font-bebas { font-family: var(--font-bebas); letter-spacing: 0.08em; text-transform: uppercase; }
-.font-montserrat { font-family: var(--font-montserrat); }
-
-/* PR3: removed unused .font-playfair/.font-dancing/.font-handmade,
-   .title/.accent-script/.subtitle/.body-text — no JSX consumers. */
-
-/* Atajo semántico */
-.heading-display { font-family: var(--heading-font); }
+/* PR5: removed .font-bebas / .font-montserrat / .heading-display — consumers
+   migrated to the generated font-display / font-body utilities. Brand display
+   ("Creative Education Studio", footer) keeps uppercase via the `uppercase`
+   utility on top of font-display. */
 
 /* Hero: tarjeta translúcida (usado por Home.jsx) */
 .hero-card {
@@ -517,15 +505,15 @@ section.hero-no-sep + section {
   box-shadow: none !important;
 }
 .nav-on-hero .logo-text { color: var(--color-text-cocoa) !important; font-weight:600; }
-.nav-on-hero .text-black,
-.nav-on-hero .text-secondary,
 .nav-on-hero a,
-.nav-on-hero .nav-link,
-.nav-on-hero .text-brown-muted {
+.nav-on-hero .nav-link {
   color: var(--color-text-cocoa) !important;
 }
-.nav-on-hero .border-theme { border-color: transparent !important; }
-.nav-on-hero .bg-theme { background: transparent !important; }
+/* PR5: dropped .text-black/.text-secondary/.text-brown-muted and the
+   .border-theme/.bg-theme selectors — those helper classes were deleted
+   (consumers migrated to text-text-ink / text-primary / text-accent etc.).
+   The `.btn` variants carry their own color (btn-primary white on sage,
+   ghost/icon ink). */
 /* PR3: .nav-on-hero .text-brown-soft selector dropped (class deleted). The
    .btn variants carry their own color (btn-primary white on sage, ghost/icon ink). */
 
