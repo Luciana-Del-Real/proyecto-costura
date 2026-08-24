@@ -37,8 +37,8 @@ export default function AdminDashboard() {
       icon: '💰', 
       color: 'bg-primary-soft text-success' 
     },
-    { label: 'Ventas totales', value: allPurchases.length, icon: '🛒', color: 'bg-bg-soft text-[#A85E42]' },
-    { label: 'Solicitudes pendientes', value: pendingRequests.length, icon: '⏳', color: 'bg-bg-soft text-[#A36700]' },
+    { label: 'Ventas totales', value: allPurchases.length, icon: '🛒', color: 'bg-bg-soft text-terracotta' },
+    { label: 'Solicitudes pendientes', value: pendingRequests.length, icon: '⏳', color: 'bg-bg-soft text-ochre' },
     { label: 'Alumnos', value: allUsers.length, icon: '👩‍🎓', color: 'bg-bg-soft text-text-ink' },
   ];
 
@@ -85,7 +85,7 @@ export default function AdminDashboard() {
           <div className="bg-white rounded-xl border border-border p-6 shadow-sm">
             <div className="flex items-center justify-between mb-5">
               <h2 className="font-bold text-text-ink text-xl">Cursos</h2>
-              <Link to="/admin/cursos" className="text-[#A08060] text-sm mt-0.5 hover:underline">Ver todos →</Link>
+              <Link to="/admin/cursos" className="text-text-tan text-sm mt-0.5 hover:underline">Ver todos →</Link>
             </div>
             {topCourses.length === 0 ? (
               <p className="text-text-ink text-sm">Sin ventas aún.</p>
@@ -116,7 +116,7 @@ export default function AdminDashboard() {
           <div className="bg-white rounded-xl border border-border p-6 shadow-sm">
             <div className="flex items-center justify-between mb-5">
               <h2 className="font-bold text-text-ink text-xl">Alumnos</h2>
-              <Link to="/admin/usuarios" className="text-[#A08060] text-sm mt-0.5 hover:underline">Ver todos →</Link>
+              <Link to="/admin/usuarios" className="text-text-tan text-sm mt-0.5 hover:underline">Ver todos →</Link>
             </div>
             {allUsers.length === 0 ? (
               <p className="text-text-ink text-sm">Sin alumnos registrados aún.</p>

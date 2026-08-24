@@ -387,7 +387,7 @@ export default function AdminCourseForm() {
                         {commentsByLesson[lesson.id]?.loaded && commentsByLesson[lesson.id].items.length > 0 && (
                           <div className="space-y-2 max-h-56 overflow-y-auto pr-1 mb-3">
                             {commentsByLesson[lesson.id].items.map(c => (
-                              <div key={c.id} className={`rounded-lg p-2.5 text-xs border ${c.user?.role === 'ADMIN' ? 'bg-primary-soft border-[#cfe0cf]' : 'bg-bg-soft border-border'}`}>
+                              <div key={c.id} className={`rounded-lg p-2.5 text-xs border ${c.user?.role === 'ADMIN' ? 'bg-primary-soft border-border-sage' : 'bg-bg-soft border-border'}`}>
                                 <p className="font-bold text-text-ink mb-0.5">{c.user?.role === 'ADMIN' ? 'Vos (profesora)' : c.user?.name}</p>
                                 <p className="text-text-ink">{c.message}</p>
                               </div>
