@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { get, postForm, putForm, post, put, del } from '../services/api';
 
 const CourseCatalogContext = createContext(null);
@@ -17,6 +17,13 @@ export function CourseCatalogProvider({ children }) {
       }
     };
     fetchCourses();
+  }, []);
+
+  // Contenido completo de un curso (videoUrl/pdf/attachments + material del
+  // curso) desde el endpoint protegido. El catálogo público solo trae
+  // títulos; los alumnos con compra aprobada cargan acá lo demás.
+  const getCourseLessons = useCallback(async (courseId) => {
+    return get(`/courses/${courseId}/lessons`);
   }, []);
 
   const saveCourses = (updated) => setCourses(updated);
@@ -122,6 +129,7 @@ export function CourseCatalogProvider({ children }) {
     <CourseCatalogContext.Provider value={{
       courses,
       saveCourses,
+      getCourseLessons,
       updateCourse, addCourse, deleteCourse,
       addLesson, updateLesson, deleteLesson,
     }}>

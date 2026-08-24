@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useCourseCatalog } from '../context/CourseCatalogContext';
 import { usePurchases } from '../context/PurchaseContext';
@@ -76,10 +76,72 @@ export default function CourseDetail() {
     );
   }
 
-  return <CourseLearningView course={course} user={user} progress={progress} getProgress={getProgress} completeLesson={completeLesson} />;
+  return (
+    <OwnedCourseView
+      key={course.id}
+      course={course}
+      progress={progress}
+      getProgress={getProgress}
+      completeLesson={completeLesson}
+    />
+  );
 }
 
-function CourseLearningView({ course, user, progress, getProgress, completeLesson }) {
+// Vista de aprendizaje de un alumno con compra aprobada. El catálogo público
+// solo trae títulos; el contenido completo (video/pdf/attachments + material
+// del curso) se carga del endpoint protegido. `key={course.id}` resetea el
+// estado al navegar entre cursos.
+function OwnedCourseView({ course, progress, getProgress, completeLesson }) {
+  const { getCourseLessons } = useCourseCatalog();
+  const [fullCourse, setFullCourse] = useState(null);
+  const [loadingContent, setLoadingContent] = useState(true);
+  const [contentError, setContentError] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    getCourseLessons(course.id)
+      .then((data) => {
+        if (cancelled) return;
+        setFullCourse({ ...course, ...data.course, lessons: data.lessons });
+        setLoadingContent(false);
+      })
+      .catch((err) => {
+        console.error('Error cargando el contenido del curso:', err);
+        if (!cancelled) {
+          setLoadingContent(false);
+          setContentError(true);
+        }
+      });
+    return () => { cancelled = true; };
+  }, [course, getCourseLessons]);
+
+  if (loadingContent) {
+    return (
+      <div className="min-h-screen bg-bg-surface flex items-center justify-center px-4">
+        <p className="text-text-ink">Cargando el contenido del curso...</p>
+      </div>
+    );
+  }
+
+  if (contentError || !fullCourse) {
+    return (
+      <div className="min-h-screen bg-bg-surface flex items-center justify-center px-4">
+        <div className="max-w-md text-center bg-white border border-border rounded-3xl p-8 shadow-sm">
+          <span className="text-5xl">⚠️</span>
+          <h2 className="text-xl font-bold text-text-ink mt-4 mb-2">No se pudo cargar el contenido</h2>
+          <p className="text-text-ink mb-6">Verificá tu conexión y volvé a intentar. Si el problema continúa, escribile a la profesora.</p>
+          <Link to="/mis-cursos" className="btn btn-primary inline-block font-semibold">
+            ← Volver a mis cursos
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  return <CourseLearningView course={fullCourse} progress={progress} getProgress={getProgress} completeLesson={completeLesson} />;
+}
+
+function CourseLearningView({ course, progress, getProgress, completeLesson }) {
   const courseProgress = progress[course.id] || { completed: [], lastLesson: 0 };
   const isCompleted = (lessonId) => courseProgress.completed.includes(lessonId);
 
