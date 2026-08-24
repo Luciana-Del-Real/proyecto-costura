@@ -21,16 +21,14 @@ async function bootstrap() {
     }),
   );
 
-  // CORS permisivo para desarrollo (usar la API de Nest para asegurar cabeceras en errores y preflight)
+  // CORS restringido a los orígenes computados desde CORS_ORIGIN (dev: 5173/5174/5175).
+  // Sin `origin: true`: los orígenes fuera de la lista son rechazados.
   const corsOrigins = process.env.CORS_ORIGIN
     ? process.env.CORS_ORIGIN.split(',')
     : ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175'];
 
-  // Log útil para debugging local
-  console.log('CORS origins:', corsOrigins);
-
   app.enableCors({
-    origin: true,
+    origin: corsOrigins,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
