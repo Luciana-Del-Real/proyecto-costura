@@ -50,8 +50,8 @@ export class PurchasesController {
 
   @Get(':id')
   @UseGuards(JwtAuthGuard)
-  async getPurchaseById(@Param('id') id: string) {
-    return this.purchasesService.getPurchaseById(id);
+  async getPurchaseById(@Param('id') id: string, @Request() req: any) {
+    return this.purchasesService.getPurchaseById(id, req.user);
   }
 
   @Patch(':id/approve')

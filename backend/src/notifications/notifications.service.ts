@@ -3,6 +3,7 @@ import {
   NotFoundException,
   ForbiddenException,
 } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { Principal, isOwnerOrAdmin } from '../common/principal';
 
@@ -72,12 +73,17 @@ export class NotificationsService {
     });
   }
 
+  // Crea una notificación dentro de la transacción del llamador cuando se
+  // pasa un `tx`, o contra el cliente global cuando no. Así los flujos que
+  // combinan estado + notificación (ej. aprobación de compra) son atómicos.
   async createNotification(
     userId: string,
     title: string,
     message: string,
+    tx?: Prisma.TransactionClient,
   ) {
-    return this.prisma.notification.create({
+    const client = tx ?? this.prisma;
+    return client.notification.create({
       data: {
         userId,
         title,
