@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { post } from '../services/api';
+import { post, patch } from '../services/api';
 
 const AuthContext = createContext(null);
 
@@ -60,10 +60,23 @@ export function AuthProvider({ children }) {
     sessionStorage.removeItem('costura_user');
   };
 
-  const updateUser = (data) => {
-    const updated = { ...user, ...data };
-    setUser(updated);
-    sessionStorage.setItem('costura_user', JSON.stringify(updated));
+  const updateUser = async (data) => {
+    if (!user?.id) {
+      throw new Error('No hay usuario autenticado');
+    }
+    try {
+      const response = await patch(`/users/${user.id}`, data);
+      const updated = {
+        ...user,
+        ...response,
+        role: response.role ? String(response.role).toUpperCase() : user.role,
+      };
+      setUser(updated);
+      sessionStorage.setItem('costura_user', JSON.stringify(updated));
+      return updated;
+    } catch (error) {
+      throw new Error(error.message || 'Error al actualizar el perfil');
+    }
   };
 
   const isAdmin = user?.role === 'ADMIN';
