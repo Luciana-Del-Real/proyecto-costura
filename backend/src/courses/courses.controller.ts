@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Query, UseGuards, UseInterceptors, UploadedFiles } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Query, Request, UseGuards, UseInterceptors, UploadedFiles } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
@@ -8,6 +8,7 @@ import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { AdminGuard } from '../auth/guards/admin.guard';
+import { OptionalJwtAuthGuard } from '../auth/guards/optional-jwt.guard';
 
 const uploadsDir = './uploads/courses';
 mkdirSync(uploadsDir, { recursive: true });
@@ -37,15 +38,17 @@ export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
 
   @Get()
-  async findAll(@Query('featured') featured?: string, @Query('page') page?: string, @Query('limit') limit?: string) {
+  @UseGuards(OptionalJwtAuthGuard)
+  async findAll(@Request() req: any, @Query('featured') featured?: string, @Query('page') page?: string, @Query('limit') limit?: string) {
     let p = parseInt(page as any, 10) || 1;
     let l = parseInt(limit as any, 10) || 20;
-    return this.coursesService.findAll(featured === 'true', p, Math.min(l, 100));
+    return this.coursesService.findAll(featured === 'true', p, Math.min(l, 100), req.user);
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return this.coursesService.findOne(id);
+  @UseGuards(OptionalJwtAuthGuard)
+  async findOne(@Param('id') id: string, @Request() req: any) {
+    return this.coursesService.findOne(id, req.user);
   }
 
   @Post()

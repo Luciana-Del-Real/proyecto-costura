@@ -21,7 +21,7 @@ export class LessonProgressController {
     @Request() req: any,
     @Param('courseId') courseId: string,
   ) {
-    return this.progressService.getCourseProgress(req.user.id, courseId);
+    return this.progressService.getCourseProgress(req.user, courseId);
   }
 
   @Patch('lessons/:lessonId')

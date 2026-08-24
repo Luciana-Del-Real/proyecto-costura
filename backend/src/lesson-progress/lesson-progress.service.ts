@@ -2,6 +2,8 @@ import { Injectable, NotFoundException, BadRequestException } from '@nestjs/comm
 import { PrismaService } from '../prisma/prisma.service';
 import { UpdateLessonProgressDto } from './dto/update-lesson-progress.dto';
 import { PurchaseStatus } from '../common/enums';
+import { Principal } from '../common/principal';
+import { assertCourseAccess } from '../common/course-access';
 
 @Injectable()
 export class LessonProgressService {
@@ -139,7 +141,17 @@ export class LessonProgressService {
     return progress;
   }
 
-  async getCourseProgress(userId: string, courseId: string) {
-    return this.getUserCourseProgress(userId, courseId);
+  async getCourseProgress(principal: Principal, courseId: string) {
+    // El progreso solo se expone si el usuario tiene acceso al curso
+    // (ADMIN o compra aprobada). Sin acceso → 403, sin filtrar contenido.
+    const course = await this.prisma.course.findUnique({
+      where: { id: courseId },
+      select: { id: true },
+    });
+    if (!course) {
+      throw new NotFoundException('Course not found');
+    }
+    await assertCourseAccess(this.prisma, principal, courseId);
+    return this.getUserCourseProgress(principal.id, courseId);
   }
 }

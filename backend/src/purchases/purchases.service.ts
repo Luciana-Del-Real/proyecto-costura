@@ -2,13 +2,17 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
+  ForbiddenException,
   Logger,
 } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePurchaseDto } from './dto/create-purchase.dto';
 import { PurchaseStatus } from '../common/enums';
 import { MailService } from '../mail/mail.service';
 import { ConfigService } from '@nestjs/config';
+import { Principal, isOwnerOrAdmin } from '../common/principal';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class PurchasesService {
@@ -17,6 +21,7 @@ export class PurchasesService {
     private prisma: PrismaService,
     private mailService: MailService,
     private config: ConfigService,
+    private notificationsService: NotificationsService,
   ) {}
 
   async requestPurchase(userId: string, dto: CreatePurchaseDto) {
@@ -75,75 +80,80 @@ export class PurchasesService {
   }
 
   async approvePurchase(purchaseId: string) {
-    // Ejecutar todo en una transacción atómica para garantizar integridad
-    const updatedPurchase = await this.prisma.$transaction(async (tx: any) => {
-      const purchase = await tx.purchase.findUnique({
-        where: { id: purchaseId },
-        include: { course: true, user: true },
-      });
+    // Ejecutar todo en una transacción atómica para garantizar integridad.
+    // Acepta PENDING y REJECTED: la denegación es reversible y una nueva
+    // aprobación restaura el acceso sin perder el progreso guardado.
+    const updatedPurchase = await this.prisma.$transaction(
+      async (tx: Prisma.TransactionClient) => {
+        const purchase = await tx.purchase.findUnique({
+          where: { id: purchaseId },
+          include: { course: true, user: true },
+        });
 
-      if (!purchase) {
-        throw new NotFoundException('Purchase not found');
-      }
+        if (!purchase) {
+          throw new NotFoundException('Purchase not found');
+        }
 
-      if (purchase.status !== PurchaseStatus.PENDING) {
-        throw new BadRequestException(
-          `Cannot approve purchase with status ${purchase.status}`,
-        );
-      }
+        if (
+          purchase.status !== PurchaseStatus.PENDING &&
+          purchase.status !== PurchaseStatus.REJECTED
+        ) {
+          throw new BadRequestException(
+            `Cannot approve purchase with status ${purchase.status}`,
+          );
+        }
 
-      // Update purchase status
-      const updated = await tx.purchase.update({
-        where: { id: purchaseId },
-        data: { status: PurchaseStatus.APPROVED },
-        include: {
-          course: true,
-          user: {
-            select: {
-              id: true,
-              email: true,
-              name: true,
+        // Update purchase status
+        const updated = await tx.purchase.update({
+          where: { id: purchaseId },
+          data: { status: PurchaseStatus.APPROVED },
+          include: {
+            course: true,
+            user: {
+              select: {
+                id: true,
+                email: true,
+                name: true,
+              },
             },
-          },
-        },
-      });
-
-      // Initialize lesson progress for purchased course
-      const lessons = await tx.lesson.findMany({
-        where: { courseId: purchase.courseId },
-        orderBy: { order: 'asc' },
-      });
-
-      // Crear o asegurar progress entries para cada lección
-      for (const lesson of lessons) {
-        await tx.lessonProgress.upsert({
-          where: {
-            userId_lessonId: {
-              userId: purchase.userId,
-              lessonId: lesson.id,
-            },
-          },
-          update: {},
-          create: {
-            userId: purchase.userId,
-            lessonId: lesson.id,
-            completed: false,
           },
         });
-      }
 
-      // Crear notificación al usuario
-      await tx.notification.create({
-        data: {
-          userId: purchase.userId,
-          title: 'Purchase Approved',
-          message: `Your purchase for "${purchase.course.title}" has been approved. You can now access the course.`,
-          read: false,
-        },
-      });
+        // Initialize lesson progress for purchased course
+        const lessons = await tx.lesson.findMany({
+          where: { courseId: purchase.courseId },
+          orderBy: { order: 'asc' },
+        });
 
-      return updated;
-    });
+        // Crear o asegurar progress entries para cada lección
+        for (const lesson of lessons) {
+          await tx.lessonProgress.upsert({
+            where: {
+              userId_lessonId: {
+                userId: purchase.userId,
+                lessonId: lesson.id,
+              },
+            },
+            update: {},
+            create: {
+              userId: purchase.userId,
+              lessonId: lesson.id,
+              completed: false,
+            },
+          });
+        }
+
+        // Notificación de desbloqueo dentro de la misma transacción
+        await this.notificationsService.createNotification(
+          purchase.userId,
+          'Acceso desbloqueado',
+          `Tu solicitud para el curso "${purchase.course.title}" fue aprobada. Ya podés acceder al contenido completo.`,
+          tx,
+        );
+
+        return updated;
+      },
+    );
 
     // Enviar correo transaccional fuera de la transacción para no bloquear la BD
     try {
@@ -176,7 +186,12 @@ export class PurchasesService {
       throw new NotFoundException('Purchase not found');
     }
 
-    if (purchase.status !== PurchaseStatus.PENDING) {
+    // Acepta PENDING y APPROVED: negar una compra aprobada revoca el acceso.
+    // Es reversible — una aprobación posterior restaura el acceso.
+    if (
+      purchase.status !== PurchaseStatus.PENDING &&
+      purchase.status !== PurchaseStatus.APPROVED
+    ) {
       throw new BadRequestException(
         `Cannot reject purchase with status ${purchase.status}`,
       );
@@ -199,15 +214,8 @@ export class PurchasesService {
       },
     });
 
-    // Create notification for user
-    await this.prisma.notification.create({
-      data: {
-        userId: purchase.userId,
-        title: 'Purchase Rejected',
-        message: `Your purchase request for "${purchase.course.title}" has been rejected.`,
-        read: false,
-      },
-    });
+    // La denegación NO genera notificación de desbloqueo (y el progreso no
+    // se borra: una re-aprobación restaura el acceso sin perder historia).
 
     return updatedPurchase;
   }
@@ -275,7 +283,9 @@ export class PurchasesService {
     });
   }
 
-  async getPurchaseById(id: string) {
+  // Un registro de compra solo es visible para su dueño o un ADMIN (IDOR
+  // cerrado: cualquier otro usuario autenticado recibe 403).
+  async getPurchaseById(id: string, principal: Principal) {
     const purchase = await this.prisma.purchase.findFirst({
       where: { id, deletedAt: null },
       include: {
@@ -293,6 +303,10 @@ export class PurchasesService {
 
     if (!purchase) {
       throw new NotFoundException('Purchase not found');
+    }
+
+    if (!isOwnerOrAdmin(principal, purchase.userId)) {
+      throw new ForbiddenException('No podés ver la compra de otro usuario');
     }
 
     return purchase;
