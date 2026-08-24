@@ -23,7 +23,7 @@ export default function AdminNavbar() {
     <>
       <BackToHome />
       {/* Navbar con fondo blanco y borde temático para unificar con el Dashboard */}
-      <nav className="bg-white border-b border-theme sticky top-0 z-50 shadow-sm">
+      <nav className="bg-white border-b border-border sticky top-0 z-50 shadow-sm">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           
           {/* Logo y Nombre unificado */}
@@ -40,8 +40,8 @@ export default function AdminNavbar() {
               <Link key={link.to} to={link.to}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                   location.pathname === link.to
-                    ? 'bg-theme/10 text-secondary'
-                    : 'text-theme hover:text-secondary hover:bg-theme/5'
+                    ? 'bg-bg-surface text-primary'
+                    : 'text-text-ink hover:text-primary hover:bg-bg-soft'
                 }`}>
                 <span>{link.icon}</span>{link.label}
               </Link>
@@ -51,8 +51,8 @@ export default function AdminNavbar() {
           {/* User info */}
           <div className="hidden md:flex items-center gap-4">
             <div className="text-right">
-              <p className="text-secondary text-xs font-semibold">{user?.name}</p>
-              <p className="text-theme text-[10px] uppercase">Administradora</p>
+              <p className="text-primary text-xs font-semibold">{user?.name}</p>
+              <p className="text-text-ink text-[10px] uppercase">Administradora</p>
             </div>
             <button onClick={handleLogout}
               className="btn btn-primary text-xs">
@@ -72,14 +72,14 @@ export default function AdminNavbar() {
 
         {/* Mobile menu */}
         {menuOpen && (
-          <div className="md:hidden bg-white border-t border-theme px-4 py-3 flex flex-col gap-2">
+          <div className="md:hidden bg-white border-t border-border px-4 py-3 flex flex-col gap-2">
             {navLinks.map(link => (
               <Link key={link.to} to={link.to} onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2 text-theme text-sm py-2">
+                className="flex items-center gap-2 text-text-ink text-sm py-2">
                 <span>{link.icon}</span>{link.label}
               </Link>
             ))}
-            <button onClick={handleLogout} className="btn btn-ghost w-full justify-start text-sm text-accent mt-2 border-t border-theme pt-0">
+            <button onClick={handleLogout} className="btn btn-ghost w-full justify-start text-sm text-accent mt-2 border-t border-border pt-0">
               Cerrar sesión
             </button>
           </div>

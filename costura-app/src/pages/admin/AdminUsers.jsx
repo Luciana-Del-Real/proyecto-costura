@@ -65,14 +65,14 @@ export default function AdminUsers() {
   const isActive = (u) => u.active !== false;
 
   if (loading) {
-    return <div className="min-h-screen bg-[#F9F5F0] flex items-center justify-center"><span className="text-4xl">🧵</span></div>;
+    return <div className="min-h-screen bg-bg-surface flex items-center justify-center"><span className="text-4xl">🧵</span></div>;
   }
 
   return (
     <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
-      <div className="bg-[#F9F5F0] rounded-2xl shadow-sm border border-gray-100 px-4 py-10 animate-fade-up mt-5">
+      <div className="bg-bg-soft rounded-2xl shadow-sm border border-gray-100 px-4 py-10 animate-fade-up mt-5">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl font-bold text-[#6B4C3B]">Alumnos</h1>
+          <h1 className="text-3xl font-bold text-text-ink">Alumnos</h1>
           <p className="text-[#A08060] text-sm mt-0.5">{allUsers.length} alumna{allUsers.length !== 1 ? 's' : ''} registrada{allUsers.length !== 1 ? 's' : ''}</p>
         </div>
       </div>
@@ -84,14 +84,14 @@ export default function AdminUsers() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Buscar alumna..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-grey bg-[#F9F5F0] shadow-sm border border-gray-100 animate-fade-up" />
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-grey bg-bg-soft shadow-sm border border-gray-100 animate-fade-up" />
         </div>
 
         {/* Confirm toggle modal */}
         {confirmToggle && (
           <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-[60] animate-fade-in px-4">
             <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-xl animate-fade-up justify-center text-center font-medium">
-              <h3 className="font-medium text-[#3D2B1F] mb-2">
+              <h3 className="font-medium text-text-ink mb-2">
                 {confirmToggle.action === 'deactivate' ? '¿Dar de baja a esta alumna?' : '¿Reactivar esta cuenta?'}
               </h3>
               <p className="text-[#A08060] text-sm mb-5">
@@ -103,7 +103,7 @@ export default function AdminUsers() {
                 <button onClick={handleToggle}
                   className={`btn text-sm font-medium ${
                     confirmToggle.action === 'deactivate'
-                      ? 'bg-red-500 text-white hover:bg-red-600'
+                      ? 'btn-danger'
                       : 'btn-primary'
                   }`}>
                   {confirmToggle.action === 'deactivate' ? 'Dar de baja' : 'Reactivar'}
@@ -120,12 +120,12 @@ export default function AdminUsers() {
             <div className="bg-white rounded-2xl p-6 max-w-lg w-full shadow-xl animate-fade-up max-h-[80vh] overflow-y-auto">
               <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${isActive(selected) ? 'bg-[#EAF0EA] text-[#5E8262]' : 'bg-red-50 text-red-400'}`}>
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${isActive(selected) ? 'bg-primary-soft text-success' : 'bg-red-50 text-red-400'}`}>
                     {selected.name?.charAt(0).toUpperCase()}
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <h3 className="font-medium text-xl text-[#3D2B1F]">{selected.name}</h3>
+                      <h3 className="font-medium text-xl text-text-ink">{selected.name}</h3>
                       {!isActive(selected) && (
                         <span className="text-xs bg-red-50 text-red-400 border border-red-200 px-2 py-0.5 rounded-full">Suspendida</span>
                       )}
@@ -137,19 +137,19 @@ export default function AdminUsers() {
               </div>
 
               <div className="grid grid-cols-2 gap-3 mb-5">
-                <div className="bg-[#F9F5F0] rounded-xl p-3 text-center">
-                  <p className="text-xl font-bold text-[#3D2B1F]">{getPurchasedCourseIds(selected).length}</p>
+                <div className="bg-bg-soft rounded-xl p-3 text-center">
+                  <p className="text-xl font-bold text-text-ink">{getPurchasedCourseIds(selected).length}</p>
                   <p className="text-xs text-[#A08060]">Cursos comprados</p>
                 </div>
-                <div className="bg-[#F9F5F0] rounded-xl p-3 text-center">
-                  <p className="text-xl font-bold text-[#3D2B1F]">
+                <div className="bg-bg-soft rounded-xl p-3 text-center">
+                  <p className="text-xl font-bold text-text-ink">
                     ${getUserCourses(selected).reduce((s, c) => s + getCoursePrice(c, selected), 0).toLocaleString()} {getCurrencyCode(selected)}
                   </p>
                   <p className="text-xs text-[#A08060]">Total invertido</p>
                 </div>
               </div>
 
-              <h4 className="font-semibold text-[#3D2B1F] text-sm mb-3">Cursos y progreso</h4>
+              <h4 className="font-semibold text-text-ink text-sm mb-3">Cursos y progreso</h4>
               {getUserCourses(selected).length === 0 ? (
                 <p className="text-[#A08060] text-sm mb-5">Sin cursos aún.</p>
               ) : (
@@ -160,10 +160,10 @@ export default function AdminUsers() {
                       <div key={course.id} className="flex items-center gap-3">
                         <img src={getImageUrl(course.image)} alt={course.title} className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-[#3D2B1F] truncate">{course.title}</p>
+                          <p className="text-sm font-medium text-text-ink truncate">{course.title}</p>
                           <div className="flex items-center gap-2 mt-1">
-                            <div className="flex-1 bg-[#EDE4D6] rounded-full h-1.5">
-                              <div className="bg-[#7A9E7E] h-1.5 rounded-full" style={{ width: `${prog}%` }} />
+                            <div className="flex-1 bg-bg-soft rounded-full h-1.5">
+                              <div className="bg-primary h-1.5 rounded-full" style={{ width: `${prog}%` }} />
                             </div>
                             <span className="text-xs text-[#A08060] flex-shrink-0">{prog}%</span>
                           </div>
@@ -183,13 +183,13 @@ export default function AdminUsers() {
                 {isActive(selected) ? (
                   <button
                     onClick={() => setConfirmToggle({ user: selected, action: 'deactivate' })}
-                    className="btn btn-ghost w-full text-sm text-red-500 border-red-200">
+                    className="btn btn-ghost w-full text-sm text-danger border-red-200">
                     Dar de baja esta cuenta
                   </button>
                 ) : (
                   <button
                     onClick={() => setConfirmToggle({ user: selected, action: 'activate' })}
-                    className="btn btn-ghost w-full text-sm text-red-500 border-red-200">
+                    className="btn btn-ghost w-full text-sm text-danger border-red-200">
                     Reactivar esta cuenta
                   </button>
                 )}
@@ -203,15 +203,15 @@ export default function AdminUsers() {
             <p className="text-[#A08060] mt-4">{allUsers.length === 0 ? 'Sin alumnos registrados aún.' : 'No se encontraron resultados.'}</p>
           </div>
         ) : (
-          <div className="bg-[#F9F5F0] rounded-2xl shadow-sm border border-[#E5E0D8] overflow-hidden animate-fade-up">
+          <div className="bg-bg-soft rounded-2xl shadow-sm border border-[#E5E0D8] overflow-hidden animate-fade-up">
             <table className="w-full text-sm">
               <thead>
                 {/* Eliminamos el fondo del tr y dejamos que el bg del div principal sea el fondo */}
                 <tr className="border-b border-[#E5E0D8]">
-                  <th className="text-left px-8 py-4 text-[#6B4C3B] font-bold text-xs uppercase tracking-wider">Alumna</th>
-                  <th className="text-left px-4 py-4 text-[#6B4C3B] font-bold text-xs uppercase tracking-wider hidden md:table-cell">Email</th>
-                  <th className="text-center px-4 py-4 text-[#6B4C3B] font-bold text-xs uppercase tracking-wider">Cursos</th>
-                  <th className="text-center px-4 py-4 text-[#6B4C3B] font-bold text-xs uppercase tracking-wider hidden sm:table-cell">Estado</th>
+                  <th className="text-left px-8 py-4 text-text-ink font-bold text-xs uppercase tracking-wider">Alumna</th>
+                  <th className="text-left px-4 py-4 text-text-ink font-bold text-xs uppercase tracking-wider hidden md:table-cell">Email</th>
+                  <th className="text-center px-4 py-4 text-text-ink font-bold text-xs uppercase tracking-wider">Cursos</th>
+                  <th className="text-center px-4 py-4 text-text-ink font-bold text-xs uppercase tracking-wider hidden sm:table-cell">Estado</th>
                   <th className="px-4 py-4"></th>
                 </tr>
               </thead>
@@ -220,19 +220,19 @@ export default function AdminUsers() {
                   <tr key={u.id} className={`transition-colors ${isActive(u) ? 'hover:bg-[#F2EDE7]' : 'bg-red-50/30 hover:bg-red-50/50'}`}>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${isActive(u) ? 'bg-[#E5EADD] text-[#5E8262]' : 'bg-red-100 text-red-400'}`}>
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${isActive(u) ? 'bg-[#E5EADD] text-success' : 'bg-red-100 text-red-400'}`}>
                           {u.name?.charAt(0).toUpperCase()}
                         </div>
-                        <span className={`font-semibold ${isActive(u) ? 'text-[#3D2B1F]' : 'text-[#A08060]'}`}>{u.name}</span>
+                        <span className={`font-semibold ${isActive(u) ? 'text-text-ink' : 'text-[#A08060]'}`}>{u.name}</span>
                       </div>
                     </td>
                     <td className="px-4 py-4 text-black hidden md:table-cell font-medium">{u.email}</td>
                     <td className="px-4 py-4 text-center">
-                      <span className="bg-[#E5E0D8] text-[#6B4C3B] text-xs font-bold px-3 py-1 rounded-full">{getPurchasedCourseIds(u).length}</span>
+                      <span className="bg-[#E5E0D8] text-text-ink text-xs font-bold px-3 py-1 rounded-full">{getPurchasedCourseIds(u).length}</span>
                     </td>
                     <td className="px-4 py-4 text-center hidden sm:table-cell">
                       {isActive(u)
-                        ? <span className="text-[10px] font-bold uppercase tracking-wide bg-[#E5EADD] text-[#5E8262] px-2 py-1 rounded-full">Activa</span>
+                        ? <span className="text-[10px] font-bold uppercase tracking-wide bg-[#E5EADD] text-success px-2 py-1 rounded-full">Activa</span>
                         : <span className="text-[10px] font-bold uppercase tracking-wide bg-red-100 text-red-400 px-2 py-1 rounded-full">Suspendida</span>}
                     </td>
                     <td className="px-6 py-4 text-right">
