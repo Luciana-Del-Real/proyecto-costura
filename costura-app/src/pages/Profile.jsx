@@ -8,7 +8,13 @@ export default function Profile() {
   const { user, updateUser } = useAuth();
   const { purchaseRecords, purchasesLoading, purchasesError } = usePurchases();
   const [editing, setEditing] = useState(false);
-  const [form, setForm] = useState({ name: user?.name || '', email: user?.email || '' });
+  const [form, setForm] = useState({
+    name: user?.name || '',
+    email: user?.email || '',
+    country: user?.country || '',
+  });
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
   const [saved, setSaved] = useState(false);
 
   // Historial real: solo las compras aprobadas que devuelve el backend.
@@ -20,13 +26,25 @@ export default function Profile() {
     0,
   );
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
     if (!form.name.trim()) return;
-    updateUser({ name: form.name.trim(), email: form.email });
-    setEditing(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    setSaving(true);
+    setError(null);
+    try {
+      await updateUser({
+        name: form.name.trim(),
+        email: form.email.trim(),
+        country: form.country,
+      });
+      setEditing(false);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch (err) {
+      setError(err.message || 'No se pudieron guardar los cambios');
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -59,6 +77,12 @@ export default function Profile() {
             </div>
           )}
 
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3 mb-4">
+              {error}
+            </div>
+          )}
+
           {editing ? (
             <form onSubmit={handleSave} className="space-y-4">
               <div>
@@ -81,11 +105,24 @@ export default function Profile() {
                   className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-secondary bg-bg-soft"
                 />
               </div>
+              <div>
+                <label className="block text-sm font-medium text-text-ink mb-1.5">País</label>
+                <select
+                  required
+                  value={form.country}
+                  onChange={e => setForm({ ...form, country: e.target.value })}
+                  className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-secondary bg-bg-soft"
+                >
+                  <option value="">Seleccioná un país</option>
+                  <option value="ARS">Argentina (ARS)</option>
+                  <option value="AUD">Australia (AUD)</option>
+                </select>
+              </div>
               <div className="flex gap-3">
-                <button type="submit" className="btn btn-primary text-sm">
-                  Guardar cambios
+                <button type="submit" disabled={saving} className="btn btn-primary text-sm disabled:opacity-60">
+                  {saving ? 'Guardando...' : 'Guardar cambios'}
                 </button>
-                <button type="button" onClick={() => { setEditing(false); setForm({ name: user.name, email: user.email }); }} className="btn btn-ghost text-sm">
+                <button type="button" onClick={() => { setEditing(false); setForm({ name: user.name, email: user.email, country: user.country }); setError(null); }} className="btn btn-ghost text-sm">
                   Cancelar
                 </button>
               </div>
