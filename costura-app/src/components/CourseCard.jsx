@@ -3,13 +3,8 @@ import { useAuth } from '../context/AuthContext';
 import { usePurchases } from '../context/PurchaseContext';
 import { useFavorites } from '../context/FavoritesContext';
 import { useProgress } from '../context/ProgressContext';
-
-// Colores suaves de fondo y texto legibles para las etiquetas de nivel
-const levelClasses = {
-  'Principiante': 'bg-primary-soft text-primary', // Verde pastel muy sutil
-  'Intermedio': 'bg-bg-soft text-ochre',   // Naranja/Crema cálido
-  'Avanzado': 'bg-accent-soft text-accent',     // Rosa/Fucsia pálido
-};
+import CourseCover from './CourseCover';
+import { getLevelClass, getLevelLabel } from '../utils/levels';
 
 export default function CourseCard({ course }) {
   const { user } = useAuth();
@@ -28,15 +23,14 @@ export default function CourseCard({ course }) {
       <div>
         {/* Contenedor de la Imagen con efecto Zoom */}
         <div className="relative overflow-hidden aspect-video bg-gray-50">
-          <img
-            src={course.image?.startsWith('/uploads') ? `http://localhost:3000${course.image}` : course.image}
-            alt={course.title}
+          <CourseCover
+            course={course}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
           
-          {/* Badge de Nivel dinámico */}
-          <span className={`absolute top-3 left-3 text-xs font-bold px-3 py-1 rounded-full shadow-sm tracking-wide ${levelClasses[course.level] || 'bg-gray-100 text-gray-700'}`}>
-            {course.level}
+          {/* Badge de Nivel dinámico: claves normalizadas a minúsculas para el enum UPPERCASE del backend */}
+          <span className={`absolute top-3 left-3 text-xs font-bold px-3 py-1 rounded-full shadow-sm tracking-wide ${getLevelClass(course.level)}`}>
+            {getLevelLabel(course.level)}
           </span>
           
           {/* Corazón de Favoritos estilizado */}

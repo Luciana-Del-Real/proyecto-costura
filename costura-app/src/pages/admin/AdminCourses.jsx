@@ -1,5 +1,6 @@
 import { useCourseCatalog } from '../../context/CourseCatalogContext';
 import { Link } from 'react-router-dom';
+import CourseCover from '../../components/CourseCover';
 
 export default function AdminCourses() {
   const { courses, deleteCourse } = useCourseCatalog();
@@ -20,12 +21,9 @@ export default function AdminCourses() {
         <div className="space-y-4">
           {courses.map((course) => (
             <div key={course.id} className="bg-bg-soft rounded-2xl border border-border p-5 flex items-center gap-6 shadow-sm">
-              {/* Portada */}
+              {/* Portada: CourseCover resuelve la URL y muestra el nombre si no hay imagen */}
               <div className="w-24 h-16 bg-bg-soft rounded-lg overflow-hidden flex-shrink-0">
-                {course.image && <img 
-                src={`http://localhost:3000${course.image.startsWith('/') ? '' : '/'}${course.image}`} 
-                alt={course.title} 
-                className="w-full h-full object-cover"></img>}
+                <CourseCover course={course} className="w-full h-full object-cover" />
               </div>
 
               {/* Información */}

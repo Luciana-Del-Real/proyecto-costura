@@ -5,6 +5,7 @@ import { useCourseCatalog } from '../../context/CourseCatalogContext';
 import { usePurchases } from '../../context/PurchaseContext';
 import { useAdmin } from '../../context/AdminContext';
 import { sumByCurrency } from '../../utils/currency';
+import CourseCover from '../../components/CourseCover';
 
 export default function AdminDashboard() {
   const { user } = useAuth();
@@ -94,12 +95,7 @@ export default function AdminDashboard() {
                 {topCourses.map((c, i) => (
                   <div key={c.id} className="flex items-center gap-3">
                     <span className="text-text-ink text-sm w-5">{i + 1}</span>
-                    <img 
-                      src={c.image ? `http://localhost:3000${c.image}` : '/placeholder-portada.png'} 
-                      alt={c.title} 
-                      className="w-10 h-10 rounded-lg object-cover" 
-                      onError={(e) => { e.target.src = '/placeholder-portada.png' }}
-                    />
+                    <CourseCover course={c} className="w-10 h-10 rounded-lg object-cover" />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-text-ink truncate">{c.title}</p>
                       <p className="text-xs text-text-ink opacity-70">{c.buyers} venta{c.buyers !== 1 ? 's' : ''}</p>
