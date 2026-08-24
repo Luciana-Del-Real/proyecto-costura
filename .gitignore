@@ -1,0 +1,5 @@
+# Local SDD tooling cache (regenerable via `gentle-ai skill-registry refresh`)
+.atl/
+
+# Database backups (pg_dump artifacts, not for version control)
+backend/*.backup

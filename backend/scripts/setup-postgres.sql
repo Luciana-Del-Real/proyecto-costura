@@ -15,5 +15,5 @@ CREATE DATABASE costura_app
 -- Conectarse a la base de datos
 \c costura_app
 
--- Las migraciones de Prisma se crearán automáticamente
--- cuando ejecutes: npm run db:push
+-- Aplica las migraciones de Prisma (única vía de sincronización del schema):
+-- cd backend && npm run db:migrate

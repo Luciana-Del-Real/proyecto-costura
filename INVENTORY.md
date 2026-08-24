@@ -294,7 +294,7 @@ npm run build           # Compilar a JS
 npm start               # Ejecutar compilado
 
 # Database
-npm run db:push         # Sync schema con PostgreSQL
+npm run db:migrate      # Aplicar migraciones (única vía de sync)
 npm run db:studio       # Prisma Studio UI
 npm run db:seed         # Crear admin user
 npm run db:migrate      # Create migration

@@ -40,54 +40,97 @@
 }
 */
 
+/* ==========================================================================
+   DESIGN TOKEN LAYER — single semantic @theme (Warm Editorial palette)
+   Replaces the three parallel systems (legacy :root, dead @theme, hex maps).
+   `static` forces emission of ALL tokens as :root custom properties so the
+   legacy alias bridge below and the remaining override rules keep resolving.
+   ========================================================================== */
+@theme static {
+  /* Semantic colors — Warm Editorial */
+  --color-bg-surface: #F9F5F0; /* beige canvas / surfaces */
+  --color-bg-soft: #F5EDE4; /* softer beige for panels, chips, inputs */
+  --color-bg-cream: #F9F5F0; /* cream alias for auth surfaces */
+  --color-text-ink: #6B4C3B; /* cocoa ink for body/headings */
+  --color-text-cocoa: #6B4C3B; /* cocoa alias (brand ink) */
+  --color-text-muted: #8F7666; /* muted brown for secondary text */
+  --color-primary: #4E6D5B; /* sage CTA / brand primary */
+  --color-primary-hover: #3D5648; /* sage hover */
+  --color-primary-soft: #EAF0EA; /* sage tint surfaces */
+  --color-accent: #B84A62; /* berry accent */
+  --color-accent-hover: #A63D57; /* berry hover */
+  --color-accent-soft: #F9EBF0; /* berry tint surfaces */
+  --color-border: #E5D8CB; /* warm beige border */
+  --color-danger: #BF6B6B; /* destructive action */
+  --color-danger-hover: #BF5B6B; /* destructive hover */
+  --color-success: #5E8262; /* positive feedback */
+  --color-success-hover: #4E6D5B; /* success hover */
+
+  /* Tailwind default-color parity keepers (utilities used across JSX) */
+  --color-white: #FFFFFF;
+  --color-black: #1D1D1B;
+
+  /* Typography */
+  --font-display: 'Bebas Neue', sans-serif; /* títulos y encabezados */
+  --font-serif: 'Playfair Display', serif; /* textos y subtítulos */
+  --font-body: 'Montserrat', sans-serif; /* cuerpos de texto y soportes */
+
+  /* Radii */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-pill: 9999px;
+
+  /* Shadows */
+  --shadow-soft: 0 4px 15px rgba(107, 76, 59, 0.08);
+  --shadow-card: 0 12px 30px rgba(78, 109, 91, 0.08);
+
+  /* Animations */
+  --animate-fade-up: fadeUp 0.5s ease both;
+  --animate-fade-in: fadeIn 0.4s ease both;
+  --animate-slide-down: slideDown 0.2s ease both;
+  --animate-stagger: slideUpFade 0.6s ease-out forwards;
+}
+
+/* ==========================================================================
+   LEGACY ALIAS BRIDGE (transitional)
+   Maps the old variable names onto the new semantic tokens so the remaining
+   override/helper rules (removed in PR2/PR3) keep resolving during PR1.
+   Removed together with those rules. Unused legacy vars (--bg-gradient,
+   --cta, --accent-font, --handmade-font) were deleted instead of aliased.
+   ========================================================================== */
 :root {
-  --bg: #FFFFFF; /* Blanco: fondo principal */
-  /* Degradado global: blanco -> rosa pálido (ligeramente más visible) */
-  --bg-gradient: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(247,193,214,0.06) 100%);
-  /* Degradado invertido (rosa pálido -> blanco) usado por la página de auth */
-  --bg-gradient-inverted: linear-gradient(180deg, rgba(247,193,214,0.06) 0%, rgba(255,255,255,1) 100%);
-  --text: #1D1D1B; /* Negro cuerpo de texto */
-  --accent: #E83E8C; /* Fucsia principal (acento/CTAs) */
-  --cta: #E83E8C; /* CTA principal -> Fucsia */
-  --secondary: #4E6D5B; /* Verde secundario */
-  --secondary-dark: #3C5A4B; /* Verde oscuro para hover */
-  --soft: #dddddd; /* Rosa claro para fondos y toques */
-  --surface: #FFFFFF; /* Superficies / tarjetas */
-  --radius: 12px;
-  --shadow: 0 4px 15px rgba(0,0,0,0.05);
-  --border: rgba(29,29,27,0.06);
-  --auth-bg: #F9F7F2; /* Fondo claro para páginas de auth (crema muy claro) */
+  --bg: var(--color-bg-surface);
+  --text: var(--color-text-ink);
+  --accent: var(--color-accent);
+  --secondary: var(--color-primary);
+  --secondary-dark: var(--color-primary-hover);
+  --soft: var(--color-bg-soft);
+  --surface: var(--color-bg-surface);
+  --radius: var(--radius-md);
+  --shadow: var(--shadow-soft);
+  --border: var(--color-border);
+  --auth-bg: var(--color-bg-cream);
   --transition: all 0.3s ease;
-  /* Tipografías del sistema de diseño */
-  --font-bebas: 'Bebas Neue', sans-serif; /* títulos y encabezados */
-  --font-playfair: 'Playfair Display', serif; /* textos y subtítulos */
-  --font-montserrat: 'Montserrat', sans-serif; /* cuerpos de texto y soportes */
+
+  /* Tipografías del sistema de diseño (legacy names -> tokens) */
+  --font-bebas: var(--font-display);
+  --font-playfair: var(--font-serif);
+  --font-montserrat: var(--font-body);
   --font-dancing: 'Dancing Script', cursive; /* acentos y detalles */
   --font-handmade: 'Simple Handmade', 'Patrick Hand', 'Homemade Apple', cursive; /* elementos artesanales */
+  --heading-font: var(--font-display);
+  --subtitle-font: var(--font-serif);
+  --body-font: var(--font-body);
 
-  --heading-font: var(--font-bebas);
-  --subtitle-font: var(--font-playfair);
-  --body-font: var(--font-montserrat);
-  --accent-font: var(--font-dancing);
-  --handmade-font: var(--font-handmade);
-
-  /* Colores de marca adicionales */
+  /* Black palette retained ONLY because the kept footer/helper rules
+     (footer.bg-black, .bg-black*) still reference it in PR1. Removed with
+     those rules in PR2/PR3. */
   --black: #000000;
   --black-soft: #2e2820;
   --black-dark: #110b08;
   --black-muted: #0f0702;
   --black-accent: #000000;
-}
-
-@theme {
-  --color-white: #FFFFFF;
-  --color-rosa: #F7C1D6;
-  --color-fucsia: #E83E8C;
-  --color-verde: #4E6D5B;
-  --color-black: #1D1D1B;
-  --color-border: rgba(29,29,27,0.06);
-  --color-surface: #FFFFFF;
-  --color-bg: #FFFFFF;
 }
 
 @layer base {
@@ -108,7 +151,9 @@
     margin-top: 0;
     margin-bottom: 0.6rem;
     line-height: 1.08;
-    text-transform: uppercase;
+    /* Open-question resolution (PR1): headings default to sentence-case.
+       Brand displays (.font-bebas, .title, .visual-title, logo spans) keep
+       their own uppercase. */
   }
 
   img, .object-cover {
@@ -316,14 +361,13 @@
 [class*="border-[#F3CAA8]"] { border-color: var(--border) !important; }
 
 /* Text color mappings */
+/* Brown-ref rules that would ACTIVATE dormant overrides and change live
+   rendering were DELETED in PR1 to preserve visual parity (e.g.
+   text-[#6B4C3B]/[#A08060]/[#A85E42]); PR4 hex-sweep migrates JSX hexes
+   to tokens instead. */
 [class*="text-[#3D2B1F]"] { color: var(--text) !important; }
-[class*="text-[#874A1D]"] { color: var(--brown) !important; }
-[class*="text-[#A08060]"] { color: var(--brown-accent) !important; }
-[class*="text-[#6B4C3B]"] { color: var(--brown-muted) !important; }
-[class*="text-[#A85E42]"] { color: var(--brown-accent) !important; }
-[class*="text-[#5E8262]"] { color: var(--secondary) !important; }
-[class*="text-[#7A9E7E]"] { color: var(--secondary) !important; }
-[class*="text-[#C4A882]"] { color: var(--brown-soft) !important; }
+[class*="text-[#874A1D]"] { color: var(--color-text-ink) !important; }
+[class*="text-[#C4A882]"] { color: var(--color-bg-soft) !important; }
 
 /* Greens */
 [class*="bg-[#7A9E7E]"] { background-color: var(--secondary) !important; }
@@ -332,16 +376,15 @@
 [class*="hover:bg-[#5E8262]"]:hover { background-color: var(--secondary-dark) !important; }
 
 /* Hover adjustments */
-[class*="text[#A08060]"]:hover { color: var(--brown-accent) !important; }
+[class*="text[#A08060]"]:hover { color: var(--color-accent) !important; }
 
 /* Brown / admin palette */
-[class*="bg-[#3D2B1F]"] { background-color: var(--brown) !important; }
-[class*="bg-[#2E1F15]"] { background-color: var(--brown-muted) !important; }
-[class*="bg-[#4A2E1A]"] { background-color: var(--brown-muted) !important; }
-[class*="bg-[#5C3D2A]"] { background-color: var(--brown-dark) !important; }
-[class*="border-[#5C3D2A]"] { border-color: var(--brown-dark) !important; }
-[class*="text-[#C4785A]"] { color: var(--brown-accent) !important; }
-[class*="text-[#F5EFE6]"] { color: var(--color-rosa) !important; }
+[class*="bg-[#3D2B1F]"] { background-color: var(--color-text-ink) !important; }
+[class*="bg-[#2E1F15]"] { background-color: var(--color-text-muted) !important; }
+[class*="bg-[#4A2E1A]"] { background-color: var(--color-text-muted) !important; }
+[class*="bg-[#5C3D2A]"] { background-color: var(--color-text-cocoa) !important; }
+[class*="border-[#5C3D2A]"] { border-color: var(--color-text-cocoa) !important; }
+[class*="text-[#C4785A]"] { color: var(--color-accent) !important; }
 
 /* Fallback for inline styles */
 [style*="#F5EFE6"] { background-color: var(--soft) !important; }
@@ -434,8 +477,8 @@ a.btn.text-white,
 .hover\:bg-secondary-dark:hover { background-color: var(--secondary-dark) !important; }
 .hover\:bg-soft:hover { background-color: var(--soft) !important; }
 .hover\:bg-accent:hover { background-color: var(--accent) !important; }
-.hover\:bg-brown-dark:hover { background-color: var(--brown-dark) !important; }
-.hover\:bg-brown-muted:hover { background-color: var(--brown-muted) !important; }
+.hover\:bg-brown-dark:hover { background-color: var(--color-text-cocoa) !important; }
+.hover\:bg-brown-muted:hover { background-color: var(--color-text-muted) !important; }
 .hover\:text-accent:hover { color: var(--accent) !important; }
 
 /* Utilidades para la paleta 'brown' (footer/admin) */
@@ -522,20 +565,18 @@ footer.bg-black * {
 /* Mejora de contraste para CTA en auth */
 .auth-card .bg-accent { background-color: var(--accent) !important; color: #fff !important; }
 
-.text-brown-soft { color: var(--brown-soft) !important; }
-.text-brown-muted { color: var(--brown-muted) !important; }
-.text-brown-accent { color: var(--brown-accent) !important; }
-.text-rosa { color: var(--color-rosa) !important; }
-.border-brown-dark { border-color: var(--brown-dark) !important; }
-.border-brown-accent { border-color: var(--brown-accent) !important; }
-.hover\:text-rosa:hover { color: var(--color-rosa) !important; }
+.text-brown-soft { color: var(--color-bg-soft) !important; }
+.text-brown-muted { color: var(--color-text-muted) !important; }
+.text-brown-accent { color: var(--color-accent) !important; }
+.border-brown-dark { border-color: var(--color-text-cocoa) !important; }
+.border-brown-accent { border-color: var(--color-accent) !important; }
 
 /* Level badge helpers (mantener visual original pero con clases semánticas) */
 .lvl-principiante { background-color: #EAF0EA !important; color: #5E8262 !important; }
 .lvl-intermedio { background-color: #F5E8E2 !important; color: #A85E42 !important; }
-.lvl-avanzado { background-color: #EDE4D6 !important; color: var(--brown) !important; }
+.lvl-avanzado { background-color: #EDE4D6 !important; color: var(--color-text-ink) !important; }
 .bg-beige { background-color: #EDE4D6 !important; }
-.fill-brown-accent { fill: var(--brown-accent) !important; }
+.fill-brown-accent { fill: var(--color-accent) !important; }
 
 /* Tipografía: utilidades para aplicar las familias solicitadas */
 .font-bebas { font-family: var(--font-bebas); letter-spacing: 0.08em; text-transform: uppercase; }
@@ -832,14 +873,14 @@ section.hero-no-sep + section {
   border-bottom: 1px solid rgba(255,255,255,0.7);
   box-shadow: none !important;
 }
-.nav-on-hero .logo-text { color: var(--brown-dark) !important; font-weight:600; }
+.nav-on-hero .logo-text { color: var(--color-text-cocoa) !important; font-weight:600; }
 .nav-on-hero .text-black,
 .nav-on-hero .text-secondary,
 .nav-on-hero a,
 .nav-on-hero .nav-link,
 .nav-on-hero .text-brown-soft,
 .nav-on-hero .text-brown-muted {
-  color: var(--brown-dark) !important;
+  color: var(--color-text-cocoa) !important;
 }
 .nav-on-hero .border-theme { border-color: transparent !important; }
 .nav-on-hero .bg-theme { background: transparent !important; }

@@ -6,7 +6,6 @@ import {
   applyNotificationDelete,
   favoriteIdsFromRecords,
   toggleFavoritesState,
-  readFavoritesFromSession,
   assertAuthenticated,
 } from './contextHelpers';
 
@@ -106,31 +105,6 @@ describe('toggleFavoritesState', () => {
 
   it('tolerates a missing list', () => {
     expect(toggleFavoritesState(undefined, 'c1')).toEqual(['c1']);
-  });
-});
-
-describe('readFavoritesFromSession', () => {
-  const fakeStorage = {
-    getItem(key) {
-      return this.data?.[key] ?? null;
-    },
-  };
-
-  it('reads the stored favorites for the user id', () => {
-    fakeStorage.data = { costura_data_u1: JSON.stringify({ favorites: ['c1', 'c2'] }) };
-    expect(readFavoritesFromSession(fakeStorage, 'u1')).toEqual(['c1', 'c2']);
-  });
-
-  it('returns null when nothing usable is stored', () => {
-    fakeStorage.data = {};
-    expect(readFavoritesFromSession(fakeStorage, 'u1')).toBeNull();
-    expect(readFavoritesFromSession(fakeStorage, undefined)).toBeNull();
-    expect(readFavoritesFromSession(null, 'u1')).toBeNull();
-  });
-
-  it('returns null on corrupt storage', () => {
-    fakeStorage.data = { costura_data_u1: 'not-json' };
-    expect(readFavoritesFromSession(fakeStorage, 'u1')).toBeNull();
   });
 });
 

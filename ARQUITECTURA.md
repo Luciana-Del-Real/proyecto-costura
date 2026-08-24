@@ -134,8 +134,8 @@ ADMIN_PASSWORD="change-me-to-a-strong-password"
 ```bash
 cd backend
 
-# Crear schema
-npm run db:push
+# Aplicar migraciones (única vía de sincronización del schema; db:push eliminado)
+npm run db:migrate
 
 # Crear usuario admin
 npm run db:seed
@@ -272,7 +272,7 @@ Ver `ENDPOINTS.md` para documentación completa con ejemplos.
 npm run dev              # Desarrollo con watch
 npm run build           # Compilar a JS
 npm start               # Ejecutar compilado
-npm run db:push         # Sincronizar schema
+npm run db:migrate     # Aplicar migraciones (única vía)
 npm run db:studio       # Abrir Prisma Studio
 npm run db:seed         # Crear admin
 npm run lint            # Linter

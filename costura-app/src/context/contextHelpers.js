@@ -63,23 +63,6 @@ export function toggleFavoritesState(ids, courseId) {
 }
 
 /**
- * Read-only sessionStorage fallback used while the backend rollout is in
- * progress (see task 6.1: remove after staging validation). Returns the stored
- * favorite course ids for the user, or null when nothing usable is stored.
- * The storage object is injected so the helper can be unit-tested without a
- * browser environment.
- */
-export function readFavoritesFromSession(storage, userId) {
-  if (!storage || !userId) return null;
-  try {
-    const stored = JSON.parse(storage.getItem(`costura_data_${userId}`) || '{}');
-    return Array.isArray(stored.favorites) ? stored.favorites : null;
-  } catch {
-    return null;
-  }
-}
-
-/**
  * Returns an error message when the user cannot toggle favorites, or null when
  * the toggle is allowed.
  */
