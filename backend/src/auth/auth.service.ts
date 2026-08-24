@@ -4,7 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
-import { MailService } from '../mail/mail.service';
+import { MailService, resolveLocale } from '../mail/mail.service';
 import { ConfigService } from '@nestjs/config';
 import * as crypto from 'crypto';
 import { jwtSecret } from '../config/jwt.config';
@@ -174,12 +174,21 @@ export class AuthService {
     const frontend = this.config.get<string>('FRONTEND_URL') || 'http://localhost:5173';
     const resetUrl = `${frontend}/reset-password?token=${token}`;
 
-    const subject = 'Restablecer contraseña';
-    const html = `
+    // Idioma del correo según el país del estudiante (es/en; sin país → es)
+    const isSpanish = resolveLocale(user.country) === 'es';
+    const subject = isSpanish ? 'Restablecer contraseña' : 'Reset your password';
+    const html = isSpanish
+      ? `
       <p>Hola ${user.name || ''},</p>
       <p>Recibimos una solicitud para restablecer tu contraseña. El enlace es válido por ${minutes} minutos.</p>
       <p><a href="${resetUrl}">${resetUrl}</a></p>
       <p>Si no solicitaste esto, puedes ignorar este correo.</p>
+    `
+      : `
+      <p>Hello ${user.name || ''},</p>
+      <p>We received a request to reset your password. The link is valid for ${minutes} minutes.</p>
+      <p><a href="${resetUrl}">${resetUrl}</a></p>
+      <p>If you didn't request this, you can ignore this email.</p>
     `;
 
     try {
