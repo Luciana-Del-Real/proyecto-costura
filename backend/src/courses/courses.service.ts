@@ -3,6 +3,51 @@ import { PrismaService } from '../prisma/prisma.service';
 import { AttachmentsService } from '../attachments/attachments.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
+import { Principal } from '../common/principal';
+import { Role } from '../common/enums';
+
+// Proyección pública del catálogo: metadata + títulos de lecciones.
+// NUNCA incluye videoUrl/pdf/attachments ni el material del curso, así el
+// contenido pago no se filtra por el endpoint público. Los alumnos con
+// compra aprobada obtienen el contenido completo desde el endpoint de
+// lecciones protegido (GET /courses/:courseId/lessons).
+const publicLessonSelect = {
+  id: true,
+  title: true,
+  description: true,
+  duration: true,
+  order: true,
+} as const;
+
+const publicCourseSelect = {
+  id: true,
+  title: true,
+  description: true,
+  longDescription: true,
+  image: true,
+  instructor: true,
+  duration: true,
+  level: true,
+  priceARS: true,
+  priceAUD: true,
+  featured: true,
+  rating: true,
+  students: true,
+  active: true,
+  createdAt: true,
+  updatedAt: true,
+  lessons: {
+    orderBy: { order: 'asc' as const },
+    select: publicLessonSelect,
+  },
+} as const;
+
+// Forma completa para administradores (gestión): lecciones con attachments
+// y material del curso (attachments + pdfGuide).
+const fullCourseInclude = {
+  lessons: { orderBy: { order: 'asc' }, include: { attachments: true } },
+  attachments: true,
+} as const;
 
 @Injectable()
 export class CoursesService {
@@ -23,7 +68,7 @@ export class CoursesService {
   async create(dto: CreateCourseDto) {
     return this.prisma.course.create({
       data: { ...dto },
-      include: { lessons: true, attachments: true },
+      include: fullCourseInclude,
     });
   }
 
@@ -31,7 +76,7 @@ export class CoursesService {
     return this.prisma.course.update({
       where: { id },
       data: { ...dto },
-      include: { lessons: true, attachments: true },
+      include: fullCourseInclude,
     });
   }
 
@@ -39,33 +84,49 @@ export class CoursesService {
     return this.attachmentsService.createManyForCourse(courseId, files);
   }
 
-  async findAll(featured?: boolean, page = 1, limit = 20) {
+  async findAll(featured?: boolean, page = 1, limit = 20, principal?: Principal) {
     const MAX = 100;
     const p = Number.isInteger(page) && page > 0 ? page : 1;
     let l = Number.isInteger(limit) && limit > 0 ? limit : 20;
     if (l > MAX) l = MAX;
 
     const skip = (p - 1) * l;
+    const where = featured ? { featured: true, active: true } : { active: true };
+
+    if (principal?.role === Role.ADMIN) {
+      return this.prisma.course.findMany({
+        where,
+        include: fullCourseInclude,
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: l,
+      });
+    }
 
     return this.prisma.course.findMany({
-      where: featured ? { featured: true, active: true } : { active: true },
-      include: {
-        lessons: { orderBy: { order: 'asc' }, include: { attachments: true } },
-        attachments: true,
-      },
+      where,
+      select: publicCourseSelect,
       orderBy: { createdAt: 'desc' },
       skip,
       take: l,
     });
   }
 
-  async findOne(id: string) {
+  async findOne(id: string, principal?: Principal) {
+    if (principal?.role === Role.ADMIN) {
+      const adminCourse = await this.prisma.course.findUnique({
+        where: { id },
+        include: fullCourseInclude,
+      });
+      if (!adminCourse) {
+        throw new NotFoundException('Curso no encontrado');
+      }
+      return adminCourse;
+    }
+
     const course = await this.prisma.course.findUnique({
       where: { id },
-      include: {
-        lessons: { orderBy: { order: 'asc' }, include: { attachments: true } },
-        attachments: true,
-      },
+      select: publicCourseSelect,
     });
 
     if (!course) {

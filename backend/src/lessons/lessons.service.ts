@@ -6,6 +6,8 @@ import { PrismaService } from '../prisma/prisma.service';
 import { AttachmentsService } from '../attachments/attachments.service';
 import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
+import { Principal } from '../common/principal';
+import { assertCourseAccess, assertLessonAccess } from '../common/course-access';
 
 @Injectable()
 export class LessonsService {
@@ -42,23 +44,39 @@ export class LessonsService {
     return this.attachmentsService.createManyForLesson(lessonId, files);
   }
 
-  async findByCourse(courseId: string) {
+  // Lectura protegida del listado de lecciones de un curso: devuelve el
+  // contenido completo (videoUrl/pdf/attachments) solo para ADMIN o alumnos
+  // con compra aprobada. Incluye el material general del curso para que la
+  // vista de aprendizaje no dependa del payload público del catálogo.
+  async findByCourse(courseId: string, principal: Principal) {
     const course = await this.prisma.course.findUnique({
       where: { id: courseId },
+      select: {
+        id: true,
+        pdfGuide: true,
+        attachments: true,
+      },
     });
 
     if (!course) {
       throw new NotFoundException('Course not found');
     }
 
-    return this.prisma.lesson.findMany({
+    await assertCourseAccess(this.prisma, principal, courseId);
+
+    const lessons = await this.prisma.lesson.findMany({
       where: { courseId },
       orderBy: { order: 'asc' },
       include: { attachments: true },
     });
+
+    return { course, lessons };
   }
 
-  async findOne(id: string) {
+  // `principal` es opcional porque los flujos de administración
+  // (create/update/delete) leen lecciones sin pasar por el predicado de
+  // acceso: ya están protegidos por AdminGuard en el controller.
+  async findOne(id: string, principal?: Principal) {
     const lesson = await this.prisma.lesson.findUnique({
       where: { id },
       include: { attachments: true },
@@ -66,6 +84,10 @@ export class LessonsService {
 
     if (!lesson) {
       throw new NotFoundException('Lesson not found');
+    }
+
+    if (principal) {
+      await assertLessonAccess(this.prisma, principal, id);
     }
 
     return lesson;

@@ -6,6 +6,7 @@ import {
   Delete,
   Body,
   Param,
+  Request,
   UseGuards,
   UseInterceptors,
   UploadedFiles,
@@ -44,14 +45,18 @@ const lessonFileFields = FileFieldsInterceptor([
 export class LessonsController {
   constructor(private readonly lessonsService: LessonsService) {}
 
+  // Lectura protegida: requiere JWT + compra aprobada (o ADMIN). El contenido
+  // completo (videoUrl/pdf/attachments) NO se sirve por el catálogo público.
   @Get()
-  async findByCourse(@Param('courseId') courseId: string) {
-    return this.lessonsService.findByCourse(courseId);
+  @UseGuards(JwtAuthGuard)
+  async findByCourse(@Param('courseId') courseId: string, @Request() req: any) {
+    return this.lessonsService.findByCourse(courseId, req.user);
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return this.lessonsService.findOne(id);
+  @UseGuards(JwtAuthGuard)
+  async findOne(@Param('id') id: string, @Request() req: any) {
+    return this.lessonsService.findOne(id, req.user);
   }
 
   @Post()
@@ -116,5 +121,18 @@ export class LessonsController {
       throw new Error('Lesson does not belong to this course');
     }
     return this.lessonsService.delete(id);
+  }
+}
+
+// Endpoint plano de detalle de lección: mismo predicado de acceso que el
+// listado anidado (JWT + compra aprobada o ADMIN).
+@Controller('lessons')
+export class LessonsDetailController {
+  constructor(private readonly lessonsService: LessonsService) {}
+
+  @Get(':id')
+  @UseGuards(JwtAuthGuard)
+  async findOne(@Param('id') id: string, @Request() req: any) {
+    return this.lessonsService.findOne(id, req.user);
   }
 }

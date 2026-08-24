@@ -1,5 +1,7 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { assertLessonAccess } from '../common/course-access';
+import { Role } from '../common/enums';
 
 @Injectable()
 export class LessonCommentsService {
@@ -7,22 +9,10 @@ export class LessonCommentsService {
 
   // Un usuario puede ver/comentar en una lección si es ADMIN, o si tiene
   // una compra APROBADA del curso al que pertenece esa lección.
+  // El predicado vive en common/course-access y lo comparten lessons,
+  // lesson-progress y lesson-comments.
   private async assertAccess(lessonId: string, userId: string, role: string) {
-    const lesson = await this.prisma.lesson.findUnique({
-      where: { id: lessonId },
-      select: { id: true, courseId: true },
-    });
-    if (!lesson) throw new NotFoundException('Lección no encontrada');
-
-    if (role === 'ADMIN') return lesson;
-
-    const purchase = await this.prisma.purchase.findFirst({
-      where: { userId, courseId: lesson.courseId, status: 'APPROVED' },
-    });
-    if (!purchase) {
-      throw new ForbiddenException('No tenés acceso a este curso');
-    }
-    return lesson;
+    return assertLessonAccess(this.prisma, { id: userId, role: role as Role }, lessonId);
   }
 
   async findByLesson(lessonId: string, userId: string, role: string) {
