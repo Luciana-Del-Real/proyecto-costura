@@ -17,7 +17,7 @@ export default function AdminCourseForm() {
 
   const [form, setForm] = useState(EMPTY_COURSE);
   const [imageFile, setImageFile] = useState(null);
-  const [pdfGuideFile, setPdfGuideFile] = useState(null);
+  const [pdfGuideFile] = useState(null);
   const [coursePdfFiles, setCoursePdfFiles] = useState([]); // PDFs nuevos a subir (multiples)
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);

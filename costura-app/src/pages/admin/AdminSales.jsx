@@ -8,9 +8,14 @@ export default function AdminSales() {
   const { courses } = useCourseCatalog();
   const { getAllPurchases, getPendingRequests, approvePurchase, denyPurchase } = usePurchases();
   const [allPurchases, setAllPurchases] = useState([]);
-  const [pendingRequests, setPendingRequests] = useState([]);
+  const [, setPendingRequests] = useState([]);
   const [filter, setFilter] = useState('todos');
 
+  // getAllPurchases/getPendingRequests se recrean en cada render de
+  // PurchaseProvider (no están memoizadas), así que incluirlas en las
+  // dependencias haría que este efecto se re-ejecute en re-renders ajenos y
+  // vuelva a fetchear. Mantenemos la carga solo al montar.
+  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     const load = async () => {
       setAllPurchases(await getAllPurchases());
@@ -18,6 +23,7 @@ export default function AdminSales() {
     };
     load();
   }, []);
+  /* eslint-enable react-hooks/exhaustive-deps */
 
   const filtered = filter === 'todos'
       ? allPurchases

@@ -7,12 +7,12 @@ export default function Auth({ defaultTab = 'login' }) {
   const { login, register, logout } = useAuth();
   const [tab, setTab] = useState(defaultTab);
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
   useEffect(() => {
     // Si entras a la página de Auth, cerramos la sesión actual 
     // para que no se superpongan estados
     logout(); 
-  }, []);
+    // logout es estable (useCallback en AuthContext), el efecto corre una sola vez
+  }, [logout]);
   
   // Agregamos 'country' al estado inicial del formulario
   const [form, setForm] = useState({ 
@@ -101,7 +101,7 @@ export default function Auth({ defaultTab = 'login' }) {
             {tab === 'register' && (
               <div className="relative">
                 <input 
-                  type={showConfirm ? "text" : "password"} 
+                  type="password" 
                   placeholder="Confirmar contraseña" 
                   className="bg-white w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-primary outline-none" 
                   onChange={e => setForm({...form, confirm: e.target.value})} 

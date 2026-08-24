@@ -104,7 +104,7 @@ export async function downloadFile(path, filename) {
     try {
       const body = await response.json();
       if (body?.message) message = body.message;
-    } catch (e) { /* la respuesta no era JSON */ }
+    } catch { /* la respuesta no era JSON */ }
     throw new Error(message);
   }
   const blob = await response.blob();
