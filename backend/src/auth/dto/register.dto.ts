@@ -1,4 +1,4 @@
-import { IsEmail, IsString, MinLength, IsIn } from 'class-validator';
+import { IsEmail, IsString, MinLength, IsIn, IsNotEmpty } from 'class-validator';
 
 export class RegisterDto {
   @IsString({ message: 'Nombre debe ser una cadena' })
@@ -12,6 +12,7 @@ export class RegisterDto {
   @MinLength(6, { message: 'Contraseña debe tener al menos 6 caracteres' })
   password!: string;
 
+  @IsNotEmpty({ message: 'País es obligatorio' })
   @IsIn(['ARS', 'AUD'], { message: 'País debe ser ARS (Argentina) o AUD (Australia)' })
   country!: string;
 }
