@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useCourseCatalog } from '../../context/CourseCatalogContext';
 import { useNavigate, useParams } from 'react-router-dom';
-import { get, post, postForm, putForm, del } from '../../services/api';
+import { get, postForm, putForm, del } from '../../services/api';
 import { getImageUrl } from '../../utils/media';
+import useLessonComments from '../../hooks/useLessonComments';
 
 const EMPTY_COURSE = {
   title: '', description: '', priceARS: '', priceAUD: '', level: 'Principiante',
@@ -159,42 +160,12 @@ export default function AdminCourseForm() {
 
   // --- Preguntas de alumnas, por lección ---
   const [openQuestionsFor, setOpenQuestionsFor] = useState(null);
-  const [commentsByLesson, setCommentsByLesson] = useState({});
-  const [replyDraft, setReplyDraft] = useState({});
-  const [sendingReplyFor, setSendingReplyFor] = useState(null);
+  const { commentsByLesson, loadComments, sendComment, drafts, setDraft, sendingFor } = useLessonComments();
 
-  const toggleQuestions = async (lessonId) => {
+  const toggleQuestions = (lessonId) => {
     const willOpen = openQuestionsFor !== lessonId;
     setOpenQuestionsFor(willOpen ? lessonId : null);
-    if (willOpen && !commentsByLesson[lessonId]?.loaded) {
-      setCommentsByLesson(prev => ({ ...prev, [lessonId]: { loaded: false, loading: true, items: [] } }));
-      try {
-        const items = await get(`/lessons/${lessonId}/comments`);
-        setCommentsByLesson(prev => ({ ...prev, [lessonId]: { loaded: true, loading: false, items } }));
-      } catch (err) {
-        console.error(err);
-        setCommentsByLesson(prev => ({ ...prev, [lessonId]: { loaded: true, loading: false, items: [] } }));
-      }
-    }
-  };
-
-  const handleReply = async (lessonId) => {
-    const message = (replyDraft[lessonId] || '').trim();
-    if (!message) return;
-    setSendingReplyFor(lessonId);
-    try {
-      const created = await post(`/lessons/${lessonId}/comments`, { message });
-      setCommentsByLesson(prev => ({
-        ...prev,
-        [lessonId]: { loaded: true, loading: false, items: [...(prev[lessonId]?.items || []), created] },
-      }));
-      setReplyDraft(prev => ({ ...prev, [lessonId]: '' }));
-    } catch (err) {
-      console.error(err);
-      alert('No se pudo enviar la respuesta');
-    } finally {
-      setSendingReplyFor(null);
-    }
+    if (willOpen) loadComments(lessonId);
   };
 
   const handleCreateLesson = async (e) => {
@@ -397,15 +368,15 @@ export default function AdminCourseForm() {
                         )}
                         <div className="flex gap-2">
                           <input
-                            value={replyDraft[lesson.id] || ''}
-                            onChange={e => setReplyDraft(prev => ({ ...prev, [lesson.id]: e.target.value }))}
+                            value={drafts[lesson.id] || ''}
+                            onChange={e => setDraft(lesson.id, e.target.value)}
                             placeholder="Responder..."
                             className="flex-1 p-2 rounded-lg border border-border text-sm"
                           />
                           <button
                             type="button"
-                            onClick={() => handleReply(lesson.id)}
-                            disabled={sendingReplyFor === lesson.id}
+                            onClick={() => sendComment(lesson.id, drafts[lesson.id])}
+                            disabled={sendingFor === lesson.id}
                             className="btn btn-primary text-xs"
                           >
                             Enviar

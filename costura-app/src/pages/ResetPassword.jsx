@@ -49,7 +49,7 @@ export default function ResetPassword() {
         {/* Tarjeta - ESTÉTICAMENTE IGUAL AL LOGIN */}
         <div className="bg-white rounded-2xl shadow-sm border border-border p-8">
           {message && (
-            <div className="bg-green-50 border border-green-100 text-green-700 text-sm rounded-xl px-4 py-3 mb-6">
+            <div className="bg-primary-soft border border-border-sage text-success text-sm rounded-xl px-4 py-3 mb-6">
               {message}
             </div>
           )}
