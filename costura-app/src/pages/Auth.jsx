@@ -64,7 +64,7 @@ export default function Auth({ defaultTab = 'login' }) {
         </div>
 
         <div className="bg-bg-soft rounded-2xl shadow-sm border border-gray-100 p-8">
-          {error && <p className="text-red-500 text-sm mb-4 text-center">{error}</p>}
+          {error && <p className="text-danger text-sm mb-4 text-center">{error}</p>}
           
           <form onSubmit={handleSubmit} className="space-y-4">
             {tab === 'register' && (
