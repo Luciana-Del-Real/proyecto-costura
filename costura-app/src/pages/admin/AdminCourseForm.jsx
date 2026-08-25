@@ -2,8 +2,10 @@ import { useState, useEffect, useCallback } from 'react';
 import { useCourseCatalog } from '../../context/CourseCatalogContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import { get, postForm, putForm, del } from '../../services/api';
-import { getImageUrl } from '../../utils/media';
 import useLessonComments from '../../hooks/useLessonComments';
+import CourseFieldsForm from '../../components/admin/CourseFieldsForm';
+import LessonEditorItem from '../../components/admin/LessonEditorItem';
+import NewLessonForm from '../../components/admin/NewLessonForm';
 
 const EMPTY_COURSE = {
   title: '', description: '', priceARS: '', priceAUD: '', level: 'Principiante',
@@ -18,7 +20,6 @@ export default function AdminCourseForm() {
 
   const [form, setForm] = useState(EMPTY_COURSE);
   const [imageFile, setImageFile] = useState(null);
-  const [pdfGuideFile] = useState(null);
   const [coursePdfFiles, setCoursePdfFiles] = useState([]); // PDFs nuevos a subir (multiples)
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -60,7 +61,6 @@ export default function AdminCourseForm() {
       formData.append('priceAUD', Number(form.priceAUD));
       formData.append('level', form.level.toUpperCase());
       if (imageFile) formData.append('image', imageFile);
-      if (pdfGuideFile) formData.append('pdfGuide', pdfGuideFile);
       coursePdfFiles.forEach((file) => formData.append('pdfs', file));
 
       if (isEditing) {
@@ -97,9 +97,6 @@ export default function AdminCourseForm() {
   const [lessonPdfFiles, setLessonPdfFiles] = useState({});
   const [savingLessonId, setSavingLessonId] = useState(null);
 
-  const getLessonField = (lesson, field) =>
-    editedLessons[lesson.id]?.[field] ?? lesson[field];
-
   const setLessonField = (lessonId, field, value) => {
     setEditedLessons((prev) => ({
       ...prev,
@@ -107,14 +104,18 @@ export default function AdminCourseForm() {
     }));
   };
 
+  const handleLessonPdfChange = (lessonId, files) => {
+    setLessonPdfFiles((prev) => ({ ...prev, [lessonId]: files }));
+  };
+
   const handleSaveLesson = async (lesson) => {
     setSavingLessonId(lesson.id);
     try {
       const formData = new FormData();
-      formData.append('title', getLessonField(lesson, 'title'));
-      formData.append('description', getLessonField(lesson, 'description') || '');
-      formData.append('duration', getLessonField(lesson, 'duration'));
-      formData.append('videoUrl', getLessonField(lesson, 'videoUrl'));
+      formData.append('title', editedLessons[lesson.id]?.title ?? lesson.title);
+      formData.append('description', (editedLessons[lesson.id]?.description ?? lesson.description) || '');
+      formData.append('duration', editedLessons[lesson.id]?.duration ?? lesson.duration);
+      formData.append('videoUrl', editedLessons[lesson.id]?.videoUrl ?? lesson.videoUrl);
       formData.append('order', String(lesson.order ?? 0));
       formData.append('courseId', id);
       const filesToUpload = lessonPdfFiles[lesson.id] || [];
@@ -206,68 +207,18 @@ export default function AdminCourseForm() {
           <h2 className="font-bold text-text-ink text-2xl mb-8 border-b pb-4">{isEditing ? 'Editar curso' : 'Nuevo curso'}</h2>
           {saved && <div className="bg-primary-soft text-success text-sm rounded-xl px-4 py-3 mb-4">✓ Guardado correctamente</div>}
 
-          <form onSubmit={handleSaveCourse} className="space-y-6">
-            <div>
-              <label className="block text-sm font-bold text-black mb-1.5">Título y Descripción</label>
-              <input required value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder="Título" className="w-full border-2 border-border rounded-xl px-4 py-3 mb-3" />
-              <textarea required value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="Descripción general" className="w-full border-2 border-border rounded-xl px-4 py-3" />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <input type="number" required min={0} placeholder="Precio ARS" value={form.priceARS} onChange={e => setForm({ ...form, priceARS: e.target.value })} className="border-2 border-border rounded-xl px-4 py-3" />
-              <input type="number" required min={0} placeholder="Precio AUD" value={form.priceAUD} onChange={e => setForm({ ...form, priceAUD: e.target.value })} className="border-2 border-border rounded-xl px-4 py-3" />
-            </div>
-
-            <div>
-              <label className="block text-sm font-bold text-black mb-1.5">Nivel</label>
-              <select value={form.level} onChange={e => setForm({ ...form, level: e.target.value })} className="w-full border-2 border-border rounded-xl px-4 py-3">
-                <option>Principiante</option>
-                <option>Intermedio</option>
-                <option>Avanzado</option>
-              </select>
-            </div>
-
-            <div className="bg-bg-soft p-4 rounded-xl border border-border md:col-span-2">
-              <label className="block text-sm font-bold text-black mb-2">🖼️ Portada</label>
-              <input 
-                type="file" 
-                lang="es" 
-                accept="image/*" 
-                onChange={e => setImageFile(e.target.files[0])} 
-                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-hover cursor-pointer" 
-              />
-            </div>
-            {/* PDFs adicionales del curso (multiples) */}
-            <div className="bg-bg-soft p-4 rounded-xl border border-border">
-              <label className="block text-sm font-bold text-black mb-2">📎 PDF's (podés elegir varios)</label>
-              <input
-                type="file"
-                accept=".pdf"
-                multiple
-                onChange={e => setCoursePdfFiles(Array.from(e.target.files))}
-                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-hover cursor-pointer"
-              />
-              {coursePdfFiles.length > 0 && (
-                <p className="text-xs text-text-ink mt-2">{coursePdfFiles.length} archivo(s) seleccionados para subir al guardar.</p>
-              )}
-
-              {isEditing && course?.attachments?.length > 0 && (
-                <div className="mt-4 space-y-2">
-                  <p className="text-xs font-bold text-text-ink">PDFs ya subidos:</p>
-                  {course.attachments.map(att => (
-                    <div key={att.id} className="flex items-center justify-between bg-white rounded-lg px-3 py-2 border border-border">
-                      <a href={getImageUrl(att.url)} target="_blank" rel="noreferrer" className="text-sm text-primary underline truncate">{att.filename}</a>
-                      <button type="button" onClick={() => handleDeleteCourseAttachment(att.id)} className="text-danger text-xs font-bold hover:underline flex-shrink-0 ml-3">Eliminar</button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <button type="submit" disabled={saving} className="btn btn-primary w-full">
-              {saving ? 'Guardando...' : (isEditing ? 'Guardar' : 'Crear curso')}
-            </button>
-          </form>
+          <CourseFieldsForm
+            form={form}
+            onChange={setForm}
+            saving={saving}
+            isEditing={isEditing}
+            onSubmit={handleSaveCourse}
+            setImageFile={setImageFile}
+            coursePdfFiles={coursePdfFiles}
+            setCoursePdfFiles={setCoursePdfFiles}
+            course={course}
+            onDeleteAttachment={handleDeleteCourseAttachment}
+          />
         </div>
 
         {/* Lecciones: solo disponible una vez que el curso ya existe */}
@@ -277,115 +228,24 @@ export default function AdminCourseForm() {
 
             <div className="space-y-4 mb-8">
               {(course?.lessons || []).map((lesson) => (
-                <div key={lesson.id} className="bg-bg-soft p-4 rounded-xl space-y-3 border border-border">
-                  <input
-                    placeholder="Título"
-                    value={getLessonField(lesson, 'title')}
-                    onChange={e => setLessonField(lesson.id, 'title', e.target.value)}
-                    className="w-full p-2 rounded-lg border border-border"
-                  />
-                  <textarea
-                    placeholder="Descripción"
-                    value={getLessonField(lesson, 'description') || ''}
-                    onChange={e => setLessonField(lesson.id, 'description', e.target.value)}
-                    className="w-full p-2 rounded-lg border border-border h-20"
-                  />
-                  <div className="grid grid-cols-2 gap-3">
-                    <input
-                      placeholder="Duración (ej. 12 min)"
-                      value={getLessonField(lesson, 'duration')}
-                      onChange={e => setLessonField(lesson.id, 'duration', e.target.value)}
-                      className="w-full p-2 rounded-lg border border-border"
-                    />
-                    <input
-                      placeholder="Link de video"
-                      value={getLessonField(lesson, 'videoUrl')}
-                      onChange={e => setLessonField(lesson.id, 'videoUrl', e.target.value)}
-                      className="w-full p-2 rounded-lg border border-border"
-                    />
-                  </div>
-
-                  <div className="p-3 bg-white rounded-xl border border-border">
-                    <label className="block text-xs font-bold text-text-ink mb-2">📎 Agregar PDFs a esta lección (podés elegir varios)</label>
-                    <input
-                      type="file"
-                      accept=".pdf"
-                      multiple
-                      onChange={e => setLessonPdfFiles(prev => ({ ...prev, [lesson.id]: Array.from(e.target.files) }))}
-                      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-hover cursor-pointer"
-                    />
-                    {lesson.attachments?.length > 0 && (
-                      <div className="mt-3 space-y-2">
-                        {lesson.attachments.map(att => (
-                          <div key={att.id} className="flex items-center justify-between bg-bg-soft rounded-lg px-3 py-2">
-                            <a href={getImageUrl(att.url)} target="_blank" rel="noreferrer" className="text-sm text-primary underline truncate">{att.filename}</a>
-                            <button type="button" onClick={() => handleDeleteLessonAttachment(att.id)} className="text-danger text-xs font-bold hover:underline flex-shrink-0 ml-3">Eliminar</button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="flex items-center justify-between pt-1">
-                    <button type="button" onClick={() => handleDeleteLesson(lesson.id)} className="btn btn-danger text-sm">Eliminar lección</button>
-                    <button
-                      type="button"
-                      onClick={() => handleSaveLesson(lesson)}
-                      disabled={savingLessonId === lesson.id}
-                      className="btn btn-ghost text-sm text-danger"
-                    >
-                      {savingLessonId === lesson.id ? 'Guardando...' : 'Guardar lección'}
-                    </button>
-                  </div>
-
-                  {/* Preguntas de alumnas sobre esta lección */}
-                  <div className="pt-2 border-t border-border">
-                    <button
-                      type="button"
-                      onClick={() => toggleQuestions(lesson.id)}
-                      className="btn btn-ghost text-xs text-primary"
-                    >
-                      💬 {openQuestionsFor === lesson.id ? 'Ocultar preguntas de alumnas' : 'Ver preguntas de alumnas'}
-                    </button>
-
-                    {openQuestionsFor === lesson.id && (
-                      <div className="mt-3 bg-white rounded-xl border border-border p-3">
-                        {commentsByLesson[lesson.id]?.loading && (
-                          <p className="text-xs text-text-ink">Cargando...</p>
-                        )}
-                        {commentsByLesson[lesson.id]?.loaded && commentsByLesson[lesson.id].items.length === 0 && (
-                          <p className="text-xs text-text-ink">Todavía no hay preguntas en esta lección.</p>
-                        )}
-                        {commentsByLesson[lesson.id]?.loaded && commentsByLesson[lesson.id].items.length > 0 && (
-                          <div className="space-y-2 max-h-56 overflow-y-auto pr-1 mb-3">
-                            {commentsByLesson[lesson.id].items.map(c => (
-                              <div key={c.id} className={`rounded-lg p-2.5 text-xs border ${c.user?.role === 'ADMIN' ? 'bg-primary-soft border-border-sage' : 'bg-bg-soft border-border'}`}>
-                                <p className="font-bold text-text-ink mb-0.5">{c.user?.role === 'ADMIN' ? 'Vos (profesora)' : c.user?.name}</p>
-                                <p className="text-text-ink">{c.message}</p>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                        <div className="flex gap-2">
-                          <input
-                            value={drafts[lesson.id] || ''}
-                            onChange={e => setDraft(lesson.id, e.target.value)}
-                            placeholder="Responder..."
-                            className="flex-1 p-2 rounded-lg border border-border text-sm"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => sendComment(lesson.id, drafts[lesson.id])}
-                            disabled={sendingFor === lesson.id}
-                            className="btn btn-primary text-xs"
-                          >
-                            Enviar
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
+                <LessonEditorItem
+                  key={lesson.id}
+                  lesson={lesson}
+                  editedLessons={editedLessons}
+                  onFieldChange={setLessonField}
+                  onLessonPdfChange={handleLessonPdfChange}
+                  savingLessonId={savingLessonId}
+                  onSaveLesson={handleSaveLesson}
+                  onDeleteLesson={handleDeleteLesson}
+                  onDeleteLessonAttachment={handleDeleteLessonAttachment}
+                  questionsOpen={openQuestionsFor === lesson.id}
+                  onToggleQuestions={toggleQuestions}
+                  comments={commentsByLesson[lesson.id]}
+                  drafts={drafts}
+                  sendingFor={sendingFor}
+                  onSendComment={sendComment}
+                  onDraftChange={setDraft}
+                />
               ))}
 
               {(!course?.lessons || course.lessons.length === 0) && (
@@ -394,52 +254,13 @@ export default function AdminCourseForm() {
             </div>
 
             {/* Nueva lección */}
-            <form onSubmit={handleCreateLesson} className="bg-bg-soft p-4 rounded-xl space-y-3 border-2 border-dashed border-border">
-              <p className="text-sm font-bold text-text-ink">+ Agregar nueva lección</p>
-              <input
-                required
-                placeholder="Título"
-                value={newLesson.title}
-                onChange={e => setNewLesson({ ...newLesson, title: e.target.value })}
-                className="w-full p-2 rounded-lg border border-border"
-              />
-              <textarea
-                required
-                placeholder="Descripción"
-                value={newLesson.description || ''}
-                onChange={e => setNewLesson({ ...newLesson, description: e.target.value })}
-                className="w-full p-2 rounded-lg border border-border h-20"
-              />
-              <div className="grid grid-cols-2 gap-3">
-                <input
-                  required
-                  placeholder="Duración (ej. 12 min)"
-                  value={newLesson.duration}
-                  onChange={e => setNewLesson({ ...newLesson, duration: e.target.value })}
-                  className="w-full p-2 rounded-lg border border-border"
-                />
-                <input
-                  required
-                  placeholder="Link de video"
-                  value={newLesson.videoUrl}
-                  onChange={e => setNewLesson({ ...newLesson, videoUrl: e.target.value })}
-                  className="w-full p-2 rounded-lg border border-border"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-text-ink mb-2">📎 PDFs de la lección (podés elegir varios)</label>
-                <input
-                  type="file"
-                  accept=".pdf"
-                  multiple
-                  onChange={e => setNewLessonPdfs(Array.from(e.target.files))}
-                  className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-hover cursor-pointer"
-                />
-              </div>
-              <button type="submit" disabled={creatingLesson} className="btn btn-primary w-full text-sm">
-                {creatingLesson ? 'Creando...' : '+ Crear lección'}
-              </button>
-            </form>
+            <NewLessonForm
+              newLesson={newLesson}
+              setNewLesson={setNewLesson}
+              setPdfs={setNewLessonPdfs}
+              creating={creatingLesson}
+              onSubmit={handleCreateLesson}
+            />
           </div>
         )}
       </div>

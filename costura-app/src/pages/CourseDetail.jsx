@@ -4,13 +4,14 @@ import { useCourseCatalog } from '../context/CourseCatalogContext';
 import { usePurchases } from '../context/PurchaseContext';
 import { useProgress } from '../context/ProgressContext';
 import { useAuth } from '../context/AuthContext';
-import ReactPlayer from 'react-player';
 import { getImageUrl } from '../utils/media';
 import { getLevelLabel } from '../utils/levels';
 import CourseCover from '../components/CourseCover';
-import { getCoursePrice } from '../utils/currency';
 import { downloadFile } from '../services/api';
 import useLessonComments from '../hooks/useLessonComments';
+import CoursePublicHero from '../components/course/CoursePublicHero';
+import CourseProgressCard from '../components/course/CourseProgressCard';
+import LessonAccordionItem from '../components/course/LessonAccordionItem';
 
 export default function CourseDetail() {
   const { id } = useParams();
@@ -48,34 +49,11 @@ export default function CourseDetail() {
 
   if (!owned) {
     return (
-      <div className="min-h-screen bg-bg-surface">
-        <div className="max-w-4xl mx-auto px-4 py-10">
-          <Link to="/cursos" className="text-accent text-sm hover:text-accent mb-6 inline-block">← Volver a cursos</Link>
-          <div className="card rounded-2xl overflow-hidden">
-            <CourseCover course={course} className="w-full h-64 object-cover" />
-            <div className="p-8">
-              <span className="text-xs font-semibold bg-bg-soft text-accent px-3 py-1 rounded-full">{getLevelLabel(course.level)}</span>
-              <h1 className="font-display text-3xl font-bold text-text-ink mt-3 mb-2">{course.title}</h1>
-              <p className="text-text-ink mb-4">{course.longDescription}</p>
-              <div className="flex flex-wrap gap-4 text-sm text-text-ink mb-6">
-                <span>👩‍🏫 {course.instructor}</span>
-                <span>🕐 {course.duration}</span>
-                <span>📚 {course.lessons.length} lecciones</span>
-                <span>⭐ {course.rating} ({course.students.toLocaleString()} alumnas)</span>
-              </div>
-              <div className="border-t border-border pt-6 flex items-center justify-between gap-4 flex-wrap">
-                <span className="text-3xl font-bold text-text-ink">${getCoursePrice(course, user).toLocaleString()}</span>
-                <button
-                  onClick={() => navigate(user ? `/checkout/${course.id}` : '/login')}
-                  className="btn btn-primary font-semibold"
-                >
-                  Comprar curso
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <CoursePublicHero
+        course={course}
+        user={user}
+        onBuy={() => navigate(user ? `/checkout/${course.id}` : '/login')}
+      />
     );
   }
 
@@ -220,25 +198,13 @@ function CourseLearningView({ course, progress, getProgress, completeLesson }) {
                   <span>📚 {course.lessons.length} lecciones</span>
                 </div>
               </div>
-              <div className="min-w-[220px] bg-bg-soft rounded-2xl p-4">
-                <div className="flex items-center justify-between text-sm text-text-ink mb-2">
-                  <span>Progreso del curso</span>
-                  <span className="font-bold text-primary">{prog}%</span>
-                </div>
-                <div className="w-full bg-white rounded-full h-2 overflow-hidden">
-                  <div className="bg-primary h-2 rounded-full transition-all duration-500" style={{ width: `${prog}%` }} />
-                </div>
-                <p className="text-xs text-accent mt-2">{completedCount}/{course.lessons.length} lecciones finalizadas</p>
-                {prog === 100 && (
-                  <button
-                    onClick={handleDownloadCertificate}
-                    disabled={downloadingCert}
-                    className="btn btn-primary w-full mt-3 text-sm font-semibold"
-                  >
-                    {downloadingCert ? 'Generando...' : '🎓 Descargar certificado'}
-                  </button>
-                )}
-              </div>
+              <CourseProgressCard
+                prog={prog}
+                completedCount={completedCount}
+                total={course.lessons.length}
+                downloadingCert={downloadingCert}
+                onDownloadCertificate={handleDownloadCertificate}
+              />
             </div>
 
             {/* PDFs generales del curso (no de una lección puntual) */}
@@ -268,161 +234,25 @@ function CourseLearningView({ course, progress, getProgress, completeLesson }) {
           {course.lessons.map((lesson, idx) => {
             const blocked = !isSequentialAllowed(idx);
             const completed = isCompleted(lesson.id);
-            const isOpen = openLessonId === lesson.id;
-            const canComplete = !completed && !blocked;
-            const lessonComments = commentsByLesson[lesson.id];
-            const allPdfs = [
-              ...(lesson.pdf ? [{ id: 'legacy', filename: 'PDF de la lección', url: lesson.pdf }] : []),
-              ...(lesson.attachments || []),
-            ];
 
             return (
-              <div key={lesson.id} className={`bg-white border rounded-2xl shadow-sm overflow-hidden transition-colors ${isOpen ? 'border-secondary' : 'border-border'}`}>
-                {/* Cabecera de la lección */}
-                <button
-                  onClick={() => toggleLesson(lesson, blocked)}
-                  disabled={blocked}
-                  className={`w-full flex items-center gap-3 p-4 lg:p-5 text-left ${blocked ? 'opacity-60 cursor-not-allowed' : 'hover:bg-bg-soft/60'} transition-colors`}
-                >
-                  <div className={`w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-sm font-bold ${
-                    completed ? 'bg-success text-white' : blocked ? 'bg-stone-200 text-stone-400' : 'bg-bg-soft text-text-ink'
-                  }`}>
-                    {completed ? '✓' : blocked ? '🔒' : idx + 1}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-text-ink truncate">{lesson.title}</p>
-                    <p className="text-xs text-accent mt-0.5">
-                      ⏱ {lesson.duration}
-                      {blocked && <span className="text-danger"> · Completá la lección anterior para desbloquear</span>}
-                    </p>
-                  </div>
-                  {!blocked && (
-                    <span className={`text-text-ink transition-transform flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`}>▾</span>
-                  )}
-                </button>
-
-                {/* Contenido de la lección, solo si está abierta */}
-                {isOpen && !blocked && (
-                  <div className="border-t border-border p-4 lg:p-6 space-y-5">
-                    {lesson.description && (
-                      <p className="text-sm text-text-ink leading-relaxed">{lesson.description}</p>
-                    )}
-
-                    {/* Video contenido (no a pantalla completa) */}
-                    {lesson.videoUrl && (
-                      <div className="max-w-xl mx-auto lg:mx-0">
-                        <div className="aspect-video rounded-2xl overflow-hidden bg-black shadow-md relative">
-                          <ReactPlayer
-                            url={lesson.videoUrl}
-                            width="100%"
-                            height="100%"
-                            controls
-                            light
-                            style={{ position: 'absolute', top: 0, left: 0 }}
-                          />
-                        </div>
-                      </div>
-                    )}
-
-                    {/* PDFs de la lección */}
-                    {allPdfs.length > 0 && (
-                      <div>
-                        <p className="text-xs uppercase tracking-wide text-accent mb-2">Material descargable</p>
-                        <div className="space-y-2">
-                          {allPdfs.map(att => (
-                            <a
-                              key={att.id}
-                              href={getImageUrl(att.url)}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="btn btn-ghost text-sm w-fit"
-                            >
-                              📄 {att.filename || 'Ver PDF'}
-                            </a>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Marcar como completada / avanzar */}
-                    <div className="flex flex-wrap items-center gap-3">
-                      <button
-                        onClick={() => handleCompleteLesson(lesson.id)}
-                        disabled={!canComplete}
-                        className={`btn text-sm font-semibold ${
-                          completed
-                            ? 'bg-success text-white'
-                            : canComplete
-                            ? 'bg-primary text-white hover:bg-primary-hover'
-                            : 'bg-stone-200 text-stone-500 cursor-not-allowed'
-                        }`}
-                      >
-                        {completed ? '✓ Completada' : 'Marcar como completada'}
-                      </button>
-                      {completed && idx < course.lessons.length - 1 && (
-                        <button
-                          onClick={() => toggleLesson(course.lessons[idx + 1], false)}
-                          className="btn btn-ghost text-sm"
-                        >
-                          Ir a la siguiente lección →
-                        </button>
-                      )}
-                    </div>
-
-                    {/* Preguntas a la profesora (real, conectado al backend) */}
-                    <div className="bg-bg-soft rounded-2xl p-4 lg:p-5">
-                      <h4 className="font-bold text-text-ink text-sm mb-3">Preguntas sobre esta lección</h4>
-
-                      {lessonComments?.loading && (
-                        <p className="text-sm text-accent">Cargando...</p>
-                      )}
-
-                      {lessonComments?.loaded && lessonComments.items.length === 0 && (
-                        <p className="text-sm text-accent mb-3">Todavía no hay preguntas en esta lección. La profesora va a responder acá cuando dejes la tuya.</p>
-                      )}
-
-                      {lessonComments?.loaded && lessonComments.items.length > 0 && (
-                        <div className="space-y-2 max-h-72 overflow-y-auto pr-1 mb-3">
-                          {lessonComments.items.map(c => (
-                            <div
-                              key={c.id}
-                              className={`rounded-xl p-3 border text-sm ${c.user?.role === 'ADMIN' ? 'bg-white border-border' : 'bg-white border-border-sage ml-4 sm:ml-8'}`}
-                            >
-                              <div className="flex items-center justify-between gap-2 mb-1">
-                                <p className="text-xs font-bold uppercase tracking-wide text-accent">
-                                  {c.user?.role === 'ADMIN' ? 'Profesora' : 'Vos'}
-                                </p>
-                                <p className="text-[11px] text-accent/70">{c.user?.name}</p>
-                              </div>
-                              <p className="text-text-ink leading-relaxed">{c.message}</p>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-
-                      <form
-                        onSubmit={(e) => { e.preventDefault(); sendComment(lesson.id, drafts[lesson.id]); }}
-                        className="space-y-2"
-                      >
-                        <textarea
-                          value={drafts[lesson.id] || ''}
-                          onChange={(e) => setDraft(lesson.id, e.target.value)}
-                          rows={2}
-                          placeholder="Escribí tu duda sobre esta lección..."
-                          className="w-full rounded-xl border border-border bg-white px-4 py-2.5 text-sm text-text-ink focus:outline-none focus:ring-2 focus:ring-secondary/30"
-                        />
-                        <button
-                          type="submit"
-                          disabled={sendingFor === lesson.id}
-                          className="btn btn-primary text-sm font-semibold"
-                        >
-                          {sendingFor === lesson.id ? 'Enviando...' : 'Enviar pregunta'}
-                        </button>
-                      </form>
-                    </div>
-                  </div>
-                )}
-              </div>
+              <LessonAccordionItem
+                key={lesson.id}
+                lesson={lesson}
+                idx={idx}
+                total={course.lessons.length}
+                isOpen={openLessonId === lesson.id}
+                blocked={blocked}
+                completed={completed}
+                comments={commentsByLesson[lesson.id]}
+                drafts={drafts}
+                sendingFor={sendingFor}
+                onToggle={toggleLesson}
+                onComplete={handleCompleteLesson}
+                onSendComment={sendComment}
+                onDraftChange={setDraft}
+                onNext={() => toggleLesson(course.lessons[idx + 1], false)}
+              />
             );
           })}
         </div>
