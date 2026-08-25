@@ -2,12 +2,14 @@ import { Injectable, BadRequestException, UnauthorizedException, Logger } from '
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
+import type { User } from '@prisma/client';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { MailService, resolveLocale } from '../mail/mail.service';
 import { ConfigService } from '@nestjs/config';
 import * as crypto from 'crypto';
 import { jwtSecret } from '../config/jwt.config';
+import { JwtPayload } from './dto/jwt-payload';
 
 @Injectable()
 export class AuthService {
@@ -104,7 +106,7 @@ export class AuthService {
     };
   }
 
-  async validateToken(payload: any) {
+  async validateToken(payload: JwtPayload) {
     const user = await this.prisma.user.findUnique({
       where: { id: payload.sub },
       select: {
@@ -123,7 +125,7 @@ export class AuthService {
     return user;
   }
 
-  private generateToken(user: any) {
+  private generateToken(user: Pick<User, 'id' | 'email' | 'role'>) {
     const payload = {
       sub: user.id,
       email: user.email,
@@ -165,7 +167,7 @@ export class AuthService {
         },
       });
     } catch (err) {
-      this.logger.error('Error creando token de recuperación', err as any);
+      this.logger.error('Error creando token de recuperación', err);
       // No propagar detalles al cliente
       return GENERIC_RESPONSE;
     }
@@ -194,7 +196,7 @@ export class AuthService {
     try {
       await this.mailService.sendEmail(user.email, subject, html);
     } catch (err) {
-      this.logger.warn('Fallo al enviar email de restablecimiento (se ignorará para no filtrar existencia)', err as any);
+      this.logger.warn('Fallo al enviar email de restablecimiento (se ignorará para no filtrar existencia)', err);
       // No fallar la petición por errores de envío de correo
     }
 

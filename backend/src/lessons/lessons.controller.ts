@@ -16,6 +16,7 @@ import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { AdminGuard } from '../auth/guards/admin.guard';
+import { Principal } from '../common/principal';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
@@ -49,13 +50,13 @@ export class LessonsController {
   // completo (videoUrl/pdf/attachments) NO se sirve por el catálogo público.
   @Get()
   @UseGuards(JwtAuthGuard)
-  async findByCourse(@Param('courseId') courseId: string, @Request() req: any) {
+  async findByCourse(@Param('courseId') courseId: string, @Request() req: { user: Principal }) {
     return this.lessonsService.findByCourse(courseId, req.user);
   }
 
   @Get(':id')
   @UseGuards(JwtAuthGuard)
-  async findOne(@Param('id') id: string, @Request() req: any) {
+  async findOne(@Param('id') id: string, @Request() req: { user: Principal }) {
     return this.lessonsService.findOne(id, req.user);
   }
 
@@ -72,7 +73,7 @@ export class LessonsController {
       throw new Error('Course ID mismatch');
     }
     if (files?.pdf?.length) {
-      (dto as any).pdf = `/uploads/lessons/${files.pdf[0].filename}`;
+      dto.pdf = `/uploads/lessons/${files.pdf[0].filename}`;
     }
     const lesson = await this.lessonsService.create(dto);
 
@@ -98,7 +99,7 @@ export class LessonsController {
       throw new Error('Lesson does not belong to this course');
     }
     if (files?.pdf?.length) {
-      (dto as any).pdf = `/uploads/lessons/${files.pdf[0].filename}`;
+      dto.pdf = `/uploads/lessons/${files.pdf[0].filename}`;
     }
     await this.lessonsService.update(id, dto);
 
@@ -132,7 +133,7 @@ export class LessonsDetailController {
 
   @Get(':id')
   @UseGuards(JwtAuthGuard)
-  async findOne(@Param('id') id: string, @Request() req: any) {
+  async findOne(@Param('id') id: string, @Request() req: { user: Principal }) {
     return this.lessonsService.findOne(id, req.user);
   }
 }

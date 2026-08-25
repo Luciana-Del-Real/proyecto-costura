@@ -38,7 +38,7 @@ export class LessonProgressService {
     });
 
     // Calculate overall progress percentage
-    const completedCount = progressList.filter((p: any) => p.completed).length;
+    const completedCount = progressList.filter((p) => p.completed).length;
     const progressPercentage =
       course.lessons.length > 0
         ? Math.round((completedCount / course.lessons.length) * 100)
@@ -49,8 +49,8 @@ export class LessonProgressService {
       totalLessons: course.lessons.length,
       completedLessons: completedCount,
       progressPercentage,
-      lessons: course.lessons.map((lesson: any) => {
-        const progress = progressList.find((p: any) => p.lessonId === lesson.id);
+      lessons: course.lessons.map((lesson) => {
+        const progress = progressList.find((p) => p.lessonId === lesson.id);
         return {
           id: lesson.id,
           title: lesson.title,
