@@ -5,9 +5,9 @@ context: |
   Project: Grow Creative Education Studio (repo "proyecto-costura", folder "Proyecto-Kiro").
   Monorepo with two independent apps (no root package.json):
     - backend/ (costura-api): NestJS 10 + TypeScript 5.3 (strict) + Prisma 5 + PostgreSQL, JWT auth (passport-jwt). Feature modules under src/ (auth, users, courses, lessons, purchases, lesson-progress, notifications, favorites, certificates, lesson-comments, attachments, mail, prisma).
-    - costura-app/: React 19 + Vite 8 + Tailwind 4 + react-router-dom 7 + axios. Structure: pages/, components/, context/, hooks/, services/. Context API for global state. JSX (not TSX).
-  Testing: NO test runner installed in either app (no jest/vitest/supertest/testing-library); zero test files; no CI workflows. Lint available in both apps; typecheck (tsc --noEmit) only in backend.
-  Style: conventional commits (feat/fix/style/chore) seen in git history; project docs written in Spanish; default branch is "dev".
+    - costura-app/: React 19 + Vite 8 + Tailwind 4 + react-router-dom 7. Structure: pages/, components/, context/, hooks/, services/. Context API for global state. JSX (not TSX). Uses fetch helpers in services/api.js (no axios).
+  Testing: backend has Jest + Supertest e2e specs (test/*.spec.ts, `npm test`); costura-app has Vitest (`npm test`). Lint available in both apps; typecheck (tsc --noEmit) in backend. No CI workflows yet.
+  Style: conventional commits (feat/fix/style/chore/refactor/test) seen in git history; project docs written in Spanish; default branch is "dev".
   Artifact language: English (neutral).
 
 rules:
@@ -25,10 +25,10 @@ rules:
   apply:
     guidelines:
       - Follow existing code patterns (feature modules in backend, pages/components/context/hooks/services in frontend)
-    tdd: false           # No test runner exists in this repo; Strict TDD cannot be enabled until one is added
-    test_command: ""
+    tdd: false           # No Strict TDD runner configured; tests exist but are written after implementation
+    test_command: "npm test"
   verify:
-    test_command: ""     # No test command available
+    test_command: "npm test"
     build_command: "npm run build"
     coverage_threshold: 0
   archive:
