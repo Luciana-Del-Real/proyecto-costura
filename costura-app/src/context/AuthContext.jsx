@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { post, patch } from '../services/api';
 
 const AuthContext = createContext(null);
@@ -6,6 +6,14 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // logout se declara antes del useEffect que lo usa (evita el acceso TDZ) y se
+  // memoiza con useCallback para que sea estable como dependencia de efectos.
+  const logout = useCallback(() => {
+    setUser(null);
+    sessionStorage.removeItem('costura_token');
+    sessionStorage.removeItem('costura_user');
+  }, []);
 
   useEffect(() => {
     // Check if user is logged in on app start
@@ -15,8 +23,12 @@ export function AuthProvider({ children }) {
       try {
         const parsed = JSON.parse(storedUser);
         if (parsed && parsed.role) parsed.role = String(parsed.role).toUpperCase();
+        // Restaurar la sesión persistida al montar es el caso legítimo de
+        // "sincronizar estado con un sistema externo"; el setState síncrono
+        // acá es intencional y corre una sola vez al montar.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setUser(parsed);
-      } catch (e) {
+      } catch {
         logout(); // Si falla el parseo, limpiamos todo
       }
     } else {
@@ -24,7 +36,7 @@ export function AuthProvider({ children }) {
       setUser(null);
     }
     setLoading(false);
-  }, []);
+  }, [logout]);
 
   const register = async (name, email, password, country) => {
     try {
@@ -52,12 +64,6 @@ export function AuthProvider({ children }) {
     } catch (error) {
       throw new Error(error.message || 'Email o contraseña incorrectos');
     }
-  };
-
-  const logout = () => {
-    setUser(null);
-    sessionStorage.removeItem('costura_token');
-    sessionStorage.removeItem('costura_user');
   };
 
   const updateUser = async (data) => {
