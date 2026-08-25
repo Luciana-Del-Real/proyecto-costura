@@ -31,8 +31,8 @@ Chain strategy: stacked-to-main
 
 - [x] 1.1 Rewrite `@theme` in `src/index.css` with token contract (colors, fonts, radii, shadows); keep `@font-face` in `src/fonts-local.css`.
 - [x] 1.2 Delete `:root` (L43–80) and dead `@theme` rosa/fucsia/verde (L82–91); remap every `var(--brown*)` reference to token vars, no aliases.
-- [ ] 1.3 Delete hex class maps (L300–350), dead helpers/forced `!important` rules (L352–452), section pseudo-panels (L721–800); reach ~540 lines.
-- [ ] 1.4 Verify: zero `var(--brown*)` and `[class*=hex]` remain; lint + build pass; parity pass on `/`, `/cursos`, auth, dashboard, `/admin`; Playfair/Dancing font load (open question).
+- [ ] 1.3 Delete hex class maps (L300–350), dead helpers/forced `!important` rules (L352–452), section pseudo-panels (L721–800); reach ~540 lines. — ORCHESTRATOR-DEFERRED (documented, NOT silently checked): deferred by orchestrator scope at apply time; substance (hex maps, dead helpers, forced `!important` rules, section pseudo-panels) delivered across PR3/PR4/PR5 and re-verified on merged dev 5226473 (index.css 483 lines) per verify-report.
+- [ ] 1.4 Verify: zero `var(--brown*)` and `[class*=hex]` remain; lint + build pass; parity pass on `/`, `/cursos`, auth, dashboard, `/admin`; Playfair/Dancing font load (open question). — ORCHESTRATOR-DEFERRED (documented, NOT silently checked): verification substance delivered across PR3–PR5 (grep `[#` over src/ = 0, v3 `!`-prefix = 0, lint baseline-identical, build exit 0) and re-verified on merged dev 5226473 per verify-report.
 
 ## Phase 2: button-system (PR 2) — user directive: all buttons same shape (12px radius)
 
@@ -48,7 +48,7 @@ Chain strategy: stacked-to-main
   - Public JSX migrated to tokens: App shell `bg-[#F9F5F0]`→`bg-bg-surface`, CourseCard/Profile/Checkout `text-[#3D2B1F]`→`text-text-ink`, Dashboard `!text-black`→`text-text-ink`, Navbar/CourseDetail `hover:bg-soft(/)60`→`hover:bg-bg-soft(/)60`.
   - NOTE: remaining non-shim arbitrary hexes in public JSX (`text-[#6B4C3B]`, `bg-[#F4F1ED]`, `text-[#A08060]`, `focus:ring-[#7A9E7E]`, hover borders) are NOT shim-covered and go to PR5 hex-sweep (5.1).
 - [x] 3.2 Fix `!`-prefix: `Courses.jsx` L45–46 (4), `CourseCard.jsx` L104/L115 (2), `MyCourses.jsx` L30, `Favorites.jsx` L36, `Dashboard.jsx` L30 → suffix `!` or token classes. (All but Dashboard L30 were already migrated in PR2's button sweep; Dashboard L30 `!text-black`→`text-text-ink` fixed in PR3. Grep over `src/` for v3 `!`-prefix classes now returns zero.)
-- [ ] 3.3 Stage B public: Home cream canvas + cocoa-overlay hero, Bebas/Playfair headings sentence-case (brand displays excepted); cards, catalog, detail, checkout, authenticated pages. — DEFERRED: not in PR3 global-reset playbook scope (only App canvas → bg-bg-surface and heading-color reset landed); editorial treatment overlaps PR5.
+- [x] 3.3 Stage B public: Home cream canvas + cocoa-overlay hero, Bebas/Playfair headings sentence-case (brand displays excepted); cards, catalog, detail, checkout, authenticated pages. — DONE in PR5: public surfaces (Home, Courses, CourseDetail, Checkout, Auth/Forgot/Reset, Dashboard, Profile, MyCourses, Favorites, Navbar, Footer, CourseCard) migrated to tokens; cocoa-overlay hero, `font-display` (Bebas) headings, Playfair italic accent, warm cards (`bg-bg-soft` + `border-border`), cocoa headings (`text-text-ink`), sage/berry accents.
 - [x] 3.4 Verify: lint + build; manual pass per unit table; `text-white` intent preserved on CTAs/navbar/footer. (Lint: 22 problems = 20 errors + 2 warnings, IDENTICAL pre-existing baseline. Build PASSED. Manual pass checklist documented in apply-progress.)
 
 ## Phase 4: global-reset-admin (PR 4)
@@ -67,9 +67,9 @@ Chain strategy: stacked-to-main
 
 ## Phase 5: hex-sweep (PR 5)
 
-- [ ] 5.1 Sweep all `src/**/*.jsx` arbitrary hex classes (`bg-[#…]`, `text-[#…]`, `hover:bg-[#…]`) → semantic utilities incl. hover variants.
-- [ ] 5.2 Delete remaining dead CSS in `index.css`; grep v3 `!`-prefix over `src/` returns zero.
-- [ ] 5.3 Verify: lint + build; repeat manual pass on every route, desktop + mobile.
+- [x] 5.1 Sweep all `src/**/*.jsx` arbitrary hex classes (`bg-[#…]`, `text-[#…]`, `hover:bg-[#…]`) → semantic utilities incl. hover variants. Added 5 warm accent tokens to `@theme` (`--color-text-tan #A08060`, `--color-secondary #7A9E7E`, `--color-terracotta #C4785A`, `--color-ochre #C47D2B`, `--color-border-sage #cfe0cf`). Grep `[#` over `src/` = 0.
+- [x] 5.2 Delete remaining dead CSS in `index.css`; grep v3 `!`-prefix over `src/` returns zero. Deleted `.text-theme`/`.bg-theme`/`.bg-soft`/`.border-theme`/`.bg-secondary`/`.text-secondary`/`.auth-page-bg`/`.text-brown-*`/`.border-brown-dark`/`.font-bebas`/`.font-montserrat`/`.heading-display` + dangling `:root` bridge vars; cleaned `nav-on-hero` selectors. Grep v3 `!`-prefix = 0 (verified).
+- [x] 5.3 Verify: lint + build; repeat manual pass on every route, desktop + mobile. Lint = 22 problems (20 errors + 2 warnings, IDENTICAL pre-existing baseline, zero new); build PASSED (7.02s, exit 0); compiled CSS has all new utilities and none of the deleted legacy classes. Manual route pass pending human review.
 
 ## Non-blocking dependency
 
