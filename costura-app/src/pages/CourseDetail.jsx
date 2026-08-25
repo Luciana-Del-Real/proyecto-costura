@@ -9,7 +9,8 @@ import { getImageUrl } from '../utils/media';
 import { getLevelLabel } from '../utils/levels';
 import CourseCover from '../components/CourseCover';
 import { getCoursePrice } from '../utils/currency';
-import { get, post, downloadFile } from '../services/api';
+import { downloadFile } from '../services/api';
+import useLessonComments from '../hooks/useLessonComments';
 
 export default function CourseDetail() {
   const { id } = useParams();
@@ -159,46 +160,13 @@ function CourseLearningView({ course, progress, getProgress, completeLesson }) {
   );
 
   // Comentarios/preguntas por lección, cargados de a uno (al abrir la lección)
-  const [commentsByLesson, setCommentsByLesson] = useState({});
-  const [draftByLesson, setDraftByLesson] = useState({});
-  const [sendingLessonId, setSendingLessonId] = useState(null);
-
-  const loadComments = async (lessonId) => {
-    if (commentsByLesson[lessonId]?.loaded) return;
-    setCommentsByLesson(prev => ({ ...prev, [lessonId]: { loaded: false, items: [], loading: true } }));
-    try {
-      const items = await get(`/lessons/${lessonId}/comments`);
-      setCommentsByLesson(prev => ({ ...prev, [lessonId]: { loaded: true, items, loading: false } }));
-    } catch (e) {
-      console.error('Error cargando comentarios', e);
-      setCommentsByLesson(prev => ({ ...prev, [lessonId]: { loaded: true, items: [], loading: false } }));
-    }
-  };
+  const { commentsByLesson, loadComments, sendComment, drafts, setDraft, sendingFor } = useLessonComments();
 
   const toggleLesson = (lesson, blocked) => {
     if (blocked) return;
     const willOpen = openLessonId !== lesson.id;
     setOpenLessonId(willOpen ? lesson.id : null);
     if (willOpen) loadComments(lesson.id);
-  };
-
-  const handleSendComment = async (lessonId) => {
-    const message = (draftByLesson[lessonId] || '').trim();
-    if (!message) return;
-    setSendingLessonId(lessonId);
-    try {
-      const created = await post(`/lessons/${lessonId}/comments`, { message });
-      setCommentsByLesson(prev => ({
-        ...prev,
-        [lessonId]: { loaded: true, loading: false, items: [...(prev[lessonId]?.items || []), created] },
-      }));
-      setDraftByLesson(prev => ({ ...prev, [lessonId]: '' }));
-    } catch (e) {
-      console.error('Error enviando la pregunta', e);
-      alert('No se pudo enviar tu pregunta. Probá de nuevo en un momento.');
-    } finally {
-      setSendingLessonId(null);
-    }
   };
 
   const handleCompleteLesson = async (lessonId) => {
@@ -433,22 +401,22 @@ function CourseLearningView({ course, progress, getProgress, completeLesson }) {
                       )}
 
                       <form
-                        onSubmit={(e) => { e.preventDefault(); handleSendComment(lesson.id); }}
+                        onSubmit={(e) => { e.preventDefault(); sendComment(lesson.id, drafts[lesson.id]); }}
                         className="space-y-2"
                       >
                         <textarea
-                          value={draftByLesson[lesson.id] || ''}
-                          onChange={(e) => setDraftByLesson(prev => ({ ...prev, [lesson.id]: e.target.value }))}
+                          value={drafts[lesson.id] || ''}
+                          onChange={(e) => setDraft(lesson.id, e.target.value)}
                           rows={2}
                           placeholder="Escribí tu duda sobre esta lección..."
                           className="w-full rounded-xl border border-border bg-white px-4 py-2.5 text-sm text-text-ink focus:outline-none focus:ring-2 focus:ring-secondary/30"
                         />
                         <button
                           type="submit"
-                          disabled={sendingLessonId === lesson.id}
+                          disabled={sendingFor === lesson.id}
                           className="btn btn-primary text-sm font-semibold"
                         >
-                          {sendingLessonId === lesson.id ? 'Enviando...' : 'Enviar pregunta'}
+                          {sendingFor === lesson.id ? 'Enviando...' : 'Enviar pregunta'}
                         </button>
                       </form>
                     </div>
