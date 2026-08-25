@@ -1,5 +1,5 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { get, postForm, putForm, post, put, del } from '../services/api';
+import { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
+import { get, postForm, putForm, del } from '../services/api';
 
 const CourseCatalogContext = createContext(null);
 
@@ -26,10 +26,8 @@ export function CourseCatalogProvider({ children }) {
     return get(`/courses/${courseId}/lessons`);
   }, []);
 
-  const saveCourses = (updated) => setCourses(updated);
-
   // --- Admin: gestión de cursos ---
-  const updateCourse = async (courseId, formData) => {
+  const updateCourse = useCallback(async (courseId, formData) => {
     try {
       const updatedCourse = await putForm(`/courses/${courseId}`, formData);
       setCourses(prev => prev.map(c => c.id === courseId ? updatedCourse : c));
@@ -38,9 +36,9 @@ export function CourseCatalogProvider({ children }) {
       console.error(e);
       throw e;
     }
-  };
+  }, []);
 
-  const addCourse = async (formData) => {
+  const addCourse = useCallback(async (formData) => {
     try {
       const newCourse = await postForm('/courses', formData);
       setCourses(prev => [...prev, newCourse]);
@@ -49,9 +47,9 @@ export function CourseCatalogProvider({ children }) {
       console.error(e);
       throw e;
     }
-  };
+  }, []);
 
-  const deleteCourse = async (courseId) => {
+  const deleteCourse = useCallback(async (courseId) => {
     try {
       await del(`/courses/${courseId}`);
       setCourses(prev => prev.filter(c => c.id !== courseId));
@@ -59,80 +57,23 @@ export function CourseCatalogProvider({ children }) {
       console.error("Error al eliminar el curso:", e);
       throw e;
     }
-  };
+  }, []);
 
-  const addLesson = async (courseId, lesson) => {
-    try {
-      const targetCourse = courses.find(c => c.id === courseId);
-      const nextOrder = targetCourse && targetCourse.lessons ? targetCourse.lessons.length + 1 : 1;
-      if (lesson && lesson._pdfFile) {
-        const formData = new FormData();
-        formData.append('title', lesson.title);
-        formData.append('duration', lesson.duration);
-        if (lesson.videoUrl) formData.append('videoUrl', lesson.videoUrl);
-        formData.append('courseId', courseId);
-        formData.append('order', String(nextOrder));
-        formData.append('pdf', lesson._pdfFile);
-        await postForm(`/courses/${courseId}/lessons`, formData);
-      } else {
-        const payload = {
-          ...lesson,
-          courseId: courseId,
-          order: nextOrder
-        };
-        await post(`/courses/${courseId}/lessons`, payload);
-      }
-
-      const data = await get('/courses');
-      setCourses(data);
-    } catch (e) {
-      console.error(e);
-      throw e;
-    }
-  };
-
-  const updateLesson = async (courseId, lessonId, dataPayload) => {
-    try {
-      if (dataPayload && dataPayload._pdfFile) {
-        const formData = new FormData();
-        if (dataPayload.title) formData.append('title', dataPayload.title);
-        if (dataPayload.duration) formData.append('duration', dataPayload.duration);
-        if (dataPayload.videoUrl) formData.append('videoUrl', dataPayload.videoUrl);
-        if (dataPayload.courseId) formData.append('courseId', dataPayload.courseId);
-        if (dataPayload.order) formData.append('order', String(dataPayload.order));
-        formData.append('pdf', dataPayload._pdfFile);
-        await putForm(`/courses/${courseId}/lessons/${lessonId}`, formData);
-      } else {
-        await put(`/courses/${courseId}/lessons/${lessonId}`, dataPayload);
-      }
-
-      const data = await get('/courses');
-      setCourses(data);
-    } catch (e) {
-      console.error(e);
-      throw e;
-    }
-  };
-
-  const deleteLesson = async (courseId, lessonId) => {
-    try {
-      await del(`/courses/${courseId}/lessons/${lessonId}`);
-      const data = await get('/courses');
-      setCourses(data);
-    } catch (e) {
-      console.error(e);
-      throw e;
-    }
-  };
+  // Valor memoizado: las funciones son estables y el valor solo cambia cuando
+  // cambia `courses`, así los consumidores no re-renderizan en cada render del
+  // provider. Las acciones de lecciones (addLesson/updateLesson/deleteLesson)
+  // y saveCourses se eliminaron: no tenían consumidores (AdminCourseForm
+  // llama postForm/putForm/del directo).
+  const value = useMemo(() => ({
+    courses,
+    getCourseLessons,
+    updateCourse,
+    addCourse,
+    deleteCourse,
+  }), [courses, getCourseLessons, updateCourse, addCourse, deleteCourse]);
 
   return (
-    <CourseCatalogContext.Provider value={{
-      courses,
-      saveCourses,
-      getCourseLessons,
-      updateCourse, addCourse, deleteCourse,
-      addLesson, updateLesson, deleteLesson,
-    }}>
+    <CourseCatalogContext.Provider value={value}>
       {children}
     </CourseCatalogContext.Provider>
   );
