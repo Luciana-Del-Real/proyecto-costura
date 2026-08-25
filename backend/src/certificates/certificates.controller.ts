@@ -2,6 +2,7 @@ import { Controller, Get, Param, Request, Res, UseGuards } from '@nestjs/common'
 import { Response } from 'express';
 import { CertificatesService } from './certificates.service';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
+import { Principal } from '../common/principal';
 
 @Controller('courses/:courseId/certificate')
 @UseGuards(JwtAuthGuard)
@@ -11,7 +12,7 @@ export class CertificatesController {
  @Get()
   async download(
     @Param('courseId') courseId: string,
-    @Request() req: any,
+    @Request() req: { user: Principal },
     @Res() res: Response,
   ) {
     try {

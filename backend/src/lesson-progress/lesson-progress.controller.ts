@@ -10,6 +10,7 @@ import {
 import { LessonProgressService } from './lesson-progress.service';
 import { UpdateLessonProgressDto } from './dto/update-lesson-progress.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
+import { Principal } from '../common/principal';
 
 @Controller('progress')
 @UseGuards(JwtAuthGuard)
@@ -18,7 +19,7 @@ export class LessonProgressController {
 
   @Get('courses/:courseId')
   async getCourseProgress(
-    @Request() req: any,
+    @Request() req: { user: Principal },
     @Param('courseId') courseId: string,
   ) {
     return this.progressService.getCourseProgress(req.user, courseId);
@@ -26,7 +27,7 @@ export class LessonProgressController {
 
   @Patch('lessons/:lessonId')
   async markLessonComplete(
-    @Request() req: any,
+    @Request() req: { user: Principal },
     @Param('lessonId') lessonId: string,
     @Body() dto: UpdateLessonProgressDto,
   ) {

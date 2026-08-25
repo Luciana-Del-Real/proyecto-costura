@@ -34,7 +34,7 @@ export class LessonsService {
         videoUrl: dto.videoUrl,
         order: dto.order,
         courseId: dto.courseId,
-        pdf: (dto as any).pdf,
+        pdf: dto.pdf,
       },
       include: { attachments: true },
     });
@@ -115,7 +115,7 @@ export class LessonsService {
         videoUrl: dto.videoUrl,
         order: dto.order,
         courseId: dto.courseId,
-        pdf: (dto as any).pdf,
+        pdf: dto.pdf,
       },
       include: { attachments: true },
     });

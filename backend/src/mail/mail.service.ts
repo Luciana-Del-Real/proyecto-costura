@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import sgMail from '@sendgrid/mail';
+import sgMail, { MailDataRequired } from '@sendgrid/mail';
 
 /**
  * Spanish-speaking countries, normalized (lowercase, no diacritics).
@@ -80,7 +80,7 @@ export class MailService {
     subject: string,
     html?: string,
     templateId?: string,
-    dynamicTemplateData?: Record<string, any>,
+    dynamicTemplateData?: Record<string, unknown>,
   ) {
     if (!this.isMailEnabled()) {
       this.logger.log(
@@ -89,20 +89,17 @@ export class MailService {
       return;
     }
 
-    const msg: any = {
-      to,
-      from: this.from,
-      subject,
-    };
-
-    if (templateId) {
-      msg.templateId = templateId;
-      if (dynamicTemplateData) msg.dynamic_template_data = dynamicTemplateData;
-    } else if (html) {
-      msg.html = html;
-    } else {
-      msg.text = subject;
-    }
+    const msg: MailDataRequired = templateId
+      ? {
+          to,
+          from: this.from,
+          subject,
+          templateId,
+          ...(dynamicTemplateData ? { dynamic_template_data: dynamicTemplateData } : {}),
+        }
+      : html
+        ? { to, from: this.from, subject, html }
+        : { to, from: this.from, subject, text: subject };
 
     try {
       await sgMail.send(msg);
@@ -110,7 +107,7 @@ export class MailService {
     } catch (error) {
       this.logger.error(
         `Error sending email to ${to} (subject: ${subject})`,
-        error as any,
+        error,
       );
       throw error;
     }

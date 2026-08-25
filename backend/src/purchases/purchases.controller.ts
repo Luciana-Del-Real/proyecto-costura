@@ -14,6 +14,7 @@ import { PurchasesService } from './purchases.service';
 import { CreatePurchaseDto } from './dto/create-purchase.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { AdminGuard } from '../auth/guards/admin.guard';
+import { Principal } from '../common/principal';
 
 @Controller('purchases')
 export class PurchasesController {
@@ -22,7 +23,7 @@ export class PurchasesController {
   @Post()
   @UseGuards(JwtAuthGuard)
   async requestPurchase(
-    @Request() req: any,
+    @Request() req: { user: Principal },
     @Body() dto: CreatePurchaseDto,
   ) {
     return this.purchasesService.requestPurchase(req.user.id, dto);
@@ -31,10 +32,10 @@ export class PurchasesController {
   @Get('pending')
   @UseGuards(JwtAuthGuard, AdminGuard)
   async getPendingRequests(@Query('page') page?: string, @Query('limit') limit?: string) {
-    let p = parseInt(page as any, 10);
+    let p = parseInt(page ?? '', 10);
     if (isNaN(p) || p < 1) p = 1;
 
-    let l = parseInt(limit as any, 10);
+    let l = parseInt(limit ?? '', 10);
     if (isNaN(l) || l < 1) l = 20;
     const MAX = 100;
     if (l > MAX) l = MAX;
@@ -50,7 +51,7 @@ export class PurchasesController {
 
   @Get(':id')
   @UseGuards(JwtAuthGuard)
-  async getPurchaseById(@Param('id') id: string, @Request() req: any) {
+  async getPurchaseById(@Param('id') id: string, @Request() req: { user: Principal }) {
     return this.purchasesService.getPurchaseById(id, req.user);
   }
 
@@ -68,7 +69,7 @@ export class PurchasesController {
 
   @Get('user/:userId')
   @UseGuards(JwtAuthGuard)
-  async getUserPurchases(@Param('userId') userId: string, @Request() req: any) {
+  async getUserPurchases(@Param('userId') userId: string, @Request() req: { user: Principal }) {
     const isOwner = req.user?.id === userId;
     const isAdmin = req.user?.role === 'ADMIN';
     if (!isOwner && !isAdmin) {

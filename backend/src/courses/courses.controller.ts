@@ -9,6 +9,7 @@ import { UpdateCourseDto } from './dto/update-course.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { AdminGuard } from '../auth/guards/admin.guard';
 import { OptionalJwtAuthGuard } from '../auth/guards/optional-jwt.guard';
+import { Principal } from '../common/principal';
 
 const uploadsDir = './uploads/courses';
 mkdirSync(uploadsDir, { recursive: true });
@@ -39,24 +40,24 @@ export class CoursesController {
 
   @Get()
   @UseGuards(OptionalJwtAuthGuard)
-  async findAll(@Request() req: any, @Query('featured') featured?: string, @Query('page') page?: string, @Query('limit') limit?: string) {
-    let p = parseInt(page as any, 10) || 1;
-    let l = parseInt(limit as any, 10) || 20;
+  async findAll(@Request() req: { user: Principal }, @Query('featured') featured?: string, @Query('page') page?: string, @Query('limit') limit?: string) {
+    let p = parseInt(page ?? '', 10) || 1;
+    let l = parseInt(limit ?? '', 10) || 20;
     return this.coursesService.findAll(featured === 'true', p, Math.min(l, 100), req.user);
   }
 
   @Get(':id')
   @UseGuards(OptionalJwtAuthGuard)
-  async findOne(@Param('id') id: string, @Request() req: any) {
+  async findOne(@Param('id') id: string, @Request() req: { user: Principal }) {
     return this.coursesService.findOne(id, req.user);
   }
 
   @Post()
   @UseGuards(JwtAuthGuard, AdminGuard)
   @UseInterceptors(courseFileFields)
-  async create(@Body() dto: CreateCourseDto, @UploadedFiles() files: any) {
+  async create(@Body() dto: CreateCourseDto, @UploadedFiles() files: { image?: Express.Multer.File[]; pdfGuide?: Express.Multer.File[]; pdfs?: Express.Multer.File[] }) {
     if (files?.image) dto.image = `/uploads/courses/${files.image[0].filename}`;
-    if (files?.pdfGuide) (dto as any).pdfGuide = `/uploads/courses/${files.pdfGuide[0].filename}`;
+    if (files?.pdfGuide) dto.pdfGuide = `/uploads/courses/${files.pdfGuide[0].filename}`;
 
     const course = await this.coursesService.create(dto);
 
@@ -73,10 +74,10 @@ export class CoursesController {
   async update(
     @Param('id') id: string,
     @Body() dto: UpdateCourseDto,
-    @UploadedFiles() files: any,
+    @UploadedFiles() files: { image?: Express.Multer.File[]; pdfGuide?: Express.Multer.File[]; pdfs?: Express.Multer.File[] },
   ) {
     if (files?.image) dto.image = `/uploads/courses/${files.image[0].filename}`;
-    if (files?.pdfGuide) (dto as any).pdfGuide = `/uploads/courses/${files.pdfGuide[0].filename}`;
+    if (files?.pdfGuide) dto.pdfGuide = `/uploads/courses/${files.pdfGuide[0].filename}`;
 
     await this.coursesService.update(id, dto);
 
