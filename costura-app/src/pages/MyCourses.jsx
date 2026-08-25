@@ -115,7 +115,7 @@ export default function MyCourses() {
                     )}
                     <button
                       onClick={() => deleteNotification(n.id)}
-                      className="btn btn-ghost text-xs text-red-500 hover:text-red-600"
+                      className="btn btn-ghost text-xs text-danger hover:text-danger-hover"
                     >
                       Eliminar
                     </button>

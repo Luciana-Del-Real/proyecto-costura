@@ -285,7 +285,7 @@ function CourseLearningView({ course, progress, getProgress, completeLesson }) {
                   className={`w-full flex items-center gap-3 p-4 lg:p-5 text-left ${blocked ? 'opacity-60 cursor-not-allowed' : 'hover:bg-bg-soft/60'} transition-colors`}
                 >
                   <div className={`w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-sm font-bold ${
-                    completed ? 'bg-emerald-500 text-white' : blocked ? 'bg-stone-200 text-stone-400' : 'bg-bg-soft text-text-ink'
+                    completed ? 'bg-success text-white' : blocked ? 'bg-stone-200 text-stone-400' : 'bg-bg-soft text-text-ink'
                   }`}>
                     {completed ? '✓' : blocked ? '🔒' : idx + 1}
                   </div>
@@ -293,7 +293,7 @@ function CourseLearningView({ course, progress, getProgress, completeLesson }) {
                     <p className="font-semibold text-text-ink truncate">{lesson.title}</p>
                     <p className="text-xs text-accent mt-0.5">
                       ⏱ {lesson.duration}
-                      {blocked && <span className="text-rose-400"> · Completá la lección anterior para desbloquear</span>}
+                      {blocked && <span className="text-danger"> · Completá la lección anterior para desbloquear</span>}
                     </p>
                   </div>
                   {!blocked && (
@@ -351,7 +351,7 @@ function CourseLearningView({ course, progress, getProgress, completeLesson }) {
                         disabled={!canComplete}
                         className={`btn text-sm font-semibold ${
                           completed
-                            ? 'bg-emerald-500 text-white'
+                            ? 'bg-success text-white'
                             : canComplete
                             ? 'bg-primary text-white hover:bg-primary-hover'
                             : 'bg-stone-200 text-stone-500 cursor-not-allowed'
