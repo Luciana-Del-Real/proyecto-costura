@@ -3,3 +3,6 @@
 
 # Database backups (pg_dump artifacts, not for version control)
 backend/*.backup
+
+# CodeGraph local index (regenerable, machine-local)
+.codegraph/
