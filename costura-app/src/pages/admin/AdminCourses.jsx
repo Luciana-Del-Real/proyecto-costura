@@ -8,7 +8,7 @@ export default function AdminCourses() {
   return (
     <div className="min-h-screen bg-bg-surface">
       <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
-        <div className="bg-white rounded-2xl border border-primary/30 shadow-sm px-4 py-10 animate-fade-up mt-5 mb-5 flex items-center justify-between">
+        <div className="bg-white rounded-2xl border-2 border-primary shadow-md px-4 py-10 animate-fade-up mt-5 mb-5 flex items-center justify-between">
           <h1 className="text-3xl font-bold text-text-ink m-0 p-0 leading-tight">Gestión de cursos</h1>
           <Link 
             to="/admin/courses/new" 

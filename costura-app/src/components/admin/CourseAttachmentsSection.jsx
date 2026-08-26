@@ -6,8 +6,8 @@ import { getImageUrl } from '../../utils/media';
 export default function CourseAttachmentsSection({ setImageFile, coursePdfFiles, setCoursePdfFiles, course, isEditing, onDeleteAttachment }) {
   return (
     <>
-      <div className="card-glow p-4 rounded-xl md:col-span-2">
-        <label className="block text-sm font-bold text-black mb-2">🖼️ Portada</label>
+<div className="bg-white border border-border rounded-xl p-4 md:col-span-2">
+        <label className="block text-sm font-bold text-black mb-2">📷 Portada</label>
         <input 
           type="file" 
           lang="es" 
@@ -17,7 +17,7 @@ export default function CourseAttachmentsSection({ setImageFile, coursePdfFiles,
         />
       </div>
       {/* PDFs adicionales del curso (multiples) */}
-      <div className="card-glow p-4 rounded-xl">
+      <div className="bg-white border border-border rounded-xl p-4">
         <label className="block text-sm font-bold text-black mb-2">📎 PDF's (podés elegir varios)</label>
         <input
           type="file"

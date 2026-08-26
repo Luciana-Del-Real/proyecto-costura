@@ -10,7 +10,7 @@ export default function Favorites() {
 
   return (
     <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
-      <div className="bg-white rounded-2xl border border-primary/30 shadow-sm px-4 py-10 animate-fade-up mt-5 mb-5">
+      <div className="bg-white rounded-2xl border-2 border-primary shadow-md px-4 py-10 animate-fade-up mt-5 mb-5">
         <div className="max-w-6xl mx-auto">
           <h1 className="font-display text-3xl md:text-4xl font-bold text-text-ink mb-2">Mis favoritos</h1>
           <p className="text-text-muted">{favCourses.length} curso{favCourses.length !== 1 ? 's' : ''} guardado{favCourses.length !== 1 ? 's' : ''}</p>

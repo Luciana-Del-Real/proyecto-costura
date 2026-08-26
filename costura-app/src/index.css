@@ -18,11 +18,11 @@
     7. Secciones / navbar sobre el hero (.nav-on-hero)                      [~L330]
    ========================================================================== */
 
-/* Optional local font registration for `Simple Handmade`.
-   If you have the font file (woff2), place it in `public/fonts/SimpleHandmade.woff2`
-   and uncomment the rule below to load the font. Until then the stylesheet
-   falls back to `Patrick Hand` as defined in --font-handmade.
-
+/* Local font registration for `Simple Handmade` (handmade/artisan tone).
+   The woff2 lives in public/fonts/SimpleHandmade.woff2; falls back to
+   Patrick Hand if the file is missing. NOTE: Simple Handmade is a
+   personal-use demo font by Letter Art Studio — verify commercial license
+   before shipping to production. */
 @font-face {
   font-family: 'Simple Handmade';
   src: url('/fonts/SimpleHandmade.woff2') format('woff2');
@@ -30,7 +30,6 @@
   font-style: normal;
   font-display: swap;
 }
-*/
 
 /* ==========================================================================
    DESIGN TOKEN LAYER — single semantic @theme (Warm Editorial palette)
@@ -39,35 +38,35 @@
    legacy alias bridge below and the remaining override rules keep resolving.
    ========================================================================== */
 @theme static {
-  /* Semantic colors — Warm Editorial */
-  --color-bg-surface: #F9F5F0; /* beige canvas / surfaces */
-  --color-bg-soft: #F5EDE4; /* softer beige for panels, chips, inputs */
-  --color-bg-cream: #F9F5F0; /* cream alias for auth surfaces */
-  --color-text-ink: #6B4C3B; /* cocoa ink for body/headings */
-  --color-text-cocoa: #6B4C3B; /* cocoa alias (brand ink) */
-  --color-text-muted: #8F7666; /* muted brown for secondary text */
-  --color-primary: #4E6D5B; /* sage CTA / brand primary */
-  --color-primary-hover: #3D5648; /* sage hover */
-  --color-primary-soft: #EAF0EA; /* sage tint surfaces */
-  --color-accent: #B84A62; /* berry accent */
-  --color-accent-hover: #A63D57; /* berry hover */
-  --color-accent-soft: #F9EBF0; /* berry tint surfaces */
-  --color-border: #E5D8CB; /* warm beige border */
+  /* Semantic colors — Grow Rosa */
+  --color-bg-surface: #FFFFFF; /* clean white canvas / surfaces */
+  --color-bg-soft: #F7C1D6; /* soft pink for panels, chips, inputs */
+  --color-bg-cream: #FFFFFF; /* white alias for auth surfaces */
+  --color-text-ink: #1D1D1B; /* near-black ink for body/headings */
+  --color-text-cocoa: #1D1D1B; /* near-black alias (brand ink) */
+  --color-text-muted: #9E5A7E; /* muted pink-mauve for secondary text */
+  --color-primary: #E83E8C; /* fuchsia CTA / brand primary */
+  --color-primary-hover: #C7256E; /* fuchsia hover */
+  --color-primary-soft: #FCE4F0; /* fuchsia tint surfaces */
+  --color-accent: #E83E8C; /* fuchsia accent */
+  --color-accent-hover: #C7256E; /* fuchsia hover */
+  --color-accent-soft: #FCE4F0; /* fuchsia tint surfaces */
+  --color-border: #F0C4DC; /* soft pink border */
   --color-danger: #BF6B6B; /* destructive action */
   --color-danger-hover: #BF5B6B; /* destructive hover */
-  --color-success: #5E8262; /* positive feedback */
-  --color-success-hover: #4E6D5B; /* success hover */
-  --color-ring: rgba(78, 109, 91, 0.4); /* focus-visible ring for .btn (PR2) */
+  --color-success: #4E6D5B; /* sage — ONLY positive feedback */
+  --color-success-hover: #3D5648; /* sage hover */
+  --color-ring: rgba(232, 62, 140, 0.4); /* focus-visible ring for .btn (PR2) */
 
   /* PR5 hex-sweep: warm accent tokens for the remaining one-off hexes
      (design-system 5/5). Exact values preserved so admin surfaces keep
      visual parity; utilities generate text-, border-, bg-, ring- and
      divide- color names. */
-  --color-text-tan: #A08060;       /* muted tan for secondary labels */
-  --color-secondary: #7A9E7E;      /* pale sage secondary (hover borders, rings) */
-  --color-terracotta: #C4785A;     /* warm terracotta accent (Home hover borders) */
-  --color-ochre: #C47D2B;          /* warm ochre accent (level badges) */
-  --color-border-sage: #cfe0cf;    /* pale sage comment-bubble border */
+  --color-text-tan: #C96B9E;       /* muted pink for secondary labels */
+  --color-secondary: #F7C1D6;      /* soft pink secondary (hover borders, rings) */
+  --color-terracotta: #E83E8C;     /* fuchsia accent (Home hover borders) */
+  --color-ochre: #D988B0;          /* pink accent (level badges) */
+  --color-border-sage: #F7C1D6;    /* soft pink comment-bubble border */
 
   /* Tailwind default-color parity keepers (utilities used across JSX) */
   --color-white: #FFFFFF;
@@ -77,6 +76,8 @@
   --font-display: 'Bebas Neue', sans-serif; /* títulos y encabezados */
   --font-serif: 'Playfair Display', serif; /* textos y subtítulos */
   --font-body: 'Montserrat', sans-serif; /* cuerpos de texto y soportes */
+  --font-dancing: 'Dancing Script', cursive; /* acentos y detalles */
+  --font-handmade: 'Simple Handmade', 'Patrick Hand', 'Homemade Apple', cursive; /* elementos artesanales */
 
   /* Radii */
   --radius-sm: 0.5rem;
@@ -85,8 +86,8 @@
   --radius-pill: 9999px;
 
   /* Shadows */
-  --shadow-soft: 0 4px 15px rgba(107, 76, 59, 0.08);
-  --shadow-card: 0 12px 30px rgba(78, 109, 91, 0.08);
+  --shadow-soft: 0 4px 15px rgba(232, 62, 140, 0.08);
+  --shadow-card: 0 12px 30px rgba(232, 62, 140, 0.10);
 }
 
 /* ==========================================================================
@@ -110,8 +111,6 @@
 
   /* Tipografías del sistema de diseño (legacy names -> tokens) */
   --font-playfair: var(--font-serif);
-  --font-dancing: 'Dancing Script', cursive; /* acentos y detalles */
-  --font-handmade: 'Simple Handmade', 'Patrick Hand', 'Homemade Apple', cursive; /* elementos artesanales */
   --heading-font: var(--font-display);
   --subtitle-font: var(--font-serif);
   --body-font: var(--font-body);
@@ -167,12 +166,19 @@
   table { border-collapse: separate; border-spacing: 0 0.6rem; }
   th, td { padding: 1rem 1rem; }
 
-  /* Inputs más suaves */
+  /* Inputs más suaves — borde rosa suave (identidad Grow) */
   input, textarea, select {
     border-radius: calc(var(--radius) - 4px);
-    border: 1px solid rgba(0,0,0,0.09);
+    border: 1px solid var(--color-border);
     padding: 0.7rem 0.85rem;
     font-family: var(--body-font);
+    background-color: #FFFFFF;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+  }
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-ring);
   }
 }
 
@@ -225,6 +231,7 @@
   }
   .btn-primary:hover:not(:disabled) {
     background-color: var(--color-primary-hover);
+    box-shadow: 0 0 16px rgba(232, 62, 140, 0.35), 0 4px 16px rgba(232, 62, 140, 0.20);
   }
 
   .btn-accent {
@@ -233,6 +240,7 @@
   }
   .btn-accent:hover:not(:disabled) {
     background-color: var(--color-accent-hover);
+    box-shadow: 0 0 16px rgba(232, 62, 140, 0.35), 0 4px 16px rgba(232, 62, 140, 0.20);
   }
 
   .btn-danger {
@@ -241,6 +249,7 @@
   }
   .btn-danger:hover:not(:disabled) {
     background-color: var(--color-danger-hover);
+    box-shadow: 0 0 16px rgba(191, 107, 107, 0.35), 0 4px 16px rgba(191, 107, 107, 0.20);
   }
 
   .btn-ghost {
@@ -378,6 +387,52 @@
 /* Helpers / base component classes */
 .card, .card-soft { background: var(--soft); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1rem; color: var(--text); }
 
+/* Card con borde fucsia neón: fondo blanco, borde del color de la identidad
+   y un glow sutil que se intensifica en hover. Se usa en las cards de
+   contenido (cursos, secciones de Home, lecciones) donde antes había
+   bg-bg-soft de fondo; los chips/inputs conservan su rosa de fondo. */
+.card-glow {
+  background: #FFFFFF;
+  border: 1.5px solid var(--color-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 0 12px rgba(232, 62, 140, 0.20), 0 4px 20px rgba(232, 62, 140, 0.10);
+  transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+}
+.card-glow:hover {
+  border-color: var(--color-accent-hover);
+  box-shadow: 0 0 20px rgba(232, 62, 140, 0.38), 0 8px 30px rgba(232, 62, 140, 0.18);
+}
+
+/* Card con borde rosa suave (identidad Grow): para las cards de curso, que
+   deben sentirse más suaves que los CTAs fucsia. Fondo blanco, borde rosa
+   claro y un glow sutil rosado que se intensifica en hover. */
+.card-glow-soft {
+  background: #FFFFFF;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 0 10px rgba(247, 193, 214, 0.25), 0 4px 16px rgba(247, 193, 214, 0.12);
+  transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+}
+.card-glow-soft:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 16px rgba(247, 193, 214, 0.45), 0 8px 24px rgba(247, 193, 214, 0.20);
+}
+
+/* Línea de costura: separador entre secciones con patrón de puntadas
+   fucsia (identidad Grow). Se ve como una costura a máquina: guiones
+   cortos y parejos sobre fondo transparente. */
+.seam-divider {
+  height: 3px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--color-primary) 0 10px,
+    transparent 10px 18px
+  );
+  opacity: 0.55;
+  max-width: 90%;
+  margin: 0 auto;
+}
+
 /* PR3: .input-default deleted (no consumers); legacy button helpers were
    removed in PR2 (buttons use the canonical .btn classes). */
 
@@ -448,7 +503,7 @@ footer.bg-black * {
   height: 70px;
   border-radius: 50%;
   background: #ffffff;
-  border: 1px solid rgba(78,109,91,0.15);
+  border: 1px solid rgba(232, 62, 140, 0.20);
   display: flex;
   align-items: center;
   justify-content: center;

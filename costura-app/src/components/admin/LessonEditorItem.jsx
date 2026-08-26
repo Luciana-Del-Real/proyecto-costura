@@ -53,7 +53,7 @@ export default function LessonEditorItem({
         {lesson.attachments?.length > 0 && (
           <div className="mt-3 space-y-2">
             {lesson.attachments.map(att => (
-              <div key={att.id} className="flex items-center justify-between bg-bg-soft rounded-lg px-3 py-2">
+              <div key={att.id} className="flex items-center justify-between bg-white border border-border rounded-lg px-3 py-2">
                 <a href={getImageUrl(att.url)} target="_blank" rel="noreferrer" className="text-sm text-primary underline truncate">{att.filename}</a>
                 <button type="button" onClick={() => onDeleteLessonAttachment(att.id)} className="text-danger text-xs font-bold hover:underline flex-shrink-0 ml-3">Eliminar</button>
               </div>

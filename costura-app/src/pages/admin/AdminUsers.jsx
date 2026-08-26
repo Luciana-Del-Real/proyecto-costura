@@ -70,7 +70,7 @@ export default function AdminUsers() {
 
   return (
     <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
-      <div className="bg-white rounded-2xl border border-primary/30 shadow-sm px-4 py-10 animate-fade-up mt-5">
+      <div className="bg-white rounded-2xl border-2 border-primary shadow-md px-4 py-10 animate-fade-up mt-5">
         <div className="max-w-7xl mx-auto">
           <h1 className="font-display text-3xl font-bold text-text-ink">Alumnos</h1>
           <p className="text-text-tan text-sm mt-0.5">{allUsers.length} alumna{allUsers.length !== 1 ? 's' : ''} registrada{allUsers.length !== 1 ? 's' : ''}</p>

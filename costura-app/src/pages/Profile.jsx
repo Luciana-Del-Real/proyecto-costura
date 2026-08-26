@@ -49,7 +49,7 @@ export default function Profile() {
 
   return (
     <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
-      <div className="bg-white rounded-2xl border border-primary/30 shadow-sm px-4 py-10 animate-fade-up mt-5 mb-5 flex justify-center">
+      <div className="bg-white rounded-2xl border-2 border-primary shadow-md px-4 py-10 animate-fade-up mt-5 mb-5 flex justify-center">
         <div className="flex flex-col items-center gap-4 text-center">
           <div className="w-16 h-16 bg-primary-soft rounded-full flex items-center justify-center text-2xl font-bold text-text-ink">
             {user?.name?.charAt(0).toUpperCase()}

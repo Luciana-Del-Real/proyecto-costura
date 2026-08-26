@@ -2,10 +2,11 @@
 // (PRINCIPIANTE|INTERMEDIO|AVANZADO), así que las claves se normalizan a
 // minúsculas para que cada nivel válido muestre siempre su color correcto
 // (nunca el gris por defecto). Niveles desconocidos caen en el fallback neutro.
+// Escala rosa/fucsia de la identidad Grow: principiante suave → avanzado intenso.
 const levelClasses = {
-  principiante: 'bg-primary-soft text-primary', // Verde pastel muy sutil
-  intermedio: 'bg-bg-soft text-ochre',   // Naranja/Crema cálido
-  avanzado: 'bg-accent-soft text-accent',     // Rosa/Fucsia pálido
+  principiante: 'bg-primary-soft text-primary', // Rosa pastel muy sutil
+  intermedio: 'bg-secondary/40 text-primary-hover', // Rosa medio
+  avanzado: 'bg-accent text-white', // Fucsia intenso (sólido)
 };
 
 const levelLabels = {

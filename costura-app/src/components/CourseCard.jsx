@@ -18,8 +18,8 @@ export default function CourseCard({ course }) {
   const prog = owned ? getProgress(course.id, course.lessons.length) : 0;
 
   return (
-    // Tarjeta con sombras profundas difuminadas en hover y bordes suaves sin líneas duras
-    <div className="bg-bg-soft rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-border overflow-hidden hover:shadow-card hover:-translate-y-1.5 transition-all duration-300 group flex flex-col justify-between">
+    // Tarjeta con borde rosa suave y fondo blanco (identidad Grow)
+    <div className="card-glow-soft rounded-2xl overflow-hidden hover:-translate-y-1.5 transition-all duration-300 group flex flex-col justify-between">
       <div>
         {/* Contenedor de la Imagen con efecto Zoom */}
         <div className="relative overflow-hidden aspect-video bg-gray-50">

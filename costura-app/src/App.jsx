@@ -18,6 +18,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import Dashboard from './pages/Dashboard';
 import Courses from './pages/Courses';
+import PatronesGratis from './pages/PatronesGratis';
 import CourseDetail from './pages/CourseDetail';
 import Checkout from './pages/Checkout';
 import MyCourses from './pages/MyCourses';
@@ -69,6 +70,7 @@ export default function App() {
             <Route path="/forgot-password" element={<Layout hideNavLinks={true}><ForgotPassword /></Layout>} />
             <Route path="/reset-password" element={<Layout hideNavLinks={true}><ResetPassword /></Layout>} />
             <Route path="/cursos" element={<Layout><Courses /></Layout>} />
+            <Route path="/patrones-gratis" element={<Layout><PatronesGratis /></Layout>} />
 
             {/* Alumno */}
             <Route path="/curso/:id" element={<ProtectedRoute><Layout><CourseDetail /></Layout></ProtectedRoute>} />
