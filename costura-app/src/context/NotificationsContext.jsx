@@ -53,6 +53,16 @@ export function NotificationsProvider({ children }) {
     return () => { cancelled = true; };
   }, [refreshNotifications]);
 
+  // Polling liviano: refresca notificaciones cada 30s solo con sesión activa.
+  // El interval se limpia al desmontar o al cambiar el usuario.
+  useEffect(() => {
+    if (!user) return undefined;
+    const timer = setInterval(() => {
+      refreshNotifications();
+    }, 30000);
+    return () => clearInterval(timer);
+  }, [user, refreshNotifications]);
+
   const markAsRead = async (notificationId) => {
     try {
       await patch(`/notifications/${notificationId}/read`, {});

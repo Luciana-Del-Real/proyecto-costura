@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { BookOpen } from 'lucide-react';
 import { useCourseCatalog } from '../context/CourseCatalogContext';
 import { usePurchases } from '../context/PurchaseContext';
 import { useProgress } from '../context/ProgressContext';
@@ -24,8 +25,8 @@ export default function MyCourses() {
       <div className="max-w-6xl mx-auto px-4 py-8">
         {myCourses.length === 0 ? (
             <div className="text-center py-20">
-            <span className="text-6xl">📚</span>
-            <h2 className="text-xl font-bold text-text-ink mt-4 mb-2">Todavía no tenés cursos</h2>
+            <BookOpen className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
+            <h2 className="font-display font-bold text-text-ink text-2xl mt-4 mb-2">Todavía no tenés cursos</h2>
             <p className="text-text-ink mb-6">Explorá nuestro catálogo y empezá a aprender hoy.</p>
             <Link to="/cursos" className="btn btn-primary font-medium">
               Ver cursos disponibles
@@ -65,7 +66,7 @@ export default function MyCourses() {
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="card-glow rounded-2xl p-5">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-display font-bold text-text-ink text-xl">Notificaciones</h2>
+            <h2 className="font-display font-bold text-text-ink text-2xl">Notificaciones</h2>
             {unreadCount > 0 && (
               <button
                 onClick={() => markAllAsRead()}

@@ -98,10 +98,14 @@ model User {
     message   String
     lessonId  String
     userId    String
+    parentId  String?
+    image     String?
     createdAt DateTime @default(now())
 
-    lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
-    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+    lesson  Lesson          @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+    user    User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+    parent  LessonComment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+    replies LessonComment[] @relation("CommentReplies")
 
     @@index([lessonId, createdAt])
     @@map("lesson_comments")
@@ -187,9 +191,24 @@ model Notification {
   title     String
   message   String
   read      Boolean  @default(false)
+  link      String?
   createdAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("notifications")
+}
+
+model Pattern {
+  id          String   @id @default(cuid())
+  titulo      String
+  descripcion String
+  nivel       String   @default("Principiante")
+  categoria   String   @default("")
+  imagen      String?
+  archivo     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("patterns")
 }

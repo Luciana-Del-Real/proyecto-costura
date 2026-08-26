@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { get, post } from '../services/api';
+import { get, post, postForm } from '../services/api';
 
 // Máquina de estados de comentarios/preguntas por lección, antes duplicada en
 // CourseDetail (alumna) y AdminCourseForm (profesora). Acá vive la carga lazy
@@ -9,35 +9,55 @@ export default function useLessonComments() {
   const [drafts, setDrafts] = useState({});
   const [sendingFor, setSendingFor] = useState(null);
 
-  // Fetch lazy: solo descarga una vez por lección (guard de loaded).
+  // Fetch por lección: SIEMPRE refetchea al abrir (sin guard de loaded) para
+  // que las respuestas nuevas de la profesora aparezcan aunque la alumna ya
+  // hubiera abierto la lección antes. Mantiene los items previos mientras
+  // refresca para no parpadear vacío.
   const loadComments = async (lessonId) => {
-    if (commentsByLesson[lessonId]?.loaded) return;
-    setCommentsByLesson(prev => ({ ...prev, [lessonId]: { loaded: false, items: [], loading: true } }));
+    setCommentsByLesson(prev => ({ ...prev, [lessonId]: { loaded: false, items: prev[lessonId]?.items || [], loading: true } }));
     try {
       const items = await get(`/lessons/${lessonId}/comments`);
       setCommentsByLesson(prev => ({ ...prev, [lessonId]: { loaded: true, items, loading: false } }));
     } catch (e) {
       console.error('Error cargando comentarios', e);
-      setCommentsByLesson(prev => ({ ...prev, [lessonId]: { loaded: true, items: [], loading: false } }));
+      setCommentsByLesson(prev => ({ ...prev, [lessonId]: { loaded: true, items: prev[lessonId]?.items || [], loading: false } }));
     }
   };
 
   // Envío optimista: agrega el comentario creado al final de la lista y
-  // limpia el draft. El mensaje se trima y vacío no envía nada.
-  const sendComment = async (lessonId, message) => {
+  // limpia el draft (solo del input principal; las respuestas de un hilo usan
+  // su propio draft local). Acepta un parentId opcional para responder dentro
+  // de un hilo y un imageFile opcional (File) que se envía como multipart.
+  // Devuelve el comentario creado, o undefined si no se envió.
+  const sendComment = async (lessonId, message, parentId, imageFile) => {
     const trimmed = (message || '').trim();
-    if (!trimmed) return;
+    if (!trimmed) return undefined;
     setSendingFor(lessonId);
     try {
-      const created = await post(`/lessons/${lessonId}/comments`, { message: trimmed });
+      let created;
+      if (imageFile) {
+        const formData = new FormData();
+        formData.append('message', trimmed);
+        if (parentId) formData.append('parentId', parentId);
+        formData.append('image', imageFile);
+        created = await postForm(`/lessons/${lessonId}/comments`, formData);
+      } else {
+        const body = { message: trimmed };
+        if (parentId) body.parentId = parentId;
+        created = await post(`/lessons/${lessonId}/comments`, body);
+      }
       setCommentsByLesson(prev => ({
         ...prev,
         [lessonId]: { loaded: true, loading: false, items: [...(prev[lessonId]?.items || []), created] },
       }));
-      setDrafts(prev => ({ ...prev, [lessonId]: '' }));
+      if (!parentId) {
+        setDrafts(prev => ({ ...prev, [lessonId]: '' }));
+      }
+      return created;
     } catch (e) {
       console.error('Error enviando la pregunta', e);
       alert('No se pudo enviar tu pregunta. Probá de nuevo en un momento.');
+      return undefined;
     } finally {
       setSendingFor(null);
     }

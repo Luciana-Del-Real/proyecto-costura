@@ -55,7 +55,7 @@ export default function Profile() {
             {user?.name?.charAt(0).toUpperCase()}
           </div>
           <div>
-            <h1 className="font-display text-2xl font-bold text-text-ink">{user?.name}</h1>
+            <h1 className="font-display text-3xl md:text-4xl font-bold text-text-ink">{user?.name}</h1>
           </div>
         </div>
       </div>
@@ -63,7 +63,7 @@ export default function Profile() {
       <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
         <div className="card-glow rounded-2xl px-4 py-10 animate-fade-up mt-5 mb-5">
           <div className="flex items-center justify-between mb-5">
-            <h2 className="font-display font-bold text-text-ink text-xl">Información personal</h2>
+            <h2 className="font-display text-text-ink text-3xl">Información personal</h2>
             {!editing && (
               <button onClick={() => setEditing(true)} className="btn btn-ghost text-sm">
                 Editar
@@ -146,7 +146,9 @@ export default function Profile() {
         </div>
 
         <div className="card-glow rounded-2xl px-4 py-10 animate-fade-up mt-5 mb-5">
-          <h2 className="font-display font-bold text-text-ink text-xl">Historial de compras</h2>
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="font-display text-text-ink text-3xl">Historial de compras</h2>
+          </div>
           {purchasesLoading ? (
             <p className="text-text-ink text-sm">Cargando tus compras...</p>
           ) : purchasesError ? (

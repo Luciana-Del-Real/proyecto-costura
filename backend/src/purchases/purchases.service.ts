@@ -47,29 +47,41 @@ export class PurchasesService {
     // Determinar el precio según el país/moneda del comprador
     const buyer = await this.prisma.user.findUnique({
       where: { id: userId },
-      select: { country: true },
+      select: { country: true, name: true },
     });
     const total = buyer?.country === 'AUD' ? course.priceAUD : course.priceARS;
 
-    // Create purchase request with PENDING status
-    return this.prisma.purchase.create({
-      data: {
-        userId,
-        courseId: dto.courseId,
-        status: PurchaseStatus.PENDING,
-        total,
-      },
-      include: {
-        course: true,
-        user: {
-          select: {
-            id: true,
-            email: true,
-            name: true,
-            country: true,
+    // Create purchase request with PENDING status y notifica a los admins
+    // dentro de la misma transacción para que queden atómicos.
+    return this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+      const purchase = await tx.purchase.create({
+        data: {
+          userId,
+          courseId: dto.courseId,
+          status: PurchaseStatus.PENDING,
+          total,
+        },
+        include: {
+          course: true,
+          user: {
+            select: {
+              id: true,
+              email: true,
+              name: true,
+              country: true,
+            },
           },
         },
-      },
+      });
+
+      await this.notificationsService.createNotificationsForAdmins(
+        'Nueva solicitud de curso',
+        `La alumna ${buyer?.name ?? '...'} solicitó el curso "${course.title}". Revisá la solicitud para darle acceso.`,
+        tx,
+        '/admin/ventas',
+      );
+
+      return purchase;
     });
   }
 
@@ -143,6 +155,7 @@ export class PurchasesService {
           'Acceso desbloqueado',
           `Tu solicitud para el curso "${purchase.course.title}" fue aprobada. Ya podés acceder al contenido completo.`,
           tx,
+          `/curso/${purchase.courseId}`,
         );
 
         return updated;

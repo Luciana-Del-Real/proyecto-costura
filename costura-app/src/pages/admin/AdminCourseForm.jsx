@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { useCourseCatalog } from '../../context/CourseCatalogContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import { get, postForm, putForm, del } from '../../services/api';
-import useLessonComments from '../../hooks/useLessonComments';
 import CourseFieldsForm from '../../components/admin/CourseFieldsForm';
 import LessonEditorItem from '../../components/admin/LessonEditorItem';
 import NewLessonForm from '../../components/admin/NewLessonForm';
@@ -159,16 +158,6 @@ export default function AdminCourseForm() {
   const [newLessonPdfs, setNewLessonPdfs] = useState([]);
   const [creatingLesson, setCreatingLesson] = useState(false);
 
-  // --- Preguntas de alumnas, por lección ---
-  const [openQuestionsFor, setOpenQuestionsFor] = useState(null);
-  const { commentsByLesson, loadComments, sendComment, drafts, setDraft, sendingFor } = useLessonComments();
-
-  const toggleQuestions = (lessonId) => {
-    const willOpen = openQuestionsFor !== lessonId;
-    setOpenQuestionsFor(willOpen ? lessonId : null);
-    if (willOpen) loadComments(lessonId);
-  };
-
   const handleCreateLesson = async (e) => {
     e.preventDefault();
     setCreatingLesson(true);
@@ -224,7 +213,7 @@ export default function AdminCourseForm() {
         {/* Lecciones: solo disponible una vez que el curso ya existe */}
         {isEditing && (
           <div className="card-glow rounded-2xl p-8">
-            <h3 className="font-display font-bold text-text-ink text-xl mb-6 border-b pb-4">Lecciones</h3>
+            <h3 className="font-display font-bold text-text-ink text-2xl mb-6 border-b pb-4">Lecciones</h3>
 
             <div className="space-y-4 mb-8">
               {(course?.lessons || []).map((lesson) => (
@@ -238,13 +227,6 @@ export default function AdminCourseForm() {
                   onSaveLesson={handleSaveLesson}
                   onDeleteLesson={handleDeleteLesson}
                   onDeleteLessonAttachment={handleDeleteLessonAttachment}
-                  questionsOpen={openQuestionsFor === lesson.id}
-                  onToggleQuestions={toggleQuestions}
-                  comments={commentsByLesson[lesson.id]}
-                  drafts={drafts}
-                  sendingFor={sendingFor}
-                  onSendComment={sendComment}
-                  onDraftChange={setDraft}
                 />
               ))}
 

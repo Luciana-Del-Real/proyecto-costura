@@ -2,13 +2,15 @@ import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import BackToHome from './BackToHome';
+import NotificationBell from './NotificationBell';
 
 const navLinks = [
-  { to: '/admin', label: 'Inicio', icon: '📊' },
-  { to: '/admin/cursos', label: 'Cursos', icon: '📚' },
-  { to: '/admin/usuarios', label: 'Usuarios', icon: '👥' },
-  { to: '/admin/solicitudes', label: 'Solicitudes', icon: '⏳' },
-  { to: '/admin/ventas', label: 'Ventas', icon: '💳' },
+  { to: '/admin', label: 'Inicio' },
+  { to: '/admin/cursos', label: 'Cursos' },
+  { to: '/admin/usuarios', label: 'Usuarios' },
+  { to: '/admin/solicitudes', label: 'Solicitudes' },
+  { to: '/admin/ventas', label: 'Ventas' },
+  { to: '/admin/patrones', label: 'Patrones' },
 ];
 
 export default function AdminNavbar() {
@@ -24,32 +26,33 @@ export default function AdminNavbar() {
       <BackToHome />
       {/* Navbar con fondo blanco y borde temático para unificar con el Dashboard */}
       <nav className="bg-white border-b border-border sticky top-0 z-50 shadow-sm">
-        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-          
+        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+
           {/* Logo y Nombre unificado */}
           <Link to="/admin" className="flex items-center gap-3">
             <img src="/Images/Logo%20sin%20Slogan.png" alt="Grow" className="w-9 h-9 object-contain" />
             <div className="flex flex-col">
-              <span className="text-[10px] uppercase tracking-widest text-black">Creative Education Studio</span>
+              <span className="text-sm uppercase tracking-widest text-text-ink">Creative Education Studio</span>
             </div>
           </Link>
 
           {/* Desktop links */}
-          <div className="hidden md:flex items-center gap-1">
+          <div className="hidden md:flex items-center gap-6">
             {navLinks.map(link => (
               <Link key={link.to} to={link.to}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${
                   location.pathname === link.to
-                    ? 'bg-bg-surface text-primary'
-                    : 'text-text-ink hover:text-primary hover:bg-bg-soft'
+                    ? 'text-primary'
+                    : 'text-text-ink hover:text-primary'
                 }`}>
-                <span>{link.icon}</span>{link.label}
+                {link.label}
               </Link>
             ))}
           </div>
 
           {/* User info */}
           <div className="hidden md:flex items-center gap-4">
+            <NotificationBell />
             <div className="text-right">
               <p className="text-primary text-xs font-semibold">{user?.name}</p>
               <p className="text-text-ink text-[10px] uppercase">Administradora</p>
@@ -75,8 +78,8 @@ export default function AdminNavbar() {
           <div className="md:hidden bg-white border-t border-border px-4 py-3 flex flex-col gap-2">
             {navLinks.map(link => (
               <Link key={link.to} to={link.to} onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2 text-text-ink text-sm py-2">
-                <span>{link.icon}</span>{link.label}
+                className="text-text-ink text-sm py-2">
+                {link.label}
               </Link>
             ))}
             <button onClick={handleLogout} className="btn btn-ghost w-full justify-start text-sm text-accent mt-2 border-t border-border pt-0">

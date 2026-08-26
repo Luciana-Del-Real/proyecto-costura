@@ -31,6 +31,8 @@ import AdminUsers from './pages/admin/AdminUsers';
 import AdminSales from './pages/admin/AdminSales';
 import AdminRequests from './pages/admin/AdminRequests';
 import AdminCourseForm from './pages/admin/AdminCourseForm';
+import AdminPatterns from './pages/admin/AdminPatterns';
+import AdminPatternForm from './pages/admin/AdminPatternForm';
 
 function Layout({ children }) {
   return (
@@ -88,6 +90,9 @@ export default function App() {
             <Route path="/admin/ventas" element={<AdminRoute><AdminLayout><AdminSales /></AdminLayout></AdminRoute>} />
             <Route path="/admin/courses/new" element={<AdminRoute><AdminLayout><AdminCourseForm /></AdminLayout></AdminRoute>} />
             <Route path="/admin/courses/edit/:id" element={<AdminRoute><AdminLayout><AdminCourseForm /></AdminLayout></AdminRoute>} />
+            <Route path="/admin/patrones" element={<AdminRoute><AdminLayout><AdminPatterns /></AdminLayout></AdminRoute>} />
+            <Route path="/admin/patrones/nuevo" element={<AdminRoute><AdminLayout><AdminPatternForm /></AdminLayout></AdminRoute>} />
+            <Route path="/admin/patrones/editar/:id" element={<AdminRoute><AdminLayout><AdminPatternForm /></AdminLayout></AdminRoute>} />
           </Routes>
                   </AdminProvider>
                 </NotificationsProvider>

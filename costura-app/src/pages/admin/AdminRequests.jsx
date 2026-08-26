@@ -64,7 +64,7 @@ export default function AdminRequests() {
       <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
         <div className="card-glow rounded-2xl px-6 py-10 animate-fade-up mt-5">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-display font-bold text-text-ink text-xl">Solicitudes pendientes</h2>
+            <h2 className="font-display font-bold text-text-ink text-2xl">Solicitudes pendientes</h2>
             <div className="text-xs text-text-tan">Página {page}</div>
           </div>
 

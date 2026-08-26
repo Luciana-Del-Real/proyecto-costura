@@ -16,6 +16,7 @@ import { MailModule } from './mail/mail.module';
 import { AttachmentsModule } from './attachments/attachments.module';
 import { LessonCommentsModule } from './lesson-comments/lesson-comments.module';
 import { CertificatesModule } from './certificates/certificates.module';
+import { PatternsModule } from './patterns/patterns.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { CertificatesModule } from './certificates/certificates.module';
     AttachmentsModule,
     LessonCommentsModule,
     CertificatesModule,
+    PatternsModule,
   ],
   controllers: [],
   providers: [],

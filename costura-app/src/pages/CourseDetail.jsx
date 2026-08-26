@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
+import { BookOpen, AlertTriangle, GraduationCap, FileText } from 'lucide-react';
 import { useCourseCatalog } from '../context/CourseCatalogContext';
 import { usePurchases } from '../context/PurchaseContext';
 import { useProgress } from '../context/ProgressContext';
@@ -9,7 +10,7 @@ import { getLevelLabel } from '../utils/levels';
 import CourseCover from '../components/CourseCover';
 import { downloadFile } from '../services/api';
 import useLessonComments from '../hooks/useLessonComments';
-import CoursePublicHero from '../components/course/CoursePublicHero';
+import CoursePreviewView from '../components/course/CoursePreviewView';
 import CourseProgressCard from '../components/course/CourseProgressCard';
 import LessonAccordionItem from '../components/course/LessonAccordionItem';
 
@@ -36,8 +37,8 @@ export default function CourseDetail() {
     return (
       <div className="min-h-screen bg-bg-surface flex items-center justify-center px-4">
         <div className="max-w-md text-center bg-white border border-border rounded-3xl p-8 shadow-sm">
-          <span className="text-5xl">📚</span>
-          <h2 className="text-xl font-bold text-text-ink mt-4 mb-2">Todavía no hay lecciones cargadas</h2>
+          <BookOpen className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
+          <h2 className="font-display font-bold text-text-ink text-2xl mt-4 mb-2">Todavía no hay lecciones cargadas</h2>
           <p className="text-text-ink mb-6">Este curso está confirmado, pero la profesora todavía no subió ninguna clase. Volvé a entrar más adelante.</p>
           <Link to="/mis-cursos" className="btn btn-primary inline-block font-semibold">
             ← Volver a mis cursos
@@ -49,7 +50,7 @@ export default function CourseDetail() {
 
   if (!owned) {
     return (
-      <CoursePublicHero
+      <CoursePreviewView
         course={course}
         user={user}
         onBuy={() => navigate(user ? `/checkout/${course.id}` : '/login')}
@@ -108,8 +109,8 @@ function OwnedCourseView({ course, progress, getProgress, completeLesson }) {
     return (
       <div className="min-h-screen bg-bg-surface flex items-center justify-center px-4">
         <div className="max-w-md text-center bg-white border border-border rounded-3xl p-8 shadow-sm">
-          <span className="text-5xl">⚠️</span>
-          <h2 className="text-xl font-bold text-text-ink mt-4 mb-2">No se pudo cargar el contenido</h2>
+          <AlertTriangle className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
+          <h2 className="font-display font-bold text-text-ink text-2xl mt-4 mb-2">No se pudo cargar el contenido</h2>
           <p className="text-text-ink mb-6">Verificá tu conexión y volvé a intentar. Si el problema continúa, escribile a la profesora.</p>
           <Link to="/mis-cursos" className="btn btn-primary inline-block font-semibold">
             ← Volver a mis cursos
@@ -139,6 +140,24 @@ function CourseLearningView({ course, progress, getProgress, completeLesson }) {
 
   // Comentarios/preguntas por lección, cargados de a uno (al abrir la lección)
   const { commentsByLesson, loadComments, sendComment, drafts, setDraft, sendingFor } = useLessonComments();
+
+  // Al llegar con #lesson-<id> (desde una notificación de la campanita), abrir
+  // esa lección, cargar sus preguntas y scrollear hasta ella. El hash se limpia
+  // al final para que un refresh no lo repita.
+  const location = useLocation();
+  useEffect(() => {
+    const m = location.hash.match(/^#lesson-(.+)$/);
+    if (!m) return;
+    const lessonId = m[1];
+    setOpenLessonId(lessonId);
+    loadComments(lessonId);
+    const timer = setTimeout(() => {
+      document.getElementById(`lesson-${lessonId}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+    window.history.replaceState(null, '', window.location.pathname + window.location.search);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const toggleLesson = (lesson, blocked) => {
     if (blocked) return;
@@ -193,9 +212,8 @@ function CourseLearningView({ course, progress, getProgress, completeLesson }) {
                 <h1 className="font-display text-3xl md:text-4xl font-bold text-text-ink mt-3">{course.title}</h1>
                 <p className="text-text-ink mt-2 max-w-2xl">{course.longDescription || course.description}</p>
                 <div className="flex flex-wrap gap-4 text-sm text-text-ink mt-4">
-                  <span>👩‍🏫 {course.instructor}</span>
-                  <span>🕐 {course.duration}</span>
-                  <span>📚 {course.lessons.length} lecciones</span>
+                  <span className="flex items-center gap-1.5"><GraduationCap className="w-4 h-4 text-accent" strokeWidth={1.5} /> {course.instructor}</span>
+                  <span className="flex items-center gap-1.5"><BookOpen className="w-4 h-4 text-accent" strokeWidth={1.5} /> {course.lessons.length} lecciones</span>
                 </div>
               </div>
               <CourseProgressCard
@@ -218,9 +236,9 @@ function CourseLearningView({ course, progress, getProgress, completeLesson }) {
                       href={getImageUrl(att.url)}
                       target="_blank"
                       rel="noreferrer"
-                      className="btn btn-ghost text-sm"
+                      className="btn btn-ghost text-sm flex items-center gap-1.5"
                     >
-                      📄 {att.filename || 'Ver PDF'}
+                      <FileText className="w-4 h-4" strokeWidth={1.5} /> {att.filename || 'Ver PDF'}
                     </a>
                   ))}
                 </div>

@@ -28,7 +28,7 @@ export default function AdminCourses() {
 
               {/* Información */}
               <div className="flex-grow">
-                <h3 className="font-bold text-text-ink text-xl">{course.title}</h3>
+                <h3 className="font-body text-text-ink text-lg font-bold mb-2 leading-tight">{course.title}</h3>
                 <div className="flex gap-4 text-xs text-black/70 font-medium">
                   <span>ARS: ${course.priceARS}</span>
                   <span>AUD: ${course.priceAUD}</span>

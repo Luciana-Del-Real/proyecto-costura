@@ -1,4 +1,5 @@
 import { getImageUrl } from '../../utils/media';
+import { Clock, FileText, Lock, Check } from 'lucide-react';
 import LessonCommentsSection from './LessonCommentsSection';
 
 // Fila del acordeón de lecciones (vista alumna): cabecera con estados
@@ -16,7 +17,7 @@ export default function LessonAccordionItem({
   ];
 
   return (
-    <div className={`bg-white border rounded-2xl shadow-sm overflow-hidden transition-colors ${isOpen ? 'border-secondary' : 'border-border'}`}>
+    <div id={`lesson-${lesson.id}`} className={`bg-white border rounded-2xl shadow-sm overflow-hidden transition-colors ${isOpen ? 'border-secondary' : 'border-border'}`}>
       {/* Cabecera de la lección */}
       <button
         onClick={() => onToggle(lesson, blocked)}
@@ -26,12 +27,12 @@ export default function LessonAccordionItem({
         <div className={`w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-sm font-bold ${
           completed ? 'bg-success text-white' : blocked ? 'bg-stone-200 text-stone-400' : 'bg-bg-soft text-text-ink'
         }`}>
-          {completed ? '✓' : blocked ? '🔒' : idx + 1}
+          {completed ? <Check className="w-4 h-4" strokeWidth={2.5} /> : blocked ? <Lock className="w-4 h-4" strokeWidth={2} /> : idx + 1}
         </div>
         <div className="flex-1 min-w-0">
           <p className="font-semibold text-text-ink truncate">{lesson.title}</p>
-          <p className="text-xs text-accent mt-0.5">
-            ⏱ {lesson.duration}
+          <p className="text-xs text-accent mt-0.5 flex items-center gap-1">
+            <Clock className="w-3.5 h-3.5" strokeWidth={1.5} /> {lesson.duration}
             {blocked && <span className="text-danger"> · Completá la lección anterior para desbloquear</span>}
           </p>
         </div>
@@ -73,9 +74,9 @@ export default function LessonAccordionItem({
                     href={getImageUrl(att.url)}
                     target="_blank"
                     rel="noreferrer"
-                    className="btn btn-ghost text-sm w-fit"
+                    className="btn btn-ghost text-sm w-fit flex items-center gap-1.5"
                   >
-                    📄 {att.filename || 'Ver PDF'}
+                    <FileText className="w-4 h-4" strokeWidth={1.5} /> {att.filename || 'Ver PDF'}
                   </a>
                 ))}
               </div>

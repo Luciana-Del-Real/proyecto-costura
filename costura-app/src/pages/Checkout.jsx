@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { BookOpen, Copy, CheckCircle2, Clock } from 'lucide-react';
 import { useCourseCatalog } from '../context/CourseCatalogContext';
 import { usePurchases } from '../context/PurchaseContext';
 import { useAuth } from '../context/AuthContext';
@@ -7,7 +8,7 @@ import { getCoursePrice } from '../utils/currency';
 import { getImageUrl } from '../utils/media';
 
 // Datos de transferencia según el país/moneda del comprador.
-// TODO: reemplazar estos valores de ejemplo por los datos reales de la cuenta en AUD.
+// TODO: reemplazar el link de Square por el real de la cuenta en AUD.
 const PAYMENT_INFO = {
   ARS: [
     { key: 'cvu', label: 'CVU / CBU', value: '0000000000000000000000' },
@@ -15,9 +16,7 @@ const PAYMENT_INFO = {
     { key: 'accountName', label: 'Nombre de cuenta', value: 'Daiana Belén Lubo' }
   ],
   AUD: [
-    { key: 'account', label: 'CBU', value: '00000000' },
-    { key: 'accountAlias', label: 'Alias', value: 'Grow Costura' },
-    { key: 'accountName', label: 'Nombre de cuenta', value: 'Daiana Belén Lubo' },
+    { key: 'square', label: 'Link de pago', value: 'https://square.link/u/tu-enlace', link: true },
   ],
 };
 
@@ -36,8 +35,8 @@ export default function Checkout() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-bg-surface px-4">
         <div className="text-center">
-          <span className="text-5xl">✅</span>
-          <h2 className="font-display text-xl font-bold text-text-ink mt-4">Ya tenés este curso</h2>
+          <CheckCircle2 className="w-14 h-14 text-success mx-auto" strokeWidth={1.5} />
+          <h2 className="font-display font-bold text-text-ink text-2xl mt-4">Ya tenés este curso</h2>
           <Link to={`/curso/${course.id}`} className="btn btn-primary mt-4 inline-block">
             Abrir curso
           </Link>
@@ -54,10 +53,15 @@ export default function Checkout() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-bg-surface px-4">
           <div className="text-center card-glow p-8 rounded-2xl max-w-md w-full">
-          <span className="text-5xl block mb-4">⏳</span>
+          <Clock className="w-14 h-14 text-primary mx-auto mb-4" strokeWidth={1.5} />
             <h2 className="font-display text-2xl font-bold text-text-ink mb-3">Solicitud de compra enviada</h2>
-            <p className="text-text-ink mb-6">Tu comprobante está en revisión por el admin. Te notificaremos cuando se confirme.</p>
-          
+            <p className="text-text-ink mb-6">
+              {user?.country === 'AUD'
+                ? 'Tu pago está en revisión por el admin. Te notificaremos cuando se confirme.'
+                : 'Tu comprobante está en revisión por el admin. Te notificaremos cuando se confirme.'}
+            </p>
+
+          {user?.country !== 'AUD' && (
           <a 
             href={whatsappUrl}
             target="_blank"
@@ -69,6 +73,7 @@ export default function Checkout() {
             </svg>
             Enviar comprobante por WhatsApp
           </a>
+          )}
 
           <Link to="/mis-cursos" className="block text-primary text-sm hover:text-primary-hover transition-colors mt-2 text-center">
             Ver mis cursos
@@ -93,13 +98,11 @@ export default function Checkout() {
         <Link to="/cursos" className="text-primary text-sm hover:text-primary-hover mb-6 inline-block">← Volver a cursos</Link>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="card-glow p-6 h-fit">
-            <h2 className="font-display font-bold text-text-ink text-lg mb-4">Resumen del pedido</h2>
+            <h2 className="font-display font-bold text-text-ink text-2xl mb-4">Resumen del pedido</h2>
             <img src={getImageUrl(course.image)} alt={course.title} className="w-full h-40 object-cover rounded-xl mb-4" />
-            <h3 className="font-semibold text-text-ink mb-1">{course.title}</h3>
+            <h3 className="font-body text-text-ink text-lg font-bold mb-1.5 leading-snug line-clamp-1">{course.title}</h3>
             <p className="text-text-ink text-sm mb-4">{course.description}</p>
-            <div className="flex items-center gap-4 text-sm text-accent mb-4">
-              <span>📚 {course.lessons.length} lecciones</span>
-            </div>
+            <span className="flex items-center gap-1.5 text-sm text-accent mb-4"><BookOpen className="w-4 h-4" strokeWidth={1.5} /> {course.lessons.length} lecciones</span>
             <div className="border-t border-border pt-4 flex justify-between items-center">
               <span className="text-text-ink font-medium">Total</span>
               <span className="text-2xl font-bold text-text-ink">${getCoursePrice(course, user).toLocaleString()}</span>
@@ -107,29 +110,46 @@ export default function Checkout() {
           </div>
 
           <div className="card-glow p-6">
-            <h2 className="font-display font-bold text-text-ink text-lg mb-4">Instrucciones de pago</h2>
+            <h2 className="font-display font-bold text-text-ink text-2xl mb-4">Instrucciones de pago</h2>
             
             <div className="card-glow rounded-xl p-4 mb-4 text-sm text-text-ink">
               <p className="mb-3"><strong>1) Transferí a la cuenta:</strong></p>
               
               <div className="space-y-3 mb-4">
                 {(PAYMENT_INFO[user?.country === 'AUD' ? 'AUD' : 'ARS']).map((field) => (
-                  <div key={field.key} className="flex items-center justify-between bg-white rounded-lg p-3 border border-border">
-                    <div>
-                      <span className="text-xs text-text-tan block mb-0.5">{field.label}</span>
-                      <span className="font-mono text-text-ink font-semibold">{field.value}</span>
+                  field.link ? (
+                    <div key={field.key} className="flex items-center justify-between bg-white rounded-lg p-3 border border-border">
+                      <div className="min-w-0">
+                        <span className="text-xs text-text-tan block mb-0.5">{field.label}</span>
+                        <span className="text-text-ink font-semibold truncate block">{field.value}</span>
+                      </div>
+                      <a
+                        href={field.value}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="btn btn-primary text-xs flex-shrink-0 ml-3"
+                      >
+                        Ir al pago
+                      </a>
                     </div>
-                    <button
-                      onClick={() => {
-                        navigator.clipboard.writeText(field.value);
-                        setCopied(field.key);
-                        setTimeout(() => setCopied(''), 2000);
-                      }}
-                      className="btn btn-ghost text-xs text-primary hover:text-primary-hover"
-                    >
-                      {copied === field.key ? '¡Copiado!' : '📋 Copiar'}
-                    </button>
-                  </div>
+                  ) : (
+                    <div key={field.key} className="flex items-center justify-between bg-white rounded-lg p-3 border border-border">
+                      <div>
+                        <span className="text-xs text-text-tan block mb-0.5">{field.label}</span>
+                        <span className="font-mono text-text-ink font-semibold">{field.value}</span>
+                      </div>
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(field.value);
+                          setCopied(field.key);
+                          setTimeout(() => setCopied(''), 2000);
+                        }}
+                        className="btn btn-ghost text-xs text-primary hover:text-primary-hover"
+                      >
+                        {copied === field.key ? '¡Copiado!' : <span className="flex items-center gap-1"><Copy className="w-3.5 h-3.5" strokeWidth={1.5} /> Copiar</span>}
+                      </button>
+                    </div>
+                  )
                 ))}
               </div>
 

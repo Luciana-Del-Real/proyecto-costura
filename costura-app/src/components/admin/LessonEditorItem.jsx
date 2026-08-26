@@ -1,19 +1,16 @@
 import { getImageUrl } from '../../utils/media';
-import LessonQuestionsPanel from './LessonQuestionsPanel';
 
 // Fila de edición de una lección existente en el curso (rol profesora):
-// campos editables, PDFs a subir/ya subidos, botones de guardar/eliminar y el
-// panel de preguntas de alumnas.
+// campos editables, PDFs a subir/ya subidos y botones de guardar/eliminar.
 export default function LessonEditorItem({
   lesson, editedLessons, onFieldChange, onLessonPdfChange,
   savingLessonId, onSaveLesson, onDeleteLesson, onDeleteLessonAttachment,
-  questionsOpen, onToggleQuestions, comments, drafts, sendingFor, onSendComment, onDraftChange,
 }) {
   const getLessonField = (field) =>
     editedLessons[lesson.id]?.[field] ?? lesson[field];
 
   return (
-    <div className="card-glow p-4 rounded-xl space-y-3">
+    <div id={`lesson-${lesson.id}`} className="card-glow p-4 rounded-xl space-y-3">
       <input
         placeholder="Título"
         value={getLessonField('title')}
@@ -73,18 +70,6 @@ export default function LessonEditorItem({
           {savingLessonId === lesson.id ? 'Guardando...' : 'Guardar lección'}
         </button>
       </div>
-
-      {/* Preguntas de alumnas sobre esta lección */}
-      <LessonQuestionsPanel
-        lessonId={lesson.id}
-        open={questionsOpen}
-        comments={comments}
-        drafts={drafts}
-        sendingFor={sendingFor}
-        onToggle={onToggleQuestions}
-        onSend={onSendComment}
-        onDraftChange={onDraftChange}
-      />
     </div>
   );
 }

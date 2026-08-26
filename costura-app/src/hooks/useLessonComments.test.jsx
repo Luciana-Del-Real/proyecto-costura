@@ -6,7 +6,7 @@ import useLessonComments from './useLessonComments';
 
 /**
  * useLessonComments state machine (extracted from CourseDetail/AdminCourseForm):
- * - lazy fetch with a per-lesson loaded guard (one fetch per lesson)
+ * - lazy fetch that REFETCHES on every lesson open (fresh replies)
  * - optimistic send: trims the message, appends the created comment, clears
  *   the draft, and keeps the draft + alerts on error
  * - per-lesson drafts
@@ -17,11 +17,12 @@ import useLessonComments from './useLessonComments';
 const mocks = vi.hoisted(() => ({
   get: vi.fn(),
   post: vi.fn(),
+  postForm: vi.fn(),
 }));
 
-vi.mock('../services/api', () => ({ get: mocks.get, post: mocks.post }));
+vi.mock('../services/api', () => ({ get: mocks.get, post: mocks.post, postForm: mocks.postForm }));
 
-function Harness({ lessonId = 'l1', message = 'Hola' }) {
+function Harness({ lessonId = 'l1', message = 'Hola', replyTo = null, imageFile = null }) {
   const { commentsByLesson, loadComments, sendComment, drafts, setDraft, sendingFor } =
     useLessonComments();
   return (
@@ -32,6 +33,12 @@ function Harness({ lessonId = 'l1', message = 'Hola' }) {
       </button>
       <button id="send" onClick={() => sendComment(lessonId, message)}>
         send
+      </button>
+      <button id="sendreply" onClick={() => sendComment(lessonId, message, replyTo)}>
+        sendreply
+      </button>
+      <button id="sendimage" onClick={() => sendComment(lessonId, message, replyTo, imageFile)}>
+        sendimage
       </button>
       <button id="setdraft" onClick={() => setDraft(lessonId, 'abc')}>
         setdraft
@@ -78,7 +85,7 @@ describe('useLessonComments', () => {
     vi.unstubAllGlobals();
   });
 
-  it('loadComments fetches once per lesson (loaded guard)', async () => {
+  it('loadComments refetches on every open (fresh replies)', async () => {
     mocks.get.mockResolvedValueOnce([{ id: 'c1', message: 'primera' }]);
     const { container } = await renderApp();
 
@@ -93,14 +100,19 @@ describe('useLessonComments', () => {
       loading: false,
     });
 
-    // A second load with a different result must NOT re-fetch.
-    mocks.get.mockResolvedValueOnce([{ id: 'c2', message: 'segunda' }]);
+    // Una segunda apertura debe REFETCHEAR: la profesora pudo responder
+    // mientras la lección estaba cerrada.
+    mocks.get.mockResolvedValueOnce([
+      { id: 'c1', message: 'primera' },
+      { id: 'c2', message: 'segunda' },
+    ]);
     await act(async () => click(container, 'load'));
     await act(async () => {});
 
-    expect(mocks.get).toHaveBeenCalledTimes(1);
+    expect(mocks.get).toHaveBeenCalledTimes(2);
     expect(readState(container).commentsByLesson.l1.items).toEqual([
       { id: 'c1', message: 'primera' },
+      { id: 'c2', message: 'segunda' },
     ]);
   });
 
@@ -145,6 +157,80 @@ describe('useLessonComments', () => {
 
     expect(mocks.post).not.toHaveBeenCalled();
     expect(readState(container).sendingFor).toBeNull();
+  });
+
+  it('sendComment with a parentId posts { message, parentId } and does not clear the lesson draft', async () => {
+    mocks.post.mockResolvedValueOnce({ id: 'c10', message: 'Respuesta', parentId: 'c1' });
+    const { container } = await renderApp({ message: 'Respuesta', replyTo: 'c1' });
+
+    await act(async () => click(container, 'setdraft'));
+    await act(async () => click(container, 'sendreply'));
+    await act(async () => {}); // flush the post microtask
+
+    expect(mocks.post).toHaveBeenCalledTimes(1);
+    expect(mocks.post).toHaveBeenCalledWith('/lessons/l1/comments', {
+      message: 'Respuesta',
+      parentId: 'c1',
+    });
+    const state = readState(container);
+    expect(state.commentsByLesson.l1.items).toEqual([
+      { id: 'c10', message: 'Respuesta', parentId: 'c1' },
+    ]);
+    // Las respuestas de un hilo no tocan el draft del input principal.
+    expect(state.drafts.l1).toBe('abc');
+    expect(state.sendingFor).toBeNull();
+  });
+
+  it('sendComment with an imageFile posts FormData via postForm and appends the created comment', async () => {
+    const imageFile = new File(['foto-bytes'], 'foto.jpg', { type: 'image/jpeg' });
+    mocks.postForm.mockResolvedValueOnce({
+      id: 'c11',
+      message: 'Hola',
+      image: '/uploads/comments/image-1.jpg',
+    });
+    const { container } = await renderApp({ message: 'Hola', imageFile });
+
+    await act(async () => click(container, 'setdraft'));
+    await act(async () => click(container, 'sendimage'));
+    await act(async () => {}); // flush the postForm microtask
+
+    expect(mocks.post).not.toHaveBeenCalled();
+    expect(mocks.postForm).toHaveBeenCalledTimes(1);
+    const [url, body] = mocks.postForm.mock.calls[0];
+    expect(url).toBe('/lessons/l1/comments');
+    expect(body).toBeInstanceOf(FormData);
+    expect(body.get('message')).toBe('Hola');
+    expect(body.get('image')).toBe(imageFile);
+    expect(body.has('parentId')).toBe(false);
+    const state = readState(container);
+    expect(state.commentsByLesson.l1.items).toEqual([
+      { id: 'c11', message: 'Hola', image: '/uploads/comments/image-1.jpg' },
+    ]);
+    expect(state.drafts.l1).toBe('');
+    expect(state.sendingFor).toBeNull();
+  });
+
+  it('sendComment with an imageFile as reply includes parentId in the FormData', async () => {
+    const imageFile = new File(['foto-bytes'], 'foto.jpg', { type: 'image/jpeg' });
+    mocks.postForm.mockResolvedValueOnce({
+      id: 'c12',
+      message: 'Respuesta',
+      parentId: 'c1',
+      image: '/uploads/comments/image-2.jpg',
+    });
+    const { container } = await renderApp({ message: 'Respuesta', replyTo: 'c1', imageFile });
+
+    await act(async () => click(container, 'setdraft'));
+    await act(async () => click(container, 'sendimage'));
+    await act(async () => {}); // flush the postForm microtask
+
+    const [url, body] = mocks.postForm.mock.calls[0];
+    expect(url).toBe('/lessons/l1/comments');
+    expect(body.get('message')).toBe('Respuesta');
+    expect(body.get('parentId')).toBe('c1');
+    expect(body.get('image')).toBe(imageFile);
+    // Las respuestas de un hilo no tocan el draft del input principal.
+    expect(readState(container).drafts.l1).toBe('abc');
   });
 
   it('sendComment on error alerts, keeps the draft and clears sendingFor', async () => {

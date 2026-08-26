@@ -1,20 +1,35 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import { Link, useLocation } from 'react-router-dom';
+import { Coins, ShoppingBag, Inbox, Users } from 'lucide-react';
 import { useCourseCatalog } from '../../context/CourseCatalogContext';
 import { usePurchases } from '../../context/PurchaseContext';
 import { useAdmin } from '../../context/AdminContext';
 import { sumByCurrency } from '../../utils/currency';
 import CourseCover from '../../components/CourseCover';
+import WelcomeToast from '../../components/WelcomeToast';
+import ConsultasSection from '../../components/admin/ConsultasSection';
 
 export default function AdminDashboard() {
-  const { user } = useAuth();
   const { courses } = useCourseCatalog();
   const { getAllPurchases, getPendingRequests } = usePurchases();
   const { getAllUsers } = useAdmin();
   const [allPurchases, setAllPurchases] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
   const [pendingRequests, setPendingRequests] = useState([]);
+  const location = useLocation();
+
+  // Al llegar con #consultas (desde la campanita "Nueva consulta"), scrollear
+  // hasta la bandeja de consultas. El hash se limpia para no repetirlo.
+  useEffect(() => {
+    if (location.hash === '#consultas') {
+      const timer = setTimeout(() => {
+        document.getElementById('consultas')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 150);
+      window.history.replaceState(null, '', window.location.pathname + window.location.search);
+      return () => clearTimeout(timer);
+    }
+    return undefined;
+  }, [location.hash]);
 
   useEffect(() => {
     const load = async () => {
@@ -32,48 +47,41 @@ export default function AdminDashboard() {
     .slice(0, 5);
 
   const stats = [
-    { 
-      label: 'Ingresos totales', 
+    {
+      label: 'Ingresos totales',
       values: { ars: revenueByCurrency.ARS, aud: revenueByCurrency.AUD },
-      icon: '💰', 
-      color: 'bg-primary-soft text-success' 
+      Icon: Coins,
     },
-    { label: 'Ventas totales', value: allPurchases.length, icon: '🛒', color: 'bg-bg-soft text-terracotta' },
-    { label: 'Solicitudes pendientes', value: pendingRequests.length, icon: '⏳', color: 'bg-bg-soft text-ochre' },
-    { label: 'Alumnos', value: allUsers.length, icon: '👩‍🎓', color: 'bg-bg-soft text-text-ink' },
+    { label: 'Ventas totales', value: allPurchases.length, Icon: ShoppingBag },
+    { label: 'Solicitudes pendientes', value: pendingRequests.length, Icon: Inbox },
+    { label: 'Alumnos', value: allUsers.length, Icon: Users },
   ];
 
   return (
     <div className="max-w-6xl mx-auto bg-bg-surface px-4 py-12 flex justify-center">
       <div className="w-full max-w-6xl animate-fade-up">
         
-        {/* Cabecera interna */}
-        <div className="mb-8">
-          <h1 className="font-display text-3xl font-bold text-text-ink">Bienvenida, {user?.name} 👋</h1>
-          <p className="text-text-ink mt-1">Resumen general de Grow-Creative Education Studio</p>
-        </div>
+        <WelcomeToast message="¡Bienvenida!" />
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {stats.map((s, i) => (
             <div key={i} className="card-glow rounded-xl p-5 transition-all flex flex-col h-full">
               
-              {/* Contenedor flex para alinear icono y label */}
+              {/* Contenedor del label */}
               <div className="flex items-center gap-3 mb-3">
-                <div className={`flex items-center justify-center w-10 h-10 rounded-xl text-xl ${s.color}`}>
-                  {s.icon}
-                </div>
-                <p className="text-text-ink text-sm font-medium">{s.label}</p>
+                <s.Icon className="w-10 h-10 text-primary" strokeWidth={1.5} />
+                <p className="font-body text-text-ink text-sm font-medium">{s.label}</p>
               </div>
 
               {/* Valores */}
               <div className="flex-grow">
                 {s.label === 'Ingresos totales' ? (
                   <div className="flex flex-col">
-                    <p className="text-lg font-bold text-text-ink">${s.values.ars.toLocaleString()} ARS</p>
-                    <p className="text-lg font-bold text-text-ink">${s.values.aud.toLocaleString()} AUD</p>
+                    <p className="font-body text-lg font-bold text-text-ink">${s.values.ars.toLocaleString()} ARS</p>
+                    <p className="font-body text-lg font-bold text-text-ink">${s.values.aud.toLocaleString()} AUD</p>
                   </div>
                 ) : (
-                  <p className="text-2xl font-bold text-text-ink">{s.value}</p>
+                  <p className="font-body text-2xl font-bold text-text-ink">{s.value}</p>
                 )}
               </div>
             </div>
@@ -85,7 +93,7 @@ export default function AdminDashboard() {
           {/* Top courses */}
           <div className="card-glow rounded-xl p-6">
             <div className="flex items-center justify-between mb-5">
-              <h2 className="font-display font-bold text-text-ink text-xl">Cursos</h2>
+              <h2 className="font-display font-bold text-text-ink text-2xl">Cursos</h2>
               <Link to="/admin/cursos" className="text-text-tan text-sm mt-0.5 hover:underline">Ver todos →</Link>
             </div>
             {topCourses.length === 0 ? (
@@ -111,7 +119,7 @@ export default function AdminDashboard() {
           {/* Recent users */}
           <div className="card-glow rounded-xl p-6">
             <div className="flex items-center justify-between mb-5">
-              <h2 className="font-display font-bold text-text-ink text-xl">Alumnos</h2>
+              <h2 className="font-display font-bold text-text-ink text-2xl">Alumnos</h2>
               <Link to="/admin/usuarios" className="text-text-tan text-sm mt-0.5 hover:underline">Ver todos →</Link>
             </div>
             {allUsers.length === 0 ? (
@@ -136,6 +144,9 @@ export default function AdminDashboard() {
             )}
           </div>
         </div>
+
+        {/* Bandeja de consultas: todas las preguntas de las alumnas */}
+        <ConsultasSection />
       </div>
     </div>
   );

@@ -19,62 +19,83 @@ export default function CourseCard({ course }) {
 
   return (
     // Tarjeta con borde rosa suave y fondo blanco (identidad Grow)
-    <div className="card-glow-soft rounded-2xl overflow-hidden hover:-translate-y-1.5 transition-all duration-300 group flex flex-col justify-between">
+    <div className="card-glow-soft rounded-2xl overflow-hidden hover:-translate-y-1.5 transition-all duration-300 group flex flex-col justify-between h-full min-h-[400px]">
       <div>
-        {/* Contenedor de la Imagen con efecto Zoom */}
-        <div className="relative overflow-hidden aspect-video bg-gray-50">
-          <CourseCover
-            course={course}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          />
-          
-          {/* Badge de Nivel dinámico: claves normalizadas a minúsculas para el enum UPPERCASE del backend */}
-          <span className={`absolute top-3 left-3 text-xs font-bold px-3 py-1 rounded-full shadow-sm tracking-wide ${getLevelClass(course.level)}`}>
-            {getLevelLabel(course.level)}
-          </span>
-          
-          {/* Corazón de Favoritos estilizado */}
-          {user && (
-            <button
-              onClick={() => toggleFavorite(course.id)}
-              className="btn btn-icon absolute top-3 right-3 backdrop-blur-md shadow-sm hover:scale-110 transition-all duration-200 bg-gray-100/70 text-gray-700"
-              aria-label={fav ? 'Quitar de favoritos' : 'Agregar a favoritos'}
-            >
-              <svg 
-                className={`w-4 h-4 transition-colors ${fav ? 'text-accent fill-accent' : 'text-gray-400 hover:text-accent'}`} 
-                fill={fav ? 'currentColor' : 'none'} 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
+        {/* Toda la card lleva a la vista previa del curso (sin permisos) */}
+        <Link to={`/curso/${course.id}`} className="block">
+          {/* Contenedor de la Imagen con efecto Zoom */}
+          <div className="relative overflow-hidden aspect-video bg-gray-50">
+            <CourseCover
+              course={course}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+            
+            {/* Badge de Nivel dinámico: claves normalizadas a minúsculas para el enum UPPERCASE del backend */}
+            <span className={`absolute top-3 left-3 text-xs font-bold px-3 py-1 rounded-full shadow-sm tracking-wide ${getLevelClass(course.level)}`}>
+              {getLevelLabel(course.level)}
+            </span>
+            
+            {/* Corazón de Favoritos estilizado */}
+            {user && (
+              <button
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleFavorite(course.id); }}
+                className="btn btn-icon absolute top-3 right-3 backdrop-blur-md shadow-sm hover:scale-110 transition-all duration-200 bg-gray-100/70 text-gray-700"
+                aria-label={fav ? 'Quitar de favoritos' : 'Agregar a favoritos'}
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-              </svg>
-            </button>
-          )}
-        </div>
+                <svg 
+                  className={`w-4 h-4 transition-colors ${fav ? 'text-accent fill-accent' : 'text-gray-400 hover:text-accent'}`} 
+                  fill={fav ? 'currentColor' : 'none'} 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+              </button>
+            )}
+          </div>
 
-        {/* Información de la Tarjeta */}
-        <div className="p-5">
-          <h3 className=" text-text-ink text-2xl mb-1.5 leading-snug line-clamp-1">
-            {course.title}
-          </h3>
-          <p className="text-text-muted text-xs mb-4 line-clamp-2 leading-relaxed">
-            {course.description}
-          </p>
+          {/* Información de la Tarjeta */}
+          <div className="p-5">
+            <h3 className="font-body text-text-ink text-lg font-bold mb-1.5 leading-snug line-clamp-1">
+              {course.title}
+            </h3>
+            <p className="text-text-muted text-xs mb-4 line-clamp-2 leading-relaxed min-h-[2.5rem]">
+              {course.description}
+            </p>
 
-          {/* LÓGICA DE PRECIO: Solo visible si el usuario está logueado */}
-          {user && !owned && (
-            <div className="mt-2">
-              <p className="text-sm text-text-muted font-medium">Precio:</p>
-              <p className="text-2xl font-bold text-text-ink">
-                {/* Cambiamos la comparación a 'ARS' según los datos de tu consola */}
-                {user.country === 'ARS' 
-                  ? `$${course.priceARS.toLocaleString()} ARS` 
-                  : `$${course.priceAUD.toLocaleString()} AUD`
-                }
-              </p>
-            </div>
-          )}
-        </div>
+            {/* Vista previa del contenido del curso */}
+            {course.lessons?.length > 0 && (
+              <div className="mb-4">
+                <p className="text-[11px] uppercase tracking-wide text-accent font-bold mb-1.5">Contenido del curso</p>
+                <ul className="space-y-1">
+                  {course.lessons.slice(0, 3).map(l => (
+                    <li key={l.id} className="text-xs text-text-ink flex items-center gap-1.5 min-w-0">
+                      <span className="w-1 h-1 rounded-full bg-primary flex-shrink-0" />
+                      <span className="truncate">{l.title}</span>
+                    </li>
+                  ))}
+                  {course.lessons.length > 3 && (
+                    <li className="text-xs text-accent">+ {course.lessons.length - 3} lecciones más</li>
+                  )}
+                </ul>
+              </div>
+            )}
+
+            {/* LÓGICA DE PRECIO: Solo visible si el usuario está logueado */}
+            {user && !owned && (
+              <div className="mt-2">
+                <p className="text-sm text-text-muted font-medium">Precio:</p>
+                <p className="text-2xl font-bold text-text-ink">
+                  {/* Cambiamos la comparación a 'ARS' según los datos de tu consola */}
+                  {user.country === 'ARS' 
+                    ? `$${course.priceARS.toLocaleString()} ARS` 
+                    : `$${course.priceAUD.toLocaleString()} AUD`
+                  }
+                </p>
+              </div>
+            )}
+          </div>
+        </Link>
       </div>
 
       {/* Pie de Tarjeta (Precios y Acciones) siempre alineado abajo */}

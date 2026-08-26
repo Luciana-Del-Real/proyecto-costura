@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Search } from 'lucide-react';
 import { useCourseCatalog } from '../context/CourseCatalogContext';
 import CourseCard from '../components/CourseCard';
 
@@ -70,8 +71,8 @@ export default function Courses() {
       <div className="max-w-6xl mx-auto px-1 pb-16">
         {filtered.length === 0 ? (
           <div className="text-center py-16 card-glow rounded-2xl">
-            <span className="text-5xl">🔍</span>
-            <p className="text-text-muted mt-4">No encontramos cursos con esa búsqueda.</p>
+            <Search className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
+            <h2 className="font-display font-bold text-text-ink text-2xl mt-4">No encontramos cursos con esa búsqueda.</h2>
             <button 
               onClick={() => { setSearch(''); setLevel('Todos'); }} 
               className="btn btn-ghost mt-3 text-sm text-primary hover:text-primary-hover"

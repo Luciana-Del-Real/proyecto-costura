@@ -13,6 +13,7 @@ export function AuthProvider({ children }) {
     setUser(null);
     sessionStorage.removeItem('costura_token');
     sessionStorage.removeItem('costura_user');
+    sessionStorage.removeItem('costura_welcome');
   }, []);
 
   useEffect(() => {
@@ -45,6 +46,7 @@ export function AuthProvider({ children }) {
       const normalized = { ...userData, role: userData.role ? String(userData.role).toUpperCase() : userData.role };
       sessionStorage.setItem('costura_token', token);
       sessionStorage.setItem('costura_user', JSON.stringify(normalized)); 
+      sessionStorage.setItem('costura_welcome', '1');
       setUser(normalized);
       return userData;
     } catch (error) {
@@ -59,6 +61,7 @@ export function AuthProvider({ children }) {
       const normalized = { ...userData, role: userData.role ? String(userData.role).toUpperCase() : userData.role };
       sessionStorage.setItem('costura_token', token);
       sessionStorage.setItem('costura_user', JSON.stringify(normalized));
+      sessionStorage.setItem('costura_welcome', '1');
       setUser(normalized);
       return normalized;
     } catch (error) {

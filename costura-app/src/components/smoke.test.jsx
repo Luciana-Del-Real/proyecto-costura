@@ -15,9 +15,8 @@ import { MemoryRouter } from 'react-router-dom';
 import CourseFieldsForm from './admin/CourseFieldsForm';
 import CourseAttachmentsSection from './admin/CourseAttachmentsSection';
 import LessonEditorItem from './admin/LessonEditorItem';
-import LessonQuestionsPanel from './admin/LessonQuestionsPanel';
 import NewLessonForm from './admin/NewLessonForm';
-import CoursePublicHero from './course/CoursePublicHero';
+import CoursePreviewView from './course/CoursePreviewView';
 import CourseProgressCard from './course/CourseProgressCard';
 import LessonAccordionItem from './course/LessonAccordionItem';
 import LessonCommentsSection from './course/LessonCommentsSection';
@@ -84,22 +83,6 @@ describe('extracted components smoke render', () => {
     expect(html).toContain('Guardar lección');
   });
 
-  it('LessonQuestionsPanel renders the toggle (closed state)', () => {
-    const html = renderToStaticMarkup(
-      <LessonQuestionsPanel
-        lessonId="l1"
-        open={false}
-        comments={null}
-        drafts={{}}
-        sendingFor={null}
-        onToggle={noop}
-        onSend={noop}
-        onDraftChange={noop}
-      />,
-    );
-    expect(html).toContain('Ver preguntas de alumnas');
-  });
-
   it('NewLessonForm renders the new lesson form shell', () => {
     const html = renderToStaticMarkup(
       <NewLessonForm
@@ -114,14 +97,14 @@ describe('extracted components smoke render', () => {
     expect(html).toContain('type="file"');
   });
 
-  it('CoursePublicHero renders the public hero inside a router', () => {
+  it('CoursePreviewView renders the course preview with lessons and CTA', () => {
     const course = {
       level: 'INTERMEDIO',
       title: 'Moldería Avanzada',
       longDescription: 'Descripción larga',
       instructor: 'Luciana',
       duration: '8 semanas',
-      lessons: [{ id: 'l1' }],
+      lessons: [{ id: 'l1', title: 'Lección 1', duration: '10 min', description: 'Intro' }],
       rating: 4.5,
       students: 120,
       priceARS: 14000,
@@ -129,11 +112,12 @@ describe('extracted components smoke render', () => {
     };
     const html = renderToStaticMarkup(
       <MemoryRouter>
-        <CoursePublicHero course={course} user={null} onBuy={noop} />
+        <CoursePreviewView course={course} user={null} onBuy={noop} />
       </MemoryRouter>,
     );
     expect(html).toContain('Moldería Avanzada');
-    expect(html).toContain('Comprar curso');
+    expect(html).toContain('Lección 1');
+    expect(html).toContain('Inscribirme');
   });
 
   it('CourseProgressCard renders progress and counters', () => {

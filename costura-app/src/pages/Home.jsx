@@ -80,7 +80,7 @@ export default function Home() {
                   <span className="text-primary font-medium text-lg block text-center">¿Quiénes somos?</span>
                   <h3 className="font-display text-4xl font-bold text-text-ink mt-1 mb-3 text-center">Grow</h3>
                   <p className="text-text-ink opacity-90 leading-relaxed text-center">
-                    GROW es un estudio creativo dedicado a la costura, el bordado y el diseño, pensado para acompañarte paso a paso en tu aprendizaje. Acá vas a encontrar clases, herramientas, inspiración y una comunidad que crece junto a vos.
+                    Estudio creativo dedicado a la costura, el bordado y el diseño, pensado para acompañarte paso a paso en tu aprendizaje. Acá vas a encontrar clases, herramientas, inspiración y una comunidad que crece junto a vos.
                   </p>
                   <p className="text-primary font-medium text-lg mt-3">
                     ¿Te quedás a descubrir todo lo que podrías lograr con tus propias manos?

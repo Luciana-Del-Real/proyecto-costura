@@ -6,6 +6,7 @@ import {
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { Principal, isOwnerOrAdmin } from '../common/principal';
+import { Role } from '../common/enums';
 
 @Injectable()
 export class NotificationsService {
@@ -81,6 +82,7 @@ export class NotificationsService {
     title: string,
     message: string,
     tx?: Prisma.TransactionClient,
+    link?: string,
   ) {
     const client = tx ?? this.prisma;
     return client.notification.create({
@@ -89,7 +91,36 @@ export class NotificationsService {
         title,
         message,
         read: false,
+        ...(link ? { link } : {}),
       },
     });
+  }
+
+  // Crea una notificación para cada ADMIN, dentro de la transacción del
+  // llamador cuando se pasa un `tx` (mismo patrón que createNotification).
+  // Devuelve cuántas notificaciones se crearon (nº de admins).
+  async createNotificationsForAdmins(
+    title: string,
+    message: string,
+    tx?: Prisma.TransactionClient,
+    link?: string,
+  ) {
+    const client = tx ?? this.prisma;
+    const admins = await client.user.findMany({
+      where: { role: Role.ADMIN },
+      select: { id: true },
+    });
+    for (const admin of admins) {
+      await client.notification.create({
+        data: {
+          userId: admin.id,
+          title,
+          message,
+          read: false,
+          ...(link ? { link } : {}),
+        },
+      });
+    }
+    return admins.length;
   }
 }

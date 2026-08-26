@@ -38,7 +38,7 @@ async function bootstrap() {
   app.use(
     rateLimit({
       windowMs: 15 * 60 * 1000, // 15 minutos
-      max: 100, // máximo 100 requests por ventana
+      max: 300, // máximo 300 requests por ventana (100 era muy bajo para el uso real del frontend)
       message: 'Demasiadas solicitudes, intenta más tarde',
     })
   );

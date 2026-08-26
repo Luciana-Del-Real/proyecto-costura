@@ -91,7 +91,7 @@ export default function AdminSales() {
         {salesPerCourse.length > 0 && (
           <div className="card-glow rounded-2xl p-8 animate-fade-up mb-8">
             {/* Título con margen inferior para separar del contenido */}
-            <h2 className="font-display font-bold text-text-ink text-xl">Ventas por curso</h2>
+            <h2 className="font-display font-bold text-text-ink text-2xl">Ventas por curso</h2>
             
             <div className="space-y-6">
               {salesPerCourse.map(c => (
@@ -125,7 +125,7 @@ export default function AdminSales() {
           
           {/* Cabecera con fondo sutil */}
           <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between gap-3 flex-wrap bg-gray-50/50">
-            <h2 className="font-display font-bold text-text-ink text-xl">Detalle de ventas</h2>
+            <h2 className="font-display font-bold text-text-ink text-2xl">Detalle de ventas</h2>
             <select value={filter} onChange={e => setFilter(e.target.value)}
               className="border border-gray-100 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-white text-text-ink">
               <option value="todos">Todos los cursos</option>

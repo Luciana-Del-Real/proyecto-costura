@@ -1,74 +1,37 @@
-import { useState } from 'react';
-
-// Patrones gratis para descargar. Cada patrón apunta a un PDF en
-// /patrones/<archivo>.pdf (public/patrones/). Para agregar uno nuevo:
-// 1) Copiá el PDF a costura-app/public/patrones/
-// 2) Agregá una entrada a esta lista con su archivo, título y descripción.
-const patrones = [
-  {
-    id: 1,
-    titulo: 'Tote bag reversible',
-    descripcion: 'Patrón en tamaño real para armar tu primer tote bag. Incluye guía de corte y costura paso a paso.',
-    nivel: 'Principiante',
-    categoria: 'Accesorios',
-    archivo: '/patrones/tote-bag.pdf',
-    color: 'bg-primary-soft',
-  },
-  {
-    id: 2,
-    titulo: 'Neceser con cremallera',
-    descripcion: 'Patrón clásico de neceser con forrería y cremallera. Medidas y margen de costura incluidos.',
-    nivel: 'Intermedio',
-    categoria: 'Accesorios',
-    archivo: '/patrones/neceser.pdf',
-    color: 'bg-accent-soft',
-  },
-  {
-    id: 3,
-    titulo: 'Falda elástico',
-    descripcion: 'Patrón de falda con cintura elástica, sin cremallera. Tallas S a XL con tabla de medidas.',
-    nivel: 'Principiante',
-    categoria: 'Indumentaria',
-    archivo: '/patrones/falda-elastico.pdf',
-    color: 'bg-primary-soft',
-  },
-  {
-    id: 4,
-    titulo: 'Delantal de cocina',
-    descripcion: 'Delantal práctico con bolsillo frontal y tiras ajustables. Patrón en tamaño real listo para imprimir.',
-    nivel: 'Principiante',
-    categoria: 'Hogar',
-    archivo: '/patrones/delantal.pdf',
-    color: 'bg-accent-soft',
-  },
-  {
-    id: 5,
-    titulo: 'Funda de almohadón',
-    descripcion: 'Funda de almohadón 40x40 con cierre escondido. Patrón simple con explicación de dobladillos.',
-    nivel: 'Principiante',
-    categoria: 'Hogar',
-    archivo: '/patrones/funda-almohadon.pdf',
-    color: 'bg-primary-soft',
-  },
-  {
-    id: 6,
-    titulo: 'Top de verano',
-    descripcion: 'Top escotado con frunces, elástico en el busto. Tallas S a XL con guía de escalado.',
-    nivel: 'Intermedio',
-    categoria: 'Indumentaria',
-    archivo: '/patrones/top-verano.pdf',
-    color: 'bg-accent-soft',
-  },
-];
+import { useState, useEffect } from 'react';
+import { FileText } from 'lucide-react';
+import { get } from '../services/api';
+import { getImageUrl } from '../utils/media';
 
 const niveles = ['Todos', 'Principiante', 'Intermedio', 'Avanzado'];
 
 export default function PatronesGratis() {
+  const [patrones, setPatrones] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [nivel, setNivel] = useState('Todos');
+
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      try {
+        const data = await get('/patterns');
+        if (active) setPatrones(data);
+      } catch (error) {
+        console.error('Error cargando patrones:', error);
+      } finally {
+        if (active) setLoading(false);
+      }
+    })();
+    return () => { active = false; };
+  }, []);
 
   const filtered = nivel === 'Todos'
     ? patrones
     : patrones.filter(p => p.nivel === nivel);
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center"><span className="text-4xl">🧵</span></div>;
+  }
 
   return (
     <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
@@ -101,8 +64,8 @@ export default function PatronesGratis() {
       <div className="max-w-6xl mx-auto px-1 pb-16">
         {filtered.length === 0 ? (
           <div className="text-center py-16 card-glow rounded-2xl">
-            <span className="text-5xl">📄</span>
-            <p className="text-text-muted mt-4">Todavía no hay patrones de ese nivel.</p>
+            <FileText className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
+            <h2 className="font-display font-bold text-text-ink text-2xl mt-4">Todavía no hay patrones de ese nivel.</h2>
           </div>
         ) : (
           <>
@@ -113,11 +76,17 @@ export default function PatronesGratis() {
               {filtered.map((p, index) => (
                 <div key={p.id} className={`animate-stagger delay-${(index % 6) + 1}`}>
                   <div className="card-glow rounded-2xl p-6 h-full flex flex-col">
-                    {/* Vista previa tipo documento */}
-                    <div className={`${p.color} rounded-xl h-36 flex items-center justify-center mb-4`}>
-                      <svg className="w-12 h-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
+                    {/* Vista previa: imagen de portada o bloque de color con ícono */}
+                    <div className="rounded-xl h-36 overflow-hidden mb-4">
+                      {p.imagen ? (
+                        <img src={getImageUrl(p.imagen)} alt={p.titulo} className="w-full h-full object-cover rounded-xl" />
+                      ) : (
+                        <div className={`${index % 2 === 0 ? 'bg-primary-soft' : 'bg-accent-soft'} w-full h-full flex items-center justify-center`}>
+                          <svg className="w-12 h-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                        </div>
+                      )}
                     </div>
 
                     <div className="flex items-center gap-2 mb-2">
@@ -125,11 +94,11 @@ export default function PatronesGratis() {
                       <span className="text-xs text-text-muted">{p.categoria}</span>
                     </div>
 
-                    <h3 className="font-display text-2xl font-bold text-text-ink mb-2 leading-tight">{p.titulo}</h3>
+                    <h3 className="font-body text-text-ink text-lg font-bold mb-2 leading-tight">{p.titulo}</h3>
                     <p className="text-text-ink text-sm leading-relaxed mb-4 flex-1">{p.descripcion}</p>
 
                     <a
-                      href={p.archivo}
+                      href={p.archivo.startsWith('/uploads/') ? getImageUrl(p.archivo) : p.archivo}
                       download
                       target="_blank"
                       rel="noreferrer"

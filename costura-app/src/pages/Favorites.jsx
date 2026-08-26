@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { Heart, AlertTriangle } from 'lucide-react';
 import { useCourseCatalog } from '../context/CourseCatalogContext';
 import { useFavorites } from '../context/FavoritesContext';
 import CourseCard from '../components/CourseCard';
@@ -24,14 +25,14 @@ export default function Favorites() {
           </div>
         ) : favoritesError ? (
           <div className="text-center py-20">
-            <span className="text-6xl">⚠️</span>
-            <h2 className="text-xl font-bold text-text-ink mt-4 mb-2">No se pudieron cargar tus favoritos</h2>
+            <AlertTriangle className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
+            <h2 className="font-display font-bold text-text-ink text-2xl mt-4 mb-2">No se pudieron cargar tus favoritos</h2>
             <p className="text-text-ink mb-6">Verificá tu conexión e intentá de nuevo más tarde.</p>
           </div>
         ) : favCourses.length === 0 ? (
           <div className="text-center py-20">
-            <span className="text-6xl">❤️</span>
-            <h2 className="text-xl font-bold text-text-ink mt-4 mb-2">Todavía no tenés favoritos</h2>
+            <Heart className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
+            <h2 className="font-display font-bold text-text-ink text-2xl mt-4 mb-2">Todavía no tenés favoritos</h2>
             <p className="text-text-ink mb-6">Hacé clic en el corazón de cualquier curso para guardarlo acá.</p>
             <Link to="/cursos" className="btn btn-primary font-medium">
               Explorar cursos
