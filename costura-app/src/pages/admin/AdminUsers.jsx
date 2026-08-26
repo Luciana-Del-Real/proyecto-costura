@@ -72,7 +72,7 @@ export default function AdminUsers() {
     <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
       <div className="bg-bg-soft rounded-2xl shadow-sm border border-gray-100 px-4 py-10 animate-fade-up mt-5">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl font-bold text-text-ink">Alumnos</h1>
+          <h1 className="font-display text-3xl font-bold text-text-ink">Alumnos</h1>
           <p className="text-text-tan text-sm mt-0.5">{allUsers.length} alumna{allUsers.length !== 1 ? 's' : ''} registrada{allUsers.length !== 1 ? 's' : ''}</p>
         </div>
       </div>
@@ -90,7 +90,7 @@ export default function AdminUsers() {
         {/* Confirm toggle modal */}
         {confirmToggle && (
           <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-[60] animate-fade-in px-4">
-            <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-xl animate-fade-up justify-center text-center font-medium">
+            <div className="card-glow rounded-2xl p-6 max-w-sm w-full animate-fade-up justify-center text-center font-medium">
               <h3 className="font-medium text-text-ink mb-2">
                 {confirmToggle.action === 'deactivate' ? '¿Dar de baja a esta alumna?' : '¿Reactivar esta cuenta?'}
               </h3>
@@ -117,7 +117,7 @@ export default function AdminUsers() {
         {/* Detail modal */}
         {selected && (
           <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 animate-fade-in px-4">
-            <div className="bg-white rounded-2xl p-6 max-w-lg w-full shadow-xl animate-fade-up max-h-[80vh] overflow-y-auto">
+            <div className="card-glow rounded-2xl p-6 max-w-lg w-full animate-fade-up max-h-[80vh] overflow-y-auto">
               <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-3">
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${isActive(selected) ? 'bg-primary-soft text-success' : 'bg-red-50 text-red-400'}`}>
@@ -137,11 +137,11 @@ export default function AdminUsers() {
               </div>
 
               <div className="grid grid-cols-2 gap-3 mb-5">
-                <div className="bg-bg-soft rounded-xl p-3 text-center">
+                <div className="card-glow rounded-xl p-3 text-center">
                   <p className="text-xl font-bold text-text-ink">{getPurchasedCourseIds(selected).length}</p>
                   <p className="text-xs text-text-tan">Cursos comprados</p>
                 </div>
-                <div className="bg-bg-soft rounded-xl p-3 text-center">
+                <div className="card-glow rounded-xl p-3 text-center">
                   <p className="text-xl font-bold text-text-ink">
                     ${getUserCourses(selected).reduce((s, c) => s + getCoursePrice(c, selected), 0).toLocaleString()} {getCurrencyCode(selected)}
                   </p>
@@ -203,7 +203,7 @@ export default function AdminUsers() {
             <p className="text-text-tan mt-4">{allUsers.length === 0 ? 'Sin alumnos registrados aún.' : 'No se encontraron resultados.'}</p>
           </div>
         ) : (
-          <div className="bg-bg-soft rounded-2xl shadow-sm border border-border overflow-hidden animate-fade-up">
+          <div className="card-glow rounded-2xl overflow-hidden animate-fade-up">
             <table className="w-full text-sm">
               <thead>
                 {/* Eliminamos el fondo del tr y dejamos que el bg del div principal sea el fondo */}

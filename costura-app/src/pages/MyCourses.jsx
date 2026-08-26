@@ -36,7 +36,7 @@ export default function MyCourses() {
             {myCourses.map(course => {
               const prog = getProgress(course.id, course.lessons.length);
               return (
-                <div key={course.id} className="stagger-item bg-white rounded-2xl shadow-sm border border-border p-5 flex flex-col sm:flex-row gap-4 items-start sm:items-center hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
+                <div key={course.id} className="stagger-item card-glow rounded-2xl p-5 flex flex-col sm:flex-row gap-4 items-start sm:items-center hover:-translate-y-0.5 transition-all duration-300">
                   <img src={getImageUrl(course.image)} alt={course.title} className="w-full sm:w-28 h-20 object-cover rounded-xl flex-shrink-0" />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
@@ -63,7 +63,7 @@ export default function MyCourses() {
 
       {/* Notificaciones: leídas/actualizadas desde el backend */}
       <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-2xl shadow-sm border border-border p-5">
+        <div className="card-glow rounded-2xl p-5">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-display font-bold text-text-ink text-xl">Notificaciones</h2>
             {unreadCount > 0 && (

@@ -69,7 +69,7 @@ export default function Courses() {
       {/* Contenedor del listado de cursos */}
       <div className="max-w-6xl mx-auto px-1 pb-16">
         {filtered.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-2xl border border-border shadow-sm">
+          <div className="text-center py-16 card-glow rounded-2xl">
             <span className="text-5xl">🔍</span>
             <p className="text-text-muted mt-4">No encontramos cursos con esa búsqueda.</p>
             <button 

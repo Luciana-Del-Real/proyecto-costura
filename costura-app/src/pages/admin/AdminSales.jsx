@@ -66,7 +66,7 @@ export default function AdminSales() {
     <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
       <div className="bg-bg-soft rounded-2xl shadow-sm border border-gray-100 px-4 py-10 animate-fade-up mt-5">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl font-bold text-text-ink">Historial de ventas</h1>
+          <h1 className="font-display text-3xl font-bold text-text-ink">Historial de ventas</h1>
         </div>
       </div>
 
@@ -74,14 +74,14 @@ export default function AdminSales() {
         {/* Summary cards */}
         <div className="grid grid-cols-2 gap-4 mb-8">
           {/* Card de Ingresos Totales */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 animate-fade-up">
+          <div className="card-glow rounded-2xl p-6 animate-fade-up">
             <p className="text-xs uppercase tracking-wider font-bold text-text-tan mb-2">Ingresos totales</p>
             <p className="text-lg font-bold text-text-ink">${revenueFiltered.ARS.toLocaleString()} ARS</p>
             <p className="text-lg font-bold text-text-ink">${revenueFiltered.AUD.toLocaleString()} AUD</p>
           </div>
 
           {/* Card de Total de Ventas */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 animate-fade-up-delay-1">
+          <div className="card-glow rounded-2xl p-6 animate-fade-up-delay-1">
             <p className="text-xs uppercase tracking-wider font-bold text-text-tan mb-2">Total de ventas</p>
             <p className="text-3xl font-bold text-text-ink">{approved.length}</p>
           </div>
@@ -89,9 +89,9 @@ export default function AdminSales() {
 
         {/* Revenue bar chart */}
         {salesPerCourse.length > 0 && (
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 animate-fade-up mb-8">
+          <div className="card-glow rounded-2xl p-8 animate-fade-up mb-8">
             {/* Título con margen inferior para separar del contenido */}
-            <h2 className="font-bold text-text-ink text-xl">Ventas por curso</h2>
+            <h2 className="font-display font-bold text-text-ink text-xl">Ventas por curso</h2>
             
             <div className="space-y-6">
               {salesPerCourse.map(c => (
@@ -121,11 +121,11 @@ export default function AdminSales() {
         )}
 
         {/* Contenedor unificado: bg-white, border-gray-100, bordes redondeados */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden animate-fade-up mb-8">
+        <div className="card-glow rounded-2xl overflow-hidden animate-fade-up mb-8">
           
           {/* Cabecera con fondo sutil */}
           <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between gap-3 flex-wrap bg-gray-50/50">
-            <h2 className="font-bold text-text-ink text-xl">Detalle de ventas</h2>
+            <h2 className="font-display font-bold text-text-ink text-xl">Detalle de ventas</h2>
             <select value={filter} onChange={e => setFilter(e.target.value)}
               className="border border-gray-100 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-white text-text-ink">
               <option value="todos">Todos los cursos</option>

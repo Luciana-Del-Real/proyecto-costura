@@ -26,7 +26,7 @@ export default function ForgotPassword() {
   return (
     // Quitamos el min-h-screen aquí porque el Layout ya gestiona el alto
     <div className="flex items-center justify-center px-4 py-12">
-      <div className="bg-white rounded-2xl shadow-sm border border-border p-8 w-full max-w-md">
+      <div className="card-glow rounded-2xl p-8 w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="font-display text-3xl font-bold text-text-ink mb-2">Recuperar contraseña</h1>
           <p className="text-text-muted text-sm">Te enviaremos un correo con el enlace de recuperación</p>

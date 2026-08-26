@@ -61,7 +61,7 @@ export default function Profile() {
       </div>
 
       <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
-        <div className="bg-bg-soft rounded-2xl shadow-sm border border-gray-100 px-4 py-10 animate-fade-up mt-5 mb-5">
+        <div className="card-glow rounded-2xl px-4 py-10 animate-fade-up mt-5 mb-5">
           <div className="flex items-center justify-between mb-5">
             <h2 className="font-display font-bold text-text-ink text-xl">Información personal</h2>
             {!editing && (
@@ -145,7 +145,7 @@ export default function Profile() {
           )}
         </div>
 
-        <div className="bg-bg-soft rounded-2xl shadow-sm border border-gray-100 px-4 py-10 animate-fade-up mt-5 mb-5">
+        <div className="card-glow rounded-2xl px-4 py-10 animate-fade-up mt-5 mb-5">
           <h2 className="font-display font-bold text-text-ink text-xl">Historial de compras</h2>
           {purchasesLoading ? (
             <p className="text-text-ink text-sm">Cargando tus compras...</p>

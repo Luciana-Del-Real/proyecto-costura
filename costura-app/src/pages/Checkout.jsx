@@ -53,7 +53,7 @@ export default function Checkout() {
 
     return (
       <div className="min-h-screen flex items-center justify-center bg-bg-surface px-4">
-          <div className="text-center bg-white p-8 rounded-2xl shadow-sm border border-border max-w-md w-full">
+          <div className="text-center card-glow p-8 rounded-2xl max-w-md w-full">
           <span className="text-5xl block mb-4">⏳</span>
             <h2 className="font-display text-2xl font-bold text-text-ink mb-3">Solicitud de compra enviada</h2>
             <p className="text-text-ink mb-6">Tu comprobante está en revisión por el admin. Te notificaremos cuando se confirme.</p>
@@ -92,7 +92,7 @@ export default function Checkout() {
       <div className="max-w-4xl mx-auto">
         <Link to="/cursos" className="text-primary text-sm hover:text-primary-hover mb-6 inline-block">← Volver a cursos</Link>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="card p-6 h-fit">
+          <div className="card-glow p-6 h-fit">
             <h2 className="font-display font-bold text-text-ink text-lg mb-4">Resumen del pedido</h2>
             <img src={getImageUrl(course.image)} alt={course.title} className="w-full h-40 object-cover rounded-xl mb-4" />
             <h3 className="font-semibold text-text-ink mb-1">{course.title}</h3>
@@ -106,7 +106,7 @@ export default function Checkout() {
             </div>
           </div>
 
-          <div className="card p-6">
+          <div className="card-glow p-6">
             <h2 className="font-display font-bold text-text-ink text-lg mb-4">Instrucciones de pago</h2>
             
             <div className="bg-bg-soft border border-border rounded-xl p-4 mb-4 text-sm text-text-ink">

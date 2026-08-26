@@ -21,7 +21,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="bg-bg-soft rounded-2xl shadow-sm border border-gray-100 max-w-6xl mx-auto px-4 py-4">
+      <div className="card-glow rounded-2xl max-w-6xl mx-auto px-4 py-4">
         {/* My courses */}
         {myCourses.length > 0 && (
           <div className="mb-10">

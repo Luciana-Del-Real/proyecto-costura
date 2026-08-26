@@ -56,15 +56,15 @@ export default function AdminRequests() {
     <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
       <div className="bg-bg-soft rounded-2xl shadow-sm border border-gray-100 px-6 py-10 animate-fade-up mt-5">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl font-bold text-text-ink">Panel de Solicitudes</h1>
+          <h1 className="font-display text-3xl font-bold text-text-ink">Panel de Solicitudes</h1>
           <p className="text-text-tan text-sm mt-0.5">Gestioná las solicitudes de pago pendientes.</p>
         </div>
       </div>
 
       <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
-        <div className="bg-bg-soft rounded-2xl shadow-sm border border-gray-100 px-6 py-10 animate-fade-up mt-5">
+        <div className="card-glow rounded-2xl px-6 py-10 animate-fade-up mt-5">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-bold text-text-ink text-xl">Solicitudes pendientes</h2>
+            <h2 className="font-display font-bold text-text-ink text-xl">Solicitudes pendientes</h2>
             <div className="text-xs text-text-tan">Página {page}</div>
           </div>
 
@@ -75,7 +75,7 @@ export default function AdminRequests() {
           ) : (
             <div className="grid gap-3">
               {requests.map(req => (
-                <div key={req.id} className="bg-bg-soft rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div key={req.id} className="card-glow rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
                     <p className="font-medium text-text-ink">{req.user?.name} <span className="text-xs text-text-tan">({req.user?.email})</span></p>
                     <p className="text-xs text-text-ink">Curso: {req.course?.title} — {formatMoney(req.total ?? req.course?.priceARS, req.user?.country === 'AUD' ? 'AUD' : 'ARS')}</p>
