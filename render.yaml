@@ -1,0 +1,34 @@
+# Render blueprint — backend API (NestJS + Prisma + PostgreSQL)
+# Build command: npm ci && npm run build
+# Start command: node dist/main.js
+# Render inyecta PORT automáticamente; el backend escucha en process.env.PORT (0.0.0.0).
+services:
+  - type: web
+    name: costura-api
+    runtime: node
+    rootDir: backend
+    buildCommand: npm ci && npm run build
+    startCommand: node dist/main.js
+    preDeployCommand: npx prisma migrate deploy
+    healthCheckPath: /api/courses
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: API_PREFIX
+        value: /api
+      - key: JWT_EXPIRATION
+        value: 24h
+      - key: MAIL_ENABLED
+        value: "false"
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
+      - key: SENDGRID_API_KEY
+        sync: false
+      - key: SENDGRID_FROM
+        sync: false
