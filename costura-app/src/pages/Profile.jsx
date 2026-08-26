@@ -49,7 +49,7 @@ export default function Profile() {
 
   return (
     <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
-      <div className="bg-bg-soft rounded-2xl shadow-sm border border-gray-100 px-4 py-10 animate-fade-up mt-5 mb-5 flex justify-center">
+      <div className="bg-white rounded-2xl border border-primary/30 shadow-sm px-4 py-10 animate-fade-up mt-5 mb-5 flex justify-center">
         <div className="flex flex-col items-center gap-4 text-center">
           <div className="w-16 h-16 bg-primary-soft rounded-full flex items-center justify-center text-2xl font-bold text-text-ink">
             {user?.name?.charAt(0).toUpperCase()}
@@ -72,7 +72,7 @@ export default function Profile() {
           </div>
 
           {saved && (
-            <div className="bg-bg-soft border border-primary text-primary text-sm rounded-xl px-4 py-3 mb-4">
+            <div className="card-glow text-primary text-sm rounded-xl px-4 py-3 mb-4">
               ✓ Cambios guardados correctamente
             </div>
           )}

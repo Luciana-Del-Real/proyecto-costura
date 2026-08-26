@@ -8,7 +8,7 @@ export default function AdminCourses() {
   return (
     <div className="min-h-screen bg-bg-surface">
       <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
-        <div className="bg-bg-soft rounded-2xl shadow-sm border border-gray-100 px-4 py-10 animate-fade-up mt-5 mb-5 flex items-center justify-between">
+        <div className="bg-white rounded-2xl border border-primary/30 shadow-sm px-4 py-10 animate-fade-up mt-5 mb-5 flex items-center justify-between">
           <h1 className="text-3xl font-bold text-text-ink m-0 p-0 leading-tight">Gestión de cursos</h1>
           <Link 
             to="/admin/courses/new" 
@@ -20,7 +20,7 @@ export default function AdminCourses() {
 
         <div className="space-y-4">
           {courses.map((course) => (
-            <div key={course.id} className="bg-bg-soft rounded-2xl border border-border p-5 flex items-center gap-6 shadow-sm">
+            <div key={course.id} className="card-glow rounded-2xl p-5 flex items-center gap-6 shadow-sm">
               {/* Portada: CourseCover resuelve la URL y muestra el nombre si no hay imagen */}
               <div className="w-24 h-16 bg-bg-soft rounded-lg overflow-hidden flex-shrink-0">
                 <CourseCover course={course} className="w-full h-full object-cover" />

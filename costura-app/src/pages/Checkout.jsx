@@ -109,7 +109,7 @@ export default function Checkout() {
           <div className="card-glow p-6">
             <h2 className="font-display font-bold text-text-ink text-lg mb-4">Instrucciones de pago</h2>
             
-            <div className="bg-bg-soft border border-border rounded-xl p-4 mb-4 text-sm text-text-ink">
+            <div className="card-glow rounded-xl p-4 mb-4 text-sm text-text-ink">
               <p className="mb-3"><strong>1) Transferí a la cuenta:</strong></p>
               
               <div className="space-y-3 mb-4">

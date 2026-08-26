@@ -14,7 +14,7 @@ export default function Dashboard() {
   return (
     <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in mt-5 mb-8">
       {/* Header */}
-      <div className="bg-bg-soft rounded-2xl shadow-sm border border-gray-100 px-4 py-10 animate-fade-up mt-1 mb-5">
+      <div className="bg-white rounded-2xl border border-primary/30 shadow-sm px-4 py-10 animate-fade-up mt-1 mb-5">
         <div className="max-w-6xl mx-auto">
           <p className="text-text-ink text-sm mb-3">Bienvenida de vuelta 👋</p>
           <h1 className="font-display text-3xl md:text-4xl font-bold text-text-ink mb-2">{user?.name}</h1>

@@ -14,7 +14,7 @@ export default function MyCourses() {
 
   return (
     <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
-      <div className="bg-bg-soft rounded-2xl shadow-sm border border-gray-100 px-4 py-10 animate-fade-up mt-5 mb-5">
+      <div className="bg-white rounded-2xl border border-primary/30 shadow-sm px-4 py-10 animate-fade-up mt-5 mb-5">
         <div className="max-w-6xl mx-auto">
           <h1 className="font-display text-3xl font-bold text-text-ink">Mis cursos</h1>
           <p className="text-text-ink mt-1">{myCourses.length} curso{myCourses.length !== 1 ? 's' : ''} adquirido{myCourses.length !== 1 ? 's' : ''}</p>
@@ -81,7 +81,7 @@ export default function MyCourses() {
           )}
 
           {!notificationsLoading && notificationsError && (
-            <div className="bg-bg-soft border border-border rounded-xl px-4 py-3 text-sm text-text-ink">
+            <div className="card-glow rounded-xl px-4 py-3 text-sm text-text-ink">
               No se pudieron cargar las notificaciones. Verificá tu conexión e intentá de nuevo más tarde.
             </div>
           )}

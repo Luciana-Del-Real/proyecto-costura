@@ -13,7 +13,7 @@ export default function LessonEditorItem({
     editedLessons[lesson.id]?.[field] ?? lesson[field];
 
   return (
-    <div className="bg-bg-soft p-4 rounded-xl space-y-3 border border-border">
+    <div className="card-glow p-4 rounded-xl space-y-3">
       <input
         placeholder="Título"
         value={getLessonField('title')}
