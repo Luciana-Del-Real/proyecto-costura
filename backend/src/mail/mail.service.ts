@@ -1,6 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import sgMail, { MailDataRequired } from '@sendgrid/mail';
+import { readFileSync } from 'fs';
+import { join } from 'path';
+import sgMail from '@sendgrid/mail';
+import { MailDataRequired } from '@sendgrid/helpers/classes/mail';
 
 /**
  * Spanish-speaking countries, normalized (lowercase, no diacritics).
@@ -50,6 +53,7 @@ export function resolveLocale(country?: string | null): 'es' | 'en' {
 export class MailService {
   private readonly logger = new Logger(MailService.name);
   private from: string;
+  private logoDataUri?: string;
 
   constructor(private config: ConfigService) {
     this.from =
@@ -69,10 +73,37 @@ export class MailService {
     if (apiKey) {
       sgMail.setApiKey(apiKey);
     }
+
+    // Logo incrustado como data URI base64 directamente en el HTML del mail.
+    // A diferencia de un attachment inline (cid:) o una URL remota, un data
+    // URI viaja DENTRO del HTML: no depende de que el cliente de correo
+    // cargue imágenes externas ni de autenticación del remitente (SPF/DKIM),
+    // por lo que Gmail/Outlook lo muestran sin pedir "Mostrar imágenes".
+    // Si el archivo no existe, el email se manda igual pero sin logo.
+    try {
+      const logoPath = join(__dirname, '..', '..', 'assets', 'logo.png');
+      const logoBase64 = readFileSync(logoPath).toString('base64');
+      this.logoDataUri = `data:image/png;base64,${logoBase64}`;
+      this.logger.log('Logo cargado como data URI para los emails');
+    } catch (err) {
+      this.logger.warn(`Logo no disponible (${(err as Error).message})`);
+    }
   }
 
   private isMailEnabled(): boolean {
     return this.config.get<string>('MAIL_ENABLED')?.trim().toLowerCase() === 'true';
+  }
+
+  /**
+   * Reemplaza el marcador `cid:logo` del template por el data URI base64 del
+   * logo. Si el logo no está disponible, elimina el <img> para no mostrar
+   * una imagen rota.
+   */
+  private injectLogo(html: string): string {
+    if (!this.logoDataUri) {
+      return html.replace(/<img src="cid:logo"[^>]*>/g, '');
+    }
+    return html.replace(/src="cid:logo"/g, `src="${this.logoDataUri}"`);
   }
 
   async sendEmail(
@@ -98,7 +129,15 @@ export class MailService {
           ...(dynamicTemplateData ? { dynamic_template_data: dynamicTemplateData } : {}),
         }
       : html
-        ? { to, from: this.from, subject, html }
+        ? {
+            to,
+            from: this.from,
+            subject,
+            // Reemplazar el marcador cid:logo por el data URI base64 incrustado
+            // en el HTML (ver constructor). Si el logo no está disponible, se
+            // quita el <img> para no dejar una imagen rota.
+            html: `<meta charset="utf-8">${this.injectLogo(html)}`,
+          }
         : { to, from: this.from, subject, text: subject };
 
     try {

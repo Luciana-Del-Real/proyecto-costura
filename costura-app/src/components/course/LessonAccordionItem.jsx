@@ -1,4 +1,3 @@
-import ReactPlayer from 'react-player';
 import { getImageUrl } from '../../utils/media';
 import LessonCommentsSection from './LessonCommentsSection';
 
@@ -52,13 +51,12 @@ export default function LessonAccordionItem({
           {lesson.videoUrl && (
             <div className="max-w-xl mx-auto lg:mx-0">
               <div className="aspect-video rounded-2xl overflow-hidden bg-black shadow-md relative">
-                <ReactPlayer
-                  url={lesson.videoUrl}
-                  width="100%"
-                  height="100%"
-                  controls
-                  light
-                  style={{ position: 'absolute', top: 0, left: 0 }}
+                <iframe
+                  src={lesson.videoUrl.replace('watch?v=', 'embed/')}
+                  title="Video de la lección"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="absolute top-0 left-0 w-full h-full"
                 />
               </div>
             </div>

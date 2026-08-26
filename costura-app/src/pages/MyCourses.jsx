@@ -14,7 +14,7 @@ export default function MyCourses() {
 
   return (
     <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
-      <div className="bg-bg-soft rounded-2xl shadow-sm border border-gray-100 px-4 py-10 animate-fade-up mt-5 mb-5">
+      <div className="bg-white rounded-2xl border-2 border-primary shadow-md px-4 py-10 animate-fade-up mt-5 mb-5">
         <div className="max-w-6xl mx-auto">
           <h1 className="font-display text-3xl font-bold text-text-ink">Mis cursos</h1>
           <p className="text-text-ink mt-1">{myCourses.length} curso{myCourses.length !== 1 ? 's' : ''} adquirido{myCourses.length !== 1 ? 's' : ''}</p>
@@ -36,7 +36,7 @@ export default function MyCourses() {
             {myCourses.map(course => {
               const prog = getProgress(course.id, course.lessons.length);
               return (
-                <div key={course.id} className="stagger-item bg-white rounded-2xl shadow-sm border border-border p-5 flex flex-col sm:flex-row gap-4 items-start sm:items-center hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
+                <div key={course.id} className="stagger-item card-glow rounded-2xl p-5 flex flex-col sm:flex-row gap-4 items-start sm:items-center hover:-translate-y-0.5 transition-all duration-300">
                   <img src={getImageUrl(course.image)} alt={course.title} className="w-full sm:w-28 h-20 object-cover rounded-xl flex-shrink-0" />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
@@ -63,7 +63,7 @@ export default function MyCourses() {
 
       {/* Notificaciones: leídas/actualizadas desde el backend */}
       <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-2xl shadow-sm border border-border p-5">
+        <div className="card-glow rounded-2xl p-5">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-display font-bold text-text-ink text-xl">Notificaciones</h2>
             {unreadCount > 0 && (
@@ -81,7 +81,7 @@ export default function MyCourses() {
           )}
 
           {!notificationsLoading && notificationsError && (
-            <div className="bg-bg-soft border border-border rounded-xl px-4 py-3 text-sm text-text-ink">
+            <div className="card-glow rounded-xl px-4 py-3 text-sm text-text-ink">
               No se pudieron cargar las notificaciones. Verificá tu conexión e intentá de nuevo más tarde.
             </div>
           )}

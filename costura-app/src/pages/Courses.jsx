@@ -25,7 +25,7 @@ export default function Courses() {
   return (
     <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
       {/* CORREGIDO: Reducimos padding vertical (pt-10 pb-5) y quitamos mb-8 */}
-      <div className="bg-bg-soft rounded-2xl shadow-sm border border-border px-4 py-10 animate-fade-up mt-5 mb-5">
+      <div className="bg-white rounded-2xl border-2 border-primary shadow-md px-4 py-10 animate-fade-up mt-5 mb-5">
         <div className="max-w-6xl mx-auto">
           <h1 className="font-display text-3xl md:text-4xl font-bold text-text-ink mb-2">Todos los cursos</h1>
           <p className="text-text-muted">Encontrá el curso perfecto para vos</p>
@@ -69,7 +69,7 @@ export default function Courses() {
       {/* Contenedor del listado de cursos */}
       <div className="max-w-6xl mx-auto px-1 pb-16">
         {filtered.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-2xl border border-border shadow-sm">
+          <div className="text-center py-16 card-glow rounded-2xl">
             <span className="text-5xl">🔍</span>
             <p className="text-text-muted mt-4">No encontramos cursos con esa búsqueda.</p>
             <button 

@@ -181,16 +181,72 @@ export class AuthService {
     const subject = isSpanish ? 'Restablecer contraseña' : 'Reset your password';
     const html = isSpanish
       ? `
-      <p>Hola ${user.name || ''},</p>
-      <p>Recibimos una solicitud para restablecer tu contraseña. El enlace es válido por ${minutes} minutos.</p>
-      <p><a href="${resetUrl}">${resetUrl}</a></p>
-      <p>Si no solicitaste esto, puedes ignorar este correo.</p>
+      <div style="background-color:#F9F5F0;padding:32px 16px;font-family:Helvetica,Arial,sans-serif;">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:560px;margin:0 auto;">
+          <tr>
+            <td align="center" style="padding:0 0 24px 0;">
+              <img src="cid:logo" alt="Grow Creative Education Studio" width="120" style="max-width:120px;height:auto;" />
+            </td>
+          </tr>
+          <tr>
+            <td style="background-color:#FFFFFF;border:1px solid #E5D8CB;border-radius:16px;padding:32px;">
+              <h1 style="margin:0 0 12px 0;font-size:24px;line-height:1.3;color:#6B4C3B;font-family:Georgia,serif;">Hola ${user.name || ''}</h1>
+              <p style="margin:0 0 20px 0;font-size:15px;line-height:1.6;color:#8F7666;">
+                Recibimos una solicitud para restablecer tu contraseña. El enlace es válido por ${minutes} minutos.
+              </p>
+              <table role="presentation" cellspacing="0" cellpadding="0" style="margin:0 0 24px 0;">
+                <tr>
+                  <td style="background-color:#4E6D5B;border-radius:12px;">
+                    <a href="${resetUrl}" target="_blank" style="display:inline-block;padding:14px 32px;font-size:15px;font-weight:bold;color:#FFFFFF;text-decoration:none;border-radius:12px;">Restablecer contraseña</a>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin:0;font-size:13px;line-height:1.5;color:#A08060;">
+                Si no solicitaste esto, podés ignorar este correo. Tu contraseña no cambiará.
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding:20px 0 0 0;font-size:12px;color:#A08060;">
+              Grow Creative Education Studio — Cursos online de costura, bordado y diseño textil
+            </td>
+          </tr>
+        </table>
+      </div>
     `
       : `
-      <p>Hello ${user.name || ''},</p>
-      <p>We received a request to reset your password. The link is valid for ${minutes} minutes.</p>
-      <p><a href="${resetUrl}">${resetUrl}</a></p>
-      <p>If you didn't request this, you can ignore this email.</p>
+      <div style="background-color:#F9F5F0;padding:32px 16px;font-family:Helvetica,Arial,sans-serif;">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:560px;margin:0 auto;">
+          <tr>
+            <td align="center" style="padding:0 0 24px 0;">
+              <img src="cid:logo" alt="Grow Creative Education Studio" width="120" style="max-width:120px;height:auto;" />
+            </td>
+          </tr>
+          <tr>
+            <td style="background-color:#FFFFFF;border:1px solid #E5D8CB;border-radius:16px;padding:32px;">
+              <h1 style="margin:0 0 12px 0;font-size:24px;line-height:1.3;color:#6B4C3B;font-family:Georgia,serif;">Hello ${user.name || ''}</h1>
+              <p style="margin:0 0 20px 0;font-size:15px;line-height:1.6;color:#8F7666;">
+                We received a request to reset your password. The link is valid for ${minutes} minutes.
+              </p>
+              <table role="presentation" cellspacing="0" cellpadding="0" style="margin:0 0 24px 0;">
+                <tr>
+                  <td style="background-color:#4E6D5B;border-radius:12px;">
+                    <a href="${resetUrl}" target="_blank" style="display:inline-block;padding:14px 32px;font-size:15px;font-weight:bold;color:#FFFFFF;text-decoration:none;border-radius:12px;">Reset password</a>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin:0;font-size:13px;line-height:1.5;color:#A08060;">
+                If you didn't request this, you can ignore this email. Your password won't change.
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding:20px 0 0 0;font-size:12px;color:#A08060;">
+              Grow Creative Education Studio — Online sewing, embroidery and textile design courses
+            </td>
+          </tr>
+        </table>
+      </div>
     `;
 
     try {

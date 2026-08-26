@@ -2,7 +2,7 @@
 // (vista alumna). Recibe el estado de useLessonComments resuelto por el padre.
 export default function LessonCommentsSection({ lessonId, comments, draft, sendingFor, onSend, onDraftChange }) {
   return (
-    <div className="bg-bg-soft rounded-2xl p-4 lg:p-5">
+    <div className="card-glow rounded-2xl p-4 lg:p-5">
       <h4 className="font-bold text-text-ink text-sm mb-3">Preguntas sobre esta lección</h4>
 
       {comments?.loading && (

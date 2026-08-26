@@ -46,7 +46,7 @@ export default function Navbar() {
     <>
       <BackToHome />
         <nav className={`${isHome ? 'absolute inset-x-0 top-0 z-50 nav-on-hero' : 'sticky top-0 z-50 bg-white border-b border-border shadow-sm'}`}>
-        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           <Link to={user ? (isAdmin ? "/admin" : "/dashboard") : "/"} className="flex items-center gap-3">
             <img src="/Images/Logo%20sin%20Slogan.png" alt="Grow" className="w-9 h-9 object-contain" />
             <div className="flex flex-col">
@@ -59,9 +59,9 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-6">
             {user ? (
               <>
-              <Link to="/dashboard" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/dashboard' ? 'text-text-ink transition-colors text-xl' : 'text-text-ink transition-colors text-xl'}`}>Inicio</Link>
-              <Link to="/cursos" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/cursos' ? 'text-text-ink transition-colors text-xl' : 'text-text-ink transition-colors text-xl'}`}>Cursos disponibles</Link>
-              <Link to="/favoritos" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/favoritos' ? 'text-text-ink transition-colors text-xl' : 'text-text-ink transition-colors text-xl'}`}>Favoritos</Link>
+              <Link to="/dashboard" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/dashboard' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Inicio</Link>
+              <Link to="/cursos" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/cursos' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Cursos disponibles</Link>
+              <Link to="/favoritos" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/favoritos' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Favoritos</Link>
 
               {/* Notifications bell */}
               <div className="relative" ref={notifRef}>
@@ -171,11 +171,8 @@ export default function Navbar() {
             <>
               {!isSimplified && (
                 <>
-                  <Link to="/cursos" className="text-text-ink transition-colors text-xl">Cursos</Link>
-                  <Link to="/login" className="text-xl text-text-ink transition-colors">Iniciar sesión</Link>
-                  <Link to="/registro" className="btn btn-primary text-sm transition-all duration-200 hover:scale-105">
-                    Registrarse
-                  </Link>
+                  <Link to="/patrones-gratis" className="px-1 py-1 rounded-lg text-sm font-medium text-text-ink hover:text-primary transition-colors">Patrones gratis</Link>
+                  <Link to="/login" className="btn btn-ghost text-sm text-primary border-primary/40 hover:bg-primary-soft hover:text-primary-hover">Iniciar sesión</Link>
                 </>
               )}
             </>
@@ -222,9 +219,8 @@ export default function Navbar() {
           ) : (
             !isSimplified && (
               <>
-                  <Link to="/cursos" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Cursos</Link>
+                  <Link to="/patrones-gratis" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Patrones gratis</Link>
                   <Link to="/login" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Iniciar sesión</Link>
-                <Link to="/registro" onClick={() => setMenuOpen(false)} className="btn btn-primary text-sm">Registrarse</Link>
               </>
             )
           )}

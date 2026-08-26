@@ -49,7 +49,7 @@ export default function Profile() {
 
   return (
     <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
-      <div className="bg-bg-soft rounded-2xl shadow-sm border border-gray-100 px-4 py-10 animate-fade-up mt-5 mb-5 flex justify-center">
+      <div className="bg-white rounded-2xl border-2 border-primary shadow-md px-4 py-10 animate-fade-up mt-5 mb-5 flex justify-center">
         <div className="flex flex-col items-center gap-4 text-center">
           <div className="w-16 h-16 bg-primary-soft rounded-full flex items-center justify-center text-2xl font-bold text-text-ink">
             {user?.name?.charAt(0).toUpperCase()}
@@ -61,7 +61,7 @@ export default function Profile() {
       </div>
 
       <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
-        <div className="bg-bg-soft rounded-2xl shadow-sm border border-gray-100 px-4 py-10 animate-fade-up mt-5 mb-5">
+        <div className="card-glow rounded-2xl px-4 py-10 animate-fade-up mt-5 mb-5">
           <div className="flex items-center justify-between mb-5">
             <h2 className="font-display font-bold text-text-ink text-xl">Información personal</h2>
             {!editing && (
@@ -72,7 +72,7 @@ export default function Profile() {
           </div>
 
           {saved && (
-            <div className="bg-bg-soft border border-primary text-primary text-sm rounded-xl px-4 py-3 mb-4">
+            <div className="card-glow text-primary text-sm rounded-xl px-4 py-3 mb-4">
               ✓ Cambios guardados correctamente
             </div>
           )}
@@ -145,7 +145,7 @@ export default function Profile() {
           )}
         </div>
 
-        <div className="bg-bg-soft rounded-2xl shadow-sm border border-gray-100 px-4 py-10 animate-fade-up mt-5 mb-5">
+        <div className="card-glow rounded-2xl px-4 py-10 animate-fade-up mt-5 mb-5">
           <h2 className="font-display font-bold text-text-ink text-xl">Historial de compras</h2>
           {purchasesLoading ? (
             <p className="text-text-ink text-sm">Cargando tus compras...</p>

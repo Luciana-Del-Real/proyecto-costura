@@ -49,13 +49,13 @@ export default function AdminDashboard() {
         
         {/* Cabecera interna */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-text-ink">Bienvenida, {user?.name} 👋</h1>
+          <h1 className="font-display text-3xl font-bold text-text-ink">Bienvenida, {user?.name} 👋</h1>
           <p className="text-text-ink mt-1">Resumen general de Grow-Creative Education Studio</p>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {stats.map((s, i) => (
-            <div key={i} className="bg-white rounded-xl p-5 border border-border shadow-sm hover:shadow-md transition-all flex flex-col h-full">
+            <div key={i} className="card-glow rounded-xl p-5 transition-all flex flex-col h-full">
               
               {/* Contenedor flex para alinear icono y label */}
               <div className="flex items-center gap-3 mb-3">
@@ -83,9 +83,9 @@ export default function AdminDashboard() {
         {/* Grid inferior */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Top courses */}
-          <div className="bg-white rounded-xl border border-border p-6 shadow-sm">
+          <div className="card-glow rounded-xl p-6">
             <div className="flex items-center justify-between mb-5">
-              <h2 className="font-bold text-text-ink text-xl">Cursos</h2>
+              <h2 className="font-display font-bold text-text-ink text-xl">Cursos</h2>
               <Link to="/admin/cursos" className="text-text-tan text-sm mt-0.5 hover:underline">Ver todos →</Link>
             </div>
             {topCourses.length === 0 ? (
@@ -109,9 +109,9 @@ export default function AdminDashboard() {
           </div>
 
           {/* Recent users */}
-          <div className="bg-white rounded-xl border border-border p-6 shadow-sm">
+          <div className="card-glow rounded-xl p-6">
             <div className="flex items-center justify-between mb-5">
-              <h2 className="font-bold text-text-ink text-xl">Alumnos</h2>
+              <h2 className="font-display font-bold text-text-ink text-xl">Alumnos</h2>
               <Link to="/admin/usuarios" className="text-text-tan text-sm mt-0.5 hover:underline">Ver todos →</Link>
             </div>
             {allUsers.length === 0 ? (
