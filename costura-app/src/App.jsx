@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 import Providers from './components/providers';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -38,6 +39,16 @@ function Layout({ children }) {
   );
 }
 
+// Al navegar (click en links del footer/navbar), sube el scroll al tope
+// automáticamente en lugar de dejar la página en la posición anterior.
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
+
 // CORREGIDO: Añadimos el fondo beige y aquí gestionamos el único Navbar de admin
 function AdminLayout({ children }) {
   return (
@@ -51,6 +62,7 @@ function AdminLayout({ children }) {
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Providers>
         <Routes>
             {/* Público */}
