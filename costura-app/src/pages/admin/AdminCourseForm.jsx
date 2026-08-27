@@ -95,6 +95,9 @@ export default function AdminCourseForm() {
   const [editedLessons, setEditedLessons] = useState({});
   const [lessonPdfFiles, setLessonPdfFiles] = useState({});
   const [savingLessonId, setSavingLessonId] = useState(null);
+  // Acordeón: las lecciones guardadas arrancan colapsadas (solo título + duración)
+  // para scrollear fácil a la próxima; click para expandir y editar.
+  const [openLessonId, setOpenLessonId] = useState(null);
 
   const setLessonField = (lessonId, field, value) => {
     setEditedLessons((prev) => ({
@@ -122,6 +125,7 @@ export default function AdminCourseForm() {
 
       await putForm(`/courses/${id}/lessons/${lesson.id}`, formData);
       await reloadCourse();
+      setOpenLessonId(null); // Al guardar, se colapsa y queda lista para scrollear a la próxima
     } catch (err) {
       console.error(err);
       alert('Error guardando la lección');
@@ -219,6 +223,8 @@ export default function AdminCourseForm() {
                   <LessonEditorItem
                     key={lesson.id}
                     lesson={lesson}
+                    isOpen={openLessonId === lesson.id}
+                    onToggle={() => setOpenLessonId(openLessonId === lesson.id ? null : lesson.id)}
                     editedLessons={editedLessons}
                     onFieldChange={setLessonField}
                     onLessonPdfChange={handleLessonPdfChange}

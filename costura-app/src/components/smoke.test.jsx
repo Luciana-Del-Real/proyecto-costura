@@ -65,6 +65,8 @@ describe('extracted components smoke render', () => {
     const html = renderToStaticMarkup(
       <LessonEditorItem
         lesson={emptyLesson}
+        isOpen={true}
+        onToggle={noop}
         editedLessons={{}}
         onFieldChange={noop}
         onLessonPdfChange={noop}
@@ -72,17 +74,29 @@ describe('extracted components smoke render', () => {
         onSaveLesson={noop}
         onDeleteLesson={noop}
         onDeleteLessonAttachment={noop}
-        questionsOpen={false}
-        onToggleQuestions={noop}
-        comments={null}
-        drafts={{}}
-        sendingFor={null}
-        onSendComment={noop}
-        onDraftChange={noop}
       />,
     );
     expect(html).toContain('Lección 1');
     expect(html).toContain('Guardar lección');
+  });
+
+  it('LessonEditorItem collapses the editor content when closed', () => {
+    const html = renderToStaticMarkup(
+      <LessonEditorItem
+        lesson={emptyLesson}
+        isOpen={false}
+        onToggle={noop}
+        editedLessons={{}}
+        onFieldChange={noop}
+        onLessonPdfChange={noop}
+        savingLessonId={null}
+        onSaveLesson={noop}
+        onDeleteLesson={noop}
+        onDeleteLessonAttachment={noop}
+      />,
+    );
+    expect(html).toContain('Lección 1');
+    expect(html).not.toContain('Guardar lección');
   });
 
   it('NewLessonForm renders the new lesson form shell', () => {
