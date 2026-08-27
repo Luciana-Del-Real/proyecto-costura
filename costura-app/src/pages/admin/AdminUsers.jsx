@@ -76,9 +76,8 @@ export default function AdminUsers() {
         subtitle={`${allUsers.length} alumna${allUsers.length !== 1 ? 's' : ''} registrada${allUsers.length !== 1 ? 's' : ''}`}
       />
 
-      <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in mt-4 mb-5">
-        {/* Search */}
-        <div className="relative max-w-sm mb-6">
+      {/* Search */}
+        <div className="relative max-w-sm mb-6 mt-4">
           <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
@@ -203,11 +202,11 @@ export default function AdminUsers() {
         )}
 
         {filtered.length === 0 ? (
-          <div className="text-center py-16">
+          <div className="text-center py-16 mb-5">
             <p className="text-text-tan mt-4">{allUsers.length === 0 ? 'Sin alumnos registrados aún.' : 'No se encontraron resultados.'}</p>
           </div>
         ) : (
-          <div className="card-glow rounded-2xl overflow-hidden animate-fade-up">
+          <div className="card-glow rounded-2xl overflow-hidden animate-fade-up mb-5">
             <table className="w-full text-sm">
               <thead>
                 {/* Eliminamos el fondo del tr y dejamos que el bg del div principal sea el fondo */}
@@ -253,7 +252,6 @@ export default function AdminUsers() {
             </table>
           </div>
         )}
-      </div>
     </div>
   );
 }

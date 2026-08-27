@@ -67,9 +67,8 @@ export default function AdminSales() {
     <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
       <PageHeader title="Historial de ventas" />
 
-      <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in mt-6 mb-5">
-        {/* Summary cards */}
-        <div className="grid grid-cols-2 gap-4 mb-8">
+      {/* Summary cards */}
+        <div className="grid grid-cols-2 gap-4 mb-8 mt-6">
           {/* Card de Ingresos Totales */}
           <div className="card-glow rounded-2xl p-6 animate-fade-up">
             <p className="text-xs uppercase tracking-wider font-bold text-text-tan mb-2">Ingresos totales</p>
@@ -200,7 +199,6 @@ export default function AdminSales() {
             </>
           )}
         </div>
-      </div>
     </div>
   );
 }
