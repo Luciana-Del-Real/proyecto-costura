@@ -10,6 +10,7 @@ export default function AdminRequests() {
   const [limit] = useState(10);
   const [loading, setLoading] = useState(false);
   const [processingId, setProcessingId] = useState(null);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     load();
@@ -53,6 +54,16 @@ export default function AdminRequests() {
     }
   };
 
+  // Filtro de búsqueda sobre la página cargada: alumna, curso o estado
+  const filtered = requests.filter(req => {
+    const q = search.toLowerCase();
+    if (q === '') return true;
+    return (req.user?.name || '').toLowerCase().includes(q) ||
+      (req.user?.email || '').toLowerCase().includes(q) ||
+      (req.course?.title || '').toLowerCase().includes(q) ||
+      (req.status || '').toLowerCase().includes(q);
+  });
+
   return (
     <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
       <PageHeader title="Panel de Solicitudes" subtitle="Gestioná las solicitudes de pago pendientes." />
@@ -63,13 +74,28 @@ export default function AdminRequests() {
             <div className="text-xs text-text-tan">Página {page}</div>
           </div>
 
+          <div className="relative max-w-sm mb-4">
+            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              type="text"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="Buscar solicitud..."
+              className="w-full pl-10 pr-4 py-2 text-sm border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-primary bg-white text-gray-700 placeholder-gray-400 shadow-sm transition-all duration-300"
+            />
+          </div>
+
           {loading ? (
             <div className="py-6 text-center text-sm text-text-tan">Cargando...</div>
           ) : requests.length === 0 ? (
             <p className="text-text-tan text-sm">No hay solicitudes pendientes.</p>
+          ) : filtered.length === 0 ? (
+            <p className="text-text-tan text-sm">Sin resultados para tu búsqueda.</p>
           ) : (
             <div className="grid gap-3">
-              {requests.map(req => (
+              {filtered.map(req => (
                 <div key={req.id} className="p-3 border-b border-border last:border-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
                     <p className="font-medium text-text-ink">{req.user?.name} <span className="text-xs text-text-tan">({req.user?.email})</span></p>

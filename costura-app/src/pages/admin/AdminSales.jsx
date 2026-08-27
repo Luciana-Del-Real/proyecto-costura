@@ -11,6 +11,7 @@ export default function AdminSales() {
   const [allPurchases, setAllPurchases] = useState([]);
   const [, setPendingRequests] = useState([]);
   const [filter, setFilter] = useState('todos');
+  const [search, setSearch] = useState('');
 
   // getAllPurchases/getPendingRequests se recrean en cada render de
   // PurchaseProvider (no están memoizadas), así que incluirlas en las
@@ -26,9 +27,24 @@ export default function AdminSales() {
   }, []);
   /* eslint-enable react-hooks/exhaustive-deps */
 
-  const filtered = filter === 'todos'
+  // Normalizamos quitando acentos y pasando todo a minúsculas
+  const normalizeText = (text) =>
+    text ? text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") : "";
+
+  // Filtro combinado: filtro por curso + búsqueda por alumna/curso/estado
+  const filtered = (filter === 'todos'
       ? allPurchases
-      : allPurchases.filter(p => p.course.id === filter);
+      : allPurchases.filter(p => p.course.id === filter))
+    .filter(p => {
+      const q = normalizeText(search);
+      if (q === '') return true;
+      const statusText = p.status === 'APPROVED' ? 'aprobada' : p.status === 'PENDING' ? 'pendiente' : 'denegada';
+      return normalizeText(p.user.name).includes(q) ||
+        normalizeText(p.user.email).includes(q) ||
+        normalizeText(p.course.title).includes(q) ||
+        normalizeText(p.status).includes(q) ||
+        normalizeText(statusText).includes(q);
+    });
 
   const reload = async () => {
     setAllPurchases(await getAllPurchases());
@@ -122,16 +138,30 @@ export default function AdminSales() {
           {/* Cabecera con fondo sutil */}
           <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between gap-3 flex-wrap bg-gray-50/50">
             <h2 className="font-display font-bold text-text-ink text-2xl">Detalle de ventas</h2>
-            <select value={filter} onChange={e => setFilter(e.target.value)}
-              className="border border-gray-100 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-white text-text-ink">
-              <option value="todos">Todos los cursos</option>
-              {courses.map(c => <option key={c.id} value={c.id}>{c.title}</option>)}
-            </select>
+            <div className="flex items-center gap-3 flex-wrap w-full sm:w-auto">
+              <div className="relative w-full sm:w-72">
+                <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <input
+                  type="text"
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                  placeholder="Buscar venta..."
+                  className="w-full pl-10 pr-4 py-2 text-sm border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-primary bg-white text-gray-700 placeholder-gray-400 shadow-sm transition-all duration-300"
+                />
+              </div>
+              <select value={filter} onChange={e => setFilter(e.target.value)}
+                className="border border-gray-100 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-white text-text-ink w-full sm:w-auto">
+                <option value="todos">Todos los cursos</option>
+                {courses.map(c => <option key={c.id} value={c.id}>{c.title}</option>)}
+              </select>
+            </div>
           </div>
 
           {filtered.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-text-tan text-sm">Sin ventas para mostrar.</p>
+              <p className="text-text-tan text-sm">{search ? 'Sin resultados para tu búsqueda.' : 'Sin ventas para mostrar.'}</p>
             </div>
           ) : (
             <>

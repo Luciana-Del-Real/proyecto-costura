@@ -10,6 +10,7 @@ export default function PatronesGratis() {
   const [patrones, setPatrones] = useState([]);
   const [loading, setLoading] = useState(true);
   const [nivel, setNivel] = useState('Todos');
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     let active = true;
@@ -26,9 +27,16 @@ export default function PatronesGratis() {
     return () => { active = false; };
   }, []);
 
-  const filtered = nivel === 'Todos'
-    ? patrones
-    : patrones.filter(p => p.nivel === nivel);
+  // Normalizamos quitando acentos y pasando todo a minúsculas
+  const normalizeText = (text) =>
+    text ? text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") : "";
+
+  const filtered = patrones.filter(p => {
+    const matchSearch = normalizeText(p.titulo).includes(normalizeText(search)) ||
+      normalizeText(p.descripcion).includes(normalizeText(search));
+    const matchLevel = nivel === 'Todos' || p.nivel === nivel;
+    return matchSearch && matchLevel;
+  });
 
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center"><span className="text-4xl">🧵</span></div>;
@@ -41,21 +49,37 @@ export default function PatronesGratis() {
         subtitle="Descargá patrones en PDF para coser en casa, paso a paso"
       />
 
-      {/* Filtro por nivel */}
-      <div className="max-w-6xl mx-auto px-1 mt-6 mb-8 flex flex-wrap gap-3">
-        {niveles.map(n => (
-          <button
-            key={n}
-            onClick={() => setNivel(n)}
-            className={`btn text-sm tracking-wide transition-all duration-300 shadow-sm ${
-              nivel === n
-                ? 'btn-primary shadow-md scale-105'
-                : 'btn-ghost border border-primary/30 hover:border-primary'
-            }`}
-          >
-            {n}
-          </button>
-        ))}
+      {/* Filtro por nivel + buscador */}
+      <div className="max-w-6xl mx-auto px-1 mt-6 mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div className="flex flex-wrap gap-3">
+          {niveles.map(n => (
+            <button
+              key={n}
+              onClick={() => setNivel(n)}
+              className={`btn text-sm tracking-wide transition-all duration-300 shadow-sm ${
+                nivel === n
+                  ? 'btn-primary shadow-md scale-105'
+                  : 'btn-ghost border border-primary/30 hover:border-primary'
+              }`}
+            >
+              {n}
+            </button>
+          ))}
+        </div>
+
+        {/* Buscador */}
+        <div className="relative w-full md:w-72">
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input
+            type="text"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder="Buscar patrón..."
+            className="w-full pl-10 pr-4 py-2 text-sm border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-primary bg-white text-gray-700 placeholder-gray-400 shadow-sm transition-all duration-300"
+          />
+        </div>
       </div>
 
       {/* Galería de patrones */}
@@ -63,7 +87,14 @@ export default function PatronesGratis() {
         {filtered.length === 0 ? (
           <div className="text-center py-16 card-glow rounded-2xl">
             <FileText className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
-            <h2 className="font-display font-bold text-text-ink text-2xl mt-4">Todavía no hay patrones de ese nivel.</h2>
+            <h2 className="font-display font-bold text-text-ink text-2xl mt-4">
+              {search ? 'No encontramos patrones con esa búsqueda.' : 'Todavía no hay patrones de ese nivel.'}
+            </h2>
+            {search && (
+              <button onClick={() => setSearch('')} className="btn btn-ghost mt-3 text-sm text-primary hover:text-primary-hover">
+                Limpiar búsqueda
+              </button>
+            )}
           </div>
         ) : (
           <>
