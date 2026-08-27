@@ -90,6 +90,10 @@ Usá el email/contraseña que hayas definido en `ADMIN_EMAIL` / `ADMIN_PASSWORD`
 | `PORT` | Puerto de la API (por defecto `3000`) |
 | `API_PREFIX` | Prefijo de las rutas (por defecto `/api`) |
 | `CORS_ORIGIN` | Dominio(s) permitidos para llamar a la API, separados por coma |
+| `FRONTEND_URL` | Origen público del frontend, usado en los enlaces de los emails (ej. reset de contraseña) |
+| `MAIL_ENABLED` | Habilita el envío de email por SendGrid. `"false"` por defecto; poné `"true"` solo si configuraste `SENDGRID_API_KEY` |
+| `SENDGRID_API_KEY` | API key de SendGrid — **requerida** cuando `MAIL_ENABLED="true"` (el backend falla al arrancar si falta) |
+| `SENDGRID_FROM` | Remitente de los correos transaccionales |
 | `ADMIN_EMAIL` / `ADMIN_PASSWORD` / `ADMIN_NAME` | Datos del usuario admin que crea `npm run db:seed` |
 
 ## Variables de entorno (frontend)
