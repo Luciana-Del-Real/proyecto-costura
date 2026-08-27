@@ -109,16 +109,16 @@ export default function Checkout() {
             </div>
           </div>
 
-          <div className="card-glow p-6">
+          <div className="p-6">
             <h2 className="font-display font-bold text-text-ink text-2xl mb-4">Instrucciones de pago</h2>
             
-            <div className="card-glow rounded-xl p-4 mb-4 text-sm text-text-ink">
+            <div className="mb-4 text-sm text-text-ink">
               <p className="mb-3"><strong>1) Transferí a la cuenta:</strong></p>
               
-              <div className="space-y-3 mb-4">
+              <div className="mb-4">
                 {(PAYMENT_INFO[user?.country === 'AUD' ? 'AUD' : 'ARS']).map((field) => (
                   field.link ? (
-                    <div key={field.key} className="flex items-center justify-between bg-white rounded-lg p-3 border border-border">
+                    <div key={field.key} className="flex items-center justify-between py-3 border-b border-border last:border-0">
                       <div className="min-w-0">
                         <span className="text-xs text-text-tan block mb-0.5">{field.label}</span>
                         <span className="text-text-ink font-semibold truncate block">{field.value}</span>
@@ -133,7 +133,7 @@ export default function Checkout() {
                       </a>
                     </div>
                   ) : (
-                    <div key={field.key} className="flex items-center justify-between bg-white rounded-lg p-3 border border-border">
+                    <div key={field.key} className="flex items-center justify-between py-3 border-b border-border last:border-0">
                       <div>
                         <span className="text-xs text-text-tan block mb-0.5">{field.label}</span>
                         <span className="font-mono text-text-ink font-semibold">{field.value}</span>
@@ -153,10 +153,10 @@ export default function Checkout() {
                 ))}
               </div>
 
-              <p><strong>2) Hacé clic en "Solicitar acceso"</strong> debajo para registrar tu pedido en la plataforma.</p>
+              <p className="mt-6"><strong>2) Hacé clic en "Solicitar acceso"</strong> debajo para registrar tu pedido en la plataforma.</p>
             </div>
 
-            <div className="card-soft rounded-xl p-4 mb-6 shadow-sm">
+            <div className="bg-primary-soft/60 rounded-xl p-4 mb-6">
               <div className="flex items-center gap-2 font-bold text-accent mb-2 text-sm uppercase">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
                   <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
