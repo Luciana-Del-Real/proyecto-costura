@@ -7,12 +7,12 @@ import FilePicker from '../FilePicker';
 export default function CourseAttachmentsSection({ setImageFile, coursePdfFiles, setCoursePdfFiles, course, isEditing, onDeleteAttachment }) {
   return (
     <>
-      <div className="bg-white border border-border rounded-xl p-4 md:col-span-2">
+      <div className="md:col-span-2">
         <label className="block text-sm font-bold text-black mb-2">📷 Portada</label>
         <FilePicker accept="image/*" onChange={e => setImageFile(e.target.files[0])} />
       </div>
       {/* PDFs adicionales del curso (multiples) */}
-      <div className="bg-white border border-border rounded-xl p-4">
+      <div>
         <label className="block text-sm font-bold text-black mb-2">📎 PDF's (podés elegir varios)</label>
         <FilePicker accept=".pdf" multiple onChange={e => setCoursePdfFiles(Array.from(e.target.files))} />
         {coursePdfFiles.length > 0 && (
@@ -20,10 +20,10 @@ export default function CourseAttachmentsSection({ setImageFile, coursePdfFiles,
         )}
 
         {isEditing && course?.attachments?.length > 0 && (
-          <div className="mt-4 space-y-2">
-            <p className="text-xs font-bold text-text-ink">PDFs ya subidos:</p>
+          <div className="mt-4">
+            <p className="text-xs font-bold text-text-ink mb-2">PDFs ya subidos:</p>
             {course.attachments.map(att => (
-              <div key={att.id} className="flex items-center justify-between bg-white rounded-lg px-3 py-2 border border-border">
+              <div key={att.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
                 <a href={getImageUrl(att.url)} target="_blank" rel="noreferrer" className="text-sm text-primary underline truncate">{att.filename}</a>
                 <button type="button" onClick={() => onDeleteAttachment(att.id)} className="text-danger text-xs font-bold hover:underline flex-shrink-0 ml-3">Eliminar</button>
               </div>

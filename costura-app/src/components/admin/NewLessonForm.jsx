@@ -4,7 +4,7 @@ import FilePicker from '../FilePicker';
 
 export default function NewLessonForm({ newLesson, setNewLesson, setPdfs, creating, onSubmit }) {
   return (
-    <form onSubmit={onSubmit} className="card-glow p-4 rounded-xl space-y-3 border-2 border-dashed border-primary/40">
+    <form onSubmit={onSubmit} className="p-4 space-y-3">
       <p className="text-sm font-bold text-text-ink">+ Agregar nueva lección</p>
       <input
         required

@@ -11,7 +11,7 @@ export default function LessonEditorItem({
     editedLessons[lesson.id]?.[field] ?? lesson[field];
 
   return (
-    <div id={`lesson-${lesson.id}`} className="card-glow p-4 rounded-xl space-y-3">
+    <div id={`lesson-${lesson.id}`} className="p-4 space-y-3">
       <input
         placeholder="Título"
         value={getLessonField('title')}
@@ -39,13 +39,13 @@ export default function LessonEditorItem({
         />
       </div>
 
-      <div className="p-3 bg-white rounded-xl border border-border">
+      <div>
         <label className="block text-xs font-bold text-text-ink mb-2">📎 Agregar PDFs a esta lección (podés elegir varios)</label>
         <FilePicker accept=".pdf" multiple onChange={e => onLessonPdfChange(lesson.id, Array.from(e.target.files))} />
         {lesson.attachments?.length > 0 && (
-          <div className="mt-3 space-y-2">
+          <div className="mt-3">
             {lesson.attachments.map(att => (
-              <div key={att.id} className="flex items-center justify-between bg-white border border-border rounded-lg px-3 py-2">
+              <div key={att.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
                 <a href={getImageUrl(att.url)} target="_blank" rel="noreferrer" className="text-sm text-primary underline truncate">{att.filename}</a>
                 <button type="button" onClick={() => onDeleteLessonAttachment(att.id)} className="text-danger text-xs font-bold hover:underline flex-shrink-0 ml-3">Eliminar</button>
               </div>
