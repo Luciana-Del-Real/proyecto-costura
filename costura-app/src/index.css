@@ -418,6 +418,19 @@
   box-shadow: 0 0 16px rgba(247, 193, 214, 0.45), 0 8px 24px rgba(247, 193, 214, 0.20);
 }
 
+/* Card plana para datos: mismo fondo/borde/radio que card-glow pero SIN glow
+   ni intensificación en hover. Se usa en tablas, filas, forms, stats y paneles
+   de datos donde el glow sobra; el glow queda reservado para contenido. */
+.card-flat {
+  background: #FFFFFF;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  transition: border-color 0.25s ease;
+}
+.card-flat:hover {
+  border-color: var(--color-border);
+}
+
 /* Línea de costura: separador entre secciones con patrón de puntadas
    fucsia (identidad Grow). Se ve como una costura a máquina: guiones
    cortos y parejos sobre fondo transparente. */

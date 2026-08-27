@@ -93,7 +93,7 @@ export default function AdminUsers() {
         {/* Confirm toggle modal */}
         {confirmToggle && (
           <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-[60] animate-fade-in px-4">
-            <div className="card-glow rounded-2xl p-6 max-w-sm w-full animate-fade-up justify-center text-center font-medium">
+            <div className="card-flat rounded-2xl p-6 max-w-sm w-full animate-fade-up justify-center text-center font-medium">
               <h3 className="font-medium text-text-ink mb-2">
                 {confirmToggle.action === 'deactivate' ? '¿Dar de baja a esta alumna?' : '¿Reactivar esta cuenta?'}
               </h3>
@@ -120,7 +120,7 @@ export default function AdminUsers() {
         {/* Detail modal */}
         {selected && (
           <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 animate-fade-in px-4">
-            <div className="card-glow rounded-2xl p-6 max-w-lg w-full animate-fade-up max-h-[80vh] overflow-y-auto">
+            <div className="card-flat rounded-2xl p-6 max-w-lg w-full animate-fade-up max-h-[80vh] overflow-y-auto">
               <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-3">
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${isActive(selected) ? 'bg-primary-soft text-success' : 'bg-red-50 text-red-400'}`}>
@@ -206,7 +206,7 @@ export default function AdminUsers() {
             <p className="text-text-tan mt-4">{allUsers.length === 0 ? 'Sin alumnos registrados aún.' : 'No se encontraron resultados.'}</p>
           </div>
         ) : (
-          <div className="card-glow rounded-2xl overflow-x-auto animate-fade-up mb-5">
+          <div className="card-flat rounded-2xl overflow-x-auto animate-fade-up mb-5">
             <table className="w-full text-sm min-w-[560px]">
               <thead>
                 {/* Eliminamos el fondo del tr y dejamos que el bg del div principal sea el fondo */}

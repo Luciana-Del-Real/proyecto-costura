@@ -63,7 +63,7 @@ export default function Auth({ defaultTab = 'login' }) {
           </p>
         </div>
 
-        <div className="card-glow rounded-2xl p-8">
+        <div className="card-flat rounded-2xl p-8">
           {error && <p className="text-danger text-sm mb-4 text-center">{error}</p>}
           
           <form onSubmit={handleSubmit} className="space-y-4">

@@ -60,7 +60,7 @@ export default function LessonCommentsSection({ lessonId, comments, draft, sendi
   };
 
   return (
-    <div className="card-glow rounded-2xl p-4 lg:p-5">
+    <div className="card-flat rounded-2xl p-4 lg:p-5">
       <h4 className="font-bold text-text-ink text-sm mb-3">Preguntas sobre esta lección</h4>
 
       {comments?.loading && (

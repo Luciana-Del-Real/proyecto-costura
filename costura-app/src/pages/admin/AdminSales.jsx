@@ -86,14 +86,14 @@ export default function AdminSales() {
       {/* Summary cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8 mt-6">
           {/* Card de Ingresos Totales */}
-          <div className="card-glow rounded-2xl p-6 animate-fade-up">
+          <div className="card-flat rounded-2xl p-6 animate-fade-up">
             <p className="text-xs uppercase tracking-wider font-bold text-text-tan mb-2">Ingresos totales</p>
             <p className="text-lg font-bold text-text-ink">${revenueFiltered.ARS.toLocaleString()} ARS</p>
             <p className="text-lg font-bold text-text-ink">${revenueFiltered.AUD.toLocaleString()} AUD</p>
           </div>
 
           {/* Card de Total de Ventas */}
-          <div className="card-glow rounded-2xl p-6 animate-fade-up-delay-1">
+          <div className="card-flat rounded-2xl p-6 animate-fade-up-delay-1">
             <p className="text-xs uppercase tracking-wider font-bold text-text-tan mb-2">Total de ventas</p>
             <p className="text-3xl font-bold text-text-ink">{approved.length}</p>
           </div>
@@ -101,7 +101,7 @@ export default function AdminSales() {
 
         {/* Revenue bar chart */}
         {salesPerCourse.length > 0 && (
-          <div className="card-glow rounded-2xl p-8 animate-fade-up mb-8">
+          <div className="card-flat rounded-2xl p-8 animate-fade-up mb-8">
             {/* Título con margen inferior para separar del contenido */}
             <h2 className="font-display font-bold text-text-ink text-2xl">Ventas por curso</h2>
             
@@ -133,7 +133,7 @@ export default function AdminSales() {
         )}
 
         {/* Contenedor unificado: bg-white, border-gray-100, bordes redondeados */}
-        <div className="card-glow rounded-2xl overflow-x-auto animate-fade-up mb-8">
+        <div className="card-flat rounded-2xl overflow-x-auto animate-fade-up mb-8">
           
           {/* Cabecera con fondo sutil */}
           <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between gap-3 flex-wrap bg-gray-50/50">

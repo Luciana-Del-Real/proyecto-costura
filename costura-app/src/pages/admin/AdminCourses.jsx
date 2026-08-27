@@ -41,7 +41,7 @@ export default function AdminCourses() {
         </div>
 
         {filtered.length === 0 ? (
-          <div className="text-center py-16 card-glow rounded-2xl">
+          <div className="text-center py-16 card-flat rounded-2xl">
             <h2 className="font-display font-bold text-text-ink text-2xl">
               {courses.length === 0 ? 'Todavía no hay cursos cargados.' : 'Sin resultados para tu búsqueda.'}
             </h2>
@@ -54,7 +54,7 @@ export default function AdminCourses() {
         ) : (
           <div className="space-y-4">
             {filtered.map((course) => (
-              <div key={course.id} className="card-glow rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 shadow-sm">
+              <div key={course.id} className="card-flat rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 shadow-sm">
                 {/* Portada: CourseCover resuelve la URL y muestra el nombre si no hay imagen */}
                 <div className="w-24 h-16 bg-bg-soft rounded-lg overflow-hidden flex-shrink-0">
                   <CourseCover course={course} className="w-full h-full object-cover" />

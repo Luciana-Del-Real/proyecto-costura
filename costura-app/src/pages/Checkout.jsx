@@ -52,7 +52,7 @@ export default function Checkout() {
 
     return (
       <div className="min-h-screen flex items-center justify-center bg-bg-surface px-4">
-          <div className="text-center card-glow p-8 rounded-2xl max-w-md w-full">
+          <div className="text-center card-flat p-8 rounded-2xl max-w-md w-full">
           <Clock className="w-14 h-14 text-primary mx-auto mb-4" strokeWidth={1.5} />
             <h2 className="font-display text-2xl font-bold text-text-ink mb-3">Solicitud de compra enviada</h2>
             <p className="text-text-ink mb-6">

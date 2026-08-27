@@ -69,12 +69,12 @@ export default function AdminPatterns() {
 
         <div className="space-y-4 pb-16">
           {patrones.length === 0 ? (
-            <div className="text-center py-16 card-glow rounded-2xl">
+            <div className="text-center py-16 card-flat rounded-2xl">
               <FileText className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
               <h2 className="font-display font-bold text-text-ink text-2xl mt-4">Todavía no hay patrones cargados.</h2>
             </div>
           ) : filtered.length === 0 ? (
-            <div className="text-center py-16 card-glow rounded-2xl">
+            <div className="text-center py-16 card-flat rounded-2xl">
               <FileText className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
               <h2 className="font-display font-bold text-text-ink text-2xl mt-4">Sin resultados para tu búsqueda.</h2>
               <button onClick={() => setSearch('')} className="btn btn-ghost mt-3 text-sm text-primary hover:text-primary-hover">
@@ -83,7 +83,7 @@ export default function AdminPatterns() {
             </div>
           ) : (
             filtered.map((p) => (
-              <div key={p.id} className="card-glow rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 shadow-sm">
+              <div key={p.id} className="card-flat rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 shadow-sm">
                 {/* Portada o bloque de color */}
                 <div className="w-24 h-16 bg-bg-soft rounded-lg overflow-hidden flex-shrink-0">
                   {p.imagen ? (

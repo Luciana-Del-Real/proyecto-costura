@@ -59,7 +59,7 @@ export default function Profile() {
         </div>
       </div>
 
-      <div className="card-glow rounded-2xl px-4 py-10 animate-fade-up mt-5 mb-5">
+      <div className="card-flat rounded-2xl px-4 py-10 animate-fade-up mt-5 mb-5">
           <div className="flex items-center justify-between mb-5">
             <h2 className="font-display text-text-ink text-3xl">Información personal</h2>
             {!editing && (

@@ -65,7 +65,7 @@ export default function Courses() {
       {/* Contenedor del listado de cursos */}
       <div className="max-w-6xl mx-auto px-1 pb-16">
         {filtered.length === 0 ? (
-          <div className="text-center py-16 card-glow rounded-2xl">
+          <div className="text-center py-16 card-flat rounded-2xl">
             <Search className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
             <h2 className="font-display font-bold text-text-ink text-2xl mt-4">No encontramos cursos con esa búsqueda.</h2>
             <button 

@@ -10,7 +10,7 @@ export default function NotificationsInbox() {
   } = useNotifications();
 
   return (
-    <div className="card-glow rounded-2xl p-5">
+    <div className="card-flat rounded-2xl p-5">
       <div className="flex items-center justify-between mb-4">
         <h2 className="font-display font-bold text-text-ink text-2xl">Notificaciones</h2>
         {unreadCount > 0 && (
@@ -28,7 +28,7 @@ export default function NotificationsInbox() {
       )}
 
       {!notificationsLoading && notificationsError && (
-        <div className="card-glow rounded-xl px-4 py-3 text-sm text-text-ink">
+        <div className="card-flat rounded-xl px-4 py-3 text-sm text-text-ink">
           No se pudieron cargar las notificaciones. Verificá tu conexión e intentá de nuevo más tarde.
         </div>
       )}

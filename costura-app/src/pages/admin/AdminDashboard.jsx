@@ -65,7 +65,7 @@ export default function AdminDashboard() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {stats.map((s, i) => (
-            <div key={i} className="card-glow rounded-xl p-5 transition-all flex flex-col h-full">
+            <div key={i} className="card-flat rounded-xl p-5 transition-all flex flex-col h-full">
               
               {/* Contenedor del label */}
               <div className="flex items-center gap-3 mb-3">
@@ -91,7 +91,7 @@ export default function AdminDashboard() {
         {/* Grid inferior */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Top courses */}
-          <div className="card-glow rounded-xl p-6">
+          <div className="card-flat rounded-xl p-6">
             <div className="flex items-center justify-between mb-5">
               <h2 className="font-display font-bold text-text-ink text-2xl">Cursos</h2>
               <Link to="/admin/cursos" className="text-text-tan text-sm mt-0.5 hover:underline">Ver todos →</Link>
@@ -117,7 +117,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* Recent users */}
-          <div className="card-glow rounded-xl p-6">
+          <div className="card-flat rounded-xl p-6">
             <div className="flex items-center justify-between mb-5">
               <h2 className="font-display font-bold text-text-ink text-2xl">Alumnos</h2>
               <Link to="/admin/usuarios" className="text-text-tan text-sm mt-0.5 hover:underline">Ver todos →</Link>

@@ -81,7 +81,7 @@ export default function ConsultasSection() {
   };
 
   return (
-    <div id="consultas" className="card-glow rounded-xl p-6 mt-6">
+    <div id="consultas" className="card-flat rounded-xl p-6 mt-6">
       <div className="flex items-center justify-between gap-4 mb-4">
         <div>
           <h2 className="font-display font-bold text-text-ink text-2xl">Consultas</h2>

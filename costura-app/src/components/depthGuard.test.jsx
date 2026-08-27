@@ -6,12 +6,14 @@ import { MemoryRouter, Routes, Route } from 'react-router-dom';
  * Depth guard — "no box surface nested inside another box surface".
  *
  * Invariant (from the ui-flat-redesign verify report): a page root must be a
- * plain layout container, and box surfaces (the `card-glow` family) must never
+ * plain layout container, and box surfaces (the `card-glow`/`card-flat`
+ * family) must never
  * appear inside another box surface. Nested boxes are the "card inside card"
  * visual regression this suite guards against.
  *
  * What counts as a BOX (surface): any div whose class string contains
- * `card-glow` (this covers both `card-glow` and `card-glow-soft`).
+ * `card-glow` or `card-flat` (this covers `card-glow`, `card-glow-soft`
+ * and `card-flat`).
  *
  * What does NOT count as a box:
  *   - chips / pills / status badges        (spans with rounded-full)
@@ -22,8 +24,8 @@ import { MemoryRouter, Routes, Route } from 'react-router-dom';
  *   - transient alert banners              (bg-*-soft rounded-xl, e.g. the
  *     NotificationsInbox error state) — alerts are feedback, not layout nesting.
  *
- * Note: the NotificationsInbox ERROR state intentionally renders a card-glow
- * alert inside its card-glow panel; the views below exercise the normal list
+ * Note: the NotificationsInbox ERROR state intentionally renders a card-flat
+ * alert inside its card-flat panel; the views below exercise the normal list
  * state, which has no nested box.
  *
  * Each view is rendered to static markup (node env, no DOM) with its contexts
@@ -142,7 +144,7 @@ beforeEach(() => {
   mocks.unreadCount = 0;
 });
 
-const BOX_TOKENS = ['card-glow'];
+const BOX_TOKENS = ['card-glow', 'card-flat'];
 // Exact class string of the page root container (Task 1 regression target).
 const PAGE_ROOT_TOKEN = 'max-w-6xl mx-auto px-1 py-1';
 
@@ -208,7 +210,7 @@ describe('depth guard: no box surface nested inside another box surface', () => 
 
     const html = renderToStaticMarkup(<Profile />);
 
-    expect(html).toContain('card-glow');
+    expect(html).toContain('card-flat');
     expect(countRootContainers(html)).toBe(1);
     expectNoNestedBoxes(html, 'Profile');
   });
@@ -224,7 +226,7 @@ describe('depth guard: no box surface nested inside another box surface', () => 
       </MemoryRouter>,
     );
 
-    expect(html).toContain('card-glow');
+    expect(html).toContain('card-flat');
     expect(html).toContain('Mis cursos');
     expect(countRootContainers(html)).toBe(1);
     expectNoNestedBoxes(html, 'MyCourses');
@@ -267,7 +269,7 @@ describe('depth guard: no box surface nested inside another box surface', () => 
 
     const html = renderToStaticMarkup(<AdminSales />);
 
-    expect(html).toContain('card-glow');
+    expect(html).toContain('card-flat');
     expect(html).toContain('Ingresos totales');
     expect(countRootContainers(html)).toBe(1);
     expectNoNestedBoxes(html, 'AdminSales');
@@ -276,7 +278,7 @@ describe('depth guard: no box surface nested inside another box surface', () => 
   it('AdminRequests keeps one root container and a single requests box', () => {
     const html = renderToStaticMarkup(<AdminRequests />);
 
-    expect(html).toContain('card-glow');
+    expect(html).toContain('card-flat');
     expect(html).toContain('Solicitudes pendientes');
     expect(countRootContainers(html)).toBe(1);
     expectNoNestedBoxes(html, 'AdminRequests');
@@ -289,7 +291,7 @@ describe('depth guard: no box surface nested inside another box surface', () => 
       </MemoryRouter>,
     );
 
-    expect(html).toContain('card-glow');
+    expect(html).toContain('card-flat');
     expect(html).toContain('Nuevo curso');
     expectNoNestedBoxes(html, 'AdminCourseForm');
   });
@@ -318,7 +320,7 @@ describe('depth guard: no box surface nested inside another box surface', () => 
 
     const html = renderToStaticMarkup(<NotificationsInbox />);
 
-    expect(html).toContain('card-glow');
+    expect(html).toContain('card-flat');
     expect(html).toContain('Aprobada');
     expectNoNestedBoxes(html, 'NotificationsInbox');
   });

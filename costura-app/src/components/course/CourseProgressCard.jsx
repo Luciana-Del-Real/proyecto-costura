@@ -2,7 +2,7 @@
 // de avance y descarga del certificado cuando se completa el 100%.
 export default function CourseProgressCard({ prog, completedCount, total, downloadingCert, onDownloadCertificate }) {
   return (
-    <div className="min-w-[220px] card-glow rounded-2xl p-4">
+    <div className="min-w-[220px] card-flat rounded-2xl p-4">
       <div className="flex items-center justify-between text-sm text-text-ink mb-2">
         <span>Progreso del curso</span>
         <span className="font-bold text-primary">{prog}%</span>
