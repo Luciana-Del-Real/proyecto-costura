@@ -55,9 +55,9 @@ Chain strategy: pending
 
 ## Phase 5: Providers
 
-- [ ] 5.1 Create `src/components/providers.jsx`: `Providers({ children })` nests Auth > CourseCatalog > Purchase > Progress > Favorites > Notifications > Admin exactly.
-- [ ] 5.2 Modify `src/App.jsx`: `BrowserRouter` outside `<Providers>`, routes inside; remove nested gate.
-- [ ] 5.3 Update `src/components/smoke.test.jsx` imports/assertions as needed; `npm test` green.
+- [x] 5.1 Create `src/components/providers.jsx`: `Providers({ children })` nests Auth > CourseCatalog > Purchase > Progress > Favorites > Notifications > Admin exactly.
+- [x] 5.2 Modify `src/App.jsx`: `BrowserRouter` outside `<Providers>`, routes inside; remove nested gate.
+- [x] 5.3 Update `src/components/smoke.test.jsx` imports/assertions as needed; `npm test` green.
 
 ## Phase 6: AdminCourseForm Hygiene
 

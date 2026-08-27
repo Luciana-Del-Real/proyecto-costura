@@ -1,11 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
-import { CourseCatalogProvider } from './context/CourseCatalogContext';
-import { PurchaseProvider } from './context/PurchaseContext';
-import { ProgressProvider } from './context/ProgressContext';
-import { FavoritesProvider } from './context/FavoritesContext';
-import { NotificationsProvider } from './context/NotificationsContext';
-import { AdminProvider } from './context/AdminContext';
+import Providers from './components/providers';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import AdminNavbar from './components/AdminNavbar';
@@ -57,14 +51,8 @@ function AdminLayout({ children }) {
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <CourseCatalogProvider>
-          <PurchaseProvider>
-            <ProgressProvider>
-              <FavoritesProvider>
-                <NotificationsProvider>
-                  <AdminProvider>
-                    <Routes>
+      <Providers>
+        <Routes>
             {/* Público */}
             <Route path="/" element={<Layout><Home /></Layout>} />
             <Route path="/login" element={<Layout><Auth defaultTab="login" /></Layout>} />
@@ -94,13 +82,7 @@ export default function App() {
             <Route path="/admin/patrones/nuevo" element={<AdminRoute><AdminLayout><AdminPatternForm /></AdminLayout></AdminRoute>} />
             <Route path="/admin/patrones/editar/:id" element={<AdminRoute><AdminLayout><AdminPatternForm /></AdminLayout></AdminRoute>} />
           </Routes>
-                  </AdminProvider>
-                </NotificationsProvider>
-              </FavoritesProvider>
-            </ProgressProvider>
-          </PurchaseProvider>
-        </CourseCatalogProvider>
-      </AuthProvider>
+      </Providers>
     </BrowserRouter>
   );
 }
