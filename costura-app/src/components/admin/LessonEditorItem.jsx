@@ -1,4 +1,5 @@
 import { getImageUrl } from '../../utils/media';
+import FilePicker from '../FilePicker';
 
 // Fila de edición de una lección existente en el curso (rol profesora):
 // campos editables, PDFs a subir/ya subidos y botones de guardar/eliminar.
@@ -40,13 +41,7 @@ export default function LessonEditorItem({
 
       <div className="p-3 bg-white rounded-xl border border-border">
         <label className="block text-xs font-bold text-text-ink mb-2">📎 Agregar PDFs a esta lección (podés elegir varios)</label>
-        <input
-          type="file"
-          accept=".pdf"
-          multiple
-          onChange={e => onLessonPdfChange(lesson.id, Array.from(e.target.files))}
-          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-hover cursor-pointer"
-        />
+        <FilePicker accept=".pdf" multiple onChange={e => onLessonPdfChange(lesson.id, Array.from(e.target.files))} />
         {lesson.attachments?.length > 0 && (
           <div className="mt-3 space-y-2">
             {lesson.attachments.map(att => (

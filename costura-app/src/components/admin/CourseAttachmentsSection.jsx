@@ -1,4 +1,5 @@
 import { getImageUrl } from '../../utils/media';
+import FilePicker from '../FilePicker';
 
 // Sección de adjuntos del curso dentro del formulario: portada + PDFs
 // generales (nuevos a subir y ya subidos). El estado de archivos y el delete
@@ -6,26 +7,14 @@ import { getImageUrl } from '../../utils/media';
 export default function CourseAttachmentsSection({ setImageFile, coursePdfFiles, setCoursePdfFiles, course, isEditing, onDeleteAttachment }) {
   return (
     <>
-<div className="bg-white border border-border rounded-xl p-4 md:col-span-2">
+      <div className="bg-white border border-border rounded-xl p-4 md:col-span-2">
         <label className="block text-sm font-bold text-black mb-2">📷 Portada</label>
-        <input 
-          type="file" 
-          lang="es" 
-          accept="image/*" 
-          onChange={e => setImageFile(e.target.files[0])} 
-          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-hover cursor-pointer" 
-        />
+        <FilePicker accept="image/*" onChange={e => setImageFile(e.target.files[0])} />
       </div>
       {/* PDFs adicionales del curso (multiples) */}
       <div className="bg-white border border-border rounded-xl p-4">
         <label className="block text-sm font-bold text-black mb-2">📎 PDF's (podés elegir varios)</label>
-        <input
-          type="file"
-          accept=".pdf"
-          multiple
-          onChange={e => setCoursePdfFiles(Array.from(e.target.files))}
-          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-hover cursor-pointer"
-        />
+        <FilePicker accept=".pdf" multiple onChange={e => setCoursePdfFiles(Array.from(e.target.files))} />
         {coursePdfFiles.length > 0 && (
           <p className="text-xs text-text-ink mt-2">{coursePdfFiles.length} archivo(s) seleccionados para subir al guardar.</p>
         )}
