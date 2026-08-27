@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { FileText } from 'lucide-react';
 import { get } from '../services/api';
 import { getImageUrl } from '../utils/media';
+import PageHeader from '../components/PageHeader';
 
 const niveles = ['Todos', 'Principiante', 'Intermedio', 'Avanzado'];
 
@@ -35,13 +36,10 @@ export default function PatronesGratis() {
 
   return (
     <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
-      {/* Banner principal */}
-      <div className="bg-white rounded-2xl border-2 border-primary shadow-md px-4 py-10 animate-fade-up mt-5 mb-5">
-        <div className="max-w-6xl mx-auto">
-          <h1 className="font-display text-3xl md:text-4xl font-bold text-text-ink mb-2">Patrones gratis</h1>
-          <p className="text-text-muted">Descargá patrones en PDF para coser en casa, paso a paso</p>
-        </div>
-      </div>
+      <PageHeader
+        title="Patrones gratis"
+        subtitle="Descargá patrones en PDF para coser en casa, paso a paso"
+      />
 
       {/* Filtro por nivel */}
       <div className="max-w-6xl mx-auto px-1 mt-6 mb-8 flex flex-wrap gap-3">
