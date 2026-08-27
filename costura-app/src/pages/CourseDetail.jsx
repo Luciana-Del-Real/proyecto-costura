@@ -13,6 +13,8 @@ import useLessonComments from '../hooks/useLessonComments';
 import CoursePreviewView from '../components/course/CoursePreviewView';
 import CourseProgressCard from '../components/course/CourseProgressCard';
 import LessonAccordionItem from '../components/course/LessonAccordionItem';
+import LessonListItem from '../components/course/LessonListItem';
+import LessonContent from '../components/course/LessonContent';
 
 export default function CourseDetail() {
   const { id } = useParams();
@@ -194,6 +196,10 @@ function CourseLearningView({ course, progress, getProgress, completeLesson }) {
     ...(course.attachments || []),
   ];
 
+  // Lección seleccionada (desktop): el panel derecho muestra su contenido.
+  const activeLesson = course.lessons.find(l => l.id === openLessonId);
+  const activeIdx = activeLesson ? course.lessons.findIndex(l => l.id === activeLesson.id) : -1;
+
   return (
     <div className="min-h-screen bg-bg-surface pb-12">
       <div className="max-w-4xl mx-auto px-4 py-8 lg:py-10 animate-fade-in">
@@ -247,8 +253,54 @@ function CourseLearningView({ course, progress, getProgress, completeLesson }) {
           </div>
         </div>
 
-        {/* Desglose de lecciones (acordeón) */}
-        <div className="space-y-3">
+        {/* Desktop: layout de dos paneles (lista de lecciones + contenido) */}
+        <div className="hidden lg:grid lg:grid-cols-[320px_1fr] lg:gap-6 lg:items-start">
+          {/* Lista compacta de lecciones (panel izquierdo): seleccionar una
+              lección la resalta y muestra su contenido en el panel derecho */}
+          <div className="space-y-2">
+            {course.lessons.map((lesson, idx) => {
+              const blocked = !isSequentialAllowed(idx);
+              const completed = isCompleted(lesson.id);
+
+              return (
+                <LessonListItem
+                  key={lesson.id}
+                  lesson={lesson}
+                  idx={idx}
+                  isActive={openLessonId === lesson.id}
+                  blocked={blocked}
+                  completed={completed}
+                  onClick={() => toggleLesson(lesson, blocked)}
+                />
+              );
+            })}
+          </div>
+
+          {/* Contenido de la lección seleccionada (panel derecho) */}
+          <div className="card-flat rounded-2xl p-6">
+            {activeLesson ? (
+              <LessonContent
+                lesson={activeLesson}
+                idx={activeIdx}
+                total={course.lessons.length}
+                completed={isCompleted(activeLesson.id)}
+                comments={commentsByLesson[activeLesson.id]}
+                draft={drafts[activeLesson.id] || ''}
+                sendingFor={sendingFor}
+                onComplete={handleCompleteLesson}
+                onSendComment={sendComment}
+                onDraftChange={setDraft}
+                onNext={() => toggleLesson(course.lessons[activeIdx + 1], false)}
+                canComplete={!isCompleted(activeLesson.id) && isSequentialAllowed(activeIdx)}
+              />
+            ) : (
+              <p className="text-text-ink">Seleccioná una lección</p>
+            )}
+          </div>
+        </div>
+
+        {/* Mobile: acordeón clásico (comportamiento actual, sin cambios) */}
+        <div className="lg:hidden space-y-3">
           {course.lessons.map((lesson, idx) => {
             const blocked = !isSequentialAllowed(idx);
             const completed = isCompleted(lesson.id);

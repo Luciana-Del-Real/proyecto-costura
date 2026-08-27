@@ -19,6 +19,8 @@ import NewLessonForm from './admin/NewLessonForm';
 import CoursePreviewView from './course/CoursePreviewView';
 import CourseProgressCard from './course/CourseProgressCard';
 import LessonAccordionItem from './course/LessonAccordionItem';
+import LessonListItem from './course/LessonListItem';
+import LessonContent from './course/LessonContent';
 import LessonCommentsSection from './course/LessonCommentsSection';
 
 const noop = vi.fn();
@@ -170,5 +172,41 @@ describe('extracted components smoke render', () => {
     );
     expect(html).toContain('Preguntas sobre esta lección');
     expect(html).toContain('Enviar pregunta');
+  });
+
+  it('LessonListItem renders the compact desktop row with status', () => {
+    const html = renderToStaticMarkup(
+      <LessonListItem
+        lesson={emptyLesson}
+        idx={0}
+        isActive={true}
+        blocked={false}
+        completed={false}
+        onClick={noop}
+      />,
+    );
+    expect(html).toContain('Lección 1');
+    expect(html).toContain('12 min');
+  });
+
+  it('LessonContent renders the lesson content block', () => {
+    const html = renderToStaticMarkup(
+      <LessonContent
+        lesson={{ ...emptyLesson, description: 'Descripción de la lección' }}
+        idx={0}
+        total={2}
+        completed={false}
+        comments={null}
+        draft=""
+        sendingFor={null}
+        onComplete={noop}
+        onSendComment={noop}
+        onDraftChange={noop}
+        onNext={noop}
+        canComplete={true}
+      />,
+    );
+    expect(html).toContain('Descripción de la lección');
+    expect(html).toContain('Marcar como completada');
   });
 });
