@@ -5,6 +5,7 @@ import { usePurchases } from '../context/PurchaseContext';
 import { useProgress } from '../context/ProgressContext';
 import { getImageUrl } from '../utils/media';
 import NotificationsInbox from '../components/NotificationsInbox';
+import PageHeader from '../components/PageHeader';
 
 export default function MyCourses() {
   const { purchases } = usePurchases();
@@ -14,12 +15,10 @@ export default function MyCourses() {
 
   return (
     <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
-      <div className="bg-white rounded-2xl border-2 border-primary shadow-md px-4 py-10 animate-fade-up mt-5 mb-5">
-        <div className="max-w-6xl mx-auto">
-          <h1 className="font-display text-3xl font-bold text-text-ink">Mis cursos</h1>
-          <p className="text-text-ink mt-1">{myCourses.length} curso{myCourses.length !== 1 ? 's' : ''} adquirido{myCourses.length !== 1 ? 's' : ''}</p>
-        </div>
-      </div>
+      <PageHeader
+        title="Mis cursos"
+        subtitle={`${myCourses.length} curso${myCourses.length !== 1 ? 's' : ''} adquirido${myCourses.length !== 1 ? 's' : ''}`}
+      />
 
       <div className="max-w-6xl mx-auto px-4 py-8">
         {myCourses.length === 0 ? (
