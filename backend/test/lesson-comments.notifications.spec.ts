@@ -111,7 +111,7 @@ describe('Notification flows (purchase request + lesson comments)', () => {
           title: 'Nueva solicitud de curso',
           message: expect.stringContaining('Ana'),
           read: false,
-          link: '/admin/ventas',
+          link: '/admin/solicitudes?highlight=p-1',
         },
       });
       expect(mockPrisma.notification.create).toHaveBeenCalledWith({
@@ -120,7 +120,7 @@ describe('Notification flows (purchase request + lesson comments)', () => {
           title: 'Nueva solicitud de curso',
           message: expect.stringContaining('Curso de prueba'),
           read: false,
-          link: '/admin/ventas',
+          link: '/admin/solicitudes?highlight=p-1',
         },
       });
     });

@@ -78,7 +78,7 @@ export class PurchasesService {
         'Nueva solicitud de curso',
         `La alumna ${buyer?.name ?? '...'} solicitó el curso "${course.title}". Revisá la solicitud para darle acceso.`,
         tx,
-        '/admin/ventas',
+        `/admin/solicitudes?highlight=${purchase.id}`,
       );
 
       return purchase;

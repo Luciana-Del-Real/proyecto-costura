@@ -278,7 +278,11 @@ describe('depth guard: no box surface nested inside another box surface', () => 
   });
 
   it('AdminRequests keeps one root container and a single requests box', () => {
-    const html = renderToStaticMarkup(<AdminRequests />);
+    const html = renderToStaticMarkup(
+      <MemoryRouter initialEntries={['/admin/solicitudes']}>
+        <AdminRequests />
+      </MemoryRouter>,
+    );
 
     expect(html).toContain('card-flat');
     expect(html).toContain('Solicitudes pendientes');

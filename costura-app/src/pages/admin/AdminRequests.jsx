@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import PageHeader from '../../components/PageHeader';
 import { usePurchases } from '../../context/PurchaseContext';
 import { formatMoney } from '../../utils/currency';
@@ -11,6 +12,27 @@ export default function AdminRequests() {
   const [loading, setLoading] = useState(false);
   const [processingId, setProcessingId] = useState(null);
   const [search, setSearch] = useState('');
+  // Solicitud a resaltar al llegar desde la campanita (?highlight=<id>): se
+  // marca unos segundos y luego se desvanece.
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [highlightId, setHighlightId] = useState(() => searchParams.get('highlight') || null);
+  const highlightRef = useRef(null);
+
+  useEffect(() => {
+    if (!highlightId) return undefined;
+    const timer = setTimeout(() => {
+      setHighlightId(null);
+      setSearchParams({}, { replace: true });
+    }, 4000);
+    return () => clearTimeout(timer);
+  }, [highlightId, setSearchParams]);
+
+  // Cuando la solicitud resaltada está en pantalla, scrolleá hasta ella
+  useEffect(() => {
+    if (highlightId && highlightRef.current) {
+      highlightRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [highlightId, requests]);
 
   useEffect(() => {
     load();
@@ -22,6 +44,28 @@ export default function AdminRequests() {
     try {
       const data = await getPendingRequests(page, limit);
       setRequests(Array.isArray(data) ? data : []);
+
+      // Si llegamos desde la campanita (?highlight=<id>) y la solicitud no
+      // está en la página actual, buscamos la página que la contiene.
+      if (highlightId) {
+        const found = (Array.isArray(data) ? data : []).some(r => r.id === highlightId);
+        if (!found) {
+          let foundPage = null;
+          let p = 1;
+          const maxPages = 20; // tope de seguridad
+          while (!foundPage && p <= maxPages) {
+            const more = await getPendingRequests(p, limit);
+            if (!Array.isArray(more)) break;
+            if (more.some(r => r.id === highlightId)) { foundPage = p; break; }
+            if (more.length < limit) break;
+            p += 1;
+          }
+          if (foundPage && foundPage !== page) {
+            setPage(foundPage);
+            return;
+          }
+        }
+      }
     } catch (err) {
       console.error('Error cargando solicitudes pendientes', err);
       setRequests([]);
@@ -96,7 +140,13 @@ export default function AdminRequests() {
           ) : (
             <div className="grid gap-3">
               {filtered.map(req => (
-                <div key={req.id} className="p-3 border-b border-border last:border-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div
+                  key={req.id}
+                  ref={highlightId === req.id ? highlightRef : undefined}
+                  className={`p-3 border-b border-border last:border-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors duration-700 ${
+                    highlightId === req.id ? 'bg-primary-soft/70' : ''
+                  }`}
+                >
                   <div>
                     <p className="font-medium text-text-ink">{req.user?.name} <span className="text-xs text-text-tan">({req.user?.email})</span></p>
                     <p className="text-xs text-text-ink">Curso: {req.course?.title} — {formatMoney(req.total ?? req.course?.priceARS, req.user?.country === 'AUD' ? 'AUD' : 'ARS')}</p>
