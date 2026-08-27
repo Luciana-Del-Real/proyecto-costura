@@ -65,6 +65,6 @@ Chain strategy: pending
 
 ## Phase 7: Verification
 
-- [ ] 7.1 Run `npm test` in `costura-app/` — all pass including new unit tests.
-- [ ] 7.2 Run `npm run build` in `costura-app/` — production build succeeds.
-- [ ] 7.3 Manual visual pass: student/admin threads, admin filters, inbox states, editor inputs.
+- [x] 7.1 Run `npm test` in `costura-app/` — all pass including new unit tests.
+- [x] 7.2 Run `npm run build` in `costura-app/` — production build succeeds.
+- [ ] 7.3 Manual visual pass: student/admin threads, admin filters, inbox states, editor inputs. — OWNER work; documented as follow-up in apply-progress.

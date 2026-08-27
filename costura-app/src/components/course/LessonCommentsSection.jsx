@@ -10,7 +10,6 @@ import CommentThread from '../CommentThread';
 // acá quedan el composer principal, los estados de carga/vacío y las labels
 // "Vos"/"Profesora". onSend acepta (lessonId, message, parentId?, imageFile?).
 export default function LessonCommentsSection({ lessonId, comments, draft, sendingFor, onSend, onDraftChange }) {
-  const [replyImage, setReplyImage] = useState(null);
   const [replyPreview, setReplyPreview] = useState('');
   const [mainImage, setMainImage] = useState(null);
   const [mainPreview, setMainPreview] = useState('');
@@ -23,15 +22,20 @@ export default function LessonCommentsSection({ lessonId, comments, draft, sendi
     setPreview(file ? URL.createObjectURL(file) : '');
   };
 
-  const handleReplyImageChange = pickImage(setReplyImage, setReplyPreview);
+  const handleReplyImageChange = (file) => {
+    setReplyPreview(prev => {
+      if (prev) URL.revokeObjectURL(prev);
+      return file ? URL.createObjectURL(file) : '';
+    });
+  };
+
   const handleMainImageChange = pickImage(setMainImage, setMainPreview);
 
   const clearReplyImage = () => {
-    setReplyImage(prev => {
+    setReplyPreview(prev => {
       if (prev) URL.revokeObjectURL(prev);
-      return null;
+      return '';
     });
-    setReplyPreview('');
   };
 
   const clearMainImage = () => {

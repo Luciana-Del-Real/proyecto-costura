@@ -12,19 +12,17 @@ export default function ConsultasSection() {
   } = useAdminComments();
   const [sending, setSending] = useState(false);
   const [showAnswered, setShowAnswered] = useState(false);
-  const [replyImage, setReplyImage] = useState(null);
   const [replyPreview, setReplyPreview] = useState('');
 
   const answeredIds = useMemo(() => new Set(answered.map(({ q }) => q.id)), [answered]);
 
-  const pickImage = (setImage, setPreview) => (file) => {
-    setImage(prev => { if (prev) URL.revokeObjectURL(prev); return file || null; });
-    setPreview(file ? URL.createObjectURL(file) : '');
+  const updateReplyPreview = (file) => {
+    setReplyPreview(prev => {
+      if (prev) URL.revokeObjectURL(prev);
+      return file ? URL.createObjectURL(file) : '';
+    });
   };
-  const clearReplyImage = () => {
-    setReplyImage(prev => { if (prev) URL.revokeObjectURL(prev); return null; });
-    setReplyPreview('');
-  };
+  const clearReplyImage = () => updateReplyPreview(null);
 
   const handleReply = async (comment, message, imageFile) => {
     setSending(true);
@@ -67,7 +65,7 @@ export default function ConsultasSection() {
         labels={labels}
         canReply
         replySending={sending}
-        image={{ preview: replyPreview, onChange: pickImage(setReplyImage, setReplyPreview), onRemove: clearReplyImage }}
+        image={{ preview: replyPreview, onChange: updateReplyPreview, onRemove: clearReplyImage }}
       />
     </div>
   );
