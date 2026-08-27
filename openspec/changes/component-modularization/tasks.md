@@ -49,9 +49,9 @@ Chain strategy: pending
 
 ## Phase 4: NotificationsInbox
 
-- [ ] 4.1 Create `src/components/NotificationsInbox.jsx`: consume `useNotifications`; list, mark-read, mark-all, delete, loading/error/empty states unchanged.
-- [ ] 4.2 Create `src/components/NotificationsInbox.test.jsx`: mock context; assert loading/error/empty + mark/delete actions.
-- [ ] 4.3 Rewire `src/pages/MyCourses.jsx`: replace inline panel with `<NotificationsInbox />`; keep course list/header.
+- [x] 4.1 Create `src/components/NotificationsInbox.jsx`: consume `useNotifications`; list, mark-read, mark-all, delete, loading/error/empty states unchanged.
+- [x] 4.2 Create `src/components/NotificationsInbox.test.jsx`: mock context; assert loading/error/empty + mark/delete actions.
+- [x] 4.3 Rewire `src/pages/MyCourses.jsx`: replace inline panel with `<NotificationsInbox />`; keep course list/header.
 
 ## Phase 5: Providers
 
