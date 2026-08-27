@@ -26,7 +26,7 @@ export default function Courses() {
 
   return (
     <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
-      <PageHeader title="Todos los cursos" />
+      <PageHeader title="Todos los cursos" subtitle="Encontrá el curso perfecto para vos" />
 
       {/* CONTENEDOR UNIFICADO: Agregamos mt-6 para controlar la distancia exacta con el texto */}
       <div className="max-w-6xl mx-auto px-1 mt-6 mb-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
