@@ -68,7 +68,7 @@ export default function AdminSales() {
       <PageHeader title="Historial de ventas" />
 
       {/* Summary cards */}
-        <div className="grid grid-cols-2 gap-4 mb-8 mt-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8 mt-6">
           {/* Card de Ingresos Totales */}
           <div className="card-glow rounded-2xl p-6 animate-fade-up">
             <p className="text-xs uppercase tracking-wider font-bold text-text-tan mb-2">Ingresos totales</p>
@@ -91,12 +91,12 @@ export default function AdminSales() {
             
             <div className="space-y-6">
               {salesPerCourse.map(c => (
-                <div key={c.id} className="flex items-center gap-6">
+                <div key={c.id} className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
                   {/* Título del curso */}
-                  <p className="text-sm font-medium text-text-ink w-40 truncate flex-shrink-0">{c.title}</p>
+                  <p className="text-sm font-medium text-text-ink w-full sm:w-40 truncate flex-shrink-0">{c.title}</p>
                   
                   {/* Barra de progreso */}
-                  <div className="flex-1 bg-gray-100 rounded-full h-3 overflow-hidden">
+                  <div className="flex-none sm:flex-1 w-full bg-gray-100 rounded-full h-3 overflow-hidden">
                     <div
                       className="bg-primary h-3 rounded-full transition-all duration-700"
                       style={{ width: `${(c.count / maxCount) * 100}%` }}
@@ -104,7 +104,7 @@ export default function AdminSales() {
                   </div>
                   
                   {/* Estadísticas */}
-                  <div className="text-right w-32">
+                  <div className="text-right w-full sm:w-32">
                     <span className="text-xs font-bold text-text-ink block">{c.count} venta{c.count !== 1 ? 's' : ''}</span>
                     <span className="text-[10px] text-text-tan block font-medium">
                       ${c.revenueByCurrency.ARS.toLocaleString()} ARS · ${c.revenueByCurrency.AUD.toLocaleString()} AUD
@@ -189,7 +189,7 @@ export default function AdminSales() {
               </table>
 
               {/* Pie de tabla con estilo limpio */}
-              <div className="px-8 py-4 border-t border-gray-100 flex justify-between items-center bg-gray-50/50">
+              <div className="px-8 py-4 border-t border-gray-100 flex justify-between items-center flex-wrap gap-2 bg-gray-50/50">
                 <span className="text-xs text-text-tan">{filtered.length} registro{filtered.length !== 1 ? 's' : ''}</span>
                 <div className="text-right">
                     <p className="font-bold text-text-ink text-sm">Total: ${revenueFiltered.ARS.toLocaleString()} ARS</p>

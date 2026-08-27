@@ -55,14 +55,14 @@ export default function NotificationsInbox() {
                 {!n.read && (
                   <button
                     onClick={() => markAsRead(n.id)}
-                    className="btn btn-ghost text-xs text-primary hover:text-primary-hover"
+                    className="btn btn-ghost text-xs text-primary hover:text-primary-hover h-auto min-h-9 px-3 sm:h-11 sm:px-6"
                   >
                     Marcar como leída
                   </button>
                 )}
                 <button
                   onClick={() => deleteNotification(n.id)}
-                  className="btn btn-ghost text-xs text-danger hover:text-danger-hover"
+                  className="btn btn-ghost text-xs text-danger hover:text-danger-hover h-auto min-h-9 px-3 sm:h-11 sm:px-6"
                 >
                   Eliminar
                 </button>

@@ -24,7 +24,7 @@ export default function LessonEditorItem({
         onChange={e => onFieldChange(lesson.id, 'description', e.target.value)}
         className="w-full p-2 rounded-lg border border-border h-20"
       />
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <input
           placeholder="Duración (ej. 12 min)"
           value={getLessonField('duration')}

@@ -63,7 +63,7 @@ export default function AdminDashboard() {
         
         <WelcomeToast message="¡Bienvenida!" />
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {stats.map((s, i) => (
             <div key={i} className="card-glow rounded-xl p-5 transition-all flex flex-col h-full">
               
@@ -109,7 +109,7 @@ export default function AdminDashboard() {
                       <p className="text-xs text-text-ink opacity-70">{c.buyers} venta{c.buyers !== 1 ? 's' : ''}</p>
                     </div>
                     <span className="text-sm font-semibold text-accent">${c.priceARS.toLocaleString()} ARS</span>
-                    <span className="text-sm text-text-ink">${c.priceAUD.toLocaleString()} AUD</span>
+                    <span className="text-sm text-text-ink hidden sm:inline">${c.priceAUD.toLocaleString()} AUD</span>
                   </div>
                 ))}
               </div>

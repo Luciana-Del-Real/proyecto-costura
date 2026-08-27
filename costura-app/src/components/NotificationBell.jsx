@@ -57,7 +57,7 @@ export default function NotificationBell() {
       </button>
 
       {notifOpen && (
-        <div className="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-lg border border-border overflow-hidden animate-slide-down z-50">
+        <div className="absolute right-0 mt-2 w-80 max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-lg border border-border overflow-hidden animate-slide-down z-50">
           <div className="px-4 py-3 border-b border-border flex items-center justify-between">
             <p className="text-xs font-semibold text-text-ink">Notificaciones</p>
             {unreadCount > 0 && (

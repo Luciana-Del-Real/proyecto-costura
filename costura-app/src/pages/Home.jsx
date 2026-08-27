@@ -144,16 +144,16 @@ export default function Home() {
           <RevealSection>
             <h2 className="font-display font-bold text-4xl text-text-ink text-center mb-10">Nuestras especialidades</h2>
           </RevealSection>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
             {categories.map((cat, i) => (
               <RevealSection key={i} animation="reveal" delay={delays[i]}>
-                <div className="card-glow feature-card rounded-2xl p-6 text-center h-full cursor-default" aria-disabled="true">
+                <div className="card-glow feature-card rounded-2xl p-4 md:p-6 text-center h-full cursor-default" aria-disabled="true">
                   <div className="flex items-center justify-center mb-2">
                     <div className="icon-wrapper" aria-hidden>
                       <cat.Icon className="specialty-icon" color="var(--color-accent)" aria-hidden />
                     </div>
                   </div>
-                  <p className="font-body text-text-ink text-lg font-bold mb-2 leading-tight">{cat.label}</p>
+                  <p className="font-body text-text-ink text-base md:text-lg font-bold mb-2 leading-tight">{cat.label}</p>
                 </div>
               </RevealSection>
             ))}
