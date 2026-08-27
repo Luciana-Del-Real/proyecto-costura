@@ -37,7 +37,7 @@ export default function AdminNavbar() {
           </Link>
 
           {/* Desktop links */}
-          <div className="hidden md:flex items-center gap-6">
+          <div className="hidden lg:flex items-center gap-6">
             {navLinks.map(link => (
               <Link key={link.to} to={link.to}
                 className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${
@@ -51,7 +51,7 @@ export default function AdminNavbar() {
           </div>
 
           {/* User info */}
-          <div className="hidden md:flex items-center gap-4">
+          <div className="hidden lg:flex items-center gap-4">
             <NotificationBell />
             <div className="text-right">
               <p className="text-primary text-xs font-semibold">{user?.name}</p>
@@ -64,7 +64,7 @@ export default function AdminNavbar() {
           </div>
 
           {/* Mobile menu button */}
-          <button className="btn btn-icon md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
+          <button className="btn btn-icon lg:hidden" onClick={() => setMenuOpen(!menuOpen)}>
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {menuOpen
                 ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -75,7 +75,7 @@ export default function AdminNavbar() {
 
         {/* Mobile menu */}
         {menuOpen && (
-          <div className="md:hidden bg-white border-t border-border px-4 py-3 flex flex-col gap-2">
+          <div className="lg:hidden bg-white border-t border-border px-4 py-3 flex flex-col gap-2">
             {navLinks.map(link => (
               <Link key={link.to} to={link.to} onClick={() => setMenuOpen(false)}
                 className="text-text-ink text-sm py-2">
