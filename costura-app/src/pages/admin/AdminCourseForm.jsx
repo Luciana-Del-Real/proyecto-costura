@@ -191,7 +191,7 @@ export default function AdminCourseForm() {
       <div className="max-w-2xl mx-auto">
         <button onClick={() => navigate('/admin/cursos')} className="btn btn-ghost mb-6 text-sm">← Volver al listado</button>
 
-        <div className="card-glow rounded-2xl p-8 mb-8">
+        <div className="card-glow rounded-2xl p-8">
           <h2 className="font-display font-bold text-text-ink text-2xl mb-8 border-b pb-4">{isEditing ? 'Editar curso' : 'Nuevo curso'}</h2>
           {saved && <div className="bg-primary-soft text-success text-sm rounded-xl px-4 py-3 mb-4">✓ Guardado correctamente</div>}
 
@@ -207,43 +207,44 @@ export default function AdminCourseForm() {
             course={course}
             onDeleteAttachment={handleDeleteCourseAttachment}
           />
+
+          {/* Lecciones: solo disponible una vez que el curso ya existe */}
+          {isEditing && (
+            <>
+              <div className="seam-divider my-10" aria-hidden="true" />
+              <h3 className="font-display font-bold text-text-ink text-2xl mb-6 border-b pb-4">Lecciones</h3>
+
+              <div className="space-y-4 mb-8">
+                {(course?.lessons || []).map((lesson) => (
+                  <LessonEditorItem
+                    key={lesson.id}
+                    lesson={lesson}
+                    editedLessons={editedLessons}
+                    onFieldChange={setLessonField}
+                    onLessonPdfChange={handleLessonPdfChange}
+                    savingLessonId={savingLessonId}
+                    onSaveLesson={handleSaveLesson}
+                    onDeleteLesson={handleDeleteLesson}
+                    onDeleteLessonAttachment={handleDeleteLessonAttachment}
+                  />
+                ))}
+
+                {(!course?.lessons || course.lessons.length === 0) && (
+                  <p className="text-sm text-text-ink">Este curso todavía no tiene lecciones.</p>
+                )}
+              </div>
+
+              {/* Nueva lección */}
+              <NewLessonForm
+                newLesson={newLesson}
+                setNewLesson={setNewLesson}
+                setPdfs={setNewLessonPdfs}
+                creating={creatingLesson}
+                onSubmit={handleCreateLesson}
+              />
+            </>
+          )}
         </div>
-
-        {/* Lecciones: solo disponible una vez que el curso ya existe */}
-        {isEditing && (
-          <div className="card-glow rounded-2xl p-8">
-            <h3 className="font-display font-bold text-text-ink text-2xl mb-6 border-b pb-4">Lecciones</h3>
-
-            <div className="space-y-4 mb-8">
-              {(course?.lessons || []).map((lesson) => (
-                <LessonEditorItem
-                  key={lesson.id}
-                  lesson={lesson}
-                  editedLessons={editedLessons}
-                  onFieldChange={setLessonField}
-                  onLessonPdfChange={handleLessonPdfChange}
-                  savingLessonId={savingLessonId}
-                  onSaveLesson={handleSaveLesson}
-                  onDeleteLesson={handleDeleteLesson}
-                  onDeleteLessonAttachment={handleDeleteLessonAttachment}
-                />
-              ))}
-
-              {(!course?.lessons || course.lessons.length === 0) && (
-                <p className="text-sm text-text-ink">Este curso todavía no tiene lecciones.</p>
-              )}
-            </div>
-
-            {/* Nueva lección */}
-            <NewLessonForm
-              newLesson={newLesson}
-              setNewLesson={setNewLesson}
-              setPdfs={setNewLessonPdfs}
-              creating={creatingLesson}
-              onSubmit={handleCreateLesson}
-            />
-          </div>
-        )}
       </div>
     </div>
   );
