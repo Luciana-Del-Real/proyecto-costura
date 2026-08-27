@@ -197,7 +197,7 @@ function CourseLearningView({ course, progress, getProgress, completeLesson }) {
 
   return (
     <div className="min-h-screen bg-bg-surface pb-12">
-      <div className="max-w-4xl mx-auto px-4 py-8 lg:py-10 animate-fade-in">
+      <div className="max-w-6xl mx-auto px-4 py-8 lg:py-10 animate-fade-in">
         <Link to="/mis-cursos" className="text-primary text-sm hover:text-primary-hover inline-flex items-center gap-1 mb-4">
           ← Volver a mis cursos
         </Link>
