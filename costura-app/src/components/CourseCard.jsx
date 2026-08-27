@@ -18,16 +18,17 @@ export default function CourseCard({ course }) {
   const prog = owned ? getProgress(course.id, course.lessons.length) : 0;
 
   return (
-    // Tarjeta con borde rosa suave y fondo blanco (identidad Grow)
-    <div className="card-glow-soft rounded-2xl overflow-hidden hover:-translate-y-1.5 transition-all duration-300 group flex flex-col justify-between h-full min-h-[400px]">
+    // Tarjeta con borde rosa suave y fondo blanco (identidad Grow). Sin hover:
+    // la foto tiene su propio borde y separación, no se levanta ni hace zoom.
+    <div className="card-glow-soft rounded-2xl p-3 flex flex-col justify-between h-full min-h-[400px]">
       <div>
         {/* Toda la card lleva a la vista previa del curso (sin permisos) */}
         <Link to={`/curso/${course.id}`} className="block">
-          {/* Contenedor de la Imagen con efecto Zoom */}
-          <div className="relative overflow-hidden aspect-video bg-gray-50">
+          {/* Contenedor de la Imagen con borde propio, separado del borde de la card */}
+          <div className="relative overflow-hidden aspect-video bg-gray-50 rounded-xl border border-border">
             <CourseCover
               course={course}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              className="w-full h-full object-cover"
             />
             
             {/* Badge de Nivel dinámico: claves normalizadas a minúsculas para el enum UPPERCASE del backend */}
