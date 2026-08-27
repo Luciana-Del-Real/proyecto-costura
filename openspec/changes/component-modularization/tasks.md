@@ -43,9 +43,9 @@ Chain strategy: pending
 
 ## Phase 3: useAdminComments
 
-- [ ] 3.1 Create `src/hooks/useAdminComments.js`: `{ items, filters, setCourseFilter, setStudentFilter, courseOptions, unanswered, answered, loading, error, refresh, reply }`; fetch via `get`; `reply` via `post`/`postForm` + refresh; FIFO unanswered / reverse answered.
-- [ ] 3.2 Create `src/hooks/useAdminComments.test.jsx`: mock `services/api`; assert fetch, filters, partition order, reply JSON/FormData, loading/error.
-- [ ] 3.3 Rewire `ConsultasSection.jsx` to consume hook; remove inline fetch/filter logic; ≤150 lines.
+- [x] 3.1 Create `src/hooks/useAdminComments.js`: `{ items, filters, setCourseFilter, setStudentFilter, courseOptions, unanswered, answered, loading, error, refresh, reply }`; fetch via `get`; `reply` via `post`/`postForm` + refresh; FIFO unanswered / reverse answered.
+- [x] 3.2 Create `src/hooks/useAdminComments.test.jsx`: mock `services/api`; assert fetch, filters, partition order, reply JSON/FormData, loading/error.
+- [x] 3.3 Rewire `ConsultasSection.jsx` to consume hook; remove inline fetch/filter logic; ≤150 lines.
 
 ## Phase 4: NotificationsInbox
 

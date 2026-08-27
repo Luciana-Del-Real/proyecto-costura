@@ -1,136 +1,35 @@
-import { useEffect, useMemo, useState } from 'react';
-import { get, post, postForm } from '../../services/api';
-import { groupCommentsByParent } from '../../utils/commentTree';
+import { useMemo, useState } from 'react';
+import useAdminComments from '../../hooks/useAdminComments';
 import CommentThread from '../CommentThread';
 
-// Bandeja de consultas del dashboard del admin: todas las preguntas de las
-// alumnas agrupadas por curso → lección, sin responder primero (FIFO), con
-// respuesta inline (mismo contrato de hilos que el editor de curso) y filtros
-// por curso y por alumna. Una consulta está respondida cuando tiene algún
-// descendiente escrito por un ADMIN. El árbol y el formulario de respuesta
-// viven en CommentThread; acá quedan el fetch, los filtros y los encabezados.
+// Bandeja de consultas del admin: vista pura sobre useAdminComments (fetch,
+// filtros, partición y envío viven en el hook). Acá quedan encabezados,
+// filtros, toggle de respondidas y estado de envío del formulario inline.
 export default function ConsultasSection() {
-  const [comments, setComments] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-  const [courseFilter, setCourseFilter] = useState('all');
-  const [studentFilter, setStudentFilter] = useState('');
-  const [replyImage, setReplyImage] = useState(null);
-  const [replyPreview, setReplyPreview] = useState('');
+  const {
+    items, filters, setCourseFilter, setStudentFilter,
+    courseOptions, unanswered, answered, loading, error, reply,
+  } = useAdminComments();
   const [sending, setSending] = useState(false);
   const [showAnswered, setShowAnswered] = useState(false);
+  const [replyImage, setReplyImage] = useState(null);
+  const [replyPreview, setReplyPreview] = useState('');
 
-  const load = async () => {
-    setLoading(true);
-    try {
-      const data = await get('/admin/comments');
-      setComments(data);
-      setError(false);
-    } catch (e) {
-      console.error('Error cargando consultas:', e);
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
+  const answeredIds = useMemo(() => new Set(answered.map(({ q }) => q.id)), [answered]);
+
+  const pickImage = (setImage, setPreview) => (file) => {
+    setImage(prev => { if (prev) URL.revokeObjectURL(prev); return file || null; });
+    setPreview(file ? URL.createObjectURL(file) : '');
   };
-
-  useEffect(() => { load(); }, []);
-
-  const { childrenOf, topLevel } = useMemo(() => groupCommentsByParent(comments), [comments]);
-
-  const hasAdminDescendant = (commentId, depth = 0) => {
-    if (depth > 8) return false;
-    const replies = childrenOf.get(commentId) || [];
-    for (const r of replies) {
-      if (r.user?.role === 'ADMIN') return true;
-      if (hasAdminDescendant(r.id, depth + 1)) return true;
-    }
-    return false;
-  };
-
-  // Agrupar por curso → lección → preguntas (top-level). Solo las preguntas de
-  // alumnas son consultas; los comentarios del admin solo aparecen como
-  // respuestas dentro de un hilo, nunca como pregunta.
-  const byCourse = useMemo(() => {
-    const map = new Map();
-    for (const c of topLevel) {
-      if (c.user?.role === 'ADMIN') continue;
-      const courseId = c.lesson?.course?.id || 'sin-curso';
-      const courseTitle = c.lesson?.course?.title || 'Sin curso';
-      const lessonId = c.lesson?.id || 'sin-leccion';
-      const lessonTitle = c.lesson?.title || 'Sin lección';
-      if (!map.has(courseId)) {
-        map.set(courseId, { id: courseId, title: courseTitle, lessons: new Map() });
-      }
-      const course = map.get(courseId);
-      if (!course.lessons.has(lessonId)) {
-        course.lessons.set(lessonId, { id: lessonId, title: lessonTitle, questions: [] });
-      }
-      course.lessons.get(lessonId).questions.push(c);
-    }
-    return map;
-  }, [topLevel]);
-
-  const courseOptions = useMemo(
-    () => [...byCourse.values()].map(c => ({ id: c.id, title: c.title })),
-    [byCourse],
-  );
-
-  const filteredByCourse = courseFilter === 'all'
-    ? byCourse
-    : new Map([...byCourse].filter(([id]) => id === courseFilter));
-
-  const matchesStudent = (q) => {
-    const needle = studentFilter.trim().toLowerCase();
-    if (!needle) return true;
-    return (q.user?.name || '').toLowerCase().includes(needle);
-  };
-
-  const items = [];
-  for (const course of filteredByCourse.values()) {
-    for (const lesson of course.lessons.values()) {
-      for (const q of lesson.questions) {
-        if (matchesStudent(q)) items.push({ course, lesson, q });
-      }
-    }
-  }
-
-  const unanswered = items
-    .filter(({ q }) => !hasAdminDescendant(q.id))
-    .sort((a, b) => new Date(a.q.createdAt) - new Date(b.q.createdAt));
-  const answered = items
-    .filter(({ q }) => hasAdminDescendant(q.id))
-    .sort((a, b) => new Date(b.q.createdAt) - new Date(a.q.createdAt));
-
-  const handleReplyImageChange = (file) => {
-    setReplyImage(prev => {
-      if (prev) URL.revokeObjectURL(prev);
-      return file || null;
-    });
-    setReplyPreview(file ? URL.createObjectURL(file) : '');
-  };
-
   const clearReplyImage = () => {
-    setReplyImage(prev => {
-      if (prev) URL.revokeObjectURL(prev);
-      return null;
-    });
+    setReplyImage(prev => { if (prev) URL.revokeObjectURL(prev); return null; });
     setReplyPreview('');
   };
 
   const handleReply = async (comment, message, imageFile) => {
     setSending(true);
     try {
-      if (imageFile) {
-        const formData = new FormData();
-        formData.append('message', message);
-        formData.append('parentId', comment.id);
-        formData.append('image', imageFile);
-        await postForm(`/lessons/${comment.lesson.id}/comments`, formData);
-      } else {
-        await post(`/lessons/${comment.lesson.id}/comments`, { message, parentId: comment.id });
-      }
-      await load();
+      await reply(comment.lesson.id, comment.id, message, imageFile);
       return true;
     } catch (e) {
       console.error(e);
@@ -145,25 +44,18 @@ export default function ConsultasSection() {
     admin: 'Profesora',
     author: (c) => c.user?.name || 'Alumna',
     date: true,
-    reply: 'Responder',
-    cancel: 'Cancelar',
-    send: 'Enviar',
+    reply: 'Responder', cancel: 'Cancelar', send: 'Enviar',
     placeholder: 'Escribí tu respuesta...',
-    badge: (c) => {
-      if (c.parentId) return null;
-      const answeredQ = hasAdminDescendant(c.id);
-      return (
-        <span className={`text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full ${answeredQ ? 'bg-success/10 text-success' : 'bg-primary-soft text-primary'}`}>
-          {answeredQ ? 'Respondida' : 'Sin responder'}
-        </span>
-      );
-    },
+    badge: (c) => c.parentId ? null : (
+      <span className={`text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full ${answeredIds.has(c.id) ? 'bg-success/10 text-success' : 'bg-primary-soft text-primary'}`}>
+        {answeredIds.has(c.id) ? 'Respondida' : 'Sin responder'}
+      </span>
+    ),
   };
 
-  // Hilo completo (preguntas + respuestas) de una lección, sin comentarios del
-  // admin a nivel top-level (solo aparecen como respuestas dentro de un hilo).
+  // Hilo completo de una lección; el admin solo responde, nunca pregunta.
   const threadFor = (lessonId) =>
-    comments.filter(c => c.lesson?.id === lessonId && !(c.user?.role === 'ADMIN' && !c.parentId));
+    items.filter(c => c.lesson?.id === lessonId && !(c.user?.role === 'ADMIN' && !c.parentId));
 
   const renderGroup = (group) => (
     <div key={`${group.course.id}-${group.lesson.id}`} className="mb-4">
@@ -175,21 +67,17 @@ export default function ConsultasSection() {
         labels={labels}
         canReply
         replySending={sending}
-        image={{ preview: replyPreview, onChange: handleReplyImageChange, onRemove: clearReplyImage }}
+        image={{ preview: replyPreview, onChange: pickImage(setReplyImage, setReplyPreview), onRemove: clearReplyImage }}
       />
     </div>
   );
 
-  // Agrupar items sin responder / respondidas por curso+lección (en orden)
   const groupItems = (list) => {
     const groups = [];
     for (const item of list) {
       const last = groups[groups.length - 1];
-      if (last && last.course.id === item.course.id && last.lesson.id === item.lesson.id) {
-        last.questions.push(item.q);
-      } else {
-        groups.push({ course: item.course, lesson: item.lesson, questions: [item.q] });
-      }
+      if (last && last.course.id === item.course.id && last.lesson.id === item.lesson.id) last.questions.push(item.q);
+      else groups.push({ course: item.course, lesson: item.lesson, questions: [item.q] });
     }
     return groups;
   };
@@ -206,10 +94,9 @@ export default function ConsultasSection() {
         </span>
       </div>
 
-      {/* Filtros */}
       <div className="flex flex-wrap gap-3 mb-5">
         <select
-          value={courseFilter}
+          value={filters.course}
           onChange={e => setCourseFilter(e.target.value)}
           className="border border-border rounded-xl px-3 py-2 text-sm bg-white text-text-ink"
         >
@@ -220,7 +107,7 @@ export default function ConsultasSection() {
         </select>
         <input
           type="text"
-          value={studentFilter}
+          value={filters.student}
           onChange={e => setStudentFilter(e.target.value)}
           placeholder="Filtrar por alumna..."
           className="border border-border rounded-xl px-3 py-2 text-sm bg-white text-text-ink focus:outline-none focus:ring-2 focus:ring-primary"
@@ -230,7 +117,7 @@ export default function ConsultasSection() {
       {loading && <p className="text-sm text-accent">Cargando consultas...</p>}
       {!loading && error && <p className="text-sm text-danger">No se pudieron cargar las consultas.</p>}
 
-      {!loading && !error && items.length === 0 && (
+      {!loading && !error && unanswered.length === 0 && answered.length === 0 && (
         <p className="text-sm text-text-ink">Sin consultas todavía.</p>
       )}
 
