@@ -1,17 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
-import { BookOpen, AlertTriangle, GraduationCap, FileText } from 'lucide-react';
+import { BookOpen, AlertTriangle } from 'lucide-react';
 import { useCourseCatalog } from '../context/CourseCatalogContext';
 import { usePurchases } from '../context/PurchaseContext';
 import { useProgress } from '../context/ProgressContext';
 import { useAuth } from '../context/AuthContext';
-import { getImageUrl } from '../utils/media';
-import { getLevelLabel } from '../utils/levels';
-import CourseCover from '../components/CourseCover';
 import { downloadFile } from '../services/api';
 import useLessonComments from '../hooks/useLessonComments';
 import CoursePreviewView from '../components/course/CoursePreviewView';
-import CourseProgressCard from '../components/course/CourseProgressCard';
+import CourseWelcomePanel from '../components/course/CourseWelcomePanel';
 import LessonAccordionItem from '../components/course/LessonAccordionItem';
 import LessonListItem from '../components/course/LessonListItem';
 import LessonContent from '../components/course/LessonContent';
@@ -134,11 +131,9 @@ function CourseLearningView({ course, progress, getProgress, completeLesson }) {
     return courseProgress.completed.includes(course.lessons[index - 1].id);
   };
 
-  // Se abre por defecto la primera lección no completada (o la última si ya se terminó todo)
-  const firstOpenIndex = course.lessons.findIndex(l => !isCompleted(l.id));
-  const [openLessonId, setOpenLessonId] = useState(
-    course.lessons[firstOpenIndex >= 0 ? firstOpenIndex : course.lessons.length - 1].id
-  );
+  // Estado de lección seleccionada: null muestra la bienvenida del curso en el
+  // panel derecho (portada + nombre + descripción) hasta que se elige una lección.
+  const [openLessonId, setOpenLessonId] = useState(null);
 
   // Comentarios/preguntas por lección, cargados de a uno (al abrir la lección)
   const { commentsByLesson, loadComments, sendComment, drafts, setDraft, sendingFor } = useLessonComments();
@@ -207,53 +202,9 @@ function CourseLearningView({ course, progress, getProgress, completeLesson }) {
           ← Volver a mis cursos
         </Link>
 
-        {/* Encabezado del curso */}
-        <div className="bg-white rounded-3xl border border-border shadow-sm overflow-hidden mb-6">
-          {/* Portada: CourseCover muestra el nombre del curso si no hay imagen */}
-          <CourseCover course={course} className="w-full h-48 lg:h-64 object-cover" />
-          <div className="p-6 lg:p-8">
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <div className="flex-1 min-w-[240px]">
-                <span className="text-xs font-semibold bg-bg-soft text-accent px-3 py-1 rounded-full">{getLevelLabel(course.level)}</span>
-                <h1 className="font-display text-3xl md:text-4xl font-bold text-text-ink mt-3">{course.title}</h1>
-                <p className="text-text-ink mt-2 max-w-2xl">{course.longDescription || course.description}</p>
-                <div className="flex flex-wrap gap-4 text-sm text-text-ink mt-4">
-                  <span className="flex items-center gap-1.5"><GraduationCap className="w-4 h-4 text-accent" strokeWidth={1.5} /> {course.instructor}</span>
-                  <span className="flex items-center gap-1.5"><BookOpen className="w-4 h-4 text-accent" strokeWidth={1.5} /> {course.lessons.length} lecciones</span>
-                </div>
-              </div>
-              <CourseProgressCard
-                prog={prog}
-                completedCount={completedCount}
-                total={course.lessons.length}
-                downloadingCert={downloadingCert}
-                onDownloadCertificate={handleDownloadCertificate}
-              />
-            </div>
-
-            {/* PDFs generales del curso (no de una lección puntual) */}
-            {courseAttachments.length > 0 && (
-              <div className="mt-6 pt-6 border-t border-border">
-                <p className="text-xs uppercase tracking-wide text-accent mb-2">Material del curso</p>
-                <div className="flex flex-wrap gap-2">
-                  {courseAttachments.map(att => (
-                    <a
-                      key={att.id}
-                      href={getImageUrl(att.url)}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="btn btn-ghost text-sm flex items-center gap-1.5"
-                    >
-                      <FileText className="w-4 h-4" strokeWidth={1.5} /> {att.filename || 'Ver PDF'}
-                    </a>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Desktop: layout de dos paneles (lista de lecciones + contenido) */}
+        {/* Desktop: layout de dos paneles (lista de lecciones + contenido).
+            Sin lección seleccionada, el panel derecho muestra la bienvenida
+            del curso (portada + nombre + descripción). */}
         <div className="hidden lg:grid lg:grid-cols-[320px_1fr] lg:gap-6 lg:items-start">
           {/* Lista compacta de lecciones (panel izquierdo): seleccionar una
               lección la resalta y muestra su contenido en el panel derecho */}
@@ -276,55 +227,75 @@ function CourseLearningView({ course, progress, getProgress, completeLesson }) {
             })}
           </div>
 
-          {/* Contenido de la lección seleccionada (panel derecho) */}
-          <div className="card-flat rounded-2xl p-6">
+          {/* Contenido del panel derecho: bienvenida del curso o lección */}
+          <div>
             {activeLesson ? (
-              <LessonContent
-                lesson={activeLesson}
-                idx={activeIdx}
-                total={course.lessons.length}
-                completed={isCompleted(activeLesson.id)}
-                comments={commentsByLesson[activeLesson.id]}
-                draft={drafts[activeLesson.id] || ''}
-                sendingFor={sendingFor}
-                onComplete={handleCompleteLesson}
-                onSendComment={sendComment}
-                onDraftChange={setDraft}
-                onNext={() => toggleLesson(course.lessons[activeIdx + 1], false)}
-                canComplete={!isCompleted(activeLesson.id) && isSequentialAllowed(activeIdx)}
-              />
+              <div className="card-flat rounded-2xl p-6">
+                <LessonContent
+                  lesson={activeLesson}
+                  idx={activeIdx}
+                  total={course.lessons.length}
+                  completed={isCompleted(activeLesson.id)}
+                  comments={commentsByLesson[activeLesson.id]}
+                  draft={drafts[activeLesson.id] || ''}
+                  sendingFor={sendingFor}
+                  onComplete={handleCompleteLesson}
+                  onSendComment={sendComment}
+                  onDraftChange={setDraft}
+                  onNext={() => toggleLesson(course.lessons[activeIdx + 1], false)}
+                  canComplete={!isCompleted(activeLesson.id) && isSequentialAllowed(activeIdx)}
+                />
+              </div>
             ) : (
-              <p className="text-text-ink">Seleccioná una lección</p>
+              <CourseWelcomePanel
+                course={course}
+                prog={prog}
+                completedCount={completedCount}
+                downloadingCert={downloadingCert}
+                onDownloadCertificate={handleDownloadCertificate}
+                courseAttachments={courseAttachments}
+              />
             )}
           </div>
         </div>
 
-        {/* Mobile: acordeón clásico (comportamiento actual, sin cambios) */}
-        <div className="lg:hidden space-y-3">
-          {course.lessons.map((lesson, idx) => {
-            const blocked = !isSequentialAllowed(idx);
-            const completed = isCompleted(lesson.id);
+        {/* Mobile: bienvenida + acordeón clásico (comportamiento actual) */}
+        <div className="lg:hidden">
+          <CourseWelcomePanel
+            course={course}
+            prog={prog}
+            completedCount={completedCount}
+            downloadingCert={downloadingCert}
+            onDownloadCertificate={handleDownloadCertificate}
+            courseAttachments={courseAttachments}
+          />
 
-            return (
-              <LessonAccordionItem
-                key={lesson.id}
-                lesson={lesson}
-                idx={idx}
-                total={course.lessons.length}
-                isOpen={openLessonId === lesson.id}
-                blocked={blocked}
-                completed={completed}
-                comments={commentsByLesson[lesson.id]}
-                drafts={drafts}
-                sendingFor={sendingFor}
-                onToggle={toggleLesson}
-                onComplete={handleCompleteLesson}
-                onSendComment={sendComment}
-                onDraftChange={setDraft}
-                onNext={() => toggleLesson(course.lessons[idx + 1], false)}
-              />
-            );
-          })}
+          <div className="space-y-3 mt-6">
+            {course.lessons.map((lesson, idx) => {
+              const blocked = !isSequentialAllowed(idx);
+              const completed = isCompleted(lesson.id);
+
+              return (
+                <LessonAccordionItem
+                  key={lesson.id}
+                  lesson={lesson}
+                  idx={idx}
+                  total={course.lessons.length}
+                  isOpen={openLessonId === lesson.id}
+                  blocked={blocked}
+                  completed={completed}
+                  comments={commentsByLesson[lesson.id]}
+                  drafts={drafts}
+                  sendingFor={sendingFor}
+                  onToggle={toggleLesson}
+                  onComplete={handleCompleteLesson}
+                  onSendComment={sendComment}
+                  onDraftChange={setDraft}
+                  onNext={() => toggleLesson(course.lessons[idx + 1], false)}
+                />
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
