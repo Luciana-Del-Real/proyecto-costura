@@ -242,8 +242,10 @@ describe('depth guard: no box surface nested inside another box surface', () => 
       </MemoryRouter>,
     );
 
+    // Con compras, el Dashboard muestra SOLO "Mis cursos" (sin sugerencias)
     expect(html).toContain('card-glow');
-    expect(html).toContain('Moldería');
+    expect(html).toContain('Mis cursos');
+    expect(html).not.toContain('Moldería');
     expect(countRootContainers(html)).toBe(1);
     expectNoNestedBoxes(html, 'Dashboard');
   });
