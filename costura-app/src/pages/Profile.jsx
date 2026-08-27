@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { usePurchases } from '../context/PurchaseContext';
 import { formatMoney } from '../utils/currency';
 import { getImageUrl } from '../utils/media';
+import PageHeader from '../components/PageHeader';
 
 export default function Profile() {
   const { user, updateUser } = useAuth();
@@ -49,14 +50,12 @@ export default function Profile() {
 
   return (
     <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
-      <div className="bg-white rounded-2xl border-2 border-primary shadow-md px-4 py-10 animate-fade-up mt-5 mb-5 flex justify-center">
-        <div className="flex flex-col items-center gap-4 text-center">
-          <div className="w-16 h-16 bg-primary-soft rounded-full flex items-center justify-center text-2xl font-bold text-text-ink">
-            {user?.name?.charAt(0).toUpperCase()}
-          </div>
-          <div>
-            <h1 className="font-display text-3xl md:text-4xl font-bold text-text-ink">{user?.name}</h1>
-          </div>
+      <PageHeader title={user?.name} />
+
+      {/* Identidad: avatar plano (fuera de toda caja) */}
+      <div className="flex items-center px-1 pt-2 pb-1">
+        <div className="w-16 h-16 bg-primary-soft rounded-full flex items-center justify-center text-2xl font-bold text-text-ink">
+          {user?.name?.charAt(0).toUpperCase()}
         </div>
       </div>
 
@@ -72,7 +71,7 @@ export default function Profile() {
           </div>
 
           {saved && (
-            <div className="card-glow text-primary text-sm rounded-xl px-4 py-3 mb-4">
+            <div className="text-primary text-sm px-0 py-2 mb-4">
               ✓ Cambios guardados correctamente
             </div>
           )}
@@ -145,7 +144,7 @@ export default function Profile() {
           )}
         </div>
 
-        <div className="card-glow rounded-2xl px-4 py-10 animate-fade-up mt-5 mb-5">
+        <div className="px-1 py-10 animate-fade-up mt-5 mb-5">
           <div className="flex items-center justify-between mb-5">
             <h2 className="font-display text-text-ink text-3xl">Historial de compras</h2>
           </div>
