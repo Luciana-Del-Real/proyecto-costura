@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import PageHeader from '../../components/PageHeader';
 import { useCourseCatalog } from '../../context/CourseCatalogContext';
 import { useAdmin } from '../../context/AdminContext';
 import { getCoursePrice, getCurrencyCode } from '../../utils/currency';
@@ -70,12 +71,10 @@ export default function AdminUsers() {
 
   return (
     <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
-      <div className="bg-white rounded-2xl border-2 border-primary shadow-md px-4 py-10 animate-fade-up mt-5">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="font-display text-3xl font-bold text-text-ink">Alumnos</h1>
-          <p className="text-text-tan text-sm mt-0.5">{allUsers.length} alumna{allUsers.length !== 1 ? 's' : ''} registrada{allUsers.length !== 1 ? 's' : ''}</p>
-        </div>
-      </div>
+      <PageHeader
+        title="Alumnos"
+        subtitle={`${allUsers.length} alumna${allUsers.length !== 1 ? 's' : ''} registrada${allUsers.length !== 1 ? 's' : ''}`}
+      />
 
       <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in mt-4 mb-5">
         {/* Search */}
@@ -141,16 +140,16 @@ export default function AdminUsers() {
                 <button onClick={() => setSelected(null)} className="btn btn-icon text-xl leading-none">×</button>
               </div>
 
-              <div className="grid grid-cols-2 gap-3 mb-5">
-                <div className="card-glow rounded-xl p-3 text-center">
-                  <p className="text-xl font-bold text-text-ink">{getPurchasedCourseIds(selected).length}</p>
+              <div className="divide-y divide-border border-y border-border mb-5">
+                <div className="py-3 flex items-center justify-between">
                   <p className="text-xs text-text-tan">Cursos comprados</p>
+                  <p className="text-xl font-bold text-text-ink">{getPurchasedCourseIds(selected).length}</p>
                 </div>
-                <div className="card-glow rounded-xl p-3 text-center">
+                <div className="py-3 flex items-center justify-between">
+                  <p className="text-xs text-text-tan">Total invertido</p>
                   <p className="text-xl font-bold text-text-ink">
                     ${getUserCourses(selected).reduce((s, c) => s + getCoursePrice(c, selected), 0).toLocaleString()} {getCurrencyCode(selected)}
                   </p>
-                  <p className="text-xs text-text-tan">Total invertido</p>
                 </div>
               </div>
 
