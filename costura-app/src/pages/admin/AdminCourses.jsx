@@ -23,14 +23,14 @@ export default function AdminCourses() {
 
         <div className="space-y-4">
           {courses.map((course) => (
-            <div key={course.id} className="card-glow rounded-2xl p-5 flex items-center gap-6 shadow-sm">
+            <div key={course.id} className="card-glow rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 shadow-sm">
               {/* Portada: CourseCover resuelve la URL y muestra el nombre si no hay imagen */}
               <div className="w-24 h-16 bg-bg-soft rounded-lg overflow-hidden flex-shrink-0">
                 <CourseCover course={course} className="w-full h-full object-cover" />
               </div>
 
               {/* Información */}
-              <div className="flex-grow">
+              <div className="flex-grow min-w-0">
                 <h3 className="font-body text-text-ink text-lg font-bold mb-2 leading-tight">{course.title}</h3>
                 <div className="flex gap-4 text-xs text-black/70 font-medium">
                   <span>ARS: ${course.priceARS}</span>
@@ -41,7 +41,7 @@ export default function AdminCourses() {
               {/* Botón de acción */}
               <Link 
                 to={`/admin/courses/edit/${course.id}`} 
-                className="btn btn-primary text-sm"
+                className="btn btn-primary text-sm w-full sm:w-auto"
               >
                 Editar
               </Link>
@@ -51,7 +51,7 @@ export default function AdminCourses() {
                     await deleteCourse(course.id);
                   }
                 }} 
-                className="btn btn-danger text-sm"
+                className="btn btn-danger text-sm w-full sm:w-auto"
               >
                 Eliminar
               </button>

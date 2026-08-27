@@ -57,7 +57,7 @@ export default function AdminPatterns() {
             </div>
           ) : (
             patrones.map((p) => (
-              <div key={p.id} className="card-glow rounded-2xl p-5 flex items-center gap-6 shadow-sm">
+              <div key={p.id} className="card-glow rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 shadow-sm">
                 {/* Portada o bloque de color */}
                 <div className="w-24 h-16 bg-bg-soft rounded-lg overflow-hidden flex-shrink-0">
                   {p.imagen ? (
@@ -81,10 +81,10 @@ export default function AdminPatterns() {
                 </div>
 
                 {/* Acciones */}
-                <Link to={`/admin/patrones/editar/${p.id}`} className="btn btn-primary text-sm">
+                <Link to={`/admin/patrones/editar/${p.id}`} className="btn btn-primary text-sm w-full sm:w-auto">
                   Editar
                 </Link>
-                <button onClick={() => handleDelete(p)} className="btn btn-danger text-sm">
+                <button onClick={() => handleDelete(p)} className="btn btn-danger text-sm w-full sm:w-auto">
                   Borrar
                 </button>
               </div>

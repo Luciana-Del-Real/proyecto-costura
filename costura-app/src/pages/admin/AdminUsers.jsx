@@ -206,8 +206,8 @@ export default function AdminUsers() {
             <p className="text-text-tan mt-4">{allUsers.length === 0 ? 'Sin alumnos registrados aún.' : 'No se encontraron resultados.'}</p>
           </div>
         ) : (
-          <div className="card-glow rounded-2xl overflow-hidden animate-fade-up mb-5">
-            <table className="w-full text-sm">
+          <div className="card-glow rounded-2xl overflow-x-auto animate-fade-up mb-5">
+            <table className="w-full text-sm min-w-[560px]">
               <thead>
                 {/* Eliminamos el fondo del tr y dejamos que el bg del div principal sea el fondo */}
                 <tr className="border-b border-border">

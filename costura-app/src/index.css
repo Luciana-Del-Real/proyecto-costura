@@ -493,7 +493,7 @@ footer.bg-black * {
   margin-bottom: 4rem;
 }
 .hero-card .badge { display: inline-block; }
-.hero-card .actions { display:flex; gap:0.75rem; justify-content:center; align-items:center; margin-top:0.5rem; }
+.hero-card .actions { display:flex; flex-wrap:wrap; gap:0.75rem; justify-content:center; align-items:center; margin-top:0.5rem; }
 
 /* PR3: removed dead .logo-circle helpers (no JSX consumers). */
 

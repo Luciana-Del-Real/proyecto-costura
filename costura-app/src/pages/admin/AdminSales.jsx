@@ -117,7 +117,7 @@ export default function AdminSales() {
         )}
 
         {/* Contenedor unificado: bg-white, border-gray-100, bordes redondeados */}
-        <div className="card-glow rounded-2xl overflow-hidden animate-fade-up mb-8">
+        <div className="card-glow rounded-2xl overflow-x-auto animate-fade-up mb-8">
           
           {/* Cabecera con fondo sutil */}
           <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between gap-3 flex-wrap bg-gray-50/50">
@@ -135,7 +135,7 @@ export default function AdminSales() {
             </div>
           ) : (
             <>
-              <table className="w-full text-sm">
+              <table className="w-full text-sm min-w-[480px]">
                 <thead>
                   <tr className="border-b border-gray-100 bg-gray-50/50">
                     <th className="text-left px-8 py-4 text-text-ink font-bold text-xs uppercase tracking-wider">Alumna</th>

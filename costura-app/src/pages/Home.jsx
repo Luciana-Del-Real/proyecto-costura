@@ -63,11 +63,11 @@ export default function Home() {
 
       {/* Combined About section: side-by-side on md+ */}
       <section className="bg-white py-16 px-4">
-          <div className="max-w-6xl mx-auto grid grid-cols-2 gap-8">
+          <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="card-glow rounded-2xl p-8 h-full flex items-center">
               <RevealSection>
                 <div className="w-full flex flex-col items-center text-center">
-                  <div className="w-36 h-36 rounded-full overflow-hidden flex-shrink-0 border-2 border-primary shadow-[0_0_20px_rgba(232,62,140,0.30)] mb-5">
+                  <div className="w-24 h-24 md:w-36 md:h-36 rounded-full overflow-hidden flex-shrink-0 border-2 border-primary shadow-[0_0_20px_rgba(232,62,140,0.30)] mb-5">
                     <img
                       src="/Images/IMG_6837_circle.jpg"
                       alt="Grow Creative Education Studio"
@@ -92,7 +92,7 @@ export default function Home() {
             <div className="card-glow rounded-2xl p-8 h-full flex items-center">
               <div ref={daiaRef} className={`w-full`}>
                 <div className={`mb-5 flex justify-center reveal-scale visible`}>
-                  <div className="w-36 h-36 rounded-full overflow-hidden border-2 border-primary shadow-[0_0_20px_rgba(232,62,140,0.30)]">
+                  <div className="w-24 h-24 md:w-36 md:h-36 rounded-full overflow-hidden border-2 border-primary shadow-[0_0_20px_rgba(232,62,140,0.30)]">
                     <img
                       src="/Images/IMG_7148_circle.jpg"
                       alt="Daia"
