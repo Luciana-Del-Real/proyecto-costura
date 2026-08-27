@@ -112,7 +112,7 @@ export default function AdminCourseForm() {
     try {
       const formData = new FormData();
       formData.append('title', editedLessons[lesson.id]?.title ?? lesson.title);
-      formData.append('description', (editedLessons[lesson.id]?.description ?? lesson.description) || '');
+      formData.append('description', lesson.description);
       formData.append('duration', editedLessons[lesson.id]?.duration ?? lesson.duration);
       formData.append('videoUrl', editedLessons[lesson.id]?.videoUrl ?? lesson.videoUrl);
       formData.append('order', String(lesson.order ?? 0));
@@ -121,7 +121,6 @@ export default function AdminCourseForm() {
       filesToUpload.forEach((file) => formData.append('pdfs', file));
 
       await putForm(`/courses/${id}/lessons/${lesson.id}`, formData);
-      setLessonPdfFiles((prev) => ({ ...prev, [lesson.id]: [] }));
       await reloadCourse();
     } catch (err) {
       console.error(err);

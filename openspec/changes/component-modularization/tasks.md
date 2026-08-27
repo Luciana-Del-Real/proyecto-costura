@@ -61,7 +61,7 @@ Chain strategy: pending
 
 ## Phase 6: AdminCourseForm Hygiene
 
-- [ ] 6.1 Modify `src/pages/admin/AdminCourseForm.jsx`: replace L115 `(editedLessons[lesson.id]?.description ?? lesson.description) || ''` with `lesson.description`; remove no-op `setLessonPdfFiles` reset at L124; save behavior unchanged.
+- [x] 6.1 Modify `src/pages/admin/AdminCourseForm.jsx`: replace L115 `(editedLessons[lesson.id]?.description ?? lesson.description) || ''` with `lesson.description`; remove no-op `setLessonPdfFiles` reset at L124; save behavior unchanged.
 
 ## Phase 7: Verification
 
