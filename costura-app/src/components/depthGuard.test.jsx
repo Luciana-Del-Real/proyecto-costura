@@ -144,7 +144,7 @@ beforeEach(() => {
   mocks.unreadCount = 0;
 });
 
-const BOX_TOKENS = ['card-glow', 'card-flat'];
+const BOX_TOKENS = ['card-glow', 'card-flat', 'card-glow-fixed'];
 // Exact class string of the page root container (Task 1 regression target).
 const PAGE_ROOT_TOKEN = 'max-w-6xl mx-auto px-1 py-1';
 

@@ -431,6 +431,19 @@
   border-color: var(--color-border);
 }
 
+/* Card con glow FIJO para los forms de autenticación: el mismo glow de
+   card-glow pero SIN intensificarse en hover (el usuario pidió glow fijo). */
+.card-glow-fixed {
+  background: #FFFFFF;
+  border: 1.5px solid var(--color-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 0 12px rgba(232, 62, 140, 0.20), 0 4px 20px rgba(232, 62, 140, 0.10);
+}
+.card-glow-fixed:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 12px rgba(232, 62, 140, 0.20), 0 4px 20px rgba(232, 62, 140, 0.10);
+}
+
 /* Línea de costura: separador entre secciones con patrón de puntadas
    fucsia (identidad Grow). Se ve como una costura a máquina: guiones
    cortos y parejos sobre fondo transparente. */
