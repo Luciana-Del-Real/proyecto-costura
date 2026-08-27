@@ -14,39 +14,37 @@ export default function Dashboard() {
     <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in mt-5 mb-8">
       <WelcomeToast message="¡Bienvenida de vuelta!" />
 
-      <div className="card-glow rounded-2xl max-w-6xl mx-auto px-4 py-4">
-        {/* My courses */}
-        {myCourses.length > 0 && (
-          <div className="mb-10">
-            <div className="flex items-center justify-between mt-5 mb-5">
-              <h2 className="font-display text-text-ink text-3xl">Mis cursos</h2>
-              <Link to="/mis-cursos" className="text-text-ink text-sm hover:text-success">Ver todos →</Link>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-              {myCourses.slice(0, 3).map(course => (
-                <CourseCard key={course.id} course={course} />
-              ))}
-            </div>
+      {/* My courses */}
+      {myCourses.length > 0 && (
+        <div className="mb-10">
+          <div className="flex items-center justify-between mt-5 mb-5">
+            <h2 className="font-display text-text-ink text-3xl">Mis cursos</h2>
+            <Link to="/mis-cursos" className="text-text-ink text-sm hover:text-success">Ver todos →</Link>
           </div>
-        )}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            {myCourses.slice(0, 3).map(course => (
+              <CourseCard key={course.id} course={course} />
+            ))}
+          </div>
+        </div>
+      )}
 
-        {/* Suggested */}
-        {suggested.length > 0 && (
-          <div>
-            <div className="flex items-center justify-between mt-5 mb-5">
-              <h2 className="font-display text-text-ink text-3xl">
-                {myCourses.length === 0 ? 'Empezá con estos cursos' : 'Cursos disponibles'}
-              </h2>
-              <Link to="/cursos" className="text-text-ink text-sm hover:text-success">Ver todos →</Link>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-              {suggested.map(course => (
-                <CourseCard key={course.id} course={course} />
-              ))}
-            </div>
+      {/* Suggested */}
+      {suggested.length > 0 && (
+        <div>
+          <div className="flex items-center justify-between mt-5 mb-5">
+            <h2 className="font-display text-text-ink text-3xl">
+              {myCourses.length === 0 ? 'Empezá con estos cursos' : 'Cursos disponibles'}
+            </h2>
+            <Link to="/cursos" className="text-text-ink text-sm hover:text-success">Ver todos →</Link>
           </div>
-        )}
-      </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            {suggested.map(course => (
+              <CourseCard key={course.id} course={course} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
