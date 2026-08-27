@@ -13,6 +13,7 @@ export default function Navbar() {
   const location = useLocation();
   const pathname = location?.pathname || '';
   const simplifiedRoutes = ['/login', '/registro', '/cursos', '/forgot-password', '/reset-password'];
+  const isAuthPage = pathname === '/login' || pathname === '/registro';
   const isCourseDetail = pathname.startsWith('/curso/');
   const isSimplified = simplifiedRoutes.includes(pathname) || isCourseDetail;
   const isHome = pathname === '/';
@@ -51,7 +52,7 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop */}
-          {(!isSimplified || user) && (
+          {(!isSimplified || user || isAuthPage) && (
           <div className="hidden md:flex items-center gap-6">
             {user ? (
               <>
@@ -100,8 +101,9 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              {!isSimplified && (
+              {(!isSimplified || isAuthPage) && (
                 <>
+                  <Link to="/cursos" className="px-1 py-1 rounded-lg text-sm font-medium text-text-ink hover:text-primary transition-colors">Cursos disponibles</Link>
                   <Link to="/patrones-gratis" className="px-1 py-1 rounded-lg text-sm font-medium text-text-ink hover:text-primary transition-colors">Patrones gratis</Link>
                   <Link to="/login" className="btn btn-ghost text-sm text-primary border-primary/40 hover:bg-primary-soft hover:text-primary-hover">Iniciar sesión</Link>
                 </>
@@ -149,8 +151,9 @@ export default function Navbar() {
               <button onClick={handleLogout} className="btn btn-ghost w-full justify-start text-sm text-accent">Cerrar sesión</button>
             </>
           ) : (
-            !isSimplified && (
+            (!isSimplified || isAuthPage) && (
               <>
+                  <Link to="/cursos" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Cursos disponibles</Link>
                   <Link to="/patrones-gratis" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Patrones gratis</Link>
                   <Link to="/login" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Iniciar sesión</Link>
               </>
