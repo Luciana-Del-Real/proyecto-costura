@@ -51,16 +51,35 @@ export default function ConsultasSection() {
     ),
   };
 
-  // Hilo completo de una lección; el admin solo responde, nunca pregunta.
-  const threadFor = (lessonId) =>
-    items.filter(c => c.lesson?.id === lessonId && !(c.user?.role === 'ADMIN' && !c.parentId));
+  // Hilo de una lista concreta de preguntas: devuelve esas preguntas + sus
+  // descendientes (respuestas), sin arrastrar las demás consultas de la misma
+  // lección. Así la sección "Sin responder" muestra solo las no respondidas y
+  // "Respondidas" solo las respondidas, sin mezclar badges.
+  const threadFor = (questions) => {
+    const wanted = new Set(questions.map(q => q.id));
+    const result = [];
+    const addDescendants = (id) => {
+      for (const c of items) {
+        if (c.parentId === id && !wanted.has(c.id)) {
+          wanted.add(c.id);
+          result.push(c);
+          addDescendants(c.id);
+        }
+      }
+    };
+    for (const q of questions) {
+      result.push(q);
+      addDescendants(q.id);
+    }
+    return result.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+  };
 
   const renderGroup = (group) => (
     <div key={`${group.course.id}-${group.lesson.id}`} className="mb-4">
       <p className="text-xs font-bold uppercase tracking-wide text-text-ink mb-1">{group.course.title}</p>
       <p className="text-xs text-accent mb-2">{group.lesson.title}</p>
       <CommentThread
-        items={threadFor(group.lesson.id)}
+        items={threadFor(group.questions)}
         onReply={handleReply}
         labels={labels}
         canReply

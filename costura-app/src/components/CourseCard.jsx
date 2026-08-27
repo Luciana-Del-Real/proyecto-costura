@@ -60,7 +60,7 @@ export default function CourseCard({ course }) {
             <h3 className="font-body text-text-ink text-lg font-bold mb-1.5 leading-snug line-clamp-1">
               {course.title}
             </h3>
-            <p className="text-text-muted text-xs mb-4 line-clamp-2 leading-relaxed min-h-[2.5rem]">
+            <p className="text-text-ink text-xs mb-4 line-clamp-2 leading-relaxed min-h-[2.5rem]">
               {course.description}
             </p>
 

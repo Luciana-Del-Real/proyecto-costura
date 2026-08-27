@@ -3,7 +3,6 @@ import { useAuth } from '../context/AuthContext';
 import { usePurchases } from '../context/PurchaseContext';
 import { formatMoney } from '../utils/currency';
 import { getImageUrl } from '../utils/media';
-import PageHeader from '../components/PageHeader';
 
 export default function Profile() {
   const { user, updateUser } = useAuth();
@@ -50,14 +49,19 @@ export default function Profile() {
 
   return (
     <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
-      <PageHeader title={user?.name} />
-
-      {/* Identidad: avatar plano (fuera de toda caja) */}
-      <div className="flex items-center px-1 pt-2 pb-1">
-        <div className="w-16 h-16 bg-primary-soft rounded-full flex items-center justify-center text-2xl font-bold text-text-ink">
-          {user?.name?.charAt(0).toUpperCase()}
+      {/* Header: inicial al lado del nombre (mismo estilo plano que PageHeader) */}
+      <header className="max-w-6xl mx-auto px-1 pt-6 pb-2 animate-fade-up">
+        <div className="flex items-center gap-4">
+          <div className="w-14 h-14 bg-primary-soft rounded-full flex items-center justify-center text-xl font-bold text-text-ink flex-shrink-0">
+            {user?.name?.charAt(0).toUpperCase()}
+          </div>
+          <div>
+            <h1 className="font-display text-3xl md:text-4xl font-bold text-text-ink">{user?.name}</h1>
+            {user?.email && <p className="text-text-muted mt-1">{user?.email}</p>}
+          </div>
         </div>
-      </div>
+        <span aria-hidden="true" className="block w-16 h-1 bg-primary mt-3" />
+      </header>
 
       <div className="card-flat rounded-2xl px-4 py-10 animate-fade-up mt-5 mb-5">
           <div className="flex items-center justify-between mb-5">
