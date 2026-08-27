@@ -36,10 +36,10 @@ Chain strategy: pending
 
 ## Phase 2: CommentThread
 
-- [ ] 2.1 Create `src/components/CommentThread.jsx`: props `{ items, onReply, labels, canReply, replySending, image }`; recursive `groupCommentsByParent` walk; no per-caller chrome; `onReply` fires only for non-empty trimmed message.
-- [ ] 2.2 Create `src/components/CommentThread.test.jsx`: recursive nesting, supplied labels, image preview/remove, reply gating, sending state.
-- [ ] 2.3 Rewire `src/components/course/LessonCommentsSection.jsx` via CommentThread; keep main composer + "Vos"/"Profesora" labels.
-- [ ] 2.4 Rewire `src/components/admin/ConsultasSection.jsx` via CommentThread; keep filters + "Alumna"/"Respondida" badge (labels slot).
+- [x] 2.1 Create `src/components/CommentThread.jsx`: props `{ items, onReply, labels, canReply, replySending, image }`; recursive `groupCommentsByParent` walk; no per-caller chrome; `onReply` fires only for non-empty trimmed message.
+- [x] 2.2 Create `src/components/CommentThread.test.jsx`: recursive nesting, supplied labels, image preview/remove, reply gating, sending state.
+- [x] 2.3 Rewire `src/components/course/LessonCommentsSection.jsx` via CommentThread; keep main composer + "Vos"/"Profesora" labels.
+- [x] 2.4 Rewire `src/components/admin/ConsultasSection.jsx` via CommentThread; keep filters + "Alumna"/"Respondida" badge (labels slot).
 
 ## Phase 3: useAdminComments
 
