@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { FileText } from 'lucide-react';
 import { get, del } from '../../services/api';
 import { getImageUrl } from '../../utils/media';
+import PageHeader from '../../components/PageHeader';
 
 export default function AdminPatterns() {
   const [patrones, setPatrones] = useState([]);
@@ -39,13 +40,13 @@ export default function AdminPatterns() {
   return (
     <div className="min-h-screen bg-bg-surface">
       <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
-        <div className="bg-white rounded-2xl border-2 border-primary shadow-md px-4 py-10 animate-fade-up mt-5 mb-5">
-          <div className="flex items-center justify-between gap-4">
-            <h1 className="font-display text-3xl font-bold text-text-ink m-0 p-0 leading-tight">Gestión de patrones</h1>
-            <Link to="/admin/patrones/nuevo" className="btn btn-primary text-sm">
-              ＋ Nuevo patrón
-            </Link>
+        <div className="flex items-start justify-between gap-4 flex-wrap mb-4">
+          <div className="min-w-0">
+            <PageHeader title="Gestión de patrones" />
           </div>
+          <Link to="/admin/patrones/nuevo" className="btn btn-primary text-sm mt-6">
+            ＋ Nuevo patrón
+          </Link>
         </div>
 
         <div className="space-y-4 pb-16">

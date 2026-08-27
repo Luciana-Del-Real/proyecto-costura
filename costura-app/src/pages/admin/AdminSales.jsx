@@ -3,6 +3,7 @@ import { useCourseCatalog } from '../../context/CourseCatalogContext';
 import { usePurchases } from '../../context/PurchaseContext';
 import { sumByCurrency, formatMoney } from '../../utils/currency';
 import { getImageUrl } from '../../utils/media';
+import PageHeader from '../../components/PageHeader';
 
 export default function AdminSales() {
   const { courses } = useCourseCatalog();
@@ -64,11 +65,7 @@ export default function AdminSales() {
 
   return (
     <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
-      <div className="bg-white rounded-2xl border-2 border-primary shadow-md px-4 py-10 animate-fade-up mt-5">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="font-display text-3xl font-bold text-text-ink">Historial de ventas</h1>
-        </div>
-      </div>
+      <PageHeader title="Historial de ventas" />
 
       <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in mt-6 mb-5">
         {/* Summary cards */}

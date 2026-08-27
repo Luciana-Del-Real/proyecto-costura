@@ -1,5 +1,6 @@
 import { useCourseCatalog } from '../../context/CourseCatalogContext';
 import { Link } from 'react-router-dom';
+import PageHeader from '../../components/PageHeader';
 import CourseCover from '../../components/CourseCover';
 
 export default function AdminCourses() {
@@ -8,11 +9,13 @@ export default function AdminCourses() {
   return (
     <div className="min-h-screen bg-bg-surface">
       <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
-        <div className="bg-white rounded-2xl border-2 border-primary shadow-md px-4 py-10 animate-fade-up mt-5 mb-5 flex items-center justify-between">
-          <h1 className="text-3xl font-bold text-text-ink m-0 p-0 leading-tight">Gestión de cursos</h1>
+        <div className="flex items-start justify-between gap-4 flex-wrap mb-4">
+          <div className="min-w-0">
+            <PageHeader title="Gestión de cursos" />
+          </div>
           <Link 
             to="/admin/courses/new" 
-            className="btn btn-primary text-sm"
+            className="btn btn-primary text-sm mt-6"
           >
             + Nuevo curso
           </Link>
