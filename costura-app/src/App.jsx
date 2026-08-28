@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import Providers from './components/providers';
+import { DialogProvider } from './context/DialogContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import AdminNavbar from './components/AdminNavbar';
@@ -63,6 +64,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
+      <DialogProvider>
       <Providers>
         <Routes>
             {/* Público */}
@@ -95,6 +97,7 @@ export default function App() {
             <Route path="/admin/patrones/editar/:id" element={<AdminRoute><AdminLayout><AdminPatternForm /></AdminLayout></AdminRoute>} />
           </Routes>
       </Providers>
+      </DialogProvider>
     </BrowserRouter>
   );
 }

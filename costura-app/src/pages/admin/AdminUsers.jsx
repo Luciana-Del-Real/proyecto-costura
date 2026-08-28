@@ -1,11 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import PageHeader from '../../components/PageHeader';
 import { useCourseCatalog } from '../../context/CourseCatalogContext';
+import { useDialog } from '../../context/DialogContext';
 import { useAdmin } from '../../context/AdminContext';
 import { getCoursePrice, getCurrencyCode } from '../../utils/currency';
 import { getImageUrl } from '../../utils/media';
 
 export default function AdminUsers() {
+  const { alertDialog } = useDialog();
   const { courses } = useCourseCatalog();
   const { getAllUsers, toggleUserActive } = useAdmin();
   const [allUsers, setAllUsers] = useState([]);
@@ -36,7 +38,7 @@ export default function AdminUsers() {
       }
     } catch (err) {
       console.error(err);
-      alert('No se pudo actualizar el estado de la cuenta');
+      alertDialog('No se pudo actualizar el estado de la cuenta');
     } finally {
       setConfirmToggle(null);
     }

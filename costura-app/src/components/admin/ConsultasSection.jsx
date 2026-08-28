@@ -1,11 +1,13 @@
 import { useMemo, useState } from 'react';
 import useAdminComments from '../../hooks/useAdminComments';
+import { useDialog } from '../../context/DialogContext';
 import CommentThread from '../CommentThread';
 
 // Bandeja de consultas del admin: vista pura sobre useAdminComments (fetch,
 // filtros, partición y envío viven en el hook). Acá quedan encabezados,
 // filtros, toggle de respondidas y estado de envío del formulario inline.
 export default function ConsultasSection() {
+  const { alertDialog } = useDialog();
   const {
     items, filters, setCourseFilter, setStudentFilter,
     courseOptions, unanswered, answered, loading, error, reply,
@@ -31,7 +33,7 @@ export default function ConsultasSection() {
       return true;
     } catch (e) {
       console.error(e);
-      alert('No se pudo enviar la respuesta');
+      alertDialog('No se pudo enviar la respuesta');
       return false;
     } finally {
       setSending(false);

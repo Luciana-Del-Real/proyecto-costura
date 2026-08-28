@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import { BookOpen, AlertTriangle } from 'lucide-react';
 import { useCourseCatalog } from '../context/CourseCatalogContext';
+import { useDialog } from '../context/DialogContext';
 import { usePurchases } from '../context/PurchaseContext';
 import { useProgress } from '../context/ProgressContext';
 import { useAuth } from '../context/AuthContext';
@@ -123,6 +124,7 @@ function OwnedCourseView({ course, progress, getProgress, completeLesson }) {
 }
 
 function CourseLearningView({ course, progress, getProgress, completeLesson }) {
+  const { alertDialog } = useDialog();
   const courseProgress = progress[course.id] || { completed: [], lastLesson: 0 };
   const isCompleted = (lessonId) => courseProgress.completed.includes(lessonId);
 
@@ -168,7 +170,7 @@ function CourseLearningView({ course, progress, getProgress, completeLesson }) {
       await completeLesson(course.id, lessonId);
     } catch (err) {
       console.error(err);
-      alert('No se pudo marcar la lección como completada. Probá de nuevo.');
+      alertDialog('No se pudo marcar la lección como completada. Probá de nuevo.');
     }
   };
   const [downloadingCert, setDownloadingCert] = useState(false);
@@ -178,7 +180,7 @@ function CourseLearningView({ course, progress, getProgress, completeLesson }) {
       await downloadFile(`/courses/${course.id}/certificate`, `certificado-${course.title}.pdf`);
     } catch (err) {
       console.error(err);
-      alert('No se pudo descargar el certificado. Probá de nuevo en un momento.');
+      alertDialog('No se pudo descargar el certificado. Probá de nuevo en un momento.');
     } finally {
       setDownloadingCert(false);
     }

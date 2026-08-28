@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FileText } from 'lucide-react';
 import { get, del } from '../../services/api';
+import { useDialog } from '../../context/DialogContext';
 import { getImageUrl } from '../../utils/media';
 import PageHeader from '../../components/PageHeader';
 
 export default function AdminPatterns() {
+  const { confirmDialog, alertDialog } = useDialog();
   const [patrones, setPatrones] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -28,13 +30,13 @@ export default function AdminPatterns() {
   useEffect(() => { load(); }, []);
 
   const handleDelete = async (p) => {
-    if (!window.confirm(`¿Borrar el patrón "${p.titulo}"? Esta acción no se puede deshacer.`)) return;
+    if (!await confirmDialog(`¿Borrar el patrón "${p.titulo}"? Esta acción no se puede deshacer.`)) return;
     try {
       await del(`/patterns/${p.id}`);
       await load();
     } catch (error) {
       console.error('Error borrando el patrón:', error);
-      alert('No se pudo borrar el patrón');
+      alertDialog('No se pudo borrar el patrón');
     }
   };
 

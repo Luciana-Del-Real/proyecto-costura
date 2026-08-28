@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { FileText } from 'lucide-react';
 import { get, postForm, putForm } from '../../services/api';
+import { useDialog } from '../../context/DialogContext';
 import { getImageUrl } from '../../utils/media';
 
 const EMPTY_FORM = {
@@ -12,6 +13,7 @@ const EMPTY_FORM = {
 };
 
 export default function AdminPatternForm() {
+  const { alertDialog } = useDialog();
   const { id } = useParams();
   const navigate = useNavigate();
   const isEditing = Boolean(id);
@@ -69,7 +71,7 @@ export default function AdminPatternForm() {
       }
     } catch (error) {
       console.error('Error guardando el patrón:', error);
-      alert('Error guardando el patrón');
+      alertDialog('Error guardando el patrón');
     } finally {
       setSaving(false);
     }

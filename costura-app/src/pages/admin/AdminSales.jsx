@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useCourseCatalog } from '../../context/CourseCatalogContext';
+import { useDialog } from '../../context/DialogContext';
 import { usePurchases } from '../../context/PurchaseContext';
 import { sumByCurrency, formatMoney } from '../../utils/currency';
 import { getImageUrl } from '../../utils/media';
 import PageHeader from '../../components/PageHeader';
 
 export default function AdminSales() {
+  const { confirmDialog } = useDialog();
   const { courses } = useCourseCatalog();
   const { getAllPurchases, getPendingRequests, approvePurchase, denyPurchase } = usePurchases();
   const [allPurchases, setAllPurchases] = useState([]);
@@ -39,13 +41,13 @@ export default function AdminSales() {
   };
 
   const handleReapprove = async (p) => {
-    if (!window.confirm(`¿Reaprobar el acceso de ${p.user.name} al curso ${p.course.title}?`)) return;
+    if (!await confirmDialog(`¿Reaprobar el acceso de ${p.user.name} al curso ${p.course.title}?`)) return;
     await approvePurchase(p.id);
     await reload();
   };
 
   const handleDeny = async (p) => {
-    if (!window.confirm(`¿Denegar y revocar el acceso de ${p.user.name} al curso ${p.course.title}?`)) return;
+    if (!await confirmDialog(`¿Denegar y revocar el acceso de ${p.user.name} al curso ${p.course.title}?`)) return;
     await denyPurchase(p.id);
     await reload();
   };

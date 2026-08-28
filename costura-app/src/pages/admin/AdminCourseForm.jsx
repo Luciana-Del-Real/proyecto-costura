@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useCourseCatalog } from '../../context/CourseCatalogContext';
+import { useDialog } from '../../context/DialogContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import { get, postForm, putForm, del } from '../../services/api';
 import CourseFieldsForm from '../../components/admin/CourseFieldsForm';
@@ -13,6 +14,7 @@ const EMPTY_LESSON = { title: '', duration: '', videoUrl: '' };
 
 export default function AdminCourseForm() {
   const { addCourse, updateCourse } = useCourseCatalog();
+  const { confirmDialog, alertDialog } = useDialog();
   const { id } = useParams();
   const navigate = useNavigate();
   const isEditing = Boolean(id);
@@ -74,20 +76,20 @@ export default function AdminCourseForm() {
       }
     } catch (err) {
       console.error(err);
-      alert('Error guardando el curso');
+      alertDialog('Error guardando el curso');
     } finally {
       setSaving(false);
     }
   };
 
   const handleDeleteCourseAttachment = async (attachmentId) => {
-    if (!confirm('¿Eliminar este PDF del curso?')) return;
+    if (!await confirmDialog('¿Eliminar este PDF del curso?')) return;
     try {
       await del(`/attachments/${attachmentId}`);
       await reloadCourse();
     } catch (err) {
       console.error(err);
-      alert('No se pudo eliminar el PDF');
+      alertDialog('No se pudo eliminar el PDF');
     }
   };
 
@@ -128,31 +130,31 @@ export default function AdminCourseForm() {
       setOpenLessonId(null); // Al guardar, se colapsa y queda lista para scrollear a la próxima
     } catch (err) {
       console.error(err);
-      alert('Error guardando la lección');
+      alertDialog('Error guardando la lección');
     } finally {
       setSavingLessonId(null);
     }
   };
 
   const handleDeleteLesson = async (lessonId) => {
-    if (!confirm('¿Eliminar esta lección? Esta acción no se puede deshacer.')) return;
+    if (!await confirmDialog('¿Eliminar esta lección? Esta acción no se puede deshacer.')) return;
     try {
       await del(`/courses/${id}/lessons/${lessonId}`);
       await reloadCourse();
     } catch (err) {
       console.error(err);
-      alert('No se pudo eliminar la lección');
+      alertDialog('No se pudo eliminar la lección');
     }
   };
 
   const handleDeleteLessonAttachment = async (attachmentId) => {
-    if (!confirm('¿Eliminar este PDF de la lección?')) return;
+    if (!await confirmDialog('¿Eliminar este PDF de la lección?')) return;
     try {
       await del(`/attachments/${attachmentId}`);
       await reloadCourse();
     } catch (err) {
       console.error(err);
-      alert('No se pudo eliminar el PDF');
+      alertDialog('No se pudo eliminar el PDF');
     }
   };
 
@@ -180,7 +182,7 @@ export default function AdminCourseForm() {
       await reloadCourse();
     } catch (err) {
       console.error(err);
-      alert('Error creando la lección');
+      alertDialog('Error creando la lección');
     } finally {
       setCreatingLesson(false);
     }

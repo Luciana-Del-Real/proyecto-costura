@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { get, post, postForm } from '../services/api';
+import { useDialog } from '../context/DialogContext';
 
 // Máquina de estados de comentarios/preguntas por lección, antes duplicada en
 // CourseDetail (alumna) y AdminCourseForm (profesora). Acá vive la carga lazy
 // con guard de loaded, el envío optimista y los drafts por lección.
 export default function useLessonComments() {
+  const { alertDialog } = useDialog();
   const [commentsByLesson, setCommentsByLesson] = useState({});
   const [drafts, setDrafts] = useState({});
   const [sendingFor, setSendingFor] = useState(null);
@@ -56,7 +58,7 @@ export default function useLessonComments() {
       return created;
     } catch (e) {
       console.error('Error enviando la pregunta', e);
-      alert('No se pudo enviar tu pregunta. Probá de nuevo en un momento.');
+      alertDialog('No se pudo enviar tu pregunta. Probá de nuevo en un momento.');
       return undefined;
     } finally {
       setSendingFor(null);

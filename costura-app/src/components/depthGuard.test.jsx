@@ -87,6 +87,10 @@ vi.mock('../context/FavoritesContext', () => ({
   useFavorites: () => ({ isFavorite: mocks.isFavorite, toggleFavorite: vi.fn() }),
 }));
 
+vi.mock('../context/DialogContext', () => ({
+  useDialog: () => ({ confirmDialog: vi.fn(), alertDialog: vi.fn() }),
+}));
+
 vi.mock('../context/NotificationsContext', () => ({
   useNotifications: () => ({
     notifications: mocks.notifications,

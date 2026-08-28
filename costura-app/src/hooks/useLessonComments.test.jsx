@@ -3,16 +3,18 @@ import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import useLessonComments from './useLessonComments';
+import { DialogProvider } from '../context/DialogContext';
 
 /**
  * useLessonComments state machine (extracted from CourseDetail/AdminCourseForm):
  * - lazy fetch that REFETCHES on every lesson open (fresh replies)
  * - optimistic send: trims the message, appends the created comment, clears
- *   the draft, and keeps the draft + alerts on error
+ *   the draft, and keeps the draft + shows the Grow alert dialog on error
  * - per-lesson drafts
  *
  * The services/api boundary is mocked; the hook is driven through a Harness
- * component (same pattern as FavoritesContext.test.jsx).
+ * component (same pattern as FavoritesContext.test.jsx) rendered inside the
+ * real DialogProvider so the error path can open the brand alert dialog.
  */
 const mocks = vi.hoisted(() => ({
   get: vi.fn(),
@@ -55,7 +57,11 @@ async function renderApp(props) {
   const root = createRoot(container);
   roots.push(root);
   await act(async () => {
-    root.render(<Harness {...props} />);
+    root.render(
+      <DialogProvider>
+        <Harness {...props} />
+      </DialogProvider>,
+    );
   });
   return { container };
 }
@@ -233,9 +239,7 @@ describe('useLessonComments', () => {
     expect(readState(container).drafts.l1).toBe('abc');
   });
 
-  it('sendComment on error alerts, keeps the draft and clears sendingFor', async () => {
-    const alertSpy = vi.fn();
-    vi.stubGlobal('alert', alertSpy);
+  it('sendComment on error opens the alert dialog, keeps the draft and clears sendingFor', async () => {
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     mocks.post.mockRejectedValueOnce(new Error('boom'));
     const { container } = await renderApp();
@@ -244,8 +248,9 @@ describe('useLessonComments', () => {
     await act(async () => click(container, 'send'));
     await act(async () => {}); // flush the rejection microtask
 
-    expect(alertSpy).toHaveBeenCalledTimes(1);
-    expect(alertSpy).toHaveBeenCalledWith(expect.stringContaining('No se pudo enviar'));
+    // El alert nativo se reemplazó por el modal de marca Grow: el mensaje
+    // aparece en el DOM del DialogProvider, no en un spy global.
+    expect(container.textContent).toContain('No se pudo enviar tu pregunta.');
     const state = readState(container);
     expect(state.drafts.l1).toBe('abc'); // draft preserved on error
     expect(state.sendingFor).toBeNull();

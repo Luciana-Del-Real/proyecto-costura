@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { useCourseCatalog } from '../../context/CourseCatalogContext';
+import { useDialog } from '../../context/DialogContext';
 import { Link } from 'react-router-dom';
 import PageHeader from '../../components/PageHeader';
 import CourseCover from '../../components/CourseCover';
 
 export default function AdminCourses() {
   const { courses, deleteCourse } = useCourseCatalog();
+  const { confirmDialog } = useDialog();
   const [search, setSearch] = useState('');
 
   const filtered = courses.filter(c =>
@@ -78,7 +80,7 @@ export default function AdminCourses() {
                 </Link>
                 <button 
                   onClick={async () => {
-                    if (window.confirm("¿Estás seguro de que quieres eliminar este curso?")) {
+                    if (await confirmDialog("¿Estás seguro de que quieres eliminar este curso?")) {
                       await deleteCourse(course.id);
                     }
                   }} 
