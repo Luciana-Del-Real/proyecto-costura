@@ -107,10 +107,10 @@ export default function AdminPatterns() {
                 </div>
 
                 {/* Acciones */}
-                <Link to={`/admin/patrones/editar/${p.id}`} className="btn btn-primary text-sm w-full sm:w-auto">
+                <Link to={`/admin/patrones/editar/${p.id}`} className="btn text-sm w-full sm:w-auto bg-primary text-white border border-primary hover:bg-white hover:text-primary">
                   Editar
                 </Link>
-                <button onClick={() => handleDelete(p)} className="btn btn-danger text-sm w-full sm:w-auto">
+                <button onClick={() => handleDelete(p)} className="btn text-sm w-full sm:w-auto bg-white text-primary border border-primary hover:bg-primary hover:text-white">
                   Borrar
                 </button>
               </div>

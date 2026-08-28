@@ -172,7 +172,7 @@ export default function AdminSales() {
                       <td className="px-4 py-4">
                         <div className="flex items-center gap-2 flex-wrap">
                           <span className={`text-xs font-bold px-2 py-0.5 rounded-full whitespace-nowrap ${
-                            p.status === 'APPROVED' ? 'bg-primary-soft text-primary' :
+                            p.status === 'APPROVED' ? 'bg-success/10 text-success' :
                             p.status === 'PENDING' ? 'bg-bg-soft text-text-tan' :
                             'bg-red-50 text-danger'
                           }`}>

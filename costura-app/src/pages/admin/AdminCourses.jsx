@@ -72,7 +72,7 @@ export default function AdminCourses() {
                 {/* Botón de acción */}
                 <Link 
                   to={`/admin/courses/edit/${course.id}`} 
-                  className="btn btn-primary text-sm w-full sm:w-auto"
+                  className="btn text-sm w-full sm:w-auto bg-primary text-white border border-primary hover:bg-white hover:text-primary"
                 >
                   Editar
                 </Link>
@@ -82,7 +82,7 @@ export default function AdminCourses() {
                       await deleteCourse(course.id);
                     }
                   }} 
-                  className="btn btn-danger text-sm w-full sm:w-auto"
+                  className="btn text-sm w-full sm:w-auto bg-white text-primary border border-primary hover:bg-primary hover:text-white"
                 >
                   Eliminar
                 </button>
