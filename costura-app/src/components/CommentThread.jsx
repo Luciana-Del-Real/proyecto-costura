@@ -106,7 +106,7 @@ export default function CommentThread({
                   clearImage();
                 }
               }}
-              className="text-xs text-primary hover:text-primary-hover mt-1"
+              className="text-xs text-primary hover:text-primary-hover mt-1 cursor-pointer"
             >
               {isReplying ? cancel : reply}
             </button>
