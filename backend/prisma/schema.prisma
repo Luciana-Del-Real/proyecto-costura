@@ -41,6 +41,7 @@ model User {
   notifications  Notification[]
   passwordResetTokens PasswordResetToken[]
   lessonComments LessonComment[]
+  pushSubscriptions PushSubscription[]
 
   @@map("users")
 }
@@ -197,6 +198,22 @@ model Notification {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("notifications")
+}
+
+model PushSubscription {
+  id        String   @id @default(cuid())
+  userId    String
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("push_subscriptions")
 }
 
 model Pattern {
