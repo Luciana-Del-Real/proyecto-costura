@@ -17,6 +17,7 @@ import { AttachmentsModule } from './attachments/attachments.module';
 import { LessonCommentsModule } from './lesson-comments/lesson-comments.module';
 import { CertificatesModule } from './certificates/certificates.module';
 import { PatternsModule } from './patterns/patterns.module';
+import { PushNotificationsModule } from './push-notifications/push-notifications.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { PatternsModule } from './patterns/patterns.module';
     LessonCommentsModule,
     CertificatesModule,
     PatternsModule,
+    PushNotificationsModule,
   ],
   controllers: [],
   providers: [],
