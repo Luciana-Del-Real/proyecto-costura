@@ -217,8 +217,7 @@ export default function AdminCourseForm() {
           {/* Lecciones: solo disponible una vez que el curso ya existe */}
           {isEditing && (
             <>
-              <div className="seam-divider my-10" aria-hidden="true" />
-              <h3 className="font-display font-bold text-text-ink text-2xl mb-6 border-b pb-4">Lecciones</h3>
+              <h3 className="font-display font-bold text-text-ink text-2xl mt-10 mb-6 border-b pb-4">Lecciones</h3>
 
               <div className="space-y-4 mb-8">
                 {(course?.lessons || []).map((lesson) => (

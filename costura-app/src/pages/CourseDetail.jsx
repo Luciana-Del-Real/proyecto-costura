@@ -10,6 +10,7 @@ import { downloadFile } from '../services/api';
 import useLessonComments from '../hooks/useLessonComments';
 import CoursePreviewView from '../components/course/CoursePreviewView';
 import CourseWelcomePanel from '../components/course/CourseWelcomePanel';
+import CourseAccordionItem from '../components/course/CourseAccordionItem';
 import LessonAccordionItem from '../components/course/LessonAccordionItem';
 import LessonListItem from '../components/course/LessonListItem';
 import LessonContent from '../components/course/LessonContent';
@@ -261,43 +262,46 @@ function CourseLearningView({ course, progress, getProgress, completeLesson }) {
           </div>
         </div>
 
-        {/* Mobile: bienvenida + acordeón clásico (comportamiento actual) */}
-        <div className="lg:hidden">
-          <CourseWelcomePanel
+        {/* Mobile: acordeón con la principal del curso primero (abierta por
+            defecto) y las lecciones después. Son excluyentes: abrir una
+            lección cierra la principal, y volver a la principal cierra la
+            lección. */}
+        <div className="lg:hidden space-y-3 mt-6">
+          <CourseAccordionItem
             course={course}
             prog={prog}
             completedCount={completedCount}
             downloadingCert={downloadingCert}
             onDownloadCertificate={handleDownloadCertificate}
             courseAttachments={courseAttachments}
+            isOpen={openLessonId === null}
+            onToggle={() => setOpenLessonId(null)}
           />
 
-          <div className="space-y-3 mt-6">
-            {course.lessons.map((lesson, idx) => {
-              const blocked = !isSequentialAllowed(idx);
-              const completed = isCompleted(lesson.id);
+          {course.lessons.map((lesson, idx) => {
+            const blocked = !isSequentialAllowed(idx);
+            const completed = isCompleted(lesson.id);
 
-              return (
-                <LessonAccordionItem
-                  key={lesson.id}
-                  lesson={lesson}
-                  idx={idx}
-                  total={course.lessons.length}
-                  isOpen={openLessonId === lesson.id}
-                  blocked={blocked}
-                  completed={completed}
-                  comments={commentsByLesson[lesson.id]}
-                  drafts={drafts}
-                  sendingFor={sendingFor}
-                  onToggle={toggleLesson}
-                  onComplete={handleCompleteLesson}
-                  onSendComment={sendComment}
-                  onDraftChange={setDraft}
-                  onNext={() => toggleLesson(course.lessons[idx + 1], false)}
-                />
-              );
-            })}
-          </div>
+            return (
+              <LessonAccordionItem
+                key={lesson.id}
+                lesson={lesson}
+                idx={idx}
+                total={course.lessons.length}
+                isOpen={openLessonId === lesson.id}
+                blocked={blocked}
+                completed={completed}
+                comments={commentsByLesson[lesson.id]}
+                drafts={drafts}
+                sendingFor={sendingFor}
+                onToggle={toggleLesson}
+                onComplete={handleCompleteLesson}
+                onSendComment={sendComment}
+                onDraftChange={setDraft}
+                onNext={() => toggleLesson(course.lessons[idx + 1], false)}
+              />
+            );
+          })}
         </div>
       </div>
     </div>

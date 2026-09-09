@@ -5,7 +5,6 @@ import { useCourseCatalog } from '../context/CourseCatalogContext';
 import { usePurchases } from '../context/PurchaseContext';
 import { useProgress } from '../context/ProgressContext';
 import { getImageUrl } from '../utils/media';
-import NotificationsInbox from '../components/NotificationsInbox';
 import PageHeader from '../components/PageHeader';
 
 export default function MyCourses() {
@@ -54,7 +53,7 @@ export default function MyCourses() {
               <div className="text-center py-16">
                 <BookOpen className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
                 <h2 className="font-display font-bold text-text-ink text-2xl mt-4">Sin resultados para tu búsqueda.</h2>
-                <button onClick={() => setSearch('')} className="btn btn-ghost mt-3 text-sm text-primary hover:text-primary-hover">
+                <button onClick={() => setSearch('')} className="btn btn-ghost mt-3 text-sm bg-white hover:bg-white text-primary border border-primary/30 hover:border-primary">
                   Limpiar búsqueda
                 </button>
               </div>
@@ -88,11 +87,6 @@ export default function MyCourses() {
             )}
           </>
         )}
-      </div>
-
-      {/* Notificaciones: panel extraído en NotificationsInbox */}
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <NotificationsInbox />
       </div>
     </div>
   );

@@ -127,7 +127,6 @@ import AdminSales from '../pages/admin/AdminSales';
 import AdminRequests from '../pages/admin/AdminRequests';
 import AdminCourseForm from '../pages/admin/AdminCourseForm';
 import CourseCard from './CourseCard';
-import NotificationsInbox from './NotificationsInbox';
 
 // Dashboard renders WelcomeToast, which reads sessionStorage on first render.
 beforeAll(() => {
@@ -319,19 +318,5 @@ describe('depth guard: no box surface nested inside another box surface', () => 
     expect(html).toContain('card-glow');
     expect(html).toContain('45%');
     expectNoNestedBoxes(html, 'CourseCard');
-  });
-
-  it('NotificationsInbox renders list rows without nested boxes', () => {
-    mocks.notifications = [
-      { id: 'n1', title: 'Aprobada', message: 'Tu curso fue aprobado', createdAt: '2026-08-01T10:00:00.000Z', read: false },
-      { id: 'n2', title: 'Bienvenida', message: 'Hola', createdAt: '2026-08-01T10:00:00.000Z', read: true },
-    ];
-    mocks.unreadCount = 1;
-
-    const html = renderToStaticMarkup(<NotificationsInbox />);
-
-    expect(html).toContain('card-flat');
-    expect(html).toContain('Aprobada');
-    expectNoNestedBoxes(html, 'NotificationsInbox');
   });
 });

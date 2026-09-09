@@ -6,16 +6,17 @@ import CourseProgressCard from './CourseProgressCard';
 
 // Panel de bienvenida del curso (portada + nombre + descripción + progreso +
 // material general). Se muestra en el panel derecho del layout de dos paneles
-// cuando todavía no se seleccionó ninguna lección, y en mobile arriba del
-// acordeón. Al abrir una lección, este panel se reemplaza por su contenido.
+// cuando todavía no se seleccionó ninguna lección, y en mobile como primera
+// fila del acordeón (embedded=true quita el card exterior, porque la fila ya
+// tiene su propio borde).
 export default function CourseWelcomePanel({
-  course, prog, completedCount, downloadingCert, onDownloadCertificate, courseAttachments,
+  course, prog, completedCount, downloadingCert, onDownloadCertificate, courseAttachments, embedded = false,
 }) {
-  return (
-    <div className="bg-white rounded-3xl border border-border shadow-sm overflow-hidden">
+  const content = (
+    <>
       {/* Portada: CourseCover muestra el nombre del curso si no hay imagen */}
-      <CourseCover course={course} className="w-full h-48 lg:h-56 object-cover" />
-      <div className="p-6 lg:p-8">
+      <CourseCover course={course} className={`w-full ${embedded ? 'h-40' : 'h-48 lg:h-56'} object-cover`} />
+      <div className={embedded ? 'p-5' : 'p-6 lg:p-8'}>
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="flex-1 min-w-[240px]">
             <span className="text-xs font-semibold bg-bg-soft text-accent px-3 py-1 rounded-full">{getLevelLabel(course.level)}</span>
@@ -55,6 +56,14 @@ export default function CourseWelcomePanel({
           </div>
         )}
       </div>
+    </>
+  );
+
+  if (embedded) return content;
+
+  return (
+    <div className="bg-white rounded-3xl border border-border shadow-sm overflow-hidden">
+      {content}
     </div>
   );
 }

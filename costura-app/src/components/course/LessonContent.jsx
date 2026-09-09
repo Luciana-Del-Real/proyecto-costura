@@ -58,6 +58,16 @@ export default function LessonContent({
         </div>
       )}
 
+      {/* Preguntas a la profesora (real, conectado al backend) */}
+      <LessonCommentsSection
+        lessonId={lesson.id}
+        comments={comments}
+        draft={draft}
+        sendingFor={sendingFor}
+        onSend={onSendComment}
+        onDraftChange={onDraftChange}
+      />
+
       {/* Marcar como completada / avanzar */}
       <div className="flex flex-wrap items-center gap-3">
         <button
@@ -82,16 +92,6 @@ export default function LessonContent({
           </button>
         )}
       </div>
-
-      {/* Preguntas a la profesora (real, conectado al backend) */}
-      <LessonCommentsSection
-        lessonId={lesson.id}
-        comments={comments}
-        draft={draft}
-        sendingFor={sendingFor}
-        onSend={onSendComment}
-        onDraftChange={onDraftChange}
-      />
     </div>
   );
 }

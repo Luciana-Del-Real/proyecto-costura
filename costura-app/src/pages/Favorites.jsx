@@ -62,7 +62,7 @@ export default function Favorites() {
               <div className="text-center py-16">
                 <Search className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
                 <h2 className="font-display font-bold text-text-ink text-2xl mt-4">Sin resultados para tu búsqueda.</h2>
-                <button onClick={() => setSearch('')} className="btn btn-ghost mt-3 text-sm text-primary hover:text-primary-hover">
+                <button onClick={() => setSearch('')} className="btn btn-ghost mt-3 text-sm bg-white hover:bg-white text-primary border border-primary/30 hover:border-primary">
                   Limpiar búsqueda
                 </button>
               </div>

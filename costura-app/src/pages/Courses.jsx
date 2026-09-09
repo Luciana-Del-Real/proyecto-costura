@@ -70,7 +70,7 @@ export default function Courses() {
             <h2 className="font-display font-bold text-text-ink text-2xl mt-4">No encontramos cursos con esa búsqueda.</h2>
             <button 
               onClick={() => { setSearch(''); setLevel('Todos'); }} 
-              className="btn btn-ghost mt-3 text-sm text-primary hover:text-primary-hover"
+              className="btn btn-ghost mt-3 text-sm bg-white hover:bg-white text-primary border border-primary/30 hover:border-primary"
             >
               Limpiar filtros
             </button>

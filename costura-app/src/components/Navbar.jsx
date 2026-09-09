@@ -68,7 +68,7 @@ export default function Navbar() {
               <div className="relative" ref={profileRef}>
                 <button
                   onClick={() => setProfileOpen(!profileOpen)}
-                  className="btn btn-ghost text-sm"
+                  className={`btn btn-ghost text-sm bg-white hover:bg-white border border-primary/30 hover:border-primary transition-colors ${profileOpen ? 'border-primary' : ''}`}
                 >
                   <div className="w-7 h-7 bg-bg-soft rounded-full flex items-center justify-center text-text-ink text-xs font-bold">
                     {user.name?.charAt(0).toUpperCase()}
@@ -105,7 +105,7 @@ export default function Navbar() {
                 <>
                   <Link to="/cursos" className="px-1 py-1 rounded-lg text-sm font-medium text-text-ink hover:text-primary transition-colors">Cursos disponibles</Link>
                   <Link to="/patrones-gratis" className="px-1 py-1 rounded-lg text-sm font-medium text-text-ink hover:text-primary transition-colors">Patrones gratis</Link>
-                  <Link to="/login" className="btn btn-ghost text-sm text-primary border-primary/40 hover:bg-primary-soft hover:text-primary-hover">Iniciar sesión</Link>
+                  <Link to="/login" className="btn btn-primary text-sm text-white">Iniciar sesión</Link>
                 </>
               )}
             </>
