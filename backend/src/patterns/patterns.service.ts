@@ -80,4 +80,18 @@ export class PatternsService {
     }
     return this.attachmentsService.delete(attachmentId);
   }
+
+  // Borra el PDF principal (`archivo`) de un patrón. El patrón queda sin PDF
+  // principal (solo attachments si los tiene). No toca archivos del disco,
+  // consistente con el resto del módulo.
+  async deletePrimaryPdf(patternId: string) {
+    const pattern = await this.findOne(patternId);
+    if (!pattern.archivo) {
+      throw new NotFoundException('El patrón no tiene PDF principal');
+    }
+    return this.prisma.pattern.update({
+      where: { id: patternId },
+      data: { archivo: null },
+    });
+  }
 }

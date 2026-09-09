@@ -195,7 +195,7 @@ export default function AdminCourseForm() {
   return (
     <div className="min-h-screen bg-bg-surface py-12 px-4">
       <div className="max-w-2xl mx-auto">
-        <button onClick={() => navigate('/admin/cursos')} className="btn btn-ghost mb-6 text-sm">← Volver al listado</button>
+        <button onClick={() => navigate('/admin/cursos')} className="text-primary text-sm hover:text-primary-hover inline-flex items-center gap-1 mb-6">← Volver al listado</button>
 
         <div className="card-flat rounded-2xl p-8">
           <h2 className="font-display font-bold text-text-ink text-2xl mb-8 border-b pb-4">{isEditing ? 'Editar curso' : 'Nuevo curso'}</h2>

@@ -133,4 +133,12 @@ export class PatternsController {
   deleteAttachment(@Param('id') id: string, @Param('attachmentId') attachmentId: string) {
     return this.patternsService.deleteAttachment(id, attachmentId);
   }
+
+  // Borra el PDF principal del patrón (archivo). Permite dejar un patrón
+  // sin PDF principal; los patrones actuales son datos de prueba.
+  @Delete(':id/archivo')
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  deletePrimaryPdf(@Param('id') id: string) {
+    return this.patternsService.deletePrimaryPdf(id);
+  }
 }

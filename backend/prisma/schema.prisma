@@ -225,7 +225,7 @@ model Pattern {
   nivel       String   @default("Principiante")
   categoria   String   @default("")
   imagen      String?
-  archivo     String
+  archivo     String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

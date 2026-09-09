@@ -95,6 +95,17 @@ export default function AdminPatternForm() {
     }
   };
 
+  const handleDeletePrimaryPdf = async () => {
+    if (!await confirmDialog('¿Eliminar el PDF principal del patrón?')) return;
+    try {
+      await del(`/patterns/${id}/archivo`);
+      await reloadPattern();
+    } catch (error) {
+      console.error(error);
+      alertDialog('No se pudo eliminar el PDF principal');
+    }
+  };
+
   if (loading) {
     return <div className="min-h-screen bg-bg-surface flex items-center justify-center"><span className="text-4xl">🧵</span></div>;
   }
@@ -102,7 +113,7 @@ export default function AdminPatternForm() {
   return (
     <div className="min-h-screen bg-bg-surface py-12 px-4">
       <div className="max-w-2xl mx-auto">
-        <Link to="/admin/patrones" className="btn btn-ghost mb-6 text-sm">← Volver al listado</Link>
+        <Link to="/admin/patrones" className="text-primary text-sm hover:text-primary-hover inline-flex items-center gap-1 mb-6">← Volver al listado</Link>
 
         <div className="card-flat rounded-2xl p-8">
           <h2 className="font-display font-bold text-text-ink text-2xl mb-8 border-b pb-4">{isEditing ? 'Editar patrón' : 'Nuevo patrón'}</h2>
@@ -192,7 +203,13 @@ export default function AdminPatternForm() {
                       >
                         {pattern.titulo} (PDF principal)
                       </a>
-                      <span className="text-xs text-text-muted flex-shrink-0 ml-3">principal</span>
+                      <button
+                        type="button"
+                        onClick={() => handleDeletePrimaryPdf()}
+                        className="text-danger text-xs font-bold hover:underline flex-shrink-0 ml-3"
+                      >
+                        Eliminar
+                      </button>
                     </div>
                   )}
                   {pattern?.attachments?.map(att => (

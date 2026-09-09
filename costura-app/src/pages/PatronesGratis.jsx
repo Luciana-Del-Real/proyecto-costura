@@ -126,18 +126,23 @@ export default function PatronesGratis() {
                     <h3 className="font-body text-text-ink text-lg font-bold mb-2 leading-tight">{p.titulo}</h3>
                     <p className="text-text-ink text-sm leading-relaxed mb-4 flex-1">{p.descripcion}</p>
 
-                    <a
-                      href={p.archivo.startsWith('/uploads/') ? getImageUrl(p.archivo) : p.archivo}
-                      download
-                      target="_blank"
-                      rel="noreferrer"
-                      className="btn btn-primary w-full text-sm"
-                    >
-                      Descargar PDF
-                    </a>
-
+                    {p.archivo ? (
+                      <a
+                        href={p.archivo.startsWith('/uploads/') ? getImageUrl(p.archivo) : p.archivo}
+                        download
+                        target="_blank"
+                        rel="noreferrer"
+                        className="btn btn-primary w-full text-sm"
+                      >
+                        Descargar PDF
+                      </a>
+                    ) : (
+                      <span className="btn w-full text-sm bg-stone-200 text-stone-500 cursor-not-allowed" aria-disabled="true">
+                        PDF en preparación
+                      </span>
+                    )}
                     {p.attachments?.length > 0 && (
-                      <div className="mt-3 space-y-1">
+                      <div className="mt-2 space-y-1">
                         {p.attachments.map(att => (
                           <a
                             key={att.id}
@@ -145,7 +150,7 @@ export default function PatronesGratis() {
                             download
                             target="_blank"
                             rel="noreferrer"
-                            className="block text-xs text-primary underline truncate hover:text-primary-hover"
+                            className="text-xs text-primary underline block truncate"
                           >
                             {att.filename}
                           </a>
