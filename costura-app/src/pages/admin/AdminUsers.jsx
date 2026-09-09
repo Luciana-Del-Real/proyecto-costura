@@ -104,7 +104,10 @@ export default function AdminUsers() {
           <div className="fixed inset-0 z-50 overflow-y-auto animate-fade-in" role="dialog" aria-modal="true">
             <div className="absolute inset-0 bg-black/30" aria-hidden="true" onClick={() => setSelected(null)} />
             <div className="relative min-h-full flex items-center justify-center p-4 py-6">
-              <div className="rounded-2xl border border-border bg-white max-w-lg w-full shadow-[0_12px_40px_rgba(29,29,27,0.15)] animate-fade-up flex flex-col max-h-[90vh] overflow-hidden">
+              <div
+                className="rounded-2xl border border-border bg-white max-w-lg w-full shadow-[0_12px_40px_rgba(29,29,27,0.15)] animate-fade-up"
+                style={{ display: 'flex', flexDirection: 'column', maxHeight: '90vh', overflow: 'hidden' }}
+              >
               {/* Barra de acento fucsia, identidad Grow */}
               <div className="h-1 bg-primary flex-shrink-0" aria-hidden="true" />
 
@@ -133,7 +136,7 @@ export default function AdminUsers() {
               </div>
 
               {/* Cuerpo scrolleable (stats + cursos + acción) */}
-              <div className="flex-1 min-h-0 overflow-y-auto px-6 pb-6">
+              <div className="px-6 pb-6" style={{ flex: '1 1 0%', minHeight: 0, overflowY: 'auto' }}>
                 {/* Stats en dos tarjetas */}
                 <div className="grid grid-cols-2 gap-3 mb-6">
                 <div className="bg-bg-soft/40 rounded-xl px-4 py-3 border border-border/60">
