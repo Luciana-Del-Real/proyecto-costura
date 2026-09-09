@@ -19,7 +19,7 @@ export default function LessonEditorItem({
       <button
         type="button"
         onClick={onToggle}
-        className="w-full flex items-center gap-3 p-4 text-left hover:bg-bg-soft/60 transition-colors"
+        className="w-full flex items-center gap-3 p-4 text-left hover:bg-gray-100 transition-colors"
       >
         <div className="w-8 h-8 rounded-full bg-bg-soft text-text-ink flex-shrink-0 flex items-center justify-center text-sm font-bold">
           {lesson.order !== undefined ? Number(lesson.order) + 1 : '•'}

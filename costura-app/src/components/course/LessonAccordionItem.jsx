@@ -18,7 +18,7 @@ export default function LessonAccordionItem({
       <button
         onClick={() => onToggle(lesson, blocked)}
         disabled={blocked}
-        className={`w-full flex items-center gap-3 p-4 lg:p-5 text-left ${blocked ? 'opacity-60 cursor-not-allowed' : 'hover:bg-bg-soft/60'} transition-colors ${isOpen ? 'bg-secondary/10' : ''}`}
+        className={`w-full flex items-center gap-3 p-4 lg:p-5 text-left ${blocked ? 'opacity-60 cursor-not-allowed' : 'hover:bg-gray-100'} transition-colors ${isOpen ? 'bg-secondary/10' : ''}`}
       >
         <div className={`w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-sm font-bold ${
           completed ? 'bg-success text-white' : blocked ? 'bg-stone-200 text-stone-400' : isOpen ? 'bg-primary text-white' : 'bg-bg-soft text-text-ink'

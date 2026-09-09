@@ -52,7 +52,7 @@ export default function CoursePreviewView({ course, user, onBuy }) {
                 <div key={lesson.id} className={`bg-white border rounded-2xl shadow-sm overflow-hidden transition-colors ${isOpen ? 'border-secondary' : 'border-border'}`}>
                   <button
                     onClick={() => setOpenLessonId(isOpen ? null : lesson.id)}
-                    className="w-full flex items-center gap-3 p-4 lg:p-5 text-left hover:bg-bg-soft/60 transition-colors"
+                    className="w-full flex items-center gap-3 p-4 lg:p-5 text-left hover:bg-gray-100 transition-colors"
                   >
                     <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-sm font-bold bg-bg-soft text-text-ink">
                       {idx + 1}

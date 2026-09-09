@@ -267,7 +267,7 @@
     border-color: var(--color-border);
   }
   .btn-ghost:hover:not(:disabled) {
-    background-color: var(--color-bg-soft);
+    background-color: #F3F4F6; /* gris suave (mismo que hover de notificaciones) */
   }
 
   .btn-icon {

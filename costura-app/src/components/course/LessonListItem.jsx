@@ -15,7 +15,7 @@ export default function LessonListItem({ lesson, idx, isActive, blocked, complet
           ? 'border-secondary bg-secondary/10'
           : blocked
           ? 'border-border opacity-60 cursor-not-allowed'
-          : 'border-border hover:bg-bg-soft/60'
+          : 'border-border hover:bg-gray-100'
       }`}
     >
       <div className={`w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-sm font-bold ${

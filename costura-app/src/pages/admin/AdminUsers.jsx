@@ -131,7 +131,7 @@ export default function AdminUsers() {
               </div>
 
               {/* Cuerpo scrolleable (fijo el header y el footer) */}
-              <div className="px-6 pb-6 overflow-y-auto min-h-0">
+              <div className="px-6 pb-6 overflow-y-auto min-h-0 flex-1">
                 {/* Stats en dos tarjetas */}
                 <div className="grid grid-cols-2 gap-3 mb-6">
                   <div className="bg-bg-soft/40 rounded-xl px-4 py-3 border border-border/60">
@@ -148,7 +148,7 @@ export default function AdminUsers() {
 
                 {/* Cursos y progreso */}
                 <div>
-                  <h4 className="font-display font-bold text-text-ink text-lg mb-3 border-b border-border pb-2">Cursos y progreso</h4>
+                  <h4 className="font-display font-bold text-text-ink text-2xl mb-4 border-b border-border pb-2">Cursos y progreso</h4>
                   {getUserCourses(selected).length === 0 ? (
                     <p className="text-text-tan text-sm mb-5">Sin cursos aún.</p>
                   ) : (
@@ -157,14 +157,14 @@ export default function AdminUsers() {
                         const prog = getProgress(selected, course);
                         return (
                           <div key={course.id} className="flex items-center gap-3 bg-white border border-border rounded-xl p-3">
-                            <img src={getImageUrl(course.image)} alt={course.title} className="w-11 h-11 rounded-lg object-cover flex-shrink-0" />
+                            <img src={getImageUrl(course.image)} alt={course.title} className="w-12 h-12 rounded-lg object-cover flex-shrink-0" />
                             <div className="flex-1 min-w-0">
-                              <p className="text-sm font-semibold text-text-ink truncate">{course.title}</p>
-                              <div className="flex items-center gap-2 mt-1.5">
-                                <div className="flex-1 bg-bg-soft rounded-full h-1.5">
-                                  <div className="bg-primary h-1.5 rounded-full" style={{ width: `${prog}%` }} />
+                              <p className="text-base font-semibold text-text-ink truncate leading-snug">{course.title}</p>
+                              <div className="flex items-center gap-2 mt-2">
+                                <div className="flex-1 bg-bg-soft rounded-full h-2">
+                                  <div className="bg-primary h-2 rounded-full" style={{ width: `${prog}%` }} />
                                 </div>
-                                <span className="text-xs font-bold text-text-ink flex-shrink-0">{prog}%</span>
+                                <span className="text-sm font-bold text-text-ink flex-shrink-0">{prog}%</span>
                               </div>
                             </div>
                           </div>

@@ -17,7 +17,7 @@ export default function CourseAccordionItem({
       {/* Cabecera del curso */}
       <button
         onClick={onToggle}
-        className="w-full flex items-center gap-3 p-4 lg:p-5 text-left hover:bg-bg-soft/60 transition-colors"
+        className="w-full flex items-center gap-3 p-4 lg:p-5 text-left hover:bg-gray-100 transition-colors"
       >
         <div className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0">
           <CourseCover course={course} className="w-full h-full object-cover" />
