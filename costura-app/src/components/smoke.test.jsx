@@ -22,6 +22,7 @@ import LessonAccordionItem from './course/LessonAccordionItem';
 import LessonListItem from './course/LessonListItem';
 import LessonContent from './course/LessonContent';
 import LessonCommentsSection from './course/LessonCommentsSection';
+import { registerServiceWorker } from '../utils/serviceWorkerRegistration';
 
 const noop = vi.fn();
 const emptyLesson = { id: 'l1', title: 'Lección 1', duration: '12 min', videoUrl: '', attachments: [] };
@@ -222,5 +223,32 @@ describe('extracted components smoke render', () => {
     );
     expect(html).toContain('Descripción de la lección');
     expect(html).toContain('Marcar como completada');
+  });
+});
+
+describe('service worker registration guard (pwa-installability spec)', () => {
+  it('does not throw when navigator.serviceWorker is unavailable', () => {
+    // This file runs without jsdom: no navigator.serviceWorker exists, which
+    // is exactly the "Smoke test without service worker" scenario — boot code
+    // must no-op instead of throwing.
+    expect(() => registerServiceWorker()).not.toThrow();
+  });
+
+  it('registers sw.js when navigator.serviceWorker is available', async () => {
+    const register = vi.fn().mockResolvedValue(undefined);
+    const original = Object.getOwnPropertyDescriptor(globalThis, 'navigator');
+    Object.defineProperty(globalThis, 'navigator', {
+      value: { serviceWorker: { register } },
+      configurable: true,
+      writable: true,
+    });
+    try {
+      await registerServiceWorker();
+    } finally {
+      if (original) Object.defineProperty(globalThis, 'navigator', original);
+      else delete globalThis.navigator;
+    }
+    expect(register).toHaveBeenCalledTimes(1);
+    expect(register.mock.calls[0][0]).toMatch(/sw\.js$/);
   });
 });
