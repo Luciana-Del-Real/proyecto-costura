@@ -100,7 +100,7 @@ export default function AdminUsers() {
         {/* Confirm toggle modal */}
         {confirmToggle && (
           <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-[60] animate-fade-in px-4">
-            <div className="card-flat rounded-2xl p-6 max-w-sm w-full animate-fade-up justify-center text-center font-medium">
+            <div className="rounded-2xl border border-border bg-white p-6 max-w-sm w-full shadow-[0_12px_40px_rgba(29,29,27,0.15)] animate-fade-up justify-center text-center font-medium">
               <h3 className="font-medium text-text-ink mb-2">
                 {confirmToggle.action === 'deactivate' ? '¿Dar de baja a esta alumna?' : '¿Reactivar esta cuenta?'}
               </h3>
@@ -127,7 +127,7 @@ export default function AdminUsers() {
         {/* Detail modal */}
         {selected && (
           <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 animate-fade-in px-4">
-            <div className="card-flat rounded-2xl p-6 max-w-lg w-full animate-fade-up max-h-[80vh] overflow-y-auto">
+            <div className="rounded-2xl border border-border bg-white p-6 max-w-lg w-full shadow-[0_12px_40px_rgba(29,29,27,0.15)] animate-fade-up max-h-[80vh] overflow-y-auto">
               <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-3">
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${isActive(selected) ? 'bg-primary-soft text-success' : 'bg-red-50 text-red-400'}`}>

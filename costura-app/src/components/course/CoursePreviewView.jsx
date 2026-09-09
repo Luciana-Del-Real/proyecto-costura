@@ -41,7 +41,8 @@ export default function CoursePreviewView({ course, user, onBuy }) {
         </div>
 
         {/* Vista previa de lecciones */}
-        <h2 className="font-display font-bold text-text-ink text-2xl mb-4">Contenido del curso</h2>
+        <h2 className="font-display font-bold text-text-ink text-2xl mb-2">Contenido del curso</h2>
+        <div className="seam-divider-soft mb-4" aria-hidden="true" />
         {!course.lessons || course.lessons.length === 0 ? (
           <p className="text-text-ink text-sm">El contenido todavía se está armando. ¡Volvé pronto!</p>
         ) : (

@@ -80,7 +80,7 @@ export default function Navbar() {
                 </button>
 
                 {profileOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-bg-surface rounded-2xl shadow-lg border border-border py-1 overflow-hidden animate-slide-down">
+                  <div className="absolute right-0 mt-2 w-48 bg-bg-surface rounded-2xl shadow-[0_8px_30px_rgba(29,29,27,0.12)] border border-border py-1 overflow-hidden animate-slide-down">
                     <div className="px-4 py-3 border-b border-border">
                       <p className="text-xs font-semibold text-text-ink truncate">{user.name}</p>
                       <p className="text-xs text-accent truncate">{user.email}</p>

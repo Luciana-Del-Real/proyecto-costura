@@ -21,7 +21,7 @@ export default function PushConsentBanner({ open, busy, onEnable, onDismiss }) {
       role="region"
       aria-live="polite"
     >
-      <div className="pointer-events-auto w-full max-w-md card-glow rounded-2xl bg-white p-5 animate-fade-in">
+      <div className="pointer-events-auto w-full max-w-md rounded-2xl border border-border bg-white p-5 shadow-[0_8px_30px_rgba(29,29,27,0.12)] animate-fade-in">
         <p className="font-display text-lg font-bold text-text-ink">Activa las notificaciones</p>
         <p className="mt-1 text-sm text-text-ink">
           Recibe avisos de respuestas, compras y novedades incluso sin estar en la página.

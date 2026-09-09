@@ -44,7 +44,7 @@ export function DialogProvider({ children }) {
             className="absolute inset-0 bg-black/40 animate-fade-in"
             onClick={() => { if (!isConfirm) closeDialog(true); }}
           />
-          <div className="relative card-flat rounded-2xl p-6 max-w-sm w-full shadow-card animate-fade-up">
+          <div className="relative rounded-2xl border border-border bg-white p-6 max-w-sm w-full shadow-[0_12px_40px_rgba(29,29,27,0.15)] animate-fade-up">
             {/* Barra de acento fucsia, identidad Grow */}
             <div className="h-1 bg-primary rounded-full mb-4" aria-hidden="true" />
             <img src="/Images/Logo%20sin%20Slogan.png" alt="Grow" className="w-10 h-10 object-contain mx-auto mb-3" />

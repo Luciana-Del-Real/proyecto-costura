@@ -116,7 +116,8 @@ export default function AdminPatternForm() {
         <Link to="/admin/patrones" className="text-primary text-sm hover:text-primary-hover inline-flex items-center gap-1 mb-6">← Volver al listado</Link>
 
         <div className="card-flat rounded-2xl p-8">
-          <h2 className="font-display font-bold text-text-ink text-2xl mb-8 border-b pb-4">{isEditing ? 'Editar patrón' : 'Nuevo patrón'}</h2>
+          <h2 className="font-display font-bold text-text-ink text-2xl pb-4">{isEditing ? 'Editar patrón' : 'Nuevo patrón'}</h2>
+          <div className="seam-divider-soft mb-8" aria-hidden="true" />
           {saved && <div className="bg-primary-soft text-success text-sm rounded-xl px-4 py-3 mb-4">✓ Guardado correctamente</div>}
 
           <form onSubmit={handleSubmit} className="space-y-6">

@@ -75,7 +75,7 @@ export default function AdminNavbar() {
 
         {/* Mobile menu */}
         {menuOpen && (
-          <div className="lg:hidden bg-white border-t border-border px-4 py-3 flex flex-col gap-2">
+          <div className="lg:hidden bg-white border border-t-0 border-border rounded-b-2xl px-4 py-3 flex flex-col gap-2 shadow-[0_8px_30px_rgba(29,29,27,0.12)]">
             {navLinks.map(link => (
               <Link key={link.to} to={link.to} onClick={() => setMenuOpen(false)}
                 className="text-text-ink text-sm py-2">
