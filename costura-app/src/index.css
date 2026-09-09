@@ -240,7 +240,7 @@
   }
   .btn-primary:hover:not(:disabled) {
     background-color: var(--color-primary-hover);
-    box-shadow: 0 0 10px rgba(232, 62, 140, 0.18), 0 4px 16px rgba(232, 62, 140, 0.10);
+    box-shadow: 0 0 16px rgba(232, 62, 140, 0.35), 0 4px 16px rgba(232, 62, 140, 0.20);
   }
 
   .btn-accent {
@@ -249,7 +249,7 @@
   }
   .btn-accent:hover:not(:disabled) {
     background-color: var(--color-accent-hover);
-    box-shadow: 0 0 10px rgba(232, 62, 140, 0.18), 0 4px 16px rgba(232, 62, 140, 0.10);
+    box-shadow: 0 0 16px rgba(232, 62, 140, 0.35), 0 4px 16px rgba(232, 62, 140, 0.20);
   }
 
   .btn-danger {
@@ -404,12 +404,12 @@
   background: #FFFFFF;
   border: 1.5px solid var(--color-primary);
   border-radius: var(--radius-lg);
-  box-shadow: 0 0 8px rgba(232, 62, 140, 0.12), 0 4px 20px rgba(232, 62, 140, 0.06);
+  box-shadow: 0 0 12px rgba(232, 62, 140, 0.20), 0 4px 20px rgba(232, 62, 140, 0.10);
   transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
 }
 .card-glow:hover {
   border-color: var(--color-accent-hover);
-  box-shadow: 0 0 12px rgba(232, 62, 140, 0.20), 0 8px 30px rgba(232, 62, 140, 0.10);
+  box-shadow: 0 0 20px rgba(232, 62, 140, 0.38), 0 8px 30px rgba(232, 62, 140, 0.18);
 }
 
 /* Card con borde rosa suave (identidad Grow): para las cards de curso, que
@@ -419,12 +419,12 @@
   background: #FFFFFF;
   border: 1.5px solid var(--color-border);
   border-radius: var(--radius-lg);
-  box-shadow: 0 0 10px rgba(247, 193, 214, 0.15), 0 4px 16px rgba(247, 193, 214, 0.08);
+  box-shadow: 0 0 10px rgba(247, 193, 214, 0.25), 0 4px 16px rgba(247, 193, 214, 0.12);
   transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
 }
 .card-glow-soft:hover {
   border-color: var(--color-primary);
-  box-shadow: 0 0 16px rgba(247, 193, 214, 0.25), 0 8px 24px rgba(247, 193, 214, 0.12);
+  box-shadow: 0 0 16px rgba(247, 193, 214, 0.45), 0 8px 24px rgba(247, 193, 214, 0.20);
 }
 
 /* Card plana para datos: mismo fondo/borde/radio que card-glow pero SIN glow
@@ -448,16 +448,16 @@
   border: 1.5px solid var(--color-primary);
   border-radius: var(--radius-lg);
   box-shadow:
-    0 0 14px rgba(232, 62, 140, 0.20),
-    0 0 30px rgba(232, 62, 140, 0.08),
-    0 6px 20px rgba(232, 62, 140, 0.12);
+    0 0 24px rgba(232, 62, 140, 0.35),
+    0 0 60px rgba(232, 62, 140, 0.15),
+    0 8px 30px rgba(232, 62, 140, 0.18);
 }
 .card-glow-fixed:hover {
   border-color: var(--color-primary);
   box-shadow:
-    0 0 14px rgba(232, 62, 140, 0.20),
-    0 0 30px rgba(232, 62, 140, 0.08),
-    0 6px 20px rgba(232, 62, 140, 0.12);
+    0 0 24px rgba(232, 62, 140, 0.35),
+    0 0 60px rgba(232, 62, 140, 0.15),
+    0 8px 30px rgba(232, 62, 140, 0.18);
 }
 
 /* Línea de costura: separador entre secciones con patrón de puntadas
@@ -473,21 +473,6 @@
   opacity: 0.55;
   max-width: 90%;
   margin: 0 auto;
-}
-
-/* Línea de costura SUAVE: la misma puntada que seam-divider pero más fina
-   (2px), a baja opacidad y con el color de borde del sistema en vez del
-   fucsia primario. Se usa DENTRO de cards, debajo de títulos de sección,
-   donde la costura plena robaría protagonismo. A ancho completo (sin el
-   centrado de seam-divider) para funcionar como separador de sección. */
-.seam-divider-soft {
-  height: 2px;
-  background: repeating-linear-gradient(
-    90deg,
-    var(--color-border) 0 10px,
-    transparent 10px 18px
-  );
-  opacity: 0.35;
 }
 
 /* PR3: .input-default deleted (no consumers); legacy button helpers were
