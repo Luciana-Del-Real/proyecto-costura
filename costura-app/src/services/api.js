@@ -91,6 +91,18 @@ export async function del(path) {
   return apiFetch(path, { method: 'DELETE' });
 }
 
+// Web Push (WU4 — pwa-installability spec). El backend identifica la
+// suscripción por su endpoint: POST hace upsert (reconcilia logouts corridos)
+// y DELETE recibe el endpoint URL-encoded en el path, como exige el
+// controller de Nest. Ambos heredan la inyección de Authorization: Bearer.
+export async function createPushSubscription(subscription) {
+  return post('/push-subscriptions', subscription);
+}
+
+export async function deletePushSubscription(endpoint) {
+  return del(`/push-subscriptions/${encodeURIComponent(endpoint)}`);
+}
+
 // Para descargar archivos binarios (ej. el PDF del certificado), que no
 // son JSON y necesitan el token de sesión igual que cualquier otro pedido.
 export async function downloadFile(path, filename) {

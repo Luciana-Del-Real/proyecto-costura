@@ -3,6 +3,34 @@ import { post, patch } from '../services/api';
 
 const AuthContext = createContext(null);
 
+// Conjunto de listeners de logout: se invocan de forma SÍNCRONA antes de
+// limpiar sessionStorage, para que un consumidor (PushProvider) pueda capturar
+// el token/endpoint y disparar un DELETE best-effort que todavía sale
+// autenticado (ver "Best-Effort Logout Unsubscribe" en la spec de push).
+const beforeLogoutListeners = new Set();
+
+/**
+ * Registra un listener que corre antes de que `logout` limpie la sesión.
+ * Devuelve la función que lo desregistra.
+ */
+// eslint-disable-next-line react-refresh/only-export-components
+export function onBeforeLogout(listener) {
+  beforeLogoutListeners.add(listener);
+  return () => {
+    beforeLogoutListeners.delete(listener);
+  };
+}
+
+function notifyBeforeLogout() {
+  for (const listener of beforeLogoutListeners) {
+    try {
+      listener();
+    } catch {
+      // Un listener que falle jamás debe impedir el logout.
+    }
+  }
+}
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -10,6 +38,7 @@ export function AuthProvider({ children }) {
   // logout se declara antes del useEffect que lo usa (evita el acceso TDZ) y se
   // memoiza con useCallback para que sea estable como dependencia de efectos.
   const logout = useCallback(() => {
+    notifyBeforeLogout();
     setUser(null);
     sessionStorage.removeItem('costura_token');
     sessionStorage.removeItem('costura_user');

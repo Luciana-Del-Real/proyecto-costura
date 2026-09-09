@@ -1,16 +1,49 @@
 import {
+  Inject,
   Injectable,
+  Logger,
   NotFoundException,
   ForbiddenException,
+  Optional,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { Principal, isOwnerOrAdmin } from '../common/principal';
 import { Role } from '../common/enums';
 
+/**
+ * Fire-and-forget push dispatch seam (see design: "chokepoint injection").
+ * Implementations map (userId, title, message, link) to a Web Push payload
+ * (`{ title, body: message, data: { url: link } }`) and send one push per
+ * recipient subscription. The dependency is OPTIONAL so existing direct
+ * constructions (`new NotificationsService(prisma)`) keep compiling.
+ */
+export interface PushDispatcher {
+  schedule(
+    userId: string,
+    title: string,
+    message: string,
+    link?: string,
+  ): Promise<void>;
+}
+
+/**
+ * DI token for `PushDispatcher`. The interface is a type alias erased at
+ * runtime, so Nest cannot resolve it by type and needs an explicit token
+ * (same lesson as VAPID_CONFIG in WU1).
+ */
+export const PUSH_DISPATCHER = 'PUSH_DISPATCHER';
+
 @Injectable()
 export class NotificationsService {
-  constructor(private prisma: PrismaService) {}
+  private readonly logger = new Logger(NotificationsService.name);
+
+  constructor(
+    private prisma: PrismaService,
+    @Optional()
+    @Inject(PUSH_DISPATCHER)
+    private readonly pushDispatcher?: PushDispatcher,
+  ) {}
 
   async getUserNotifications(userId: string) {
     return this.prisma.notification.findMany({
@@ -85,7 +118,7 @@ export class NotificationsService {
     link?: string,
   ) {
     const client = tx ?? this.prisma;
-    return client.notification.create({
+    const notification = await client.notification.create({
       data: {
         userId,
         title,
@@ -94,6 +127,10 @@ export class NotificationsService {
         ...(link ? { link } : {}),
       },
     });
+    // Chokepoint: dispatch push after creation, deferred and fire-and-forget
+    // (isolation contract — push can never break, delay or roll back creation).
+    this.schedulePush(userId, title, message, link);
+    return notification;
   }
 
   // Crea una notificación para cada ADMIN, dentro de la transacción del
@@ -120,7 +157,32 @@ export class NotificationsService {
           ...(link ? { link } : {}),
         },
       });
+      // Admin fan-out: one deferred dispatch per created admin notification.
+      this.schedulePush(admin.id, title, message, link);
     }
     return admins.length;
+  }
+
+  /**
+   * Fire-and-forget push dispatch (isolation contract). setImmediate defers
+   * the send past the caller's transaction commit — queueMicrotask could
+   * precede it, and awaiting would block creation. Failures are logged and
+   * swallowed, so send latency or errors can never reach the caller.
+   */
+  private schedulePush(
+    userId: string,
+    title: string,
+    message: string,
+    link?: string,
+  ) {
+    const dispatcher = this.pushDispatcher;
+    if (!dispatcher) {
+      return;
+    }
+    setImmediate(() => {
+      void dispatcher.schedule(userId, title, message, link).catch((err) => {
+        this.logger.error(`Push dispatch failed for user ${userId}`, err);
+      });
+    });
   }
 }
