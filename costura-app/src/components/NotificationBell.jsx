@@ -44,7 +44,7 @@ export default function NotificationBell() {
       <button
         onClick={() => setNotifOpen(!notifOpen)}
         aria-label="Notificaciones"
-        className="btn btn-icon relative"
+        className="btn btn-icon relative bg-white hover:bg-white text-text-ink"
       >
         <svg className="w-5 h-5 text-text-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
@@ -84,10 +84,10 @@ export default function NotificationBell() {
             {!notificationsLoading && !notificationsError && notifications.length > 0 && (
               <ul>
                 {notifications.slice(0, 5).map(n => (
-                  <li key={n.id} className="border-b border-border last:border-0 flex items-start">
+                  <li key={n.id} className="border-b border-border last:border-0 flex items-start group hover:bg-gray-100 transition-colors">
                     <button
                       onClick={() => handleItemClick(n)}
-                      className="flex-1 text-left px-4 py-3 hover:bg-bg-soft transition-colors min-w-0"
+                      className="flex-1 text-left px-4 py-3 hover:bg-gray-100 transition-colors min-w-0"
                     >
                       <p className="text-xs font-semibold text-text-ink flex items-center gap-2">
                         {!n.read && <span className="w-2 h-2 rounded-full bg-accent flex-shrink-0" />}
@@ -98,7 +98,7 @@ export default function NotificationBell() {
                     <button
                       onClick={(e) => { e.stopPropagation(); deleteNotification(n.id); }}
                       aria-label="Eliminar notificación"
-                      className="px-2 py-3 text-accent/60 hover:text-danger transition-colors flex-shrink-0"
+                      className="px-3 py-3 text-accent/60 hover:text-danger transition-colors flex-shrink-0 group-hover:bg-gray-100"
                     >
                       ✕
                     </button>

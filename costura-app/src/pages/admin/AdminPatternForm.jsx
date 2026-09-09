@@ -180,24 +180,23 @@ export default function AdminPatternForm() {
                 </p>
               )}
 
-              {isEditing && pattern?.archivo && (
+              {(isEditing && (pattern?.archivo || pattern?.attachments?.length > 0)) && (
                 <div className="mt-4">
-                  <p className="text-xs font-bold text-text-ink mb-2">PDF principal:</p>
-                  <a
-                    href={pattern.archivo.startsWith('/uploads/') ? getImageUrl(pattern.archivo) : pattern.archivo}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-block text-sm text-primary font-medium hover:underline"
-                  >
-                    {pattern.titulo} (PDF principal)
-                  </a>
-                </div>
-              )}
-
-              {isEditing && pattern?.attachments?.length > 0 && (
-                <div className="mt-4">
-                  <p className="text-xs font-bold text-text-ink mb-2">PDFs adicionales:</p>
-                  {pattern.attachments.map(att => (
+                  <p className="text-xs font-bold text-text-ink mb-2">PDFs ya subidos:</p>
+                  {pattern?.archivo && (
+                    <div className="flex items-center justify-between py-2 border-b border-border last:border-0">
+                      <a
+                        href={pattern.archivo.startsWith('/uploads/') ? getImageUrl(pattern.archivo) : pattern.archivo}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-sm text-primary underline truncate"
+                      >
+                        {pattern.titulo} (PDF principal)
+                      </a>
+                      <span className="text-xs text-text-muted flex-shrink-0 ml-3">principal</span>
+                    </div>
+                  )}
+                  {pattern?.attachments?.map(att => (
                     <div key={att.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
                       <a href={getImageUrl(att.url)} target="_blank" rel="noreferrer" className="text-sm text-primary underline truncate">{att.filename}</a>
                       <button type="button" onClick={() => handleDeleteAttachment(att.id)} className="text-danger text-xs font-bold hover:underline flex-shrink-0 ml-3">Eliminar</button>

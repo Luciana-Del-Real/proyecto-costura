@@ -66,7 +66,7 @@ export default function MyCourses() {
                       <img src={getImageUrl(course.image)} alt={course.title} className="w-full sm:w-28 h-20 object-cover rounded-xl flex-shrink-0" />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2">
-                          <h3 className="font-semibold text-text-ink">{course.title}</h3>
+                          <h3 className="font-semibold text-text-ink text-xl sm:text-2xl leading-snug">{course.title}</h3>
                           <span className="text-sm font-bold text-primary flex-shrink-0">{prog}%</span>
                         </div>
                         <p className="text-text-ink text-sm mt-0.5 mb-3">{course.instructor} · {course.lessons.length} lecciones</p>

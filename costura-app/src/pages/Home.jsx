@@ -65,7 +65,7 @@ export default function Home() {
       <section className="bg-white py-16 px-4">
           <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="card-glow rounded-2xl p-8 h-full flex items-center">
-              <RevealSection>
+              <RevealSection animation="reveal-left">
                 <div className="w-full flex flex-col items-center text-center">
                   <div className="w-24 h-24 md:w-36 md:h-36 rounded-full overflow-hidden flex-shrink-0 border-2 border-primary shadow-[0_0_20px_rgba(232,62,140,0.30)] mb-5">
                     <img

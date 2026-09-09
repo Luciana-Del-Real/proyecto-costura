@@ -98,7 +98,7 @@ export default function Auth({ defaultTab = 'login' }) {
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-ink hover:text-primary transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-ink transition-colors"
               >
                 {showPassword ? <EyeOff className="w-5 h-5" strokeWidth={1.8} /> : <Eye className="w-5 h-5" strokeWidth={1.8} />}
               </button>

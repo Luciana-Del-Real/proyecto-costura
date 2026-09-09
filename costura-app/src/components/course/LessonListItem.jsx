@@ -24,7 +24,7 @@ export default function LessonListItem({ lesson, idx, isActive, blocked, complet
         {completed ? <Check className="w-4 h-4" strokeWidth={2.5} /> : blocked ? <Lock className="w-4 h-4" strokeWidth={2} /> : idx + 1}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="font-semibold text-text-ink truncate">{lesson.title}</p>
+        <p className={`font-semibold truncate ${isActive ? 'text-primary' : 'text-text-ink'}`}>{lesson.title}</p>
         <p className="text-xs text-accent mt-0.5 flex items-center gap-1">
           <Clock className="w-3.5 h-3.5" strokeWidth={1.5} /> {lesson.duration}
           {blocked && <span className="text-danger"> · Completá la lección anterior para desbloquear</span>}

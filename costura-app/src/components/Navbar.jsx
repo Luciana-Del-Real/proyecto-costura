@@ -86,7 +86,7 @@ export default function Navbar() {
                       <p className="text-xs text-accent truncate">{user.email}</p>
                     </div>
                     <Link to="/perfil" onClick={() => setProfileOpen(false)}
-                      className="flex items-center gap-2 px-4 py-2.5 text-sm text-text-ink hover:bg-bg-soft transition-colors">
+                      className="flex items-center gap-2 px-4 py-2.5 text-sm text-text-ink hover:bg-gray-100 transition-colors">
                       <User className="w-4 h-4 text-primary" strokeWidth={1.5} /> Mi perfil
                     </Link>
                     <div className="border-t border-bg-soft py-3 px-3 mt-1">

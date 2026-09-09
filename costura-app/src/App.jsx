@@ -77,7 +77,9 @@ export default function App() {
             <Route path="/patrones-gratis" element={<Layout><PatronesGratis /></Layout>} />
 
             {/* Alumno */}
-            <Route path="/curso/:id" element={<ProtectedRoute><Layout><CourseDetail /></Layout></ProtectedRoute>} />
+            {/* /curso/:id es público: sin sesión muestra la vista previa del
+                curso (CoursePreviewView); "Inscribirme" lleva al login. */}
+            <Route path="/curso/:id" element={<Layout><CourseDetail /></Layout>} />
             <Route path="/checkout/:id" element={<ProtectedRoute><Layout><Checkout /></Layout></ProtectedRoute>} />
             <Route path="/dashboard" element={<ProtectedRoute><Layout><Dashboard /></Layout></ProtectedRoute>} />
             <Route path="/mis-cursos" element={<ProtectedRoute><Layout><MyCourses /></Layout></ProtectedRoute>} />

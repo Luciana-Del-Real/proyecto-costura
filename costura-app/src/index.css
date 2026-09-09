@@ -593,8 +593,10 @@ section.hero-no-sep + section {
   box-shadow: none !important;
 }
 .nav-on-hero .logo-text { color: var(--color-text-cocoa) !important; font-weight:600; }
-.nav-on-hero a,
-.nav-on-hero .nav-link {
+/* Los .btn (canónicos) llevan su propio color (btn-primary blanco, ghost ink);
+   el override cocoa solo aplica a links planos del navbar, no a botones. */
+.nav-on-hero a:not(.btn),
+.nav-on-hero .nav-link:not(.btn) {
   color: var(--color-text-cocoa) !important;
 }
 /* PR5: dropped .text-black/.text-secondary/.text-brown-muted and the
