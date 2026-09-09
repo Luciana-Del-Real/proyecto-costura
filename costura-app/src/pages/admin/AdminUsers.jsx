@@ -132,7 +132,7 @@ export default function AdminUsers() {
               </div>
 
               {/* Cuerpo scrolleable (stats + cursos + acción) */}
-              <div className="overflow-y-auto min-h-0 px-6 pb-6">
+              <div className="flex-1 min-h-0 overflow-y-auto px-6 pb-6">
                 {/* Stats en dos tarjetas */}
                 <div className="grid grid-cols-2 gap-3 mb-6">
                 <div className="bg-bg-soft/40 rounded-xl px-4 py-3 border border-border/60">
