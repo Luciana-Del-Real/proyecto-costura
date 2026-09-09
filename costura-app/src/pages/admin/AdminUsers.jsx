@@ -103,12 +103,12 @@ export default function AdminUsers() {
         {selected && (
           <div className="fixed inset-0 z-50 grid place-items-center p-4 py-6 animate-fade-in" role="dialog" aria-modal="true">
             <div className="absolute inset-0 bg-black/30" aria-hidden="true" onClick={() => setSelected(null)} />
-            <div className="relative rounded-2xl border border-border bg-white max-w-lg w-full shadow-[0_12px_40px_rgba(29,29,27,0.15)] animate-fade-up max-h-[90vh] overflow-y-auto overscroll-contain">
+            <div className="relative rounded-2xl border border-border bg-white max-w-lg w-full shadow-[0_12px_40px_rgba(29,29,27,0.15)] animate-fade-up flex flex-col max-h-[90vh] overflow-hidden">
               {/* Barra de acento fucsia, identidad Grow */}
-              <div className="h-1 bg-primary rounded-t-2xl" aria-hidden="true" />
+              <div className="h-1 bg-primary flex-shrink-0" aria-hidden="true" />
 
-              {/* Header con avatar grande */}
-              <div className="p-6 pb-4">
+              {/* Header con avatar grande (fijo) */}
+              <div className="p-6 pb-4 flex-shrink-0">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-center gap-4">
                     <div className={`w-16 h-16 rounded-2xl flex items-center justify-center font-display text-2xl font-bold ${isActive(selected) ? 'bg-primary-soft text-primary' : 'bg-red-50 text-red-400'}`}>
@@ -131,8 +131,10 @@ export default function AdminUsers() {
                 </div>
               </div>
 
-              {/* Stats en dos tarjetas */}
-              <div className="px-6 grid grid-cols-2 gap-3 mb-6">
+              {/* Cuerpo scrolleable (stats + cursos + acción) */}
+              <div className="overflow-y-auto min-h-0 px-6 pb-6">
+                {/* Stats en dos tarjetas */}
+                <div className="grid grid-cols-2 gap-3 mb-6">
                 <div className="bg-bg-soft/40 rounded-xl px-4 py-3 border border-border/60">
                   <p className="text-[11px] uppercase tracking-wide text-text-tan font-bold">Cursos comprados</p>
                   <p className="text-2xl font-display font-bold text-text-ink mt-0.5">{getPurchasedCourseIds(selected).length}</p>
@@ -146,7 +148,7 @@ export default function AdminUsers() {
               </div>
 
               {/* Cursos y progreso */}
-              <div className="px-6 pb-6">
+              <div>
                 <h4 className="font-display font-bold text-text-ink text-2xl mb-4 border-b border-border pb-2">Cursos y progreso</h4>
                 {getUserCourses(selected).length === 0 ? (
                   <p className="text-text-tan text-sm mb-5">Sin cursos aún.</p>
@@ -189,6 +191,7 @@ export default function AdminUsers() {
                   )}
                 </div>
               </div>
+            </div>
             </div>
           </div>
         )}
