@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import PageHeader from '../../components/PageHeader';
+import Pagination from '../../components/Pagination';
 import { usePurchases } from '../../context/PurchaseContext';
 import { formatMoney } from '../../utils/currency';
 
@@ -115,7 +116,6 @@ export default function AdminRequests() {
       <div className="card-flat rounded-2xl px-6 py-10 animate-fade-up mt-5">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-display font-bold text-text-ink text-2xl">Solicitudes pendientes</h2>
-            <div className="text-xs text-text-tan">Página {page}</div>
           </div>
 
           <div className="relative max-w-sm mb-4">
@@ -163,14 +163,15 @@ export default function AdminRequests() {
             </div>
           )}
 
-          <div className="flex items-center justify-between mt-6">
-            <div className="flex gap-2">
-              <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
-                className="btn btn-primary text-xs shadow-sm">Anterior</button>
-              <button onClick={() => setPage(p => p + 1)} disabled={requests.length < limit}
-                className="btn btn-primary text-xs shadow-sm">Siguiente</button>
-            </div>
-          </div>
+          {/* Paginación consistente con el resto de listados admin: el total
+              de páginas es server-side, así que se estima desde la página
+              actual (si la página vino llena, hay al menos una más; si vino
+              vacía, esta es la última real). */}
+          <Pagination
+            page={page}
+            totalPages={Math.max(1, requests.length === 0 && page > 1 ? page - 1 : page + (requests.length === limit ? 1 : 0))}
+            onPageChange={setPage}
+          />
         </div>
     </div>
   );

@@ -1,5 +1,5 @@
-export default function Pagination({ page, total, perPage = 10, onPageChange }) {
-  const totalPages = Math.max(1, Math.ceil(total / perPage));
+export default function Pagination({ page, total, perPage = 10, totalPages: explicitTotalPages, onPageChange }) {
+  const totalPages = explicitTotalPages ?? Math.max(1, Math.ceil(total / perPage));
 
   if (totalPages <= 1) return null;
 
