@@ -101,8 +101,9 @@ export default function AdminUsers() {
 
         {/* Detail modal */}
         {selected && (
-          <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 animate-fade-in px-4 py-6" role="dialog" aria-modal="true">
-            <div className="rounded-2xl border border-border bg-white max-w-lg w-full shadow-[0_12px_40px_rgba(29,29,27,0.15)] animate-fade-up max-h-[85vh] overflow-y-auto overscroll-contain">
+          <div className="fixed inset-0 bg-black/30 z-50 overflow-y-auto animate-fade-in" role="dialog" aria-modal="true">
+            <div className="min-h-full flex items-center justify-center p-4 py-6">
+              <div className="rounded-2xl border border-border bg-white max-w-lg w-full shadow-[0_12px_40px_rgba(29,29,27,0.15)] animate-fade-up">
               {/* Barra de acento fucsia, identidad Grow */}
               <div className="h-1 bg-primary rounded-t-2xl" aria-hidden="true" />
 
@@ -188,6 +189,7 @@ export default function AdminUsers() {
                   )}
                 </div>
               </div>
+            </div>
             </div>
           </div>
         )}
