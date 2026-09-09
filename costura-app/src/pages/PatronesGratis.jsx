@@ -91,7 +91,7 @@ export default function PatronesGratis() {
               {search ? 'No encontramos patrones con esa búsqueda.' : 'Todavía no hay patrones de ese nivel.'}
             </h2>
             {search && (
-              <button onClick={() => setSearch('')} className="btn btn-ghost mt-3 text-sm text-primary hover:text-primary-hover">
+              <button onClick={() => setSearch('')} className="btn btn-ghost mt-3 text-sm bg-white hover:bg-white text-primary border border-primary/30 hover:border-primary">
                 Limpiar búsqueda
               </button>
             )}
@@ -135,6 +135,23 @@ export default function PatronesGratis() {
                     >
                       Descargar PDF
                     </a>
+
+                    {p.attachments?.length > 0 && (
+                      <div className="mt-3 space-y-1">
+                        {p.attachments.map(att => (
+                          <a
+                            key={att.id}
+                            href={getImageUrl(att.url)}
+                            download
+                            target="_blank"
+                            rel="noreferrer"
+                            className="block text-xs text-primary underline truncate hover:text-primary-hover"
+                          >
+                            {att.filename}
+                          </a>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}

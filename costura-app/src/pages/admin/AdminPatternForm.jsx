@@ -1,9 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { FileText } from 'lucide-react';
-import { get, postForm, putForm } from '../../services/api';
+import { get, postForm, putForm, del } from '../../services/api';
 import { useDialog } from '../../context/DialogContext';
 import { getImageUrl } from '../../utils/media';
+import FilePicker from '../../components/FilePicker';
 
 const EMPTY_FORM = {
   titulo: '',
@@ -13,14 +14,14 @@ const EMPTY_FORM = {
 };
 
 export default function AdminPatternForm() {
-  const { alertDialog } = useDialog();
+  const { alertDialog, confirmDialog } = useDialog();
   const { id } = useParams();
   const navigate = useNavigate();
   const isEditing = Boolean(id);
 
   const [form, setForm] = useState(EMPTY_FORM);
   const [imagenFile, setImagenFile] = useState(null);
-  const [archivoFile, setArchivoFile] = useState(null);
+  const [patternPdfFiles, setPatternPdfFiles] = useState([]); // PDFs nuevos a subir (múltiples)
   const [pattern, setPattern] = useState(null);
   const [loading, setLoading] = useState(isEditing);
   const [saving, setSaving] = useState(false);
@@ -48,6 +49,10 @@ export default function AdminPatternForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!isEditing && patternPdfFiles.length === 0) {
+      alertDialog('Tenés que adjuntar el PDF del patrón.');
+      return;
+    }
     setSaving(true);
     try {
       const formData = new FormData();
@@ -56,12 +61,14 @@ export default function AdminPatternForm() {
       formData.append('nivel', form.nivel);
       formData.append('categoria', form.categoria);
       if (imagenFile) formData.append('imagen', imagenFile);
-      if (archivoFile) formData.append('archivo', archivoFile);
+      // Todos los PDFs van por `pdfs`: el primero se guarda como PDF
+      // principal (`archivo`) y el resto como attachments en el backend.
+      patternPdfFiles.forEach((file) => formData.append('pdfs', file));
 
       if (isEditing) {
         await putForm(`/patterns/${id}`, formData);
         setImagenFile(null);
-        setArchivoFile(null);
+        setPatternPdfFiles([]);
         setSaved(true);
         setTimeout(() => setSaved(false), 1500);
         await reloadPattern();
@@ -74,6 +81,17 @@ export default function AdminPatternForm() {
       alertDialog('Error guardando el patrón');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleDeleteAttachment = async (attachmentId) => {
+    if (!await confirmDialog('¿Eliminar este PDF del patrón?')) return;
+    try {
+      await del(`/patterns/${id}/attachments/${attachmentId}`);
+      await reloadPattern();
+    } catch (error) {
+      console.error(error);
+      alertDialog('No se pudo eliminar el PDF');
     }
   };
 
@@ -139,11 +157,9 @@ export default function AdminPatternForm() {
 
             <div>
               <label className="block text-sm font-bold text-black mb-1.5">📷 Imagen de portada</label>
-              <input
-                type="file"
+              <FilePicker
                 accept="image/*"
                 onChange={e => setImagenFile(e.target.files?.[0] || null)}
-                className="w-full border-2 border-border rounded-xl px-4 py-3"
               />
               {isEditing && pattern?.imagen && (
                 <img src={getImageUrl(pattern.imagen)} alt={pattern.titulo} className="mt-3 h-28 w-40 object-cover rounded-xl border border-border" />
@@ -151,23 +167,43 @@ export default function AdminPatternForm() {
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-black mb-1.5 flex items-center gap-1.5"><FileText className="w-4 h-4" strokeWidth={1.5} /> PDF</label>
-              <input
-                type="file"
+              <label className="block text-sm font-bold text-black mb-1.5 flex items-center gap-1.5"><FileText className="w-4 h-4" strokeWidth={1.5} /> PDFs (podés elegir varios)</label>
+              <FilePicker
                 accept=".pdf"
-                required={!isEditing}
-                onChange={e => setArchivoFile(e.target.files?.[0] || null)}
-                className="w-full border-2 border-border rounded-xl px-4 py-3"
+                multiple
+                onChange={e => setPatternPdfFiles(Array.from(e.target.files || []))}
               />
+              {patternPdfFiles.length > 0 && (
+                <p className="text-xs text-text-ink mt-2">
+                  {patternPdfFiles.length} archivo(s) seleccionados para subir al guardar.
+                  {isEditing && ' El primer archivo reemplaza al PDF principal.'}
+                </p>
+              )}
+
               {isEditing && pattern?.archivo && (
-                <a
-                  href={pattern.archivo.startsWith('/uploads/') ? getImageUrl(pattern.archivo) : pattern.archivo}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-block mt-3 text-sm text-primary font-medium hover:underline"
-                >
-                  Ver PDF actual
-                </a>
+                <div className="mt-4">
+                  <p className="text-xs font-bold text-text-ink mb-2">PDF principal:</p>
+                  <a
+                    href={pattern.archivo.startsWith('/uploads/') ? getImageUrl(pattern.archivo) : pattern.archivo}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-block text-sm text-primary font-medium hover:underline"
+                  >
+                    {pattern.titulo} (PDF principal)
+                  </a>
+                </div>
+              )}
+
+              {isEditing && pattern?.attachments?.length > 0 && (
+                <div className="mt-4">
+                  <p className="text-xs font-bold text-text-ink mb-2">PDFs adicionales:</p>
+                  {pattern.attachments.map(att => (
+                    <div key={att.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+                      <a href={getImageUrl(att.url)} target="_blank" rel="noreferrer" className="text-sm text-primary underline truncate">{att.filename}</a>
+                      <button type="button" onClick={() => handleDeleteAttachment(att.id)} className="text-danger text-xs font-bold hover:underline flex-shrink-0 ml-3">Eliminar</button>
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
 
