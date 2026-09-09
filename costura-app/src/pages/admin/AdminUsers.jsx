@@ -8,13 +8,12 @@ import { getCoursePrice, getCurrencyCode } from '../../utils/currency';
 import { getImageUrl } from '../../utils/media';
 
 export default function AdminUsers() {
-  const { alertDialog } = useDialog();
+  const { alertDialog, confirmDialog } = useDialog();
   const { courses } = useCourseCatalog();
   const { getAllUsers, toggleUserActive } = useAdmin();
   const [allUsers, setAllUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
-  const [confirmToggle, setConfirmToggle] = useState(null); // { user, action }
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const PER_PAGE = 10;
@@ -32,18 +31,21 @@ export default function AdminUsers() {
 
   useEffect(() => { refreshUsers(); }, [refreshUsers]);
 
-  const handleToggle = async () => {
+  const handleToggle = async (user, action) => {
+    const message = action === 'deactivate'
+      ? 'La alumna no podrá iniciar sesión hasta que se reactive su cuenta.'
+      : 'La alumna podrá volver a iniciar sesión normalmente.';
+    const title = action === 'deactivate' ? '¿Dar de baja a esta alumna?' : '¿Reactivar esta cuenta?';
+    if (!await confirmDialog(message, title)) return;
     try {
-      await toggleUserActive(confirmToggle.user.id);
+      await toggleUserActive(user.id);
       await refreshUsers();
-      if (selected?.id === confirmToggle.user.id) {
+      if (selected?.id === user.id) {
         setSelected(prev => ({ ...prev, active: prev.active === false ? true : false }));
       }
     } catch (err) {
       console.error(err);
       alertDialog('No se pudo actualizar el estado de la cuenta');
-    } finally {
-      setConfirmToggle(null);
     }
   };
 
@@ -97,108 +99,90 @@ export default function AdminUsers() {
           />
         </div>
 
-        {/* Confirm toggle modal */}
-        {confirmToggle && (
-          <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-[60] animate-fade-in px-4">
-            <div className="rounded-2xl border border-border bg-white p-6 max-w-sm w-full shadow-[0_12px_40px_rgba(29,29,27,0.15)] animate-fade-up justify-center text-center font-medium">
-              <h3 className="font-medium text-text-ink mb-2">
-                {confirmToggle.action === 'deactivate' ? '¿Dar de baja a esta alumna?' : '¿Reactivar esta cuenta?'}
-              </h3>
-              <p className="text-text-tan text-sm mb-5">
-                {confirmToggle.action === 'deactivate'
-                  ? 'La alumna no podrá iniciar sesión hasta que se reactive su cuenta.'
-                  : 'La alumna podrá volver a iniciar sesión normalmente.'}
-              </p>
-              <div className="flex justify-center items-center gap-3">
-                <button onClick={handleToggle}
-                  className={`btn text-sm font-medium ${
-                    confirmToggle.action === 'deactivate'
-                      ? 'btn-danger'
-                      : 'btn-primary'
-                  }`}>
-                  {confirmToggle.action === 'deactivate' ? 'Dar de baja' : 'Reactivar'}
-                </button>
-                <button onClick={() => setConfirmToggle(null)} className="btn btn-ghost text-sm">Cancelar</button>
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Detail modal */}
         {selected && (
-          <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 animate-fade-in px-4">
-            <div className="rounded-2xl border border-border bg-white p-6 max-w-lg w-full shadow-[0_12px_40px_rgba(29,29,27,0.15)] animate-fade-up max-h-[80vh] overflow-y-auto">
-              <div className="flex items-center justify-between mb-5">
-                <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${isActive(selected) ? 'bg-primary-soft text-success' : 'bg-red-50 text-red-400'}`}>
-                    {selected.name?.charAt(0).toUpperCase()}
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-medium text-xl text-text-ink">{selected.name}</h3>
-                      {!isActive(selected) && (
-                        <span className="text-xs bg-red-50 text-red-400 border border-red-200 px-2 py-0.5 rounded-full">Suspendida</span>
-                      )}
+          <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 animate-fade-in px-4" role="dialog" aria-modal="true">
+            <div className="rounded-2xl border border-border bg-white max-w-lg w-full shadow-[0_12px_40px_rgba(29,29,27,0.15)] animate-fade-up max-h-[85vh] overflow-y-auto">
+              {/* Barra de acento fucsia, identidad Grow */}
+              <div className="h-1 bg-primary rounded-t-2xl" aria-hidden="true" />
+
+              {/* Header con avatar grande */}
+              <div className="p-6 pb-4">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center font-display text-2xl font-bold ${isActive(selected) ? 'bg-primary-soft text-primary' : 'bg-red-50 text-red-400'}`}>
+                      {selected.name?.charAt(0).toUpperCase()}
                     </div>
-                    <p className="text-text-tan text-xs">{selected.email}</p>
+                    <div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h3 className="font-display font-bold text-2xl text-text-ink">{selected.name}</h3>
+                        {!isActive(selected) && (
+                          <span className="text-xs bg-red-50 text-red-400 border border-red-200 px-2 py-0.5 rounded-full font-semibold">Suspendida</span>
+                        )}
+                      </div>
+                      <p className="text-text-tan text-sm mt-0.5">{selected.email}</p>
+                      <p className="text-xs text-text-muted mt-0.5">
+                        Registrada el {new Date(selected.createdAt).toLocaleDateString('es-AR', { year: 'numeric', month: 'long', day: 'numeric' })}
+                      </p>
+                    </div>
                   </div>
+                  <button onClick={() => setSelected(null)} aria-label="Cerrar" className="btn btn-icon text-xl leading-none text-text-tan hover:text-text-ink">×</button>
                 </div>
-                <button onClick={() => setSelected(null)} className="btn btn-icon text-xl leading-none">×</button>
               </div>
 
-              <div className="divide-y divide-border border-y border-border mb-5">
-                <div className="py-3 flex items-center justify-between">
-                  <p className="text-xs text-text-tan">Cursos comprados</p>
-                  <p className="text-xl font-bold text-text-ink">{getPurchasedCourseIds(selected).length}</p>
+              {/* Stats en dos tarjetas */}
+              <div className="px-6 grid grid-cols-2 gap-3 mb-6">
+                <div className="bg-bg-soft/40 rounded-xl px-4 py-3 border border-border/60">
+                  <p className="text-[11px] uppercase tracking-wide text-text-tan font-bold">Cursos comprados</p>
+                  <p className="text-2xl font-display font-bold text-text-ink mt-0.5">{getPurchasedCourseIds(selected).length}</p>
                 </div>
-                <div className="py-3 flex items-center justify-between">
-                  <p className="text-xs text-text-tan">Total invertido</p>
-                  <p className="text-xl font-bold text-text-ink">
+                <div className="bg-bg-soft/40 rounded-xl px-4 py-3 border border-border/60">
+                  <p className="text-[11px] uppercase tracking-wide text-text-tan font-bold">Total invertido</p>
+                  <p className="text-2xl font-display font-bold text-success mt-0.5">
                     ${getUserCourses(selected).reduce((s, c) => s + getCoursePrice(c, selected), 0).toLocaleString()} {getCurrencyCode(selected)}
                   </p>
                 </div>
               </div>
 
-              <h4 className="font-semibold text-text-ink text-sm mb-3">Cursos y progreso</h4>
-              {getUserCourses(selected).length === 0 ? (
-                <p className="text-text-tan text-sm mb-5">Sin cursos aún.</p>
-              ) : (
-                <div className="space-y-3 mb-5">
-                  {getUserCourses(selected).map(course => {
-                    const prog = getProgress(selected, course);
-                    return (
-                      <div key={course.id} className="flex items-center gap-3">
-                        <img src={getImageUrl(course.image)} alt={course.title} className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-text-ink truncate">{course.title}</p>
-                          <div className="flex items-center gap-2 mt-1">
-                            <div className="flex-1 bg-bg-soft rounded-full h-1.5">
-                              <div className="bg-primary h-1.5 rounded-full" style={{ width: `${prog}%` }} />
+              {/* Cursos y progreso */}
+              <div className="px-6">
+                <h4 className="font-display font-bold text-text-ink text-lg mb-3">Cursos y progreso</h4>
+                {getUserCourses(selected).length === 0 ? (
+                  <p className="text-text-tan text-sm mb-5">Sin cursos aún.</p>
+                ) : (
+                  <div className="space-y-3 mb-5">
+                    {getUserCourses(selected).map(course => {
+                      const prog = getProgress(selected, course);
+                      return (
+                        <div key={course.id} className="flex items-center gap-3 bg-white border border-border rounded-xl p-3">
+                          <img src={getImageUrl(course.image)} alt={course.title} className="w-11 h-11 rounded-lg object-cover flex-shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-semibold text-text-ink truncate">{course.title}</p>
+                            <div className="flex items-center gap-2 mt-1.5">
+                              <div className="flex-1 bg-bg-soft rounded-full h-1.5">
+                                <div className="bg-primary h-1.5 rounded-full" style={{ width: `${prog}%` }} />
+                              </div>
+                              <span className="text-xs font-bold text-text-tan flex-shrink-0">{prog}%</span>
                             </div>
-                            <span className="text-xs text-text-tan flex-shrink-0">{prog}%</span>
                           </div>
                         </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-
-              <p className="text-xs text-text-tan mb-5">
-                Registrada el {new Date(selected.createdAt).toLocaleDateString('es-AR', { year: 'numeric', month: 'long', day: 'numeric' })}
-              </p>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
 
               {/* Action button */}
-              <div className="border-t border-bg-soft pt-4">
+              <div className="border-t border-bg-soft px-6 py-4">
                 {isActive(selected) ? (
                   <button
-                    onClick={() => setConfirmToggle({ user: selected, action: 'deactivate' })}
+                    onClick={() => handleToggle(selected, 'deactivate')}
                     className="btn btn-ghost w-full text-sm text-danger border-red-200">
                     Dar de baja esta cuenta
                   </button>
                 ) : (
                   <button
-                    onClick={() => setConfirmToggle({ user: selected, action: 'activate' })}
+                    onClick={() => handleToggle(selected, 'activate')}
                     className="btn btn-ghost w-full text-sm text-danger border-red-200">
                     Reactivar esta cuenta
                   </button>
