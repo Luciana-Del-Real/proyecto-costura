@@ -5,16 +5,21 @@ import { get, del } from '../../services/api';
 import { useDialog } from '../../context/DialogContext';
 import { getImageUrl } from '../../utils/media';
 import PageHeader from '../../components/PageHeader';
+import Pagination from '../../components/Pagination';
 
 export default function AdminPatterns() {
   const { confirmDialog, alertDialog } = useDialog();
   const [patrones, setPatrones] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const PER_PAGE = 10;
 
   const filtered = patrones.filter(p =>
     p.titulo.toLowerCase().includes(search.toLowerCase())
   );
+
+  const pageItems = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
   const load = async () => {
     try {
@@ -63,7 +68,7 @@ export default function AdminPatterns() {
           <input
             type="text"
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={e => { setSearch(e.target.value); setPage(1); }}
             placeholder="Buscar patrón..."
             className="w-full pl-10 pr-4 py-2 text-sm border-2 border-gray-300 hover:border-gray-400 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-300 bg-white text-gray-700 placeholder-gray-400 shadow-sm transition-all duration-300"
           />
@@ -79,12 +84,12 @@ export default function AdminPatterns() {
             <div className="text-center py-16 card-flat rounded-2xl">
               <FileText className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
               <h2 className="font-display font-bold text-text-ink text-2xl mt-4">Sin resultados para tu búsqueda.</h2>
-              <button onClick={() => setSearch('')} className="btn btn-ghost mt-3 text-sm bg-white hover:bg-white text-primary border border-primary/30 hover:border-primary">
+              <button onClick={() => { setSearch(''); setPage(1); }} className="btn btn-ghost mt-3 text-sm bg-white hover:bg-white text-primary border border-primary/30 hover:border-primary">
                 Limpiar búsqueda
               </button>
             </div>
           ) : (
-            filtered.map((p) => (
+            pageItems.map((p) => (
               <div key={p.id} className="card-flat rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 shadow-sm">
                 {/* Portada o bloque de color */}
                 <div className="w-24 h-16 bg-bg-soft rounded-lg overflow-hidden flex-shrink-0">
@@ -118,6 +123,7 @@ export default function AdminPatterns() {
               </div>
             ))
           )}
+          <Pagination page={page} total={filtered.length} perPage={PER_PAGE} onPageChange={setPage} />
         </div>
       </div>
     </div>

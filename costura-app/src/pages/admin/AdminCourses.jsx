@@ -4,15 +4,20 @@ import { useDialog } from '../../context/DialogContext';
 import { Link } from 'react-router-dom';
 import PageHeader from '../../components/PageHeader';
 import CourseCover from '../../components/CourseCover';
+import Pagination from '../../components/Pagination';
 
 export default function AdminCourses() {
   const { courses, deleteCourse } = useCourseCatalog();
   const { confirmDialog } = useDialog();
   const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const PER_PAGE = 10;
 
   const filtered = courses.filter(c =>
     c.title.toLowerCase().includes(search.toLowerCase())
   );
+
+  const pageItems = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
   
   return (
     <div className="min-h-screen bg-bg-surface">
@@ -36,7 +41,7 @@ export default function AdminCourses() {
           <input
             type="text"
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={e => { setSearch(e.target.value); setPage(1); }}
             placeholder="Buscar curso..."
             className="w-full pl-10 pr-4 py-2 text-sm border-2 border-gray-300 hover:border-gray-400 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-300 bg-white text-gray-700 placeholder-gray-400 shadow-sm transition-all duration-300"
           />
@@ -48,14 +53,15 @@ export default function AdminCourses() {
               {courses.length === 0 ? 'Todavía no hay cursos cargados.' : 'Sin resultados para tu búsqueda.'}
             </h2>
             {search && (
-              <button onClick={() => setSearch('')} className="btn btn-ghost mt-3 text-sm bg-white hover:bg-white text-primary border border-primary/30 hover:border-primary">
+              <button onClick={() => { setSearch(''); setPage(1); }} className="btn btn-ghost mt-3 text-sm bg-white hover:bg-white text-primary border border-primary/30 hover:border-primary">
                 Limpiar búsqueda
               </button>
             )}
           </div>
         ) : (
+          <>
           <div className="space-y-4">
-            {filtered.map((course) => (
+            {pageItems.map((course) => (
               <div key={course.id} className="card-flat rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 shadow-sm">
                 {/* Portada: CourseCover resuelve la URL y muestra el nombre si no hay imagen */}
                 <div className="w-24 h-16 bg-bg-soft rounded-lg overflow-hidden flex-shrink-0">
@@ -91,6 +97,8 @@ export default function AdminCourses() {
               </div>
             ))}
           </div>
+          <Pagination page={page} total={filtered.length} perPage={PER_PAGE} onPageChange={setPage} />
+          </>
         )}
       </div>
     </div>

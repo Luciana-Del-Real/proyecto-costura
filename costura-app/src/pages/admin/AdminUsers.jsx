@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import PageHeader from '../../components/PageHeader';
+import Pagination from '../../components/Pagination';
 import { useCourseCatalog } from '../../context/CourseCatalogContext';
 import { useDialog } from '../../context/DialogContext';
 import { useAdmin } from '../../context/AdminContext';
@@ -15,6 +16,8 @@ export default function AdminUsers() {
   const [selected, setSelected] = useState(null);
   const [confirmToggle, setConfirmToggle] = useState(null); // { user, action }
   const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const PER_PAGE = 10;
 
   const refreshUsers = useCallback(async () => {
     try {
@@ -48,6 +51,8 @@ export default function AdminUsers() {
     u.name.toLowerCase().includes(search.toLowerCase()) ||
     u.email.toLowerCase().includes(search.toLowerCase())
   );
+
+  const pageItems = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
   // user.purchases viene del backend como [{ courseId }, ...]
   const getPurchasedCourseIds = (user) => (user.purchases || []).map(p => p.courseId);
@@ -86,7 +91,7 @@ export default function AdminUsers() {
           <input
             type="text"
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={e => { setSearch(e.target.value); setPage(1); }}
             placeholder="Buscar alumna..."
             className="w-full pl-10 pr-4 py-2 text-sm border-2 border-gray-300 hover:border-gray-400 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-300 bg-white text-gray-700 placeholder-gray-400 shadow-sm transition-all duration-300"
           />
@@ -221,7 +226,7 @@ export default function AdminUsers() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {filtered.map((u) => (
+                {pageItems.map((u) => (
                   <tr key={u.id} className={`transition-colors ${isActive(u) ? 'hover:bg-black/5' : 'bg-red-50/30 hover:bg-red-50/50'}`}>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
@@ -252,6 +257,7 @@ export default function AdminUsers() {
                 ))}
               </tbody>
             </table>
+            <Pagination page={page} total={filtered.length} perPage={PER_PAGE} onPageChange={setPage} />
           </div>
         )}
     </div>

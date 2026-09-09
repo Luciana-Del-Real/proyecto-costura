@@ -5,6 +5,7 @@ import { usePurchases } from '../../context/PurchaseContext';
 import { sumByCurrency, formatMoney } from '../../utils/currency';
 import { getImageUrl } from '../../utils/media';
 import PageHeader from '../../components/PageHeader';
+import Pagination from '../../components/Pagination';
 
 export default function AdminSales() {
   const { confirmDialog } = useDialog();
@@ -14,6 +15,8 @@ export default function AdminSales() {
   const [, setPendingRequests] = useState([]);
   const [filter, setFilter] = useState('todos');
   const [statusFilter, setStatusFilter] = useState('todos');
+  const [page, setPage] = useState(1);
+  const PER_PAGE = 10;
 
   // getAllPurchases/getPendingRequests se recrean en cada render de
   // PurchaseProvider (no están memoizadas), así que incluirlas en las
@@ -34,6 +37,8 @@ export default function AdminSales() {
       ? allPurchases
       : allPurchases.filter(p => p.course.id === filter))
     .filter(p => statusFilter === 'todos' || p.status === statusFilter);
+
+  const pageItems = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
   const reload = async () => {
     setAllPurchases(await getAllPurchases());
@@ -128,14 +133,14 @@ export default function AdminSales() {
           <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between gap-3 flex-wrap bg-gray-50/50">
             <h2 className="font-display font-bold text-text-ink text-2xl">Detalle de ventas</h2>
             <div className="flex items-center gap-3 flex-wrap w-full sm:w-auto">
-              <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
+              <select value={statusFilter} onChange={e => { setStatusFilter(e.target.value); setPage(1); }}
                 className="border border-gray-100 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-white text-text-ink w-full sm:w-auto">
                 <option value="todos">Todos los estados</option>
                 <option value="APPROVED">Aprobada</option>
                 <option value="PENDING">Pendiente</option>
                 <option value="REJECTED">Denegada</option>
               </select>
-              <select value={filter} onChange={e => setFilter(e.target.value)}
+              <select value={filter} onChange={e => { setFilter(e.target.value); setPage(1); }}
                 className="border border-gray-100 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-white text-text-ink w-full sm:w-auto">
                 <option value="todos">Todos los cursos</option>
                 {courses.map(c => <option key={c.id} value={c.id}>{c.title}</option>)}
@@ -159,7 +164,7 @@ export default function AdminSales() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
-                  {filtered.map((p, i) => (
+                  {pageItems.map((p, i) => (
                     <tr key={i} className="hover:bg-gray-50/50 transition-colors">
                       <td className="px-8 py-4">
                         <p className="font-semibold text-text-ink">{p.user.name}</p>
@@ -210,6 +215,7 @@ export default function AdminSales() {
                     <p className="font-bold text-text-ink text-xs">${revenueFiltered.AUD.toLocaleString()} AUD</p>
                 </div>
               </div>
+              <Pagination page={page} total={filtered.length} perPage={PER_PAGE} onPageChange={setPage} />
             </>
           )}
         </div>
