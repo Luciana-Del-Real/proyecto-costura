@@ -101,11 +101,16 @@ export default function AdminUsers() {
 
         {/* Detail modal */}
         {selected && (
-          <div className="fixed inset-0 z-50 overflow-y-auto animate-fade-in" role="dialog" aria-modal="true">
+          <div className="fixed inset-0 z-50 animate-fade-in" role="dialog" aria-modal="true">
             <div className="absolute inset-0 bg-black/30" aria-hidden="true" onClick={() => setSelected(null)} />
-            <div className="relative min-h-full flex items-center justify-center p-4 py-6">
+            {/* Posicionamiento absoluto: centra el modal SIEMPRE respecto a la
+                pantalla (top 50% + translate), sin depender de flex/grid. */}
+            <div
+              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg px-4"
+              style={{ maxHeight: '90vh' }}
+            >
               <div
-                className="rounded-2xl border border-border bg-white max-w-lg w-full shadow-[0_12px_40px_rgba(29,29,27,0.15)] animate-fade-up"
+                className="rounded-2xl border border-border bg-white w-full shadow-[0_12px_40px_rgba(29,29,27,0.15)] animate-fade-up"
                 style={{ display: 'flex', flexDirection: 'column', maxHeight: '90vh', overflow: 'hidden' }}
               >
               {/* Barra de acento fucsia, identidad Grow */}
