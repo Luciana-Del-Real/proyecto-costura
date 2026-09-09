@@ -155,6 +155,8 @@ model Attachment {
   course    Course?  @relation(fields: [courseId], references: [id], onDelete: Cascade)
   lessonId  String?
   lesson    Lesson?  @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  patternId String?
+  pattern   Pattern? @relation(fields: [patternId], references: [id], onDelete: Cascade)
 
   @@map("attachments")
 }
@@ -226,6 +228,8 @@ model Pattern {
   archivo     String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  attachments Attachment[]
 
   @@map("patterns")
 }
