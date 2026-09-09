@@ -101,9 +101,10 @@ export default function AdminUsers() {
 
         {/* Detail modal */}
         {selected && (
-          <div className="fixed inset-0 z-50 grid place-items-center p-4 py-6 animate-fade-in" role="dialog" aria-modal="true">
+          <div className="fixed inset-0 z-50 overflow-y-auto animate-fade-in" role="dialog" aria-modal="true">
             <div className="absolute inset-0 bg-black/30" aria-hidden="true" onClick={() => setSelected(null)} />
-            <div className="relative rounded-2xl border border-border bg-white max-w-lg w-full shadow-[0_12px_40px_rgba(29,29,27,0.15)] animate-fade-up flex flex-col max-h-[90vh] overflow-hidden">
+            <div className="relative min-h-full flex items-center justify-center p-4 py-6">
+              <div className="rounded-2xl border border-border bg-white max-w-lg w-full shadow-[0_12px_40px_rgba(29,29,27,0.15)] animate-fade-up flex flex-col max-h-[90vh] overflow-hidden">
               {/* Barra de acento fucsia, identidad Grow */}
               <div className="h-1 bg-primary flex-shrink-0" aria-hidden="true" />
 
@@ -191,6 +192,7 @@ export default function AdminUsers() {
                   )}
                 </div>
               </div>
+            </div>
             </div>
             </div>
           </div>
