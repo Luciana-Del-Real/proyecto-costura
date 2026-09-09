@@ -32,3 +32,11 @@ services:
         sync: false
       - key: SENDGRID_FROM
         sync: false
+      # VAPID (Web Push) — valores configurados en el dashboard de Render;
+      # generar el par con `npx web-push generate-vapid-keys`
+      - key: VAPID_PUBLIC_KEY
+        sync: false
+      - key: VAPID_PRIVATE_KEY
+        sync: false
+      - key: VAPID_SUBJECT
+        sync: false

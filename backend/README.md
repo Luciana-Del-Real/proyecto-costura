@@ -198,7 +198,28 @@ ADMIN_NAME=Admin
 MAIL_ENABLED=false
 SENDGRID_API_KEY=
 SENDGRID_FROM=no-reply@example.com
+
+# Web Push (VAPID) — REQUIRED si se envían notificaciones push (fail-fast al bootear)
+VAPID_PUBLIC_KEY=<public-key>
+VAPID_PRIVATE_KEY=<private-key>   # SOLO backend; nunca exponer al frontend ni commitear
+VAPID_SUBJECT=mailto:tu-email@example.com
 ```
+
+### Generar claves VAPID (notificaciones push)
+
+Las notificaciones push se firman con un par de claves VAPID. Para generar un par nuevo:
+
+```bash
+npx web-push generate-vapid-keys
+```
+
+Distribución de las claves generadas:
+
+- `VAPID_PUBLIC_KEY` → backend (`backend/.env`) **y** frontend (`costura-app/.env.production`, como `VITE_VAPID_PUBLIC_KEY`). El frontend necesita la clave pública para suscribirse; solo autentica si coincide con la privada del backend.
+- `VAPID_PRIVATE_KEY` → **solo** backend (`backend/.env`). Nunca debe exponerse al frontend ni quedar en el bundle compilado.
+- `VAPID_SUBJECT` → contacto del remitente en formato `mailto:tu-email@example.com`.
+
+> El par usado en desarrollo local (`backend/.env`, el mismo comentado como descartable en `costura-app/.env.production`) es de prueba. Para producción generar un par nuevo y configurarlo en el dashboard de Render (las variables están declaradas en `render.yaml` con `sync: false`).
 
 ## Scripts Disponibles
 
@@ -243,6 +264,7 @@ npm start
 - `NODE_ENV` - Cambiar a "production"
 - `CORS_ORIGIN` - Actualizar a dominio de producción
 - `MAIL_ENABLED` - Dejar en `false` salvo que se envíe email real
+- `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` - Requeridas si se envían notificaciones push; ver "Generar claves VAPID" arriba
 
 ## Troubleshooting
 
