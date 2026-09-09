@@ -22,10 +22,42 @@ const storageOptions = {
   }),
 };
 
+// - imagen: portada (1 sola)
+// - archivo: PDF principal del patrón, se mantiene por compatibilidad con la
+//   galería pública (1 solo). El frontend ya no lo manda: unifica todo en `pdfs`.
+// - pdfs: PDFs del patrón (múltiples). El primero se guarda como `archivo`
+//   (PDF principal) y el resto como attachments.
 const patternFileFields = FileFieldsInterceptor([
   { name: 'imagen', maxCount: 1 },
   { name: 'archivo', maxCount: 1 },
+  { name: 'pdfs', maxCount: 10 },
 ], storageOptions);
+
+type PatternFiles = {
+  imagen?: Express.Multer.File[];
+  archivo?: Express.Multer.File[];
+  pdfs?: Express.Multer.File[];
+};
+
+// Separa los PDFs recibidos en [principal, adicionales]: el primer archivo
+// (ya sea de `archivo` o de `pdfs`) es el PDF principal y el resto van como
+// attachments. Devuelve el path del principal y la lista de adicionales.
+function splitPdfs(files: PatternFiles): { archivoPath?: string; extraPdfs: Express.Multer.File[] } {
+  const pdfs = files?.pdfs ?? [];
+  if (files?.archivo?.length) {
+    return {
+      archivoPath: `/uploads/patterns/${files.archivo[0].filename}`,
+      extraPdfs: pdfs,
+    };
+  }
+  if (pdfs.length) {
+    return {
+      archivoPath: `/uploads/patterns/${pdfs[0].filename}`,
+      extraPdfs: pdfs.slice(1),
+    };
+  }
+  return { extraPdfs: [] };
+}
 
 @Controller('patterns')
 export class PatternsController {
@@ -45,14 +77,20 @@ export class PatternsController {
   @Post()
   @UseGuards(JwtAuthGuard, AdminGuard)
   @UseInterceptors(patternFileFields)
-  async create(@Body() dto: CreatePatternDto, @UploadedFiles() files: { imagen?: Express.Multer.File[]; archivo?: Express.Multer.File[] }) {
-    if (!files?.archivo) {
+  async create(@Body() dto: CreatePatternDto, @UploadedFiles() files: PatternFiles) {
+    const { archivoPath, extraPdfs } = splitPdfs(files);
+    if (!archivoPath) {
       throw new BadRequestException('El archivo PDF es obligatorio');
     }
-    if (files.imagen) dto.imagen = `/uploads/patterns/${files.imagen[0].filename}`;
-    if (files.archivo) dto.archivo = `/uploads/patterns/${files.archivo[0].filename}`;
+    if (files?.imagen) dto.imagen = `/uploads/patterns/${files.imagen[0].filename}`;
+    dto.archivo = archivoPath;
 
     const pattern = await this.patternsService.create(dto);
+
+    if (extraPdfs.length) {
+      await this.patternsService.addAttachments(pattern.id, extraPdfs);
+    }
+
     return this.patternsService.findOne(pattern.id);
   }
 
@@ -62,12 +100,19 @@ export class PatternsController {
   async update(
     @Param('id') id: string,
     @Body() dto: UpdatePatternDto,
-    @UploadedFiles() files: { imagen?: Express.Multer.File[]; archivo?: Express.Multer.File[] },
+    @UploadedFiles() files: PatternFiles,
   ) {
     if (files?.imagen) dto.imagen = `/uploads/patterns/${files.imagen[0].filename}`;
-    if (files?.archivo) dto.archivo = `/uploads/patterns/${files.archivo[0].filename}`;
+
+    const { archivoPath, extraPdfs } = splitPdfs(files);
+    if (archivoPath) dto.archivo = archivoPath;
 
     await this.patternsService.update(id, dto);
+
+    if (extraPdfs.length) {
+      await this.patternsService.addAttachments(id, extraPdfs);
+    }
+
     return this.patternsService.findOne(id);
   }
 
@@ -75,5 +120,14 @@ export class PatternsController {
   @UseGuards(JwtAuthGuard, AdminGuard)
   delete(@Param('id') id: string) {
     return this.patternsService.delete(id);
+  }
+
+  // Scoped al patrón: solo se puede borrar un adjunto que realmente le
+  // pertenezca (más seguro que el DELETE /attachments/:id genérico, que
+  // usan cursos/lecciones y no verifica pertenencia).
+  @Delete(':id/attachments/:attachmentId')
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  deleteAttachment(@Param('id') id: string, @Param('attachmentId') attachmentId: string) {
+    return this.patternsService.deleteAttachment(id, attachmentId);
   }
 }

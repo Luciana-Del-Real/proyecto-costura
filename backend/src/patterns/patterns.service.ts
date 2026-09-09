@@ -1,21 +1,32 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { AttachmentsService } from '../attachments/attachments.service';
 import { CreatePatternDto } from './dto/create-pattern.dto';
 import { UpdatePatternDto } from './dto/update-pattern.dto';
 
+const patternInclude = {
+  // PDFs adicionales del patrón; el PDF principal queda en `archivo`.
+  attachments: { orderBy: { createdAt: 'asc' } },
+} as const;
+
 @Injectable()
 export class PatternsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly attachmentsService: AttachmentsService,
+  ) {}
 
   findAll() {
     return this.prisma.pattern.findMany({
       orderBy: { createdAt: 'asc' },
+      include: patternInclude,
     });
   }
 
   async findOne(id: string) {
     const pattern = await this.prisma.pattern.findUnique({
       where: { id },
+      include: patternInclude,
     });
     if (!pattern) {
       throw new NotFoundException('Patrón no encontrado');
@@ -50,5 +61,23 @@ export class PatternsService {
       where: { id },
       select: { id: true, titulo: true },
     });
+  }
+
+  addAttachments(patternId: string, files: Express.Multer.File[]) {
+    return this.attachmentsService.createManyForPattern(patternId, files);
+  }
+
+  // Elimina SOLO adjuntos que pertenezcan a este patrón: verifica la
+  // propiedad antes de borrar, a diferencia del DELETE /attachments/:id
+  // genérico que usan cursos/lecciones. El borrado físico del archivo lo
+  // delega en AttachmentsService (misma lógica que cursos y lecciones).
+  async deleteAttachment(patternId: string, attachmentId: string) {
+    const attachment = await this.prisma.attachment.findUnique({
+      where: { id: attachmentId },
+    });
+    if (!attachment || attachment.patternId !== patternId) {
+      throw new NotFoundException('Adjunto no encontrado');
+    }
+    return this.attachmentsService.delete(attachmentId);
   }
 }
