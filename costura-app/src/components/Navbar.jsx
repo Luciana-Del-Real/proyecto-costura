@@ -105,7 +105,7 @@ export default function Navbar() {
                 <>
                   <Link to="/cursos" className="px-1 py-1 rounded-lg text-sm font-medium text-text-ink hover:text-primary transition-colors">Cursos disponibles</Link>
                   <Link to="/patrones-gratis" className="px-1 py-1 rounded-lg text-sm font-medium text-text-ink hover:text-primary transition-colors">Patrones gratis</Link>
-                  <Link to="/login" className="btn btn-primary text-sm text-white">Iniciar sesión</Link>
+                  <Link to="/login" className="btn btn-primary text-sm text-white hover:shadow-none">Iniciar sesión</Link>
                 </>
               )}
             </>

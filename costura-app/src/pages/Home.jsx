@@ -91,7 +91,7 @@ export default function Home() {
 
             <div className="card-glow rounded-2xl p-8 h-full flex items-center">
               <div ref={daiaRef} className={`w-full`}>
-                <div className={`mb-5 flex justify-center reveal-scale visible`}>
+                <div className={`mb-5 flex justify-center reveal-scale ${daiaInView ? 'visible' : ''}`}>
                   <div className="w-24 h-24 md:w-36 md:h-36 rounded-full overflow-hidden border-2 border-primary shadow-[0_0_20px_rgba(232,62,140,0.30)]">
                     <img
                       src="/Images/IMG_7148_circle.jpg"

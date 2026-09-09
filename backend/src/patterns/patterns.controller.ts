@@ -103,12 +103,15 @@ export class PatternsController {
     @UploadedFiles() files: PatternFiles,
   ) {
     if (files?.imagen) dto.imagen = `/uploads/patterns/${files.imagen[0].filename}`;
-
-    const { archivoPath, extraPdfs } = splitPdfs(files);
-    if (archivoPath) dto.archivo = archivoPath;
+    // En edición, el PDF principal NO se reemplaza con los nuevos: los pdfs
+    // subidos se agregan como attachments adicionales. Para cambiar el
+    // principal se usa el campo legacy `archivo` (el frontend actual no lo
+    // manda; conserva el principal existente).
+    if (files?.archivo?.length) dto.archivo = `/uploads/patterns/${files.archivo[0].filename}`;
 
     await this.patternsService.update(id, dto);
 
+    const extraPdfs = files?.pdfs ?? [];
     if (extraPdfs.length) {
       await this.patternsService.addAttachments(id, extraPdfs);
     }

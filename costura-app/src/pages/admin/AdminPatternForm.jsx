@@ -175,8 +175,7 @@ export default function AdminPatternForm() {
               />
               {patternPdfFiles.length > 0 && (
                 <p className="text-xs text-text-ink mt-2">
-                  {patternPdfFiles.length} archivo(s) seleccionados para subir al guardar.
-                  {isEditing && ' El primer archivo reemplaza al PDF principal.'}
+                  {patternPdfFiles.length} archivo(s) seleccionados para agregar al guardar.
                 </p>
               )}
 
