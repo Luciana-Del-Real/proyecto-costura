@@ -102,7 +102,7 @@ export default function AdminUsers() {
         {/* Detail modal — posicionamiento absoluto directo: centra el modal
             siempre respecto a la pantalla sin depender de flex/grid. */}
         {selected && (
-          <div className="fixed inset-0 z-[100] animate-fade-in" role="dialog" aria-modal="true">
+          <div className="fixed inset-0 animate-fade-in" style={{ zIndex: 100 }} role="dialog" aria-modal="true">
             <div className="absolute inset-0 bg-black/30" aria-hidden="true" onClick={() => setSelected(null)} />
             <div
               className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg px-4"
