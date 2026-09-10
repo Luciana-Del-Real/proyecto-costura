@@ -8,7 +8,6 @@ import { getCoursePrice } from '../utils/currency';
 import { getImageUrl } from '../utils/media';
 
 // Datos de transferencia según el país/moneda del comprador.
-// TODO: reemplazar el link de Square por el real de la cuenta en AUD.
 const PAYMENT_INFO = {
   ARS: [
     { key: 'cvu', label: 'CVU / CBU', value: '0000000000000000000000' },
@@ -16,7 +15,7 @@ const PAYMENT_INFO = {
     { key: 'accountName', label: 'Nombre de cuenta', value: 'Daiana Belén Lubo' }
   ],
   AUD: [
-    { key: 'square', label: 'Link de pago', value: 'https://square.link/u/tu-enlace', link: true },
+    { key: 'square', label: 'Link de pago', value: 'https://square.link/u/8DRRqm48', link: true },
   ],
 };
 
