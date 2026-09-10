@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import PageHeader from '../../components/PageHeader';
 import Pagination from '../../components/Pagination';
 import { useCourseCatalog } from '../../context/CourseCatalogContext';
@@ -99,8 +100,10 @@ export default function AdminUsers() {
           />
         </div>
 
-        {/* Detail modal */}
-        {selected && (
+        {/* Detail modal — renderizado con Portal directo a <body> para que el
+            position:fixed sea relativo al viewport (un ancestro con transform
+            rompería el centrado). */}
+        {selected && createPortal((
           <div className="fixed inset-0 z-50 animate-fade-in" role="dialog" aria-modal="true">
             <div className="absolute inset-0 bg-black/30" aria-hidden="true" onClick={() => setSelected(null)} />
             {/* Posicionamiento absoluto: centra el modal SIEMPRE respecto a la
@@ -203,8 +206,9 @@ export default function AdminUsers() {
             </div>
             </div>
             </div>
-          </div>
-        )}
+          </div>,
+          document.body
+        ))}
 
         {filtered.length === 0 ? (
           <div className="text-center py-16 mb-5">
