@@ -1,0 +1,367 @@
+{
+  "common": {
+    "changeLanguage": "Cambiar idioma",
+    "email": "Email",
+    "lessons_one": "{{count}} lección",
+    "lessons_other": "{{count}} lecciones"
+  },
+  "levels": {
+    "all": "Todos",
+    "beginner": "Principiante",
+    "intermediate": "Intermedio",
+    "advanced": "Avanzado"
+  },
+  "nav": {
+    "home": "Inicio",
+    "courses": "Cursos disponibles",
+    "favorites": "Favoritos",
+    "freePatterns": "Patrones gratis",
+    "profile": "Perfil",
+    "myProfile": "Mi perfil",
+    "myCourses": "Mis cursos",
+    "login": "Iniciar sesión",
+    "logout": "Cerrar sesión",
+    "newNotifications_one": "nueva",
+    "newNotifications_other": "nuevas"
+  },
+  "home": {
+    "hero": {
+      "titleLine1": "Creá con tus",
+      "titleHighlight": "propias manos",
+      "subtitle": "Cursos online de costura, bordado y diseño textil para todos los niveles. A tu ritmo, con acompañamiento profesional.",
+      "quote": "Creemos que todas las personas pueden crear, incluso si empiezan desde cero.",
+      "ctaCourses": "Ver cursos",
+      "ctaRegister": "Registrarse gratis"
+    },
+    "aboutUs": {
+      "eyebrow": "¿Quiénes somos?",
+      "title": "Grow",
+      "imageAlt": "Grow Creative Education Studio",
+      "body": "Estudio creativo dedicado a la costura, el bordado y el diseño, pensado para acompañarte paso a paso en tu aprendizaje. Acá vas a encontrar clases, herramientas, inspiración y una comunidad que crece junto a vos.",
+      "question": "¿Te quedás a descubrir todo lo que podrías lograr con tus propias manos?"
+    },
+    "daia": {
+      "eyebrow": "¿Quién está detrás de Grow?",
+      "title": "¡Hola! soy Daia",
+      "imageAlt": "Daia",
+      "body": "Diseñadora de indumentaria, diseñadora gráfica, modista y apasionada del bordado en todas sus formas. Tengo más de diez años de experiencia compartiendo lo que sé y aprendiendo siempre. En Grow no tenés que adaptarte a un sistema rígido: nosotros nos adaptamos a vos, a tu ritmo, a tus tiempos, a tus ganas de crear."
+    },
+    "benefits": {
+      "title": "¿Por qué elegirnos?",
+      "items": {
+        "recorded": {
+          "title": "CLASES GRABADAS",
+          "desc": "Accedé al contenido cuando quieras, sin horarios fijos."
+        },
+        "devices": {
+          "title": "DESDE CUALQUIER DISPOSITIVO",
+          "desc": "Aprendé desde tu celular, tablet o computadora."
+        },
+        "lifetime": {
+          "title": "ACCESO DE POR VIDA",
+          "desc": "Una vez que comprás, el curso es tuyo para siempre."
+        },
+        "expert": {
+          "title": "INSTRUCTURA EXPERTA",
+          "desc": "Aprendé con Daia, diseñadora con más de 10 años de experiencia."
+        }
+      }
+    },
+    "categories": {
+      "title": "Nuestras especialidades",
+      "items": {
+        "sewing": "COSTURA",
+        "embroidery": "BORDADO",
+        "textileDesign": "DISEÑO TEXTIL",
+        "workshops": "WORKSHOPS",
+        "events": "EVENTOS",
+        "productsServices": "PRODUCTOS Y SERVICIOS"
+      }
+    },
+    "testimonials": {
+      "title": "Lo que dicen nuestras alumnas",
+      "showMore": "Ver más",
+      "showLess": "Ver menos",
+      "items": {
+        "1": {
+          "text": "Hermoso lugar y hermosa clase ❤️ recomiendo por mil ! Dai hace que aprender costura sea simple divertido y funcional 🙌🏽…",
+          "course": "Google Maps · Hace 6 meses"
+        },
+        "2": {
+          "text": "Los mejores cursos para aprender desde 0, excelente experiencia!",
+          "course": "Google Maps · Hace 6 meses"
+        },
+        "3": {
+          "text": "Recomiendo 100%. Daiana es una docente con mucha paciencia y pasión por lo que hace, está acompañando mi proceso de aprendizaje con mucho cariño y buena energia. Me ha dado las herramientas para que yo pueda seguir patrones o moldes sola, por ende pueda volver a la clase con dudas puntuales. En dos semanas ya estaba haciendo totebags para mi familia y al mes ya me encontraba arreglando a mi medida un vestido. Aprendí muchisimo y me hice amigas en sus clases, le tengo mucho cariño a este instuto que me ha dado más que solamente aprender a coser. Orgullosa de ser parte de la sede en Sydney.",
+          "course": "Google Maps · Hace 6 meses"
+        }
+      }
+    },
+    "cta": {
+      "title": "En Grow, siempre hay un espacio para vos",
+      "body": "Registrate gratis y comenzá tu primer curso hoy.",
+      "button": "Empezar ahora"
+    }
+  },
+  "footer": {
+    "description": "Un estudio creativo dedicado a la costura, el bordado y el diseño. Aprendé a tu ritmo con acompañamiento profesional.",
+    "navigation": "Navegación",
+    "links": {
+      "home": "Inicio",
+      "courses": "Cursos",
+      "login": "Iniciar sesión",
+      "register": "Registrarse"
+    },
+    "contact": {
+      "title": "Contacto",
+      "location": "📍 Redfern, Sídney, Australia",
+      "whatsapp": "📱 WhatsApp: +61 401 956 520",
+      "onlineClasses": "🌐 Clases online disponibles"
+    },
+    "copyright": "© 2026 Creative Education Studio · Daiana Lubo Núñez · Todos los derechos reservados."
+  },
+  "auth": {
+    "loginTitle": "Bienvenida de nuevo",
+    "registerTitle": "Crear cuenta",
+    "loginSubtitle": "Ingresá para continuar aprendiendo",
+    "registerSubtitle": "Formá parte de nuestra comunidad",
+    "fullName": "Nombre completo",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "showPassword": "Mostrar contraseña",
+    "hidePassword": "Ocultar contraseña",
+    "forgot": "¿Olvidaste tu contraseña?",
+    "processing": "Procesando...",
+    "submitLogin": "Iniciar sesión",
+    "submitRegister": "Registrarse",
+    "noAccount": "¿No tenés cuenta? ",
+    "hasAccount": "¿Ya tenés cuenta? ",
+    "goRegister": "Registrate gratis",
+    "goLogin": "Iniciá sesión",
+    "genericError": "Error al procesar la solicitud"
+  },
+  "forgotPassword": {
+    "title": "Recuperar contraseña",
+    "subtitle": "Te enviaremos un correo con el enlace de recuperación",
+    "emailPlaceholder": "tu@email.com",
+    "sending": "Enviando...",
+    "submit": "Enviar instrucciones",
+    "backToLogin": "Volver al inicio de sesión",
+    "successFallback": "Si existe una cuenta, recibirás un email con los pasos.",
+    "errorFallback": "Ocurrió un error al enviar el correo"
+  },
+  "resetPassword": {
+    "title": "Nueva contraseña",
+    "subtitle": "Ingresá tu nueva clave segura",
+    "newPassword": "Nueva contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "updating": "Actualizando...",
+    "submit": "Actualizar contraseña",
+    "backToLogin": "Volver al inicio de sesión",
+    "invalidLink": "El enlace es inválido o está incompleto. Solicita un nuevo enlace.",
+    "mismatch": "Las contraseñas no coinciden",
+    "successFallback": "Contraseña actualizada correctamente",
+    "errorFallback": "Ocurrió un error al restablecer la contraseña"
+  },
+  "courses": {
+    "title": "Todos los cursos",
+    "subtitle": "Encontrá el curso perfecto para vos",
+    "searchPlaceholder": "Buscar cursos...",
+    "empty": "No encontramos cursos con esa búsqueda.",
+    "clearFilters": "Limpiar filtros",
+    "count_one": "{{count}} curso encontrado",
+    "count_other": "{{count}} cursos encontrados"
+  },
+  "courseDetail": {
+    "notFound": "Curso no encontrado.",
+    "noLessonsTitle": "Todavía no hay lecciones cargadas",
+    "noLessonsBody": "Este curso está confirmado, pero la profesora todavía no subió ninguna clase. Volvé a entrar más adelante.",
+    "backToMyCourses": "← Volver a mis cursos",
+    "loadingContent": "Cargando el contenido del curso...",
+    "contentErrorTitle": "No se pudo cargar el contenido",
+    "contentErrorBody": "Verificá tu conexión y volvé a intentar. Si el problema continúa, escribile a la profesora.",
+    "completeError": "No se pudo marcar la lección como completada. Probá de nuevo.",
+    "certificateError": "No se pudo descargar el certificado. Probá de nuevo en un momento.",
+    "legacyCoursePdf": "PDF principal del curso"
+  },
+  "checkout": {
+    "notFound": "Curso no encontrado",
+    "alreadyOwned": "Ya tenés este curso",
+    "openCourse": "Abrir curso",
+    "defaultUser": "mi usuario",
+    "whatsappMessage": "¡Hola! Acabo de abonar el curso \"{{course}}\". Mi usuario es {{user}}. ¡Les paso mi comprobante!",
+    "requestSentTitle": "Solicitud de compra enviada",
+    "pendingAud": "Tu pago está en revisión por el admin. Te notificaremos cuando se confirme.",
+    "pendingArs": "Tu comprobante está en revisión por el admin. Te notificaremos cuando se confirme.",
+    "sendReceipt": "Enviar comprobante por WhatsApp",
+    "viewMyCourses": "Ver mis cursos",
+    "backToCourses": "← Volver a cursos",
+    "orderSummary": "Resumen del pedido",
+    "total": "Total",
+    "paymentInstructions": "Instrucciones de pago",
+    "step1": "1) Transferí a la cuenta:",
+    "step2Bold": "2) Hacé clic en \"Solicitar acceso\"",
+    "step2Rest": "debajo para registrar tu pedido en la plataforma.",
+    "fields": {
+      "cvu": "CVU / CBU",
+      "alias": "Alias",
+      "accountName": "Nombre de cuenta",
+      "paymentLink": "Link de pago"
+    },
+    "goToPayment": "Ir al pago",
+    "copied": "¡Copiado!",
+    "copy": "Copiar",
+    "important": "Importante",
+    "notice1": "Una vez abonado el curso, ",
+    "noticeStrong": "deberás enviarle el comprobante a Daiana por WhatsApp",
+    "notice2": ". Sólo mediante ese paso podremos confirmar tu pago y darte de alta en el sistema para habilitar tus videoclases.",
+    "requestAccess": "Solicitar acceso"
+  },
+  "myCourses": {
+    "title": "Mis cursos",
+    "count_one": "{{count}} curso adquirido",
+    "count_other": "{{count}} cursos adquiridos",
+    "emptyTitle": "Todavía no tenés cursos",
+    "emptyBody": "Explorá nuestro catálogo y empezá a aprender hoy.",
+    "viewCourses": "Ver cursos disponibles",
+    "searchPlaceholder": "Buscar mis cursos...",
+    "noResults": "Sin resultados para tu búsqueda.",
+    "clearSearch": "Limpiar búsqueda",
+    "openCourse": "Abrir curso →"
+  },
+  "dashboard": {
+    "welcome": "¡Bienvenida de vuelta!",
+    "myCourses": "Mis cursos",
+    "viewAll": "Ver todos →",
+    "availableCourses": "Cursos disponibles"
+  },
+  "favorites": {
+    "title": "Mis favoritos",
+    "count_one": "{{count}} curso guardado",
+    "count_other": "{{count}} cursos guardados",
+    "loading": "Cargando tus favoritos...",
+    "errorTitle": "No se pudieron cargar tus favoritos",
+    "errorBody": "Verificá tu conexión e intentá de nuevo más tarde.",
+    "emptyTitle": "Todavía no tenés favoritos",
+    "emptyBody": "Hacé clic en el corazón de cualquier curso para guardarlo acá.",
+    "explore": "Explorar cursos",
+    "searchPlaceholder": "Buscar favoritos...",
+    "noResults": "Sin resultados para tu búsqueda.",
+    "clearSearch": "Limpiar búsqueda"
+  },
+  "freePatterns": {
+    "title": "Patrones gratis",
+    "subtitle": "Descargá patrones en PDF para coser en casa, paso a paso",
+    "searchPlaceholder": "Buscar patrón...",
+    "emptySearch": "No encontramos patrones con esa búsqueda.",
+    "emptyLevel": "Todavía no hay patrones de ese nivel.",
+    "clearSearch": "Limpiar búsqueda",
+    "count_one": "{{count}} patrón disponible",
+    "count_other": "{{count}} patrones disponibles",
+    "downloadPdf": "Descargar PDF",
+    "pdfPending": "PDF en preparación"
+  },
+  "profile": {
+    "saveError": "No se pudieron guardar los cambios",
+    "personalInfo": "Información personal",
+    "edit": "Editar",
+    "saved": "✓ Cambios guardados correctamente",
+    "name": "Nombre",
+    "country": "País",
+    "selectCountry": "Seleccioná un país",
+    "saving": "Guardando...",
+    "save": "Guardar cambios",
+    "cancel": "Cancelar",
+    "notSpecified": "No especificado",
+    "purchaseHistory": "Historial de compras",
+    "loadingPurchases": "Cargando tus compras...",
+    "purchasesError": "No se pudieron cargar tus compras. Verificá tu conexión e intentá de nuevo más tarde.",
+    "noPurchases": "Todavía no realizaste ninguna compra.",
+    "totalInvested": "Total invertido"
+  },
+  "courseCard": {
+    "removeFavorite": "Quitar de favoritos",
+    "addFavorite": "Agregar a favoritos",
+    "courseContent": "Contenido del curso",
+    "moreLessons_one": "+ {{count}} lección más",
+    "moreLessons_other": "+ {{count}} lecciones más",
+    "price": "Precio:",
+    "yourProgress": "Tu progreso",
+    "openCourse": "Abrir curso",
+    "pendingReview": "Solicitud en revisión",
+    "enroll": "Inscribirme"
+  },
+  "coursePreview": {
+    "backToCourses": "← Volver a cursos",
+    "enroll": "Inscribirme",
+    "contentTitle": "Contenido del curso",
+    "contentSoon": "El contenido todavía se está armando. ¡Volvé pronto!",
+    "descriptionLocked": "Descripción disponible al inscribirte.",
+    "likeCourse": "¿Te gustó el curso?",
+    "likeCourseBody": "Inscribite y empezá a aprender hoy.",
+    "ctaWithPrice": "{{price}} · Inscribirme"
+  },
+  "courseWelcome": {
+    "courseMaterial": "Material del curso",
+    "viewPdf": "Ver PDF"
+  },
+  "courseProgress": {
+    "title": "Progreso del curso",
+    "lessonsCompleted": "{{completed}}/{{total}} lecciones finalizadas",
+    "generating": "Generando...",
+    "downloadCertificate": "🎓 Descargar certificado"
+  },
+  "lessons": {
+    "lockedHint": "· Completá la lección anterior para desbloquear",
+    "videoTitle": "Video de la lección",
+    "legacyLessonPdf": "PDF de la lección",
+    "downloadableMaterial": "Material descargable",
+    "viewPdf": "Ver PDF",
+    "completed": "✓ Completada",
+    "markCompleted": "Marcar como completada",
+    "goToNext": "Ir a la siguiente lección →"
+  },
+  "comments": {
+    "teacher": "Profesora",
+    "you": "Vos",
+    "reply": "Responder",
+    "cancel": "Cancelar",
+    "send": "Enviar",
+    "replyPlaceholder": "Escribí tu respuesta...",
+    "questionsTitle": "Preguntas sobre esta lección",
+    "loading": "Cargando...",
+    "empty": "Todavía no hay preguntas en esta lección. La profesora va a responder acá cuando dejes la tuya.",
+    "askPlaceholder": "Escribí tu duda sobre esta lección...",
+    "sending": "Enviando...",
+    "ask": "Enviar pregunta",
+    "openImage": "Abrir imagen",
+    "attachedImageAlt": "Imagen adjunta",
+    "sendError": "No se pudo enviar tu pregunta. Probá de nuevo en un momento."
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "ariaLabel": "Notificaciones",
+    "markAllRead": "Marcar todas como leídas",
+    "loading": "Cargando...",
+    "error": "No se pudieron cargar las notificaciones.",
+    "empty": "Todavía no tenés notificaciones.",
+    "deleteAria": "Eliminar notificación"
+  },
+  "imagePicker": {
+    "attach": "Adjuntar imagen",
+    "previewAlt": "Vista previa",
+    "remove": "Quitar imagen"
+  },
+  "pagination": {
+    "page": "Página {{page}} de {{total}}",
+    "previous": "← Anterior",
+    "next": "Siguiente →"
+  },
+  "dialog": {
+    "confirmTitle": "¿Estás segura?",
+    "alertTitle": "Atención",
+    "confirm": "Sí, confirmar",
+    "cancel": "Cancelar",
+    "ok": "Entendido"
+  }
+}

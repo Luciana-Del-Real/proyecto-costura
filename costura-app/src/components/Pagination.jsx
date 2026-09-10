@@ -1,4 +1,7 @@
+import { useTranslation } from 'react-i18next';
+
 export default function Pagination({ page, total, perPage = 10, totalPages: explicitTotalPages, onPageChange }) {
+  const { t } = useTranslation();
   const totalPages = explicitTotalPages ?? Math.max(1, Math.ceil(total / perPage));
 
   if (totalPages <= 1) return null;
@@ -6,7 +9,7 @@ export default function Pagination({ page, total, perPage = 10, totalPages: expl
   return (
     <div className="flex items-center justify-center gap-4 py-4">
       <span className="text-xs text-text-tan font-medium">
-        Página {page} de {totalPages}
+        {t('pagination.page', { page, total: totalPages })}
       </span>
       <div className="flex items-center gap-2">
         <button
@@ -15,7 +18,7 @@ export default function Pagination({ page, total, perPage = 10, totalPages: expl
           disabled={page <= 1}
           className="btn btn-ghost text-sm"
         >
-          ← Anterior
+          {t('pagination.previous')}
         </button>
         <button
           type="button"
@@ -23,7 +26,7 @@ export default function Pagination({ page, total, perPage = 10, totalPages: expl
           disabled={page >= totalPages}
           className="btn btn-ghost text-sm"
         >
-          Siguiente →
+          {t('pagination.next')}
         </button>
       </div>
     </div>

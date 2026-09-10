@@ -1,25 +1,28 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { BookOpen, Copy, CheckCircle2, Clock } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useCourseCatalog } from '../context/CourseCatalogContext';
 import { usePurchases } from '../context/PurchaseContext';
 import { useAuth } from '../context/AuthContext';
 import { getCoursePrice } from '../utils/currency';
 import { getImageUrl } from '../utils/media';
 
-// Datos de transferencia según el país/moneda del comprador.
+// Datos de transferencia según el país/moneda del comprador. Los labels se
+// resuelven por clave i18n en el render (checkout.fields.*).
 const PAYMENT_INFO = {
   ARS: [
-    { key: 'cvu', label: 'CVU / CBU', value: '0000000000000000000000' },
-    { key: 'alias', label: 'Alias', value: 'grow.costura' },
-    { key: 'accountName', label: 'Nombre de cuenta', value: 'Daiana Belén Lubo' }
+    { key: 'cvu', labelKey: 'checkout.fields.cvu', value: '0000000000000000000000' },
+    { key: 'alias', labelKey: 'checkout.fields.alias', value: 'grow.costura' },
+    { key: 'accountName', labelKey: 'checkout.fields.accountName', value: 'Daiana Belén Lubo' }
   ],
   AUD: [
-    { key: 'square', label: 'Link de pago', value: 'https://square.link/u/8DRRqm48', link: true },
+    { key: 'square', labelKey: 'checkout.fields.paymentLink', value: 'https://square.link/u/8DRRqm48', link: true },
   ],
 };
 
 export default function Checkout() {
+  const { t } = useTranslation();
   const { id } = useParams();
   const { courses } = useCourseCatalog();
   const { hasCourse, isPending, requestPurchase } = usePurchases();
@@ -28,16 +31,16 @@ export default function Checkout() {
   const [copied, setCopied] = useState('');
   const { user } = useAuth();
 
-  if (!course) return <div className="min-h-screen flex items-center justify-center"><p>Curso no encontrado</p></div>;
+  if (!course) return <div className="min-h-screen flex items-center justify-center"><p>{t('checkout.notFound')}</p></div>;
 
   if (hasCourse(course.id)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-bg-surface px-4">
         <div className="text-center">
           <CheckCircle2 className="w-14 h-14 text-success mx-auto" strokeWidth={1.5} />
-          <h2 className="font-display font-bold text-text-ink text-2xl mt-4">Ya tenés este curso</h2>
+          <h2 className="font-display font-bold text-text-ink text-2xl mt-4">{t('checkout.alreadyOwned')}</h2>
           <Link to={`/curso/${course.id}`} className="btn btn-primary mt-4 inline-block">
-            Abrir curso
+            {t('checkout.openCourse')}
           </Link>
         </div>
       </div>
@@ -45,19 +48,19 @@ export default function Checkout() {
   }
 
   if (isPending(course.id) || requested) {
-    const userIdentifier = user?.name || user?.email || 'mi usuario';
-    const whatsappMessage = `¡Hola! Acabo de abonar el curso "${course.title}". Mi usuario es ${userIdentifier}. ¡Les paso mi comprobante!`;
+    const userIdentifier = user?.name || user?.email || t('checkout.defaultUser');
+    const whatsappMessage = t('checkout.whatsappMessage', { course: course.title, user: userIdentifier });
     const whatsappUrl = `https://wa.me/5493447404952?text=${encodeURIComponent(whatsappMessage)}`;
 
     return (
       <div className="min-h-screen flex items-center justify-center bg-bg-surface px-4">
           <div className="text-center card-flat p-8 rounded-2xl max-w-md w-full">
           <Clock className="w-14 h-14 text-primary mx-auto mb-4" strokeWidth={1.5} />
-            <h2 className="font-display text-2xl font-bold text-text-ink mb-3">Solicitud de compra enviada</h2>
+            <h2 className="font-display text-2xl font-bold text-text-ink mb-3">{t('checkout.requestSentTitle')}</h2>
             <p className="text-text-ink mb-6">
               {user?.country === 'AUD'
-                ? 'Tu pago está en revisión por el admin. Te notificaremos cuando se confirme.'
-                : 'Tu comprobante está en revisión por el admin. Te notificaremos cuando se confirme.'}
+                ? t('checkout.pendingAud')
+                : t('checkout.pendingArs')}
             </p>
 
           {user?.country !== 'AUD' && (
@@ -70,12 +73,12 @@ export default function Checkout() {
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
               <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c-.003 1.396.366 2.76 1.056 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c.003-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.886-.58-.45-1.92-1.004-1.036-2.144.113-.153.247-.306.37-.459.124-.153.165-.256.248-.382.082-.128.041-.24-.009-.336-.05-.099-.445-1.073-.61-1.472-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
             </svg>
-            Enviar comprobante por WhatsApp
+            {t('checkout.sendReceipt')}
           </a>
           )}
 
           <Link to="/mis-cursos" className="block text-primary text-sm hover:text-primary-hover transition-colors mt-2 text-center">
-            Ver mis cursos
+            {t('checkout.viewMyCourses')}
           </Link>
         </div>
       </div>
@@ -94,32 +97,32 @@ export default function Checkout() {
   return (
     <div className="min-h-screen bg-bg-surface py-10 px-4">
       <div className="max-w-4xl mx-auto">
-        <Link to="/cursos" className="text-primary text-sm hover:text-primary-hover mb-6 inline-block">← Volver a cursos</Link>
+        <Link to="/cursos" className="text-primary text-sm hover:text-primary-hover mb-6 inline-block">{t('checkout.backToCourses')}</Link>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="card-glow p-6 h-fit">
-            <h2 className="font-display font-bold text-text-ink text-2xl mb-4">Resumen del pedido</h2>
+            <h2 className="font-display font-bold text-text-ink text-2xl mb-4">{t('checkout.orderSummary')}</h2>
             <img src={getImageUrl(course.image)} alt={course.title} className="w-full h-40 object-cover rounded-xl mb-4" />
             <h3 className="font-body text-text-ink text-lg font-bold mb-1.5 leading-snug line-clamp-1">{course.title}</h3>
             <p className="text-text-ink text-sm mb-4">{course.description}</p>
-            <span className="flex items-center gap-1.5 text-sm text-accent mb-4"><BookOpen className="w-4 h-4" strokeWidth={1.5} /> {course.lessons.length} lecciones</span>
+            <span className="flex items-center gap-1.5 text-sm text-accent mb-4"><BookOpen className="w-4 h-4" strokeWidth={1.5} /> {t('common.lessons', { count: course.lessons.length })}</span>
             <div className="border-t border-border pt-4 flex justify-between items-center">
-              <span className="text-text-ink font-medium">Total</span>
+              <span className="text-text-ink font-medium">{t('checkout.total')}</span>
               <span className="text-2xl font-bold text-text-ink">${getCoursePrice(course, user).toLocaleString()}</span>
             </div>
           </div>
 
           <div className="p-6">
-            <h2 className="font-display font-bold text-text-ink text-2xl mb-4">Instrucciones de pago</h2>
+            <h2 className="font-display font-bold text-text-ink text-2xl mb-4">{t('checkout.paymentInstructions')}</h2>
             
             <div className="mb-4 text-sm text-text-ink">
-              <p className="mb-3"><strong>1) Transferí a la cuenta:</strong></p>
+              <p className="mb-3"><strong>{t('checkout.step1')}</strong></p>
               
               <div className="mb-4">
                 {(PAYMENT_INFO[user?.country === 'AUD' ? 'AUD' : 'ARS']).map((field) => (
                   field.link ? (
                     <div key={field.key} className="flex items-center justify-between py-3 border-b border-border last:border-0">
                       <div className="min-w-0">
-                        <span className="text-xs text-text-tan block mb-0.5">{field.label}</span>
+                        <span className="text-xs text-text-tan block mb-0.5">{t(field.labelKey)}</span>
                         <span className="text-text-ink font-semibold truncate block">{field.value}</span>
                       </div>
                       <a
@@ -128,13 +131,13 @@ export default function Checkout() {
                         rel="noreferrer"
                         className="btn btn-primary text-xs flex-shrink-0 ml-3"
                       >
-                        Ir al pago
+                        {t('checkout.goToPayment')}
                       </a>
                     </div>
                   ) : (
                     <div key={field.key} className="flex items-center justify-between py-3 border-b border-border last:border-0">
                       <div className="min-w-0">
-                        <span className="text-xs text-text-tan block mb-0.5">{field.label}</span>
+                        <span className="text-xs text-text-tan block mb-0.5">{t(field.labelKey)}</span>
                         <span className="font-mono text-text-ink font-semibold truncate block">{field.value}</span>
                       </div>
                       <button
@@ -145,14 +148,14 @@ export default function Checkout() {
                         }}
                         className="btn btn-ghost text-xs text-primary hover:text-primary-hover"
                       >
-                        {copied === field.key ? '¡Copiado!' : <span className="flex items-center gap-1"><Copy className="w-3.5 h-3.5" strokeWidth={1.5} /> Copiar</span>}
+                        {copied === field.key ? t('checkout.copied') : <span className="flex items-center gap-1"><Copy className="w-3.5 h-3.5" strokeWidth={1.5} /> {t('checkout.copy')}</span>}
                       </button>
                     </div>
                   )
                 ))}
               </div>
 
-              <p className="mt-6"><strong>2) Hacé clic en "Solicitar acceso"</strong> debajo para registrar tu pedido en la plataforma.</p>
+              <p className="mt-6"><strong>{t('checkout.step2Bold')}</strong> {t('checkout.step2Rest')}</p>
             </div>
 
             <div className="bg-primary-soft/60 rounded-xl p-4 mb-6">
@@ -160,10 +163,10 @@ export default function Checkout() {
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
                   <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
                 </svg>
-                Importante
+                {t('checkout.important')}
               </div>
               <p className="text-sm text-text-muted leading-relaxed">
-                Una vez abonado el curso, <strong>deberás enviarle el comprobante a Daiana por WhatsApp</strong>. Sólo mediante ese paso podremos confirmar tu pago y darte de alta en el sistema para habilitar tus videoclases.
+                {t('checkout.notice1')}<strong>{t('checkout.noticeStrong')}</strong>{t('checkout.notice2')}
               </p>
             </div>
 
@@ -171,7 +174,7 @@ export default function Checkout() {
               onClick={handleRequestPurchase}
               className="btn btn-primary w-full font-semibold"
             >
-              Solicitar acceso
+              {t('checkout.requestAccess')}
             </button>
           </div>
         </div>

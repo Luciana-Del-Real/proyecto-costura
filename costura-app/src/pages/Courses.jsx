@@ -1,12 +1,21 @@
 import { useState } from 'react';
 import { Search } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useCourseCatalog } from '../context/CourseCatalogContext';
 import CourseCard from '../components/CourseCard';
 import PageHeader from '../components/PageHeader';
 
-const levels = ['Todos', 'Principiante', 'Intermedio', 'Avanzado'];
+// Filter values stay in Spanish (they match the backend level enum); only the
+// visible label is translated through `labelKey`.
+const levelFilters = [
+  { value: 'Todos', labelKey: 'levels.all' },
+  { value: 'Principiante', labelKey: 'levels.beginner' },
+  { value: 'Intermedio', labelKey: 'levels.intermediate' },
+  { value: 'Avanzado', labelKey: 'levels.advanced' },
+];
 
 export default function Courses() {
+  const { t } = useTranslation();
   const { courses } = useCourseCatalog();
   const [search, setSearch] = useState('');
   const [level, setLevel] = useState('Todos');
@@ -26,23 +35,23 @@ export default function Courses() {
 
   return (
     <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
-      <PageHeader title="Todos los cursos" subtitle="Encontrá el curso perfecto para vos" />
+      <PageHeader title={t('courses.title')} subtitle={t('courses.subtitle')} />
 
       {/* CONTENEDOR UNIFICADO: Agregamos mt-6 para controlar la distancia exacta con el texto */}
       <div className="max-w-6xl mx-auto px-1 mt-6 mb-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         {/* Filtros por Nivel */}
         <div className="flex flex-wrap gap-3">
-          {levels.map(l => (
+          {levelFilters.map(l => (
             <button
-              key={l}
-              onClick={() => setLevel(l)}
+              key={l.value}
+              onClick={() => setLevel(l.value)}
               className={`btn text-sm tracking-wide transition-all duration-300 shadow-sm ${
-                level === l
+                level === l.value
                   ? 'btn-primary shadow-md scale-105'
                   : 'btn-ghost border border-primary/30 hover:border-primary'
               }`}
             >
-              {l}
+              {t(l.labelKey)}
             </button>
           ))}
         </div>
@@ -56,7 +65,7 @@ export default function Courses() {
             type="text"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            placeholder="Buscar cursos..."
+            placeholder={t('courses.searchPlaceholder')}
             className="w-full pl-10 pr-4 py-2 text-sm border-2 border-gray-300 hover:border-gray-400 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-300 bg-white text-gray-700 placeholder-gray-400 shadow-sm transition-all duration-300"
           />
         </div>
@@ -67,18 +76,18 @@ export default function Courses() {
         {filtered.length === 0 ? (
           <div className="text-center py-16 card-flat rounded-2xl">
             <Search className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
-            <h2 className="font-display font-bold text-text-ink text-2xl mt-4">No encontramos cursos con esa búsqueda.</h2>
+            <h2 className="font-display font-bold text-text-ink text-2xl mt-4">{t('courses.empty')}</h2>
             <button 
               onClick={() => { setSearch(''); setLevel('Todos'); }} 
               className="btn btn-ghost mt-3 text-sm bg-white hover:bg-white text-primary border border-primary/30 hover:border-primary"
             >
-              Limpiar filtros
+              {t('courses.clearFilters')}
             </button>
           </div>
         ) : (
           <>
             <p className="text-text-muted text-sm mb-6 font-medium pl-1">
-              {filtered.length} curso{filtered.length !== 1 ? 's' : ''} encontrado{filtered.length !== 1 ? 's' : ''}
+              {t('courses.count', { count: filtered.length })}
             </p>
             {/* Grid dinámico responsivo fluido */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">

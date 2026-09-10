@@ -1,5 +1,6 @@
 import { getImageUrl } from '../../utils/media';
 import { FileText } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import LessonCommentsSection from './LessonCommentsSection';
 
 // Contenido de una lección (descripción, video, PDFs descargables, botones de
@@ -12,8 +13,9 @@ export default function LessonContent({
   comments, draft, sendingFor,
   onComplete, onSendComment, onDraftChange, onNext, canComplete,
 }) {
+  const { t } = useTranslation();
   const allPdfs = [
-    ...(lesson.pdf ? [{ id: 'legacy', filename: 'PDF de la lección', url: lesson.pdf }] : []),
+    ...(lesson.pdf ? [{ id: 'legacy', filename: t('lessons.legacyLessonPdf'), url: lesson.pdf }] : []),
     ...(lesson.attachments || []),
   ];
 
@@ -29,7 +31,7 @@ export default function LessonContent({
           <div className="aspect-video rounded-2xl overflow-hidden bg-black shadow-md relative">
             <iframe
               src={lesson.videoUrl.replace('watch?v=', 'embed/')}
-              title="Video de la lección"
+              title={t('lessons.videoTitle')}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
               className="absolute top-0 left-0 w-full h-full"
@@ -41,7 +43,7 @@ export default function LessonContent({
       {/* PDFs de la lección */}
       {allPdfs.length > 0 && (
         <div>
-          <p className="text-xs uppercase tracking-wide text-accent mb-2">Material descargable</p>
+          <p className="text-xs uppercase tracking-wide text-accent mb-2">{t('lessons.downloadableMaterial')}</p>
           <div className="space-y-2">
             {allPdfs.map(att => (
               <a
@@ -51,7 +53,7 @@ export default function LessonContent({
                 rel="noreferrer"
                 className="btn btn-ghost text-sm w-fit flex items-center gap-1.5"
               >
-                <FileText className="w-4 h-4" strokeWidth={1.5} /> {att.filename || 'Ver PDF'}
+                <FileText className="w-4 h-4" strokeWidth={1.5} /> {att.filename || t('lessons.viewPdf')}
               </a>
             ))}
           </div>
@@ -81,14 +83,14 @@ export default function LessonContent({
               : 'bg-stone-200 text-stone-500 cursor-not-allowed'
           }`}
         >
-          {completed ? '✓ Completada' : 'Marcar como completada'}
+          {completed ? t('lessons.completed') : t('lessons.markCompleted')}
         </button>
         {completed && idx < total - 1 && (
           <button
             onClick={onNext}
             className="btn btn-ghost text-sm"
           >
-            Ir a la siguiente lección →
+            {t('lessons.goToNext')}
           </button>
         )}
       </div>

@@ -1,12 +1,15 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { User } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { useNotifications } from '../context/NotificationsContext';
 import BackToHome from './BackToHome';
 import NotificationBell from './NotificationBell';
+import LanguageSwitcher from './LanguageSwitcher';
 
 export default function Navbar() {
+  const { t } = useTranslation();
   const { user, logout, isAdmin } = useAuth();
   const { unreadCount } = useNotifications();
   const navigate = useNavigate();
@@ -51,15 +54,16 @@ export default function Navbar() {
             </div>
           </Link>
 
+          <div className="flex items-center gap-3">
           {/* Desktop */}
           {(!isSimplified || user || isAuthPage) && (
           <div className="hidden md:flex items-center gap-6">
             {user ? (
               <>
-              <Link to="/dashboard" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/dashboard' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Inicio</Link>
-              <Link to="/cursos" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/cursos' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Cursos disponibles</Link>
-              <Link to="/favoritos" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/favoritos' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Favoritos</Link>
-              <Link to="/patrones-gratis" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/patrones-gratis' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Patrones gratis</Link>
+              <Link to="/dashboard" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/dashboard' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>{t('nav.home')}</Link>
+              <Link to="/cursos" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/cursos' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>{t('nav.courses')}</Link>
+              <Link to="/favoritos" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/favoritos' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>{t('nav.favorites')}</Link>
+              <Link to="/patrones-gratis" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/patrones-gratis' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>{t('nav.freePatterns')}</Link>
 
               {/* Notifications bell */}
               <NotificationBell />
@@ -73,7 +77,7 @@ export default function Navbar() {
                   <div className="w-7 h-7 bg-bg-soft rounded-full flex items-center justify-center text-text-ink text-xs font-bold">
                     {user.name?.charAt(0).toUpperCase()}
                   </div>
-                  Perfil
+                  {t('nav.profile')}
                   <svg className={`w-3.5 h-3.5 transition-transform ${profileOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
@@ -87,12 +91,12 @@ export default function Navbar() {
                     </div>
                     <Link to="/perfil" onClick={() => setProfileOpen(false)}
                       className="flex items-center gap-2 px-4 py-2.5 text-sm text-text-ink hover:bg-gray-100 transition-colors">
-                      <User className="w-4 h-4 text-primary" strokeWidth={1.5} /> Mi perfil
+                      <User className="w-4 h-4 text-primary" strokeWidth={1.5} /> {t('nav.myProfile')}
                     </Link>
                     <div className="border-t border-bg-soft py-3 px-3 mt-1">
                       <button onClick={handleLogout}
                         className="btn btn-accent w-full text-sm">
-                        Cerrar sesión
+                        {t('nav.logout')}
                       </button>
                     </div>
                   </div>
@@ -103,15 +107,21 @@ export default function Navbar() {
             <>
               {(!isSimplified || isAuthPage) && (
                 <>
-                  <Link to="/cursos" className="px-1 py-1 rounded-lg text-sm font-medium text-text-ink hover:text-primary transition-colors">Cursos disponibles</Link>
-                  <Link to="/patrones-gratis" className="px-1 py-1 rounded-lg text-sm font-medium text-text-ink hover:text-primary transition-colors">Patrones gratis</Link>
-                  <Link to="/login" className="btn btn-primary text-sm text-white hover:shadow-none">Iniciar sesión</Link>
+                  <Link to="/cursos" className="px-1 py-1 rounded-lg text-sm font-medium text-text-ink hover:text-primary transition-colors">{t('nav.courses')}</Link>
+                  <Link to="/patrones-gratis" className="px-1 py-1 rounded-lg text-sm font-medium text-text-ink hover:text-primary transition-colors">{t('nav.freePatterns')}</Link>
+                  <Link to="/login" className="btn btn-primary text-sm text-white hover:shadow-none">{t('nav.login')}</Link>
                 </>
               )}
             </>
           )}
+
         </div>
         )}
+
+        {/* Language switcher: always rendered so the language choice stays
+            reachable even on simplified routes where the desktop link cluster
+            and the mobile menu are hidden. */}
+        <LanguageSwitcher />
 
         {/* Mobile toggle */}
         <button className="btn btn-icon md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
@@ -121,6 +131,7 @@ export default function Navbar() {
               : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />}
           </svg>
         </button>
+          </div>
       </div>
 
       {/* Mobile menu */}
@@ -138,24 +149,24 @@ export default function Navbar() {
                 </div>
                 {unreadCount > 0 && (
                   <span className="ml-auto text-[10px] font-bold bg-accent text-white px-2 py-0.5 rounded-full">
-                    {unreadCount} nueva{unreadCount !== 1 ? 's' : ''}
+                    {unreadCount} {t('nav.newNotifications', { count: unreadCount })}
                   </span>
                 )}
               </div>
-              <Link to="/dashboard" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Inicio</Link>
-              <Link to="/cursos" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Cursos disponibles</Link>
-              <Link to="/favoritos" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Favoritos</Link>
-              <Link to="/patrones-gratis" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Patrones gratis</Link>
-              <Link to="/perfil" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Perfil</Link>
-              <Link to="/mis-cursos" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Mis cursos</Link>
-              <button onClick={handleLogout} className="btn btn-ghost w-full justify-start text-sm text-accent">Cerrar sesión</button>
+              <Link to="/dashboard" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">{t('nav.home')}</Link>
+              <Link to="/cursos" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">{t('nav.courses')}</Link>
+              <Link to="/favoritos" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">{t('nav.favorites')}</Link>
+              <Link to="/patrones-gratis" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">{t('nav.freePatterns')}</Link>
+              <Link to="/perfil" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">{t('nav.profile')}</Link>
+              <Link to="/mis-cursos" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">{t('nav.myCourses')}</Link>
+              <button onClick={handleLogout} className="btn btn-ghost w-full justify-start text-sm text-accent">{t('nav.logout')}</button>
             </>
           ) : (
             (!isSimplified || isAuthPage) && (
               <>
-                  <Link to="/cursos" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Cursos disponibles</Link>
-                  <Link to="/patrones-gratis" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Patrones gratis</Link>
-                  <Link to="/login" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Iniciar sesión</Link>
+                  <Link to="/cursos" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">{t('nav.courses')}</Link>
+                  <Link to="/patrones-gratis" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">{t('nav.freePatterns')}</Link>
+                  <Link to="/login" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">{t('nav.login')}</Link>
               </>
             )
           )}

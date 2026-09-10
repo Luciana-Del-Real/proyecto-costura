@@ -1,4 +1,5 @@
 import { BookOpen, GraduationCap } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { getLevelLabel } from '../../utils/levels';
 import CourseCover from '../CourseCover';
 import CourseWelcomePanel from './CourseWelcomePanel';
@@ -12,6 +13,8 @@ export default function CourseAccordionItem({
   course, prog, completedCount, downloadingCert, onDownloadCertificate, courseAttachments,
   isOpen, onToggle,
 }) {
+  const { t } = useTranslation();
+
   return (
     <div className={`bg-white border rounded-2xl shadow-sm overflow-hidden transition-colors ${isOpen ? 'border-secondary' : 'border-border'}`}>
       {/* Cabecera del curso */}
@@ -26,7 +29,7 @@ export default function CourseAccordionItem({
           <p className="font-semibold text-text-ink truncate">{course.title}</p>
           <p className="text-xs text-accent mt-0.5 flex items-center gap-1.5">
             <span className="flex items-center gap-1"><GraduationCap className="w-3.5 h-3.5" strokeWidth={1.5} /> {getLevelLabel(course.level)}</span>
-            <span className="flex items-center gap-1"><BookOpen className="w-3.5 h-3.5" strokeWidth={1.5} /> {course.lessons.length} lecciones</span>
+            <span className="flex items-center gap-1"><BookOpen className="w-3.5 h-3.5" strokeWidth={1.5} /> {t('common.lessons', { count: course.lessons.length })}</span>
           </p>
         </div>
         <span className={`text-text-ink transition-transform flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`}>▾</span>

@@ -1,4 +1,5 @@
 import { Clock, Lock, Check } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import LessonContent from './LessonContent';
 
 // Fila del acordeón de lecciones (vista alumna, mobile): cabecera con estados
@@ -10,6 +11,7 @@ export default function LessonAccordionItem({
   comments, drafts, sendingFor,
   onToggle, onComplete, onSendComment, onDraftChange, onNext,
 }) {
+  const { t } = useTranslation();
   const canComplete = !completed && !blocked;
 
   return (
@@ -29,7 +31,7 @@ export default function LessonAccordionItem({
           <p className={`font-semibold truncate ${isOpen ? 'text-primary' : 'text-text-ink'}`}>{lesson.title}</p>
           <p className="text-xs text-accent mt-0.5 flex items-center gap-1">
             <Clock className="w-3.5 h-3.5" strokeWidth={1.5} /> {lesson.duration}
-            {blocked && <span className="text-danger"> · Completá la lección anterior para desbloquear</span>}
+            {blocked && <span className="text-danger"> {t('lessons.lockedHint')}</span>}
           </p>
         </div>
         {!blocked && (

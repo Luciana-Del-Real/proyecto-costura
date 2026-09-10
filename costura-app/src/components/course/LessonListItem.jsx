@@ -1,4 +1,5 @@
 import { Clock, Lock, Check } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 // Fila compacta de la lista de lecciones del panel izquierdo (desktop):
 // misma cabecera visual que el acordeón (círculo con número/check/lock,
@@ -6,6 +7,8 @@ import { Clock, Lock, Check } from 'lucide-react';
 // El estado activo reemplaza al giro del chevron: la fila seleccionada se
 // resalta y su contenido se muestra en el panel derecho.
 export default function LessonListItem({ lesson, idx, isActive, blocked, completed, onClick }) {
+  const { t } = useTranslation();
+
   return (
     <button
       onClick={onClick}
@@ -27,7 +30,7 @@ export default function LessonListItem({ lesson, idx, isActive, blocked, complet
         <p className={`font-semibold truncate ${isActive ? 'text-primary' : 'text-text-ink'}`}>{lesson.title}</p>
         <p className="text-xs text-accent mt-0.5 flex items-center gap-1">
           <Clock className="w-3.5 h-3.5" strokeWidth={1.5} /> {lesson.duration}
-          {blocked && <span className="text-danger"> · Completá la lección anterior para desbloquear</span>}
+          {blocked && <span className="text-danger"> {t('lessons.lockedHint')}</span>}
         </p>
       </div>
     </button>

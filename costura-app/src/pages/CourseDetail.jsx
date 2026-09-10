@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import { BookOpen, AlertTriangle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useCourseCatalog } from '../context/CourseCatalogContext';
 import { useDialog } from '../context/DialogContext';
 import { usePurchases } from '../context/PurchaseContext';
@@ -16,6 +17,7 @@ import LessonListItem from '../components/course/LessonListItem';
 import LessonContent from '../components/course/LessonContent';
 
 export default function CourseDetail() {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -27,7 +29,7 @@ export default function CourseDetail() {
   if (!course) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-stone-500">Curso no encontrado.</p>
+        <p className="text-stone-500">{t('courseDetail.notFound')}</p>
       </div>
     );
   }
@@ -39,10 +41,10 @@ export default function CourseDetail() {
       <div className="min-h-screen bg-bg-surface flex items-center justify-center px-4">
         <div className="max-w-md text-center bg-white border border-border rounded-3xl p-8 shadow-sm">
           <BookOpen className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
-          <h2 className="font-display font-bold text-text-ink text-2xl mt-4 mb-2">Todavía no hay lecciones cargadas</h2>
-          <p className="text-text-ink mb-6">Este curso está confirmado, pero la profesora todavía no subió ninguna clase. Volvé a entrar más adelante.</p>
+          <h2 className="font-display font-bold text-text-ink text-2xl mt-4 mb-2">{t('courseDetail.noLessonsTitle')}</h2>
+          <p className="text-text-ink mb-6">{t('courseDetail.noLessonsBody')}</p>
           <Link to="/mis-cursos" className="btn btn-primary inline-block font-semibold">
-            ← Volver a mis cursos
+            {t('courseDetail.backToMyCourses')}
           </Link>
         </div>
       </div>
@@ -75,6 +77,7 @@ export default function CourseDetail() {
 // del curso) se carga del endpoint protegido. `key={course.id}` resetea el
 // estado al navegar entre cursos.
 function OwnedCourseView({ course, progress, getProgress, completeLesson }) {
+  const { t } = useTranslation();
   const { getCourseLessons } = useCourseCatalog();
   const [fullCourse, setFullCourse] = useState(null);
   const [loadingContent, setLoadingContent] = useState(true);
@@ -101,7 +104,7 @@ function OwnedCourseView({ course, progress, getProgress, completeLesson }) {
   if (loadingContent) {
     return (
       <div className="min-h-screen bg-bg-surface flex items-center justify-center px-4">
-        <p className="text-text-ink">Cargando el contenido del curso...</p>
+        <p className="text-text-ink">{t('courseDetail.loadingContent')}</p>
       </div>
     );
   }
@@ -111,10 +114,10 @@ function OwnedCourseView({ course, progress, getProgress, completeLesson }) {
       <div className="min-h-screen bg-bg-surface flex items-center justify-center px-4">
         <div className="max-w-md text-center bg-white border border-border rounded-3xl p-8 shadow-sm">
           <AlertTriangle className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
-          <h2 className="font-display font-bold text-text-ink text-2xl mt-4 mb-2">No se pudo cargar el contenido</h2>
-          <p className="text-text-ink mb-6">Verificá tu conexión y volvé a intentar. Si el problema continúa, escribile a la profesora.</p>
+          <h2 className="font-display font-bold text-text-ink text-2xl mt-4 mb-2">{t('courseDetail.contentErrorTitle')}</h2>
+          <p className="text-text-ink mb-6">{t('courseDetail.contentErrorBody')}</p>
           <Link to="/mis-cursos" className="btn btn-primary inline-block font-semibold">
-            ← Volver a mis cursos
+            {t('courseDetail.backToMyCourses')}
           </Link>
         </div>
       </div>
@@ -125,6 +128,7 @@ function OwnedCourseView({ course, progress, getProgress, completeLesson }) {
 }
 
 function CourseLearningView({ course, progress, getProgress, completeLesson }) {
+  const { t } = useTranslation();
   const { alertDialog } = useDialog();
   const courseProgress = progress[course.id] || { completed: [], lastLesson: 0 };
   const isCompleted = (lessonId) => courseProgress.completed.includes(lessonId);
@@ -171,7 +175,7 @@ function CourseLearningView({ course, progress, getProgress, completeLesson }) {
       await completeLesson(course.id, lessonId);
     } catch (err) {
       console.error(err);
-      alertDialog('No se pudo marcar la lección como completada. Probá de nuevo.');
+      alertDialog(t('courseDetail.completeError'));
     }
   };
   const [downloadingCert, setDownloadingCert] = useState(false);
@@ -181,7 +185,7 @@ function CourseLearningView({ course, progress, getProgress, completeLesson }) {
       await downloadFile(`/courses/${course.id}/certificate`, `certificado-${course.title}.pdf`);
     } catch (err) {
       console.error(err);
-      alertDialog('No se pudo descargar el certificado. Probá de nuevo en un momento.');
+      alertDialog(t('courseDetail.certificateError'));
     } finally {
       setDownloadingCert(false);
     }
@@ -190,7 +194,7 @@ function CourseLearningView({ course, progress, getProgress, completeLesson }) {
   const prog = getProgress(course.id, course.lessons.length);
   const completedCount = courseProgress.completed.length;
   const courseAttachments = [
-    ...(course.pdfGuide ? [{ id: 'course-legacy', filename: 'PDF principal del curso', url: course.pdfGuide }] : []),
+    ...(course.pdfGuide ? [{ id: 'course-legacy', filename: t('courseDetail.legacyCoursePdf'), url: course.pdfGuide }] : []),
     ...(course.attachments || []),
   ];
 
@@ -202,7 +206,7 @@ function CourseLearningView({ course, progress, getProgress, completeLesson }) {
     <div className="min-h-screen bg-bg-surface pb-12">
       <div className="max-w-6xl mx-auto px-4 py-8 lg:py-10 animate-fade-in">
         <Link to="/mis-cursos" className="text-primary text-sm hover:text-primary-hover inline-flex items-center gap-1 mb-4">
-          ← Volver a mis cursos
+          {t('courseDetail.backToMyCourses')}
         </Link>
 
         {/* Desktop: layout de dos paneles (lista de lecciones + contenido).

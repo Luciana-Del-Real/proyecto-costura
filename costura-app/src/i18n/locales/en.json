@@ -1,0 +1,367 @@
+{
+  "common": {
+    "changeLanguage": "Change language",
+    "email": "Email",
+    "lessons_one": "{{count}} lesson",
+    "lessons_other": "{{count}} lessons"
+  },
+  "levels": {
+    "all": "All",
+    "beginner": "Beginner",
+    "intermediate": "Intermediate",
+    "advanced": "Advanced"
+  },
+  "nav": {
+    "home": "Home",
+    "courses": "Available courses",
+    "favorites": "Favorites",
+    "freePatterns": "Free patterns",
+    "profile": "Profile",
+    "myProfile": "My profile",
+    "myCourses": "My courses",
+    "login": "Log in",
+    "logout": "Log out",
+    "newNotifications_one": "new",
+    "newNotifications_other": "new"
+  },
+  "home": {
+    "hero": {
+      "titleLine1": "Create with your",
+      "titleHighlight": "own hands",
+      "subtitle": "Online sewing, embroidery, and textile design courses for all levels. At your own pace, with professional guidance.",
+      "quote": "We believe everyone can create, even if they start from scratch.",
+      "ctaCourses": "View courses",
+      "ctaRegister": "Sign up for free"
+    },
+    "aboutUs": {
+      "eyebrow": "Who are we?",
+      "title": "Grow",
+      "imageAlt": "Grow Creative Education Studio",
+      "body": "A creative studio dedicated to sewing, embroidery, and design, here to guide you step by step on your learning journey. Here you'll find classes, tools, inspiration, and a community that grows with you.",
+      "question": "Will you stay to discover everything you could achieve with your own hands?"
+    },
+    "daia": {
+      "eyebrow": "Who is behind Grow?",
+      "title": "Hi! I'm Daia",
+      "imageAlt": "Daia",
+      "body": "Fashion designer, graphic designer, seamstress, and passionate about embroidery in all its forms. I have more than ten years of experience sharing what I know and always learning. At Grow you don't have to adapt to a rigid system: we adapt to you, your pace, your schedule, and your desire to create."
+    },
+    "benefits": {
+      "title": "Why choose us?",
+      "items": {
+        "recorded": {
+          "title": "RECORDED CLASSES",
+          "desc": "Access the content whenever you want, with no fixed schedule."
+        },
+        "devices": {
+          "title": "FROM ANY DEVICE",
+          "desc": "Learn from your phone, tablet, or computer."
+        },
+        "lifetime": {
+          "title": "LIFETIME ACCESS",
+          "desc": "Once you buy it, the course is yours forever."
+        },
+        "expert": {
+          "title": "EXPERT INSTRUCTOR",
+          "desc": "Learn with Daia, a designer with more than 10 years of experience."
+        }
+      }
+    },
+    "categories": {
+      "title": "Our specialties",
+      "items": {
+        "sewing": "SEWING",
+        "embroidery": "EMBROIDERY",
+        "textileDesign": "TEXTILE DESIGN",
+        "workshops": "WORKSHOPS",
+        "events": "EVENTS",
+        "productsServices": "PRODUCTS AND SERVICES"
+      }
+    },
+    "testimonials": {
+      "title": "What our students say",
+      "showMore": "Show more",
+      "showLess": "Show less",
+      "items": {
+        "1": {
+          "text": "Beautiful place and a beautiful class ❤️ I highly recommend it! Dai makes learning to sew simple, fun, and practical 🙌🏽…",
+          "course": "Google Maps · 6 months ago"
+        },
+        "2": {
+          "text": "The best courses to learn from scratch, excellent experience!",
+          "course": "Google Maps · 6 months ago"
+        },
+        "3": {
+          "text": "I recommend it 100%. Daiana is a teacher with a lot of patience and passion for what she does; she has been supporting my learning process with great care and good energy. She gave me the tools to follow patterns on my own, so I can come back to class with specific questions. Within two weeks I was already making tote bags for my family, and by the end of the month I was altering a dress to my measurements. I learned a lot and made friends in her classes; I hold a lot of affection for this institute that has given me more than just learning to sew. Proud to be part of the Sydney branch.",
+          "course": "Google Maps · 6 months ago"
+        }
+      }
+    },
+    "cta": {
+      "title": "At Grow, there's always a place for you",
+      "body": "Sign up for free and start your first course today.",
+      "button": "Start now"
+    }
+  },
+  "footer": {
+    "description": "A creative studio dedicated to sewing, embroidery, and design. Learn at your own pace with professional guidance.",
+    "navigation": "Navigation",
+    "links": {
+      "home": "Home",
+      "courses": "Courses",
+      "login": "Log in",
+      "register": "Sign up"
+    },
+    "contact": {
+      "title": "Contact",
+      "location": "📍 Redfern, Sydney, Australia",
+      "whatsapp": "📱 WhatsApp: +61 401 956 520",
+      "onlineClasses": "🌐 Online classes available"
+    },
+    "copyright": "© 2026 Creative Education Studio · Daiana Lubo Núñez · All rights reserved."
+  },
+  "auth": {
+    "loginTitle": "Welcome back",
+    "registerTitle": "Create account",
+    "loginSubtitle": "Log in to keep learning",
+    "registerSubtitle": "Join our community",
+    "fullName": "Full name",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "forgot": "Forgot your password?",
+    "processing": "Processing...",
+    "submitLogin": "Log in",
+    "submitRegister": "Sign up",
+    "noAccount": "Don't have an account? ",
+    "hasAccount": "Already have an account? ",
+    "goRegister": "Sign up for free",
+    "goLogin": "Log in",
+    "genericError": "There was an error processing your request"
+  },
+  "forgotPassword": {
+    "title": "Recover password",
+    "subtitle": "We'll send you an email with the recovery link",
+    "emailPlaceholder": "you@email.com",
+    "sending": "Sending...",
+    "submit": "Send instructions",
+    "backToLogin": "Back to log in",
+    "successFallback": "If an account exists, you'll receive an email with the steps.",
+    "errorFallback": "There was an error sending the email"
+  },
+  "resetPassword": {
+    "title": "New password",
+    "subtitle": "Enter your new secure password",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm password",
+    "updating": "Updating...",
+    "submit": "Update password",
+    "backToLogin": "Back to log in",
+    "invalidLink": "The link is invalid or incomplete. Request a new link.",
+    "mismatch": "The passwords do not match",
+    "successFallback": "Password updated successfully",
+    "errorFallback": "There was an error resetting the password"
+  },
+  "courses": {
+    "title": "All courses",
+    "subtitle": "Find the perfect course for you",
+    "searchPlaceholder": "Search courses...",
+    "empty": "We couldn't find any courses for that search.",
+    "clearFilters": "Clear filters",
+    "count_one": "{{count}} course found",
+    "count_other": "{{count}} courses found"
+  },
+  "courseDetail": {
+    "notFound": "Course not found.",
+    "noLessonsTitle": "There are no lessons yet",
+    "noLessonsBody": "This course is confirmed, but the teacher hasn't uploaded any class yet. Come back later.",
+    "backToMyCourses": "← Back to my courses",
+    "loadingContent": "Loading course content...",
+    "contentErrorTitle": "Couldn't load the content",
+    "contentErrorBody": "Check your connection and try again. If the problem persists, message the teacher.",
+    "completeError": "Couldn't mark the lesson as completed. Please try again.",
+    "certificateError": "Couldn't download the certificate. Please try again in a moment.",
+    "legacyCoursePdf": "Main course PDF"
+  },
+  "checkout": {
+    "notFound": "Course not found",
+    "alreadyOwned": "You already own this course",
+    "openCourse": "Open course",
+    "defaultUser": "my user",
+    "whatsappMessage": "Hi! I just paid for the course \"{{course}}\". My user is {{user}}. Here's my receipt!",
+    "requestSentTitle": "Purchase request sent",
+    "pendingAud": "Your payment is under review by the admin. We'll notify you once it's confirmed.",
+    "pendingArs": "Your receipt is under review by the admin. We'll notify you once it's confirmed.",
+    "sendReceipt": "Send receipt via WhatsApp",
+    "viewMyCourses": "View my courses",
+    "backToCourses": "← Back to courses",
+    "orderSummary": "Order summary",
+    "total": "Total",
+    "paymentInstructions": "Payment instructions",
+    "step1": "1) Transfer to the account:",
+    "step2Bold": "2) Click \"Request access\"",
+    "step2Rest": "below to register your request on the platform.",
+    "fields": {
+      "cvu": "CVU / CBU",
+      "alias": "Alias",
+      "accountName": "Account name",
+      "paymentLink": "Payment link"
+    },
+    "goToPayment": "Go to payment",
+    "copied": "Copied!",
+    "copy": "Copy",
+    "important": "Important",
+    "notice1": "Once the course is paid, ",
+    "noticeStrong": "you must send the receipt to Daiana via WhatsApp",
+    "notice2": ". Only through that step can we confirm your payment and register you in the system to enable your video classes.",
+    "requestAccess": "Request access"
+  },
+  "myCourses": {
+    "title": "My courses",
+    "count_one": "{{count}} course purchased",
+    "count_other": "{{count}} courses purchased",
+    "emptyTitle": "You don't have any courses yet",
+    "emptyBody": "Browse our catalog and start learning today.",
+    "viewCourses": "View available courses",
+    "searchPlaceholder": "Search my courses...",
+    "noResults": "No results for your search.",
+    "clearSearch": "Clear search",
+    "openCourse": "Open course →"
+  },
+  "dashboard": {
+    "welcome": "Welcome back!",
+    "myCourses": "My courses",
+    "viewAll": "View all →",
+    "availableCourses": "Available courses"
+  },
+  "favorites": {
+    "title": "My favorites",
+    "count_one": "{{count}} course saved",
+    "count_other": "{{count}} courses saved",
+    "loading": "Loading your favorites...",
+    "errorTitle": "Couldn't load your favorites",
+    "errorBody": "Check your connection and try again later.",
+    "emptyTitle": "You don't have any favorites yet",
+    "emptyBody": "Click the heart on any course to save it here.",
+    "explore": "Explore courses",
+    "searchPlaceholder": "Search favorites...",
+    "noResults": "No results for your search.",
+    "clearSearch": "Clear search"
+  },
+  "freePatterns": {
+    "title": "Free patterns",
+    "subtitle": "Download PDF patterns to sew at home, step by step",
+    "searchPlaceholder": "Search pattern...",
+    "emptySearch": "We couldn't find any patterns for that search.",
+    "emptyLevel": "There are no patterns for that level yet.",
+    "clearSearch": "Clear search",
+    "count_one": "{{count}} pattern available",
+    "count_other": "{{count}} patterns available",
+    "downloadPdf": "Download PDF",
+    "pdfPending": "PDF in preparation"
+  },
+  "profile": {
+    "saveError": "Couldn't save the changes",
+    "personalInfo": "Personal information",
+    "edit": "Edit",
+    "saved": "✓ Changes saved successfully",
+    "name": "Name",
+    "country": "Country",
+    "selectCountry": "Select a country",
+    "saving": "Saving...",
+    "save": "Save changes",
+    "cancel": "Cancel",
+    "notSpecified": "Not specified",
+    "purchaseHistory": "Purchase history",
+    "loadingPurchases": "Loading your purchases...",
+    "purchasesError": "Couldn't load your purchases. Check your connection and try again later.",
+    "noPurchases": "You haven't made any purchase yet.",
+    "totalInvested": "Total invested"
+  },
+  "courseCard": {
+    "removeFavorite": "Remove from favorites",
+    "addFavorite": "Add to favorites",
+    "courseContent": "Course content",
+    "moreLessons_one": "+ {{count}} more lesson",
+    "moreLessons_other": "+ {{count}} more lessons",
+    "price": "Price:",
+    "yourProgress": "Your progress",
+    "openCourse": "Open course",
+    "pendingReview": "Request under review",
+    "enroll": "Enroll"
+  },
+  "coursePreview": {
+    "backToCourses": "← Back to courses",
+    "enroll": "Enroll",
+    "contentTitle": "Course content",
+    "contentSoon": "The content is still being prepared. Come back soon!",
+    "descriptionLocked": "Description available once you enroll.",
+    "likeCourse": "Did you like the course?",
+    "likeCourseBody": "Enroll and start learning today.",
+    "ctaWithPrice": "{{price}} · Enroll"
+  },
+  "courseWelcome": {
+    "courseMaterial": "Course material",
+    "viewPdf": "View PDF"
+  },
+  "courseProgress": {
+    "title": "Course progress",
+    "lessonsCompleted": "{{completed}}/{{total}} lessons completed",
+    "generating": "Generating...",
+    "downloadCertificate": "🎓 Download certificate"
+  },
+  "lessons": {
+    "lockedHint": "· Complete the previous lesson to unlock",
+    "videoTitle": "Lesson video",
+    "legacyLessonPdf": "Lesson PDF",
+    "downloadableMaterial": "Downloadable material",
+    "viewPdf": "View PDF",
+    "completed": "✓ Completed",
+    "markCompleted": "Mark as completed",
+    "goToNext": "Go to the next lesson →"
+  },
+  "comments": {
+    "teacher": "Teacher",
+    "you": "You",
+    "reply": "Reply",
+    "cancel": "Cancel",
+    "send": "Send",
+    "replyPlaceholder": "Write your reply...",
+    "questionsTitle": "Questions about this lesson",
+    "loading": "Loading...",
+    "empty": "There are no questions for this lesson yet. The teacher will reply here once you leave yours.",
+    "askPlaceholder": "Write your question about this lesson...",
+    "sending": "Sending...",
+    "ask": "Send question",
+    "openImage": "Open image",
+    "attachedImageAlt": "Attached image",
+    "sendError": "Couldn't send your question. Please try again in a moment."
+  },
+  "notifications": {
+    "title": "Notifications",
+    "ariaLabel": "Notifications",
+    "markAllRead": "Mark all as read",
+    "loading": "Loading...",
+    "error": "Couldn't load the notifications.",
+    "empty": "You don't have any notifications yet.",
+    "deleteAria": "Delete notification"
+  },
+  "imagePicker": {
+    "attach": "Attach image",
+    "previewAlt": "Preview",
+    "remove": "Remove image"
+  },
+  "pagination": {
+    "page": "Page {{page}} of {{total}}",
+    "previous": "← Previous",
+    "next": "Next →"
+  },
+  "dialog": {
+    "confirmTitle": "Are you sure?",
+    "alertTitle": "Notice",
+    "confirm": "Yes, confirm",
+    "cancel": "Cancel",
+    "ok": "Got it"
+  }
+}

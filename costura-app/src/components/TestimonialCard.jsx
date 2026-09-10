@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const MAX_CHARS = 125;
 
@@ -12,6 +13,7 @@ function truncate(text, max) {
 }
 
 export default function TestimonialCard({ testimonial }) {
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
   const { short, isTruncated } = truncate(testimonial.text, MAX_CHARS);
 
@@ -26,7 +28,7 @@ export default function TestimonialCard({ testimonial }) {
             onClick={() => setExpanded(!expanded)}
             className="text-primary hover:text-primary-hover text-xs font-semibold underline underline-offset-2 mb-4 transition-colors"
           >
-            {expanded ? 'Ver menos' : 'Ver más'}
+            {expanded ? t('home.testimonials.showLess') : t('home.testimonials.showMore')}
           </button>
         )}
       </div>

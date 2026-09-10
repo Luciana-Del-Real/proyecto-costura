@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function Footer() {
+  const { t } = useTranslation();
+
   return (
     <footer className="bg-black">
       <div className="max-w-6xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -12,7 +15,7 @@ export default function Footer() {
             </div>
           </div>
           <p className="font-body text-sm text-white mt-2">
-            Un estudio creativo dedicado a la costura, el bordado y el diseño. Aprendé a tu ritmo con acompañamiento profesional.
+            {t('footer.description')}
           </p>
           <div className="flex gap-3 mt-4">
             <a href="https://www.instagram.com/grow.education.dl/" target="_blank" rel="noreferrer"
@@ -22,23 +25,23 @@ export default function Footer() {
           </div>
         </div>
         <div>
-          <h4 className="text-white font-semibold mb-3 text-sm">Navegación</h4>
+          <h4 className="text-white font-semibold mb-3 text-sm">{t('footer.navigation')}</h4>
           <ul className="space-y-2 text-sm">
-            <li><Link to="/" className="text-white hover:text-[#F7C1D6] transition-colors">Inicio</Link></li>
-            <li><Link to="/cursos" className="text-white hover:text-[#F7C1D6] transition-colors">Cursos</Link></li>
-            <li><Link to="/login" className="text-white hover:text-[#F7C1D6] transition-colors">Iniciar sesión</Link></li>
-            <li><Link to="/registro" className="text-white hover:text-[#F7C1D6] transition-colors">Registrarse</Link></li>
+            <li><Link to="/" className="text-white hover:text-[#F7C1D6] transition-colors">{t('footer.links.home')}</Link></li>
+            <li><Link to="/cursos" className="text-white hover:text-[#F7C1D6] transition-colors">{t('footer.links.courses')}</Link></li>
+            <li><Link to="/login" className="text-white hover:text-[#F7C1D6] transition-colors">{t('footer.links.login')}</Link></li>
+            <li><Link to="/registro" className="text-white hover:text-[#F7C1D6] transition-colors">{t('footer.links.register')}</Link></li>
           </ul>
         </div>
         <div>
-          <h4 className="text-white font-semibold mb-3 text-sm">Contacto</h4>
-          <p className="text-sm text-white">📍 Redfern, Sídney, Australia</p>
-          <p className="text-sm text-white mt-1">📱 WhatsApp: +61 401 956 520</p>
-          <p className="text-sm text-white mt-1">🌐 Clases online disponibles</p>
+          <h4 className="text-white font-semibold mb-3 text-sm">{t('footer.contact.title')}</h4>
+          <p className="text-sm text-white">{t('footer.contact.location')}</p>
+          <p className="text-sm text-white mt-1">{t('footer.contact.whatsapp')}</p>
+          <p className="text-sm text-white mt-1">{t('footer.contact.onlineClasses')}</p>
         </div>
       </div>
       <div className="border-t border-text-cocoa text-center py-4 text-xs text-white">
-        © 2026 Creative Education Studio · Daiana Lubo Núñez · Todos los derechos reservados.
+        {t('footer.copyright')}
       </div>
     </footer>
   );

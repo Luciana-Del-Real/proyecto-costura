@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const DialogContext = createContext(null);
 
@@ -12,6 +13,7 @@ const DialogContext = createContext(null);
 // El resolver vive en un ref para completar el Promise fuera del ciclo de
 // render (el updater de setState no debe ejecutar side effects).
 export function DialogProvider({ children }) {
+  const { t } = useTranslation();
   const [dialog, setDialog] = useState(null); // { type, title, message }
   const resolveRef = useRef(null);
 
@@ -32,7 +34,7 @@ export function DialogProvider({ children }) {
   }, []);
 
   const isConfirm = dialog?.type === 'confirm';
-  const title = dialog?.title || (isConfirm ? '¿Estás segura?' : 'Atención');
+  const title = dialog?.title || (isConfirm ? t('dialog.confirmTitle') : t('dialog.alertTitle'));
 
   return (
     <DialogContext.Provider value={{ confirmDialog, alertDialog }}>
@@ -54,15 +56,15 @@ export function DialogProvider({ children }) {
               {isConfirm ? (
                 <>
                   <button type="button" className="btn btn-primary text-sm" onClick={() => closeDialog(true)}>
-                    Sí, confirmar
+                    {t('dialog.confirm')}
                   </button>
                   <button type="button" className="btn btn-ghost text-sm" onClick={() => closeDialog(false)}>
-                    Cancelar
+                    {t('dialog.cancel')}
                   </button>
                 </>
               ) : (
                 <button type="button" className="btn btn-primary text-sm" onClick={() => closeDialog(true)}>
-                  Entendido
+                  {t('dialog.ok')}
                 </button>
               )}
             </div>

@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useNotifications } from '../context/NotificationsContext';
 
 // Campanita de notificaciones reutilizable (navbar de alumna y de admin).
@@ -7,6 +8,7 @@ import { useNotifications } from '../context/NotificationsContext';
 // badge de no leídas y dropdown con listado, "Marcar todas como leídas" y
 // borrado individual. Consume useNotifications internamente.
 export default function NotificationBell() {
+  const { t } = useTranslation();
   const {
     notifications,
     unreadCount,
@@ -43,7 +45,7 @@ export default function NotificationBell() {
     <div className="relative" ref={notifRef}>
       <button
         onClick={() => setNotifOpen(!notifOpen)}
-        aria-label="Notificaciones"
+        aria-label={t('notifications.ariaLabel')}
         className="btn btn-icon relative bg-white hover:bg-white text-text-ink"
       >
         <svg className="w-5 h-5 text-text-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -59,27 +61,27 @@ export default function NotificationBell() {
       {notifOpen && (
         <div className="absolute right-0 mt-2 w-80 max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-[0_8px_30px_rgba(29,29,27,0.12)] border border-border overflow-hidden animate-slide-down z-50">
           <div className="px-4 py-3 border-b border-border flex items-center justify-between">
-            <p className="text-xs font-semibold text-text-ink">Notificaciones</p>
+            <p className="text-xs font-semibold text-text-ink">{t('notifications.title')}</p>
             {unreadCount > 0 && (
               <button
                 onClick={() => markAllAsRead()}
                 className="btn btn-ghost text-xs text-primary hover:text-primary-hover"
               >
-                Marcar todas como leídas
+                {t('notifications.markAllRead')}
               </button>
             )}
           </div>
           <div className="max-h-80 overflow-y-auto">
             {notificationsLoading && (
-              <p className="text-sm text-accent px-4 py-3">Cargando...</p>
+              <p className="text-sm text-accent px-4 py-3">{t('notifications.loading')}</p>
             )}
             {!notificationsLoading && notificationsError && (
               <p className="text-sm text-accent px-4 py-3">
-                No se pudieron cargar las notificaciones.
+                {t('notifications.error')}
               </p>
             )}
             {!notificationsLoading && !notificationsError && notifications.length === 0 && (
-              <p className="text-sm text-accent px-4 py-3">Todavía no tenés notificaciones.</p>
+              <p className="text-sm text-accent px-4 py-3">{t('notifications.empty')}</p>
             )}
             {!notificationsLoading && !notificationsError && notifications.length > 0 && (
               <ul>
@@ -97,7 +99,7 @@ export default function NotificationBell() {
                     </button>
                     <button
                       onClick={(e) => { e.stopPropagation(); deleteNotification(n.id); }}
-                      aria-label="Eliminar notificación"
+                      aria-label={t('notifications.deleteAria')}
                       className="px-3 py-3 text-accent/60 hover:text-danger transition-colors flex-shrink-0 group-hover:bg-gray-100"
                     >
                       ✕

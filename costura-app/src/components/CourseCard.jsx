@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { usePurchases } from '../context/PurchaseContext';
 import { useFavorites } from '../context/FavoritesContext';
@@ -7,6 +8,7 @@ import CourseCover from './CourseCover';
 import { getLevelClass, getLevelLabel } from '../utils/levels';
 
 export default function CourseCard({ course }) {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { hasCourse, isPending } = usePurchases();
   const { isFavorite, toggleFavorite } = useFavorites();
@@ -41,7 +43,7 @@ export default function CourseCard({ course }) {
               <button
                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleFavorite(course.id); }}
                 className="btn btn-icon absolute top-3 right-3 backdrop-blur-md shadow-sm hover:scale-110 transition-all duration-200 bg-gray-100/70 text-gray-700"
-                aria-label={fav ? 'Quitar de favoritos' : 'Agregar a favoritos'}
+                aria-label={fav ? t('courseCard.removeFavorite') : t('courseCard.addFavorite')}
               >
                 <svg 
                   className={`w-4 h-4 transition-colors ${fav ? 'text-accent fill-accent' : 'text-gray-400 hover:text-accent'}`} 
@@ -67,7 +69,7 @@ export default function CourseCard({ course }) {
             {/* Vista previa del contenido del curso */}
             {course.lessons?.length > 0 && (
               <div className="mb-4">
-                <p className="text-[11px] uppercase tracking-wide text-accent font-bold mb-1.5">Contenido del curso</p>
+                <p className="text-[11px] uppercase tracking-wide text-accent font-bold mb-1.5">{t('courseCard.courseContent')}</p>
                 <ul className="space-y-1">
                   {course.lessons.slice(0, 3).map(l => (
                     <li key={l.id} className="text-xs text-text-ink flex items-center gap-1.5 min-w-0">
@@ -76,7 +78,7 @@ export default function CourseCard({ course }) {
                     </li>
                   ))}
                   {course.lessons.length > 3 && (
-                    <li className="text-xs text-accent">+ {course.lessons.length - 3} lecciones más</li>
+                    <li className="text-xs text-accent">{t('courseCard.moreLessons', { count: course.lessons.length - 3 })}</li>
                   )}
                 </ul>
               </div>
@@ -85,7 +87,7 @@ export default function CourseCard({ course }) {
             {/* LÓGICA DE PRECIO: Solo visible si el usuario está logueado */}
             {user && !owned && (
               <div className="mt-2">
-                <p className="text-sm text-text-muted font-medium">Precio:</p>
+                <p className="text-sm text-text-muted font-medium">{t('courseCard.price')}</p>
                 <p className="text-2xl font-bold text-text-ink">
                   {/* Cambiamos la comparación a 'ARS' según los datos de tu consola */}
                   {user.country === 'ARS' 
@@ -104,7 +106,7 @@ export default function CourseCard({ course }) {
         {owned && (
           <div className="mb-4 bg-accent-soft/50 p-2.5 rounded-xl border border-primary/5">
             <div className="flex justify-between text-[11px] font-bold text-text-ink mb-1">
-              <span>Tu progreso</span>
+              <span>{t('courseCard.yourProgress')}</span>
               <span>{prog}%</span>
             </div>
             <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
@@ -119,18 +121,18 @@ export default function CourseCard({ course }) {
               to={`/curso/${course.id}`}
               className="btn btn-primary w-full hover:shadow-md tracking-wide text-l"
             >
-              Abrir curso
+              {t('courseCard.openCourse')}
             </Link>
           ) : pending ? (
             <button className="btn btn-primary w-full text-xs cursor-not-allowed" disabled>
-              Solicitud en revisión
+              {t('courseCard.pendingReview')}
             </button>
           ) : (
             <Link
               to={user ? `/checkout/${course.id}` : '/login'}
               className="btn btn-primary w-full hover:shadow-md tracking-wide text-l"
             >
-              Inscribirme
+              {t('courseCard.enroll')}
             </Link>
           )}
         </div>

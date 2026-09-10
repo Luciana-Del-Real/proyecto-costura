@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { GraduationCap, BookOpen, Clock } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import CourseCover from '../CourseCover';
 import { getLevelLabel } from '../../utils/levels';
 import { getCoursePrice } from '../../utils/currency';
@@ -10,6 +11,7 @@ import { getCoursePrice } from '../../utils/currency';
 // El contenido pago (video/pdf) jamás se muestra acá — el catálogo público
 // no lo expone.
 export default function CoursePreviewView({ course, user, onBuy }) {
+  const { t } = useTranslation();
   const [openLessonId, setOpenLessonId] = useState(course.lessons?.[0]?.id || null);
   const price = `$${getCoursePrice(course, user).toLocaleString()} ${user?.country === 'AUD' ? 'AUD' : 'ARS'}`;
 
@@ -17,7 +19,7 @@ export default function CoursePreviewView({ course, user, onBuy }) {
     <div className="min-h-screen bg-bg-surface pb-12">
       <div className="max-w-4xl mx-auto px-4 py-8 lg:py-10 animate-fade-in">
         <Link to="/cursos" className="text-primary text-sm hover:text-primary-hover inline-flex items-center gap-1 mb-4">
-          ← Volver a cursos
+          {t('coursePreview.backToCourses')}
         </Link>
 
         {/* Encabezado del curso */}
@@ -29,21 +31,21 @@ export default function CoursePreviewView({ course, user, onBuy }) {
             <p className="text-text-ink mt-2 max-w-2xl">{course.longDescription || course.description}</p>
             <div className="flex flex-wrap gap-4 text-sm text-text-ink mt-4">
               <span className="flex items-center gap-1.5"><GraduationCap className="w-4 h-4 text-accent" strokeWidth={1.5} /> {course.instructor}</span>
-              <span className="flex items-center gap-1.5"><BookOpen className="w-4 h-4 text-accent" strokeWidth={1.5} /> {course.lessons.length} lecciones</span>
+              <span className="flex items-center gap-1.5"><BookOpen className="w-4 h-4 text-accent" strokeWidth={1.5} /> {t('common.lessons', { count: course.lessons.length })}</span>
             </div>
             <div className="border-t border-border pt-6 flex items-center justify-between gap-4 flex-wrap mt-6">
               <span className="text-3xl font-bold text-text-ink">{price}</span>
               <button onClick={onBuy} className="btn btn-primary font-semibold">
-                Inscribirme
+                {t('coursePreview.enroll')}
               </button>
             </div>
           </div>
         </div>
 
         {/* Vista previa de lecciones */}
-        <h2 className="font-display font-bold text-text-ink text-2xl mb-4 border-b pb-4">Contenido del curso</h2>
+        <h2 className="font-display font-bold text-text-ink text-2xl mb-4 border-b pb-4">{t('coursePreview.contentTitle')}</h2>
         {!course.lessons || course.lessons.length === 0 ? (
-          <p className="text-text-ink text-sm">El contenido todavía se está armando. ¡Volvé pronto!</p>
+          <p className="text-text-ink text-sm">{t('coursePreview.contentSoon')}</p>
         ) : (
           <div className="space-y-3">
             {course.lessons.map((lesson, idx) => {
@@ -68,7 +70,7 @@ export default function CoursePreviewView({ course, user, onBuy }) {
                       {lesson.description ? (
                         <p className="text-sm text-text-ink leading-relaxed">{lesson.description}</p>
                       ) : (
-                        <p className="text-sm text-text-muted">Descripción disponible al inscribirte.</p>
+                        <p className="text-sm text-text-muted">{t('coursePreview.descriptionLocked')}</p>
                       )}
                     </div>
                   )}
@@ -80,10 +82,10 @@ export default function CoursePreviewView({ course, user, onBuy }) {
 
         {/* CTA final */}
         <div className="card-glow rounded-2xl p-6 mt-6 text-center">
-          <p className="font-display font-bold text-text-ink text-2xl mb-1">¿Te gustó el curso?</p>
-          <p className="text-text-ink text-sm mb-4">Inscribite y empezá a aprender hoy.</p>
+          <p className="font-display font-bold text-text-ink text-2xl mb-1">{t('coursePreview.likeCourse')}</p>
+          <p className="text-text-ink text-sm mb-4">{t('coursePreview.likeCourseBody')}</p>
           <button onClick={onBuy} className="btn btn-primary font-semibold">
-            {price} · Inscribirme
+            {t('coursePreview.ctaWithPrice', { price })}
           </button>
         </div>
       </div>

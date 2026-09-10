@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import ImagePicker from '../ImagePicker';
 import CommentThread from '../CommentThread';
 
@@ -10,6 +11,7 @@ import CommentThread from '../CommentThread';
 // acá quedan el composer principal, los estados de carga/vacío y las labels
 // "Vos"/"Profesora". onSend acepta (lessonId, message, parentId?, imageFile?).
 export default function LessonCommentsSection({ lessonId, comments, draft, sendingFor, onSend, onDraftChange }) {
+  const { t } = useTranslation();
   const [replyPreview, setReplyPreview] = useState('');
   const [mainImage, setMainImage] = useState(null);
   const [mainPreview, setMainPreview] = useState('');
@@ -51,24 +53,24 @@ export default function LessonCommentsSection({ lessonId, comments, draft, sendi
   };
 
   const labels = {
-    admin: 'Profesora',
-    author: 'Vos',
-    reply: 'Responder',
-    cancel: 'Cancelar',
-    send: 'Enviar',
-    placeholder: 'Escribí tu respuesta...',
+    admin: t('comments.teacher'),
+    author: t('comments.you'),
+    reply: t('comments.reply'),
+    cancel: t('comments.cancel'),
+    send: t('comments.send'),
+    placeholder: t('comments.replyPlaceholder'),
   };
 
   return (
     <div className="card-flat rounded-2xl p-4 lg:p-5">
-      <h4 className="font-bold text-text-ink text-sm mb-3">Preguntas sobre esta lección</h4>
+      <h4 className="font-bold text-text-ink text-sm mb-3">{t('comments.questionsTitle')}</h4>
 
       {comments?.loading && (
-        <p className="text-sm text-accent">Cargando...</p>
+        <p className="text-sm text-accent">{t('comments.loading')}</p>
       )}
 
       {comments?.loaded && comments.items.length === 0 && (
-        <p className="text-sm text-accent mb-3">Todavía no hay preguntas en esta lección. La profesora va a responder acá cuando dejes la tuya.</p>
+        <p className="text-sm text-accent mb-3">{t('comments.empty')}</p>
       )}
 
       {comments?.loaded && comments.items.length > 0 && (
@@ -96,7 +98,7 @@ export default function LessonCommentsSection({ lessonId, comments, draft, sendi
           value={draft}
           onChange={(e) => onDraftChange(lessonId, e.target.value)}
           rows={2}
-          placeholder="Escribí tu duda sobre esta lección..."
+          placeholder={t('comments.askPlaceholder')}
           className="w-full rounded-xl border border-border bg-white px-4 py-2.5 text-sm text-text-ink focus:outline-none focus:ring-2 focus:ring-secondary/30"
         />
         <ImagePicker preview={mainPreview} onPick={handleMainImageChange} onRemove={clearMainImage} />
@@ -105,7 +107,7 @@ export default function LessonCommentsSection({ lessonId, comments, draft, sendi
           disabled={sendingFor === lessonId}
           className="btn btn-primary text-sm font-semibold"
         >
-          {sendingFor === lessonId ? 'Enviando...' : 'Enviar pregunta'}
+          {sendingFor === lessonId ? t('comments.sending') : t('comments.ask')}
         </button>
       </form>
     </div>
