@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import PageHeader from '../../components/PageHeader';
 import Pagination from '../../components/Pagination';
 import { useCourseCatalog } from '../../context/CourseCatalogContext';
@@ -99,9 +100,10 @@ export default function AdminUsers() {
           />
         </div>
 
-        {/* Detail modal — posicionamiento absoluto directo: centra el modal
-            siempre respecto a la pantalla sin depender de flex/grid. */}
-        {selected && (
+        {/* Detail modal — Portal directo a <body>: el position:fixed queda
+            relativo al viewport (no a un ancestro con transform) y el modal
+            flota por encima del navbar. */}
+        {selected && createPortal(
           <div className="fixed inset-0 animate-fade-in" style={{ zIndex: 100 }} role="dialog" aria-modal="true">
             <div className="absolute inset-0 bg-black/30" aria-hidden="true" onClick={() => setSelected(null)} />
             <div
@@ -202,7 +204,8 @@ export default function AdminUsers() {
             </div>
             </div>
             </div>
-          </div>
+          </div>,
+          document.body
         )}
 
         {filtered.length === 0 ? (
