@@ -79,6 +79,14 @@ export class PurchasesService {
         `La alumna ${buyer?.name ?? '...'} solicitó el curso "${course.title}". Revisá la solicitud para darle acceso.`,
         tx,
         `/admin/solicitudes?highlight=${purchase.id}`,
+        {
+          titleKey: 'notifTemplates.courseRequest.title',
+          messageKey: 'notifTemplates.courseRequest.message',
+          params: {
+            student: buyer?.name ?? '...',
+            course: course.title,
+          },
+        },
       );
 
       return purchase;
@@ -156,6 +164,11 @@ export class PurchasesService {
           `Tu solicitud para el curso "${purchase.course.title}" fue aprobada. Ya podés acceder al contenido completo.`,
           tx,
           `/curso/${purchase.courseId}`,
+          {
+            titleKey: 'notifTemplates.courseApproved.title',
+            messageKey: 'notifTemplates.courseApproved.message',
+            params: { course: purchase.course.title },
+          },
         );
 
         return updated;

@@ -201,6 +201,36 @@ describe('NotificationsService ownership (read/delete)', () => {
         },
       });
     });
+
+    it('persists the template on each admin notification when provided', async () => {
+      mockPrisma.user.findMany.mockResolvedValue([{ id: 'admin-1' }]);
+
+      await service.createNotificationsForAdmins(
+        'Nueva solicitud de curso',
+        'La alumna Ana solicitó el curso "Curso". Revisá la solicitud para darle acceso.',
+        undefined,
+        '/admin/solicitudes?highlight=p-1',
+        {
+          titleKey: 'notifTemplates.courseRequest.title',
+          messageKey: 'notifTemplates.courseRequest.message',
+          params: { student: 'Ana', course: 'Curso' },
+        },
+      );
+
+      expect(mockPrisma.notification.create).toHaveBeenCalledWith({
+        data: {
+          userId: 'admin-1',
+          title: 'Nueva solicitud de curso',
+          message:
+            'La alumna Ana solicitó el curso "Curso". Revisá la solicitud para darle acceso.',
+          read: false,
+          link: '/admin/solicitudes?highlight=p-1',
+          titleKey: 'notifTemplates.courseRequest.title',
+          messageKey: 'notifTemplates.courseRequest.message',
+          params: { student: 'Ana', course: 'Curso' },
+        },
+      });
+    });
   });
 
   describe('createNotification', () => {
@@ -231,6 +261,36 @@ describe('NotificationsService ownership (read/delete)', () => {
           title: 'Título',
           message: 'Mensaje',
           read: false,
+        },
+      });
+    });
+
+    it('persists titleKey/messageKey/params when a template is provided', async () => {
+      mockPrisma.notification.create.mockResolvedValue({ id: 'n-1' });
+
+      await service.createNotification(
+        'u-1',
+        'Nueva consulta',
+        'Ana preguntó en la lección "Lección 1" del curso "Curso".',
+        undefined,
+        '/admin#consultas',
+        {
+          titleKey: 'notifTemplates.studentQuestion.title',
+          messageKey: 'notifTemplates.studentQuestion.message',
+          params: { author: 'Ana', lesson: 'Lección 1', course: 'Curso' },
+        },
+      );
+
+      expect(mockPrisma.notification.create).toHaveBeenCalledWith({
+        data: {
+          userId: 'u-1',
+          title: 'Nueva consulta',
+          message: 'Ana preguntó en la lección "Lección 1" del curso "Curso".',
+          read: false,
+          link: '/admin#consultas',
+          titleKey: 'notifTemplates.studentQuestion.title',
+          messageKey: 'notifTemplates.studentQuestion.message',
+          params: { author: 'Ana', lesson: 'Lección 1', course: 'Curso' },
         },
       });
     });

@@ -34,6 +34,19 @@ export interface PushDispatcher {
  */
 export const PUSH_DISPATCHER = 'PUSH_DISPATCHER';
 
+/**
+ * Optional localization metadata for a notification. `titleKey`/`messageKey`
+ * are i18next keys (namespace included) and `params` their interpolation
+ * values. Persisted alongside the Spanish `title`/`message` fallback so the
+ * in-app bell can render in the viewer's language. Push dispatch deliberately
+ * keeps using the Spanish text, so this is not part of the push payload.
+ */
+export interface NotificationTemplate {
+  titleKey?: string;
+  messageKey?: string;
+  params?: Record<string, unknown>;
+}
+
 @Injectable()
 export class NotificationsService {
   private readonly logger = new Logger(NotificationsService.name);
@@ -116,6 +129,7 @@ export class NotificationsService {
     message: string,
     tx?: Prisma.TransactionClient,
     link?: string,
+    template?: NotificationTemplate,
   ) {
     const client = tx ?? this.prisma;
     const notification = await client.notification.create({
@@ -125,6 +139,7 @@ export class NotificationsService {
         message,
         read: false,
         ...(link ? { link } : {}),
+        ...this.templateData(template),
       },
     });
     // Chokepoint: dispatch push after creation, deferred and fire-and-forget
@@ -141,6 +156,7 @@ export class NotificationsService {
     message: string,
     tx?: Prisma.TransactionClient,
     link?: string,
+    template?: NotificationTemplate,
   ) {
     const client = tx ?? this.prisma;
     const admins = await client.user.findMany({
@@ -155,12 +171,35 @@ export class NotificationsService {
           message,
           read: false,
           ...(link ? { link } : {}),
+          ...this.templateData(template),
         },
       });
       // Admin fan-out: one deferred dispatch per created admin notification.
       this.schedulePush(admin.id, title, message, link);
     }
     return admins.length;
+  }
+
+  /**
+   * Maps optional localization metadata to the notification create payload.
+   * Absent fields are omitted so Spanish-only notifications keep their exact
+   * stored shape (and payload assertions stay valid).
+   */
+  private templateData(template?: NotificationTemplate): {
+    titleKey?: string;
+    messageKey?: string;
+    params?: Prisma.InputJsonValue;
+  } {
+    if (!template) {
+      return {};
+    }
+    return {
+      ...(template.titleKey ? { titleKey: template.titleKey } : {}),
+      ...(template.messageKey ? { messageKey: template.messageKey } : {}),
+      ...(template.params
+        ? { params: template.params as Prisma.InputJsonValue }
+        : {}),
+    };
   }
 
   /**

@@ -113,6 +113,15 @@ export class LessonCommentsService {
           `${author?.name ?? 'Una alumna'} preguntó en la lección "${lessonTitle}" del curso "${courseTitle}".`,
           tx,
           courseId ? '/admin#consultas' : undefined,
+          {
+            titleKey: 'notifTemplates.studentQuestion.title',
+            messageKey: 'notifTemplates.studentQuestion.message',
+            params: {
+              author: author?.name ?? 'Una alumna',
+              lesson: lessonTitle,
+              course: courseTitle,
+            },
+          },
         );
       } else if (parentId && parentAuthorId) {
         // Una respuesta de la profesora notifica a la autora del comentario padre.
@@ -122,6 +131,14 @@ export class LessonCommentsService {
           `Daiana respondió tu consulta en la lección "${lessonTitle}" del curso "${courseTitle}".`,
           tx,
           courseId ? `/curso/${courseId}#lesson-${lessonId}` : undefined,
+          {
+            titleKey: 'notifTemplates.adminReply.title',
+            messageKey: 'notifTemplates.adminReply.message',
+            params: {
+              lesson: lessonTitle,
+              course: courseTitle,
+            },
+          },
         );
       }
 

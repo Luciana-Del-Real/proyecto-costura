@@ -281,6 +281,11 @@ describe('purchase approve/reject/re-approve lifecycle + ownership (HTTP level)'
       expect.stringContaining('aprobada'),
       expect.anything(), // tx client (the prisma mock, passed for atomicity)
       '/curso/c-1',
+      {
+        titleKey: 'notifTemplates.courseApproved.title',
+        messageKey: 'notifTemplates.courseApproved.message',
+        params: { course: 'Curso de prueba' },
+      },
     );
   });
 

@@ -347,6 +347,24 @@
     "empty": "Todavía no tenés notificaciones.",
     "deleteAria": "Eliminar notificación"
   },
+  "notifTemplates": {
+    "studentQuestion": {
+      "title": "Nueva consulta",
+      "message": "{{author}} preguntó en la lección \"{{lesson}}\" del curso \"{{course}}\"."
+    },
+    "adminReply": {
+      "title": "Daiana respondió tu consulta",
+      "message": "Daiana respondió tu consulta en la lección \"{{lesson}}\" del curso \"{{course}}\"."
+    },
+    "courseRequest": {
+      "title": "Nueva solicitud de curso",
+      "message": "La alumna {{student}} solicitó el curso \"{{course}}\". Revisá la solicitud para darle acceso."
+    },
+    "courseApproved": {
+      "title": "Acceso desbloqueado",
+      "message": "Tu solicitud para el curso \"{{course}}\" fue aprobada. Ya podés acceder al contenido completo."
+    }
+  },
   "imagePicker": {
     "attach": "Adjuntar imagen",
     "previewAlt": "Vista previa",

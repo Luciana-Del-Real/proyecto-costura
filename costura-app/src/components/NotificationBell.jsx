@@ -85,27 +85,34 @@ export default function NotificationBell() {
             )}
             {!notificationsLoading && !notificationsError && notifications.length > 0 && (
               <ul>
-                {notifications.slice(0, 5).map(n => (
-                  <li key={n.id} className="border-b border-border last:border-0 flex items-start group hover:bg-gray-100 transition-colors">
-                    <button
-                      onClick={() => handleItemClick(n)}
-                      className="flex-1 text-left px-4 py-3 hover:bg-gray-100 transition-colors min-w-0"
-                    >
-                      <p className="text-xs font-semibold text-text-ink flex items-center gap-2">
-                        {!n.read && <span className="w-2 h-2 rounded-full bg-accent flex-shrink-0" />}
-                        {n.title}
-                      </p>
-                      <p className="text-xs text-accent mt-0.5 line-clamp-2">{n.message}</p>
-                    </button>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); deleteNotification(n.id); }}
-                      aria-label={t('notifications.deleteAria')}
-                      className="px-3 py-3 text-accent/60 hover:text-danger transition-colors flex-shrink-0 group-hover:bg-gray-100"
-                    >
-                      ✕
-                    </button>
-                  </li>
-                ))}
+                {notifications.slice(0, 5).map(n => {
+                  // Localized templates: render through i18next when the backend
+                  // stored keys; otherwise fall back to the stored Spanish text
+                  // (legacy notifications created before the template migration).
+                  const displayedTitle = n.titleKey ? t(n.titleKey, n.params ?? {}) : n.title;
+                  const displayedMessage = n.messageKey ? t(n.messageKey, n.params ?? {}) : n.message;
+                  return (
+                    <li key={n.id} className="border-b border-border last:border-0 flex items-start group hover:bg-gray-100 transition-colors">
+                      <button
+                        onClick={() => handleItemClick(n)}
+                        className="flex-1 text-left px-4 py-3 hover:bg-gray-100 transition-colors min-w-0"
+                      >
+                        <p className="text-xs font-semibold text-text-ink flex items-center gap-2">
+                          {!n.read && <span className="w-2 h-2 rounded-full bg-accent flex-shrink-0" />}
+                          {displayedTitle}
+                        </p>
+                        <p className="text-xs text-accent mt-0.5 line-clamp-2">{displayedMessage}</p>
+                      </button>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); deleteNotification(n.id); }}
+                        aria-label={t('notifications.deleteAria')}
+                        className="px-3 py-3 text-accent/60 hover:text-danger transition-colors flex-shrink-0 group-hover:bg-gray-100"
+                      >
+                        ✕
+                      </button>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </div>

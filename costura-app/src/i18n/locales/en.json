@@ -347,6 +347,24 @@
     "empty": "You don't have any notifications yet.",
     "deleteAria": "Delete notification"
   },
+  "notifTemplates": {
+    "studentQuestion": {
+      "title": "New question",
+      "message": "{{author}} asked a question in the lesson \"{{lesson}}\" of the course \"{{course}}\"."
+    },
+    "adminReply": {
+      "title": "Daiana answered your question",
+      "message": "Daiana answered your question in the lesson \"{{lesson}}\" of the course \"{{course}}\"."
+    },
+    "courseRequest": {
+      "title": "New course request",
+      "message": "Student {{student}} requested the course \"{{course}}\". Review the request to grant access."
+    },
+    "courseApproved": {
+      "title": "Access unlocked",
+      "message": "Your request for the course \"{{course}}\" was approved. You can now access the full content."
+    }
+  },
   "imagePicker": {
     "attach": "Attach image",
     "previewAlt": "Preview",

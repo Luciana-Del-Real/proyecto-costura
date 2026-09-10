@@ -189,13 +189,18 @@ model Favorite {
 }
 
 model Notification {
-  id        String   @id @default(cuid())
-  userId    String
-  title     String
-  message   String
-  read      Boolean  @default(false)
-  link      String?
-  createdAt DateTime @default(now())
+  id         String   @id @default(cuid())
+  userId     String
+  title      String
+  message    String
+  // Localization metadata: i18next template keys + interpolation params.
+  // title/message stay as the Spanish fallback (and for the push payload).
+  titleKey   String?
+  messageKey String?
+  params     Json?
+  read       Boolean  @default(false)
+  link       String?
+  createdAt  DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 

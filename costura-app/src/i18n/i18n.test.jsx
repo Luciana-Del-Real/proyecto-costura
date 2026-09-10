@@ -5,7 +5,7 @@ import { MemoryRouter } from 'react-router-dom';
 import Home from '../pages/Home';
 import ForgotPassword from '../pages/ForgotPassword';
 import LanguageSwitcher from '../components/LanguageSwitcher';
-import { changeAppLanguage, LANGUAGE_STORAGE_KEY } from './index';
+import i18n, { changeAppLanguage, LANGUAGE_STORAGE_KEY } from './index';
 
 /**
  * Pilot coverage for the es/en landing shell: Spanish is the default, switching
@@ -99,5 +99,51 @@ describe('es/en i18n pilot', () => {
 
     expect(screen.getByText('Recover password')).toBeTruthy();
     expect(screen.getByText('Send instructions')).toBeTruthy();
+  });
+
+  it('exposes the four notification templates in both locales with interpolation', async () => {
+    await changeAppLanguage('es');
+    expect(i18n.t('notifTemplates.studentQuestion.title')).toBe('Nueva consulta');
+    expect(
+      i18n.t('notifTemplates.studentQuestion.message', {
+        author: 'Ana',
+        lesson: 'Lección 1',
+        course: 'Curso',
+      }),
+    ).toBe('Ana preguntó en la lección "Lección 1" del curso "Curso".');
+    expect(i18n.t('notifTemplates.adminReply.title')).toBe('Daiana respondió tu consulta');
+    expect(
+      i18n.t('notifTemplates.adminReply.message', { lesson: 'Lección 1', course: 'Curso' }),
+    ).toBe('Daiana respondió tu consulta en la lección "Lección 1" del curso "Curso".');
+    expect(i18n.t('notifTemplates.courseRequest.title')).toBe('Nueva solicitud de curso');
+    expect(
+      i18n.t('notifTemplates.courseRequest.message', { student: 'Ana', course: 'Curso' }),
+    ).toBe('La alumna Ana solicitó el curso "Curso". Revisá la solicitud para darle acceso.');
+    expect(i18n.t('notifTemplates.courseApproved.title')).toBe('Acceso desbloqueado');
+    expect(i18n.t('notifTemplates.courseApproved.message', { course: 'Curso' })).toBe(
+      'Tu solicitud para el curso "Curso" fue aprobada. Ya podés acceder al contenido completo.',
+    );
+
+    await changeAppLanguage('en');
+    expect(i18n.t('notifTemplates.studentQuestion.title')).toBe('New question');
+    expect(
+      i18n.t('notifTemplates.studentQuestion.message', {
+        author: 'Ana',
+        lesson: 'Lesson 1',
+        course: 'Course',
+      }),
+    ).toBe('Ana asked a question in the lesson "Lesson 1" of the course "Course".');
+    expect(i18n.t('notifTemplates.adminReply.title')).toBe('Daiana answered your question');
+    expect(
+      i18n.t('notifTemplates.adminReply.message', { lesson: 'Lesson 1', course: 'Course' }),
+    ).toBe('Daiana answered your question in the lesson "Lesson 1" of the course "Course".');
+    expect(i18n.t('notifTemplates.courseRequest.title')).toBe('New course request');
+    expect(
+      i18n.t('notifTemplates.courseRequest.message', { student: 'Ana', course: 'Course' }),
+    ).toBe('Student Ana requested the course "Course". Review the request to grant access.');
+    expect(i18n.t('notifTemplates.courseApproved.title')).toBe('Access unlocked');
+    expect(i18n.t('notifTemplates.courseApproved.message', { course: 'Course' })).toBe(
+      'Your request for the course "Course" was approved. You can now access the full content.',
+    );
   });
 });
