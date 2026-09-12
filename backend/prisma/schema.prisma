@@ -5,6 +5,10 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  // Conexión directa/session (sin pooler) usada por `prisma migrate` y por
+  // Prisma Studio. Obligatoria cuando DATABASE_URL apunta a un pooler
+  // (ej. Supabase): las migraciones no pueden pasar por el pooler.
+  directUrl = env("DIRECT_URL")
 }
 
 enum Role {
