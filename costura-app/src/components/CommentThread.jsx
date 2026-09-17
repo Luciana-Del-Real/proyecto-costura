@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { groupCommentsByParent } from '../utils/commentTree';
 import { getImageUrl } from '../utils/media';
 import ImagePicker from './ImagePicker';
@@ -34,15 +33,11 @@ export default function CommentThread({
   const [replyDraft, setReplyDraft] = useState('');
   const [replyImage, setReplyImage] = useState(null); // File para onReply
 
-  const { t, i18n } = useTranslation();
   const { childrenOf, topLevel } = groupCommentsByParent(items);
   const { admin, author, date, reply, cancel, send, placeholder, badge } = labels;
 
   const formatDate = (iso) =>
-    new Date(iso).toLocaleDateString(
-      i18n.resolvedLanguage === 'en' ? 'en-US' : 'es-AR',
-      { day: 'numeric', month: 'short', year: 'numeric' },
-    );
+    new Date(iso).toLocaleDateString('es-AR', { day: 'numeric', month: 'short', year: 'numeric' });
 
   const handleImageChange = (file) => {
     setReplyImage(file || null);
@@ -87,10 +82,10 @@ export default function CommentThread({
           </div>
           <p className="text-text-ink leading-relaxed">{c.message}</p>
           {c.image && (
-            <a href={getImageUrl(c.image)} target="_blank" rel="noreferrer" className="block w-fit" title={t('comments.openImage')}>
+            <a href={getImageUrl(c.image)} target="_blank" rel="noreferrer" className="block w-fit" title="Abrir imagen">
               <img
                 src={getImageUrl(c.image)}
-                alt={t('comments.attachedImageAlt')}
+                alt="Imagen adjunta"
                 className="mt-2 rounded-lg border border-border max-h-64 w-auto cursor-pointer"
               />
             </a>

@@ -1,21 +1,12 @@
 import { useState, useEffect } from 'react';
 import { FileText } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
 import { get } from '../services/api';
 import { getImageUrl } from '../utils/media';
 import PageHeader from '../components/PageHeader';
 
-// Filter values stay in Spanish (they match the backend level field); only the
-// visible label is translated through `labelKey`.
-const nivelFilters = [
-  { value: 'Todos', labelKey: 'levels.all' },
-  { value: 'Principiante', labelKey: 'levels.beginner' },
-  { value: 'Intermedio', labelKey: 'levels.intermediate' },
-  { value: 'Avanzado', labelKey: 'levels.advanced' },
-];
+const niveles = ['Todos', 'Principiante', 'Intermedio', 'Avanzado'];
 
 export default function PatronesGratis() {
-  const { t } = useTranslation();
   const [patrones, setPatrones] = useState([]);
   const [loading, setLoading] = useState(true);
   const [nivel, setNivel] = useState('Todos');
@@ -54,24 +45,24 @@ export default function PatronesGratis() {
   return (
     <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
       <PageHeader
-        title={t('freePatterns.title')}
-        subtitle={t('freePatterns.subtitle')}
+        title="Patrones gratis"
+        subtitle="Descargá patrones en PDF para coser en casa, paso a paso"
       />
 
       {/* Filtro por nivel + buscador */}
       <div className="max-w-6xl mx-auto px-1 mt-6 mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="flex flex-wrap gap-3">
-          {nivelFilters.map(n => (
+          {niveles.map(n => (
             <button
-              key={n.value}
-              onClick={() => setNivel(n.value)}
+              key={n}
+              onClick={() => setNivel(n)}
               className={`btn text-sm tracking-wide transition-all duration-300 shadow-sm ${
-                nivel === n.value
+                nivel === n
                   ? 'btn-primary shadow-md scale-105'
                   : 'btn-ghost border border-primary/30 hover:border-primary'
               }`}
             >
-              {t(n.labelKey)}
+              {n}
             </button>
           ))}
         </div>
@@ -85,7 +76,7 @@ export default function PatronesGratis() {
             type="text"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            placeholder={t('freePatterns.searchPlaceholder')}
+            placeholder="Buscar patrón..."
             className="w-full pl-10 pr-4 py-2 text-sm border-2 border-gray-300 hover:border-gray-400 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-300 bg-white text-gray-700 placeholder-gray-400 shadow-sm transition-all duration-300"
           />
         </div>
@@ -97,18 +88,18 @@ export default function PatronesGratis() {
           <div className="text-center py-16 card-flat rounded-2xl">
             <FileText className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
             <h2 className="font-display font-bold text-text-ink text-2xl mt-4">
-              {search ? t('freePatterns.emptySearch') : t('freePatterns.emptyLevel')}
+              {search ? 'No encontramos patrones con esa búsqueda.' : 'Todavía no hay patrones de ese nivel.'}
             </h2>
             {search && (
               <button onClick={() => setSearch('')} className="btn btn-ghost mt-3 text-sm bg-white hover:bg-white text-primary border border-primary/30 hover:border-primary">
-                {t('freePatterns.clearSearch')}
+                Limpiar búsqueda
               </button>
             )}
           </div>
         ) : (
           <>
             <p className="text-text-muted text-sm mb-6 font-medium pl-1">
-              {t('freePatterns.count', { count: filtered.length })}
+              {filtered.length} patrón{filtered.length !== 1 ? 'es' : ''} disponible{filtered.length !== 1 ? 's' : ''}
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {filtered.map((p, index) => (
@@ -143,11 +134,11 @@ export default function PatronesGratis() {
                         rel="noreferrer"
                         className="btn btn-primary w-full text-sm"
                       >
-                        {t('freePatterns.downloadPdf')}
+                        Descargar PDF
                       </a>
                     ) : (
                       <span className="btn w-full text-sm bg-stone-200 text-stone-500 cursor-not-allowed" aria-disabled="true">
-                        {t('freePatterns.pdfPending')}
+                        PDF en preparación
                       </span>
                     )}
                     {p.attachments?.length > 0 && (

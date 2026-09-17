@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { get, post, postForm } from '../services/api';
 import { useDialog } from '../context/DialogContext';
 
@@ -7,7 +6,6 @@ import { useDialog } from '../context/DialogContext';
 // CourseDetail (alumna) y AdminCourseForm (profesora). Acá vive la carga lazy
 // con guard de loaded, el envío optimista y los drafts por lección.
 export default function useLessonComments() {
-  const { t } = useTranslation();
   const { alertDialog } = useDialog();
   const [commentsByLesson, setCommentsByLesson] = useState({});
   const [drafts, setDrafts] = useState({});
@@ -60,7 +58,7 @@ export default function useLessonComments() {
       return created;
     } catch (e) {
       console.error('Error enviando la pregunta', e);
-      alertDialog(t('comments.sendError'));
+      alertDialog('No se pudo enviar tu pregunta. Probá de nuevo en un momento.');
       return undefined;
     } finally {
       setSendingFor(null);

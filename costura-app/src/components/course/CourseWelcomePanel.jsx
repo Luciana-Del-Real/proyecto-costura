@@ -1,5 +1,4 @@
 import { BookOpen, GraduationCap, FileText } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
 import { getImageUrl } from '../../utils/media';
 import { getLevelLabel } from '../../utils/levels';
 import CourseCover from '../CourseCover';
@@ -13,7 +12,6 @@ import CourseProgressCard from './CourseProgressCard';
 export default function CourseWelcomePanel({
   course, prog, completedCount, downloadingCert, onDownloadCertificate, courseAttachments, embedded = false,
 }) {
-  const { t } = useTranslation();
   const content = (
     <>
       {/* Portada: CourseCover muestra el nombre del curso si no hay imagen */}
@@ -26,7 +24,7 @@ export default function CourseWelcomePanel({
             <p className="text-text-ink mt-2 max-w-2xl">{course.longDescription || course.description}</p>
             <div className="flex flex-wrap gap-4 text-sm text-text-ink mt-4">
               <span className="flex items-center gap-1.5"><GraduationCap className="w-4 h-4 text-accent" strokeWidth={1.5} /> {course.instructor}</span>
-              <span className="flex items-center gap-1.5"><BookOpen className="w-4 h-4 text-accent" strokeWidth={1.5} /> {t('common.lessons', { count: course.lessons.length })}</span>
+              <span className="flex items-center gap-1.5"><BookOpen className="w-4 h-4 text-accent" strokeWidth={1.5} /> {course.lessons.length} lecciones</span>
             </div>
           </div>
           <CourseProgressCard
@@ -41,7 +39,7 @@ export default function CourseWelcomePanel({
         {/* PDFs generales del curso (no de una lección puntual) */}
         {courseAttachments.length > 0 && (
           <div className="mt-6 pt-6 border-t border-border">
-            <p className="text-xs uppercase tracking-wide text-accent mb-2">{t('courseWelcome.courseMaterial')}</p>
+            <p className="text-xs uppercase tracking-wide text-accent mb-2">Material del curso</p>
             <div className="flex flex-wrap gap-2">
               {courseAttachments.map(att => (
                 <a
@@ -51,7 +49,7 @@ export default function CourseWelcomePanel({
                   rel="noreferrer"
                   className="btn btn-ghost text-sm flex items-center gap-1.5"
                 >
-                  <FileText className="w-4 h-4" strokeWidth={1.5} /> {att.filename || t('courseWelcome.viewPdf')}
+                  <FileText className="w-4 h-4" strokeWidth={1.5} /> {att.filename || 'Ver PDF'}
                 </a>
               ))}
             </div>

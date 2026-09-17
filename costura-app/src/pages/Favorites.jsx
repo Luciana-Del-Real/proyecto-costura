@@ -1,14 +1,12 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, AlertTriangle, Search } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
 import { useCourseCatalog } from '../context/CourseCatalogContext';
 import { useFavorites } from '../context/FavoritesContext';
 import CourseCard from '../components/CourseCard';
 import PageHeader from '../components/PageHeader';
 
 export default function Favorites() {
-  const { t } = useTranslation();
   const { favorites, favoritesLoading, favoritesError } = useFavorites();
   const { courses } = useCourseCatalog();
   const [search, setSearch] = useState('');
@@ -21,28 +19,28 @@ export default function Favorites() {
   return (
     <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
       <PageHeader
-        title={t('favorites.title')}
-        subtitle={t('favorites.count', { count: favCourses.length })}
+        title="Mis favoritos"
+        subtitle={`${favCourses.length} curso${favCourses.length !== 1 ? 's' : ''} guardado${favCourses.length !== 1 ? 's' : ''}`}
       />
 
       <div className="max-w-6xl mx-auto px-1 py-8">
         {favoritesLoading ? (
           <div className="text-center py-20">
-            <p className="text-text-ink">{t('favorites.loading')}</p>
+            <p className="text-text-ink">Cargando tus favoritos...</p>
           </div>
         ) : favoritesError ? (
           <div className="text-center py-20">
             <AlertTriangle className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
-            <h2 className="font-display font-bold text-text-ink text-2xl mt-4 mb-2">{t('favorites.errorTitle')}</h2>
-            <p className="text-text-ink mb-6">{t('favorites.errorBody')}</p>
+            <h2 className="font-display font-bold text-text-ink text-2xl mt-4 mb-2">No se pudieron cargar tus favoritos</h2>
+            <p className="text-text-ink mb-6">Verificá tu conexión e intentá de nuevo más tarde.</p>
           </div>
         ) : favCourses.length === 0 ? (
           <div className="text-center py-20">
             <Heart className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
-            <h2 className="font-display font-bold text-text-ink text-2xl mt-4 mb-2">{t('favorites.emptyTitle')}</h2>
-            <p className="text-text-ink mb-6">{t('favorites.emptyBody')}</p>
+            <h2 className="font-display font-bold text-text-ink text-2xl mt-4 mb-2">Todavía no tenés favoritos</h2>
+            <p className="text-text-ink mb-6">Hacé clic en el corazón de cualquier curso para guardarlo acá.</p>
             <Link to="/cursos" className="btn btn-primary font-medium">
-              {t('favorites.explore')}
+              Explorar cursos
             </Link>
           </div>
         ) : (
@@ -55,7 +53,7 @@ export default function Favorites() {
                 type="text"
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                placeholder={t('favorites.searchPlaceholder')}
+                placeholder="Buscar favoritos..."
                 className="w-full pl-10 pr-4 py-2 text-sm border-2 border-gray-300 hover:border-gray-400 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-300 bg-white text-gray-700 placeholder-gray-400 shadow-sm transition-all duration-300"
               />
             </div>
@@ -63,9 +61,9 @@ export default function Favorites() {
             {filtered.length === 0 ? (
               <div className="text-center py-16">
                 <Search className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
-                <h2 className="font-display font-bold text-text-ink text-2xl mt-4">{t('favorites.noResults')}</h2>
+                <h2 className="font-display font-bold text-text-ink text-2xl mt-4">Sin resultados para tu búsqueda.</h2>
                 <button onClick={() => setSearch('')} className="btn btn-ghost mt-3 text-sm bg-white hover:bg-white text-primary border border-primary/30 hover:border-primary">
-                  {t('favorites.clearSearch')}
+                  Limpiar búsqueda
                 </button>
               </div>
             ) : (

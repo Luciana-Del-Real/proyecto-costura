@@ -1,10 +1,8 @@
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { post } from '../services/api';
 
 export default function ResetPassword() {
-  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
   const [form, setForm] = useState({ password: '', confirmPassword: '' });
@@ -18,22 +16,22 @@ export default function ResetPassword() {
     setMessage('');
 
     if (!token) {
-      setError(t('resetPassword.invalidLink'));
+      setError('El enlace es inválido o está incompleto. Solicita un nuevo enlace.');
       return;
     }
 
     if (form.password !== form.confirmPassword) {
-      setError(t('resetPassword.mismatch'));
+      setError('Las contraseñas no coinciden');
       return;
     }
 
     setLoading(true);
     try {
       const res = await post('/auth/reset-password', { token, password: form.password });
-      setMessage(res?.message || t('resetPassword.successFallback'));
+      setMessage(res?.message || 'Contraseña actualizada correctamente');
       setForm({ password: '', confirmPassword: '' });
     } catch (err) {
-      setError(err.message || t('resetPassword.errorFallback'));
+      setError(err.message || 'Ocurrió un error al restablecer la contraseña');
     } finally {
       setLoading(false);
     }
@@ -44,8 +42,8 @@ export default function ResetPassword() {
       <div className="w-full max-w-md">
         {/* Título */}
         <div className="text-center mb-8">
-          <h1 className="font-display text-3xl font-bold text-text-ink mb-2">{t('resetPassword.title')}</h1>
-          <p className="text-text-muted">{t('resetPassword.subtitle')}</p>
+          <h1 className="font-display text-3xl font-bold text-text-ink mb-2">Nueva contraseña</h1>
+          <p className="text-text-muted">Ingresá tu nueva clave segura</p>
         </div>
 
         {/* Tarjeta - ESTÉTICAMENTE IGUAL AL LOGIN */}
@@ -66,7 +64,7 @@ export default function ResetPassword() {
             <input
               type="password"
               required
-              placeholder={t('resetPassword.newPassword')}
+              placeholder="Nueva contraseña"
               value={form.password}
               className="w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-primary outline-none"
               onChange={e => setForm({...form, password: e.target.value})}
@@ -74,18 +72,18 @@ export default function ResetPassword() {
             <input
               type="password"
               required
-              placeholder={t('resetPassword.confirmPassword')}
+              placeholder="Confirmar contraseña"
               value={form.confirmPassword}
               className="w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-primary outline-none"
               onChange={e => setForm({...form, confirmPassword: e.target.value})}
             />
             <button type="submit" disabled={loading} className="btn btn-primary w-full font-semibold">
-              {loading ? t('resetPassword.updating') : t('resetPassword.submit')}
+              {loading ? 'Actualizando...' : 'Actualizar contraseña'}
             </button>
           </form>
 
           <div className="text-center mt-4">
-            <Link to="/login" className="text-sm text-primary font-medium hover:underline">{t('resetPassword.backToLogin')}</Link>
+            <Link to="/login" className="text-sm text-primary font-medium hover:underline">Volver al inicio de sesión</Link>
           </div>
         </div>
       </div>

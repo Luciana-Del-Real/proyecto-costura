@@ -1,12 +1,10 @@
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { usePurchases } from '../context/PurchaseContext';
 import { formatMoney } from '../utils/currency';
 import { getImageUrl } from '../utils/media';
 
 export default function Profile() {
-  const { t } = useTranslation();
   const { user, updateUser } = useAuth();
   const { purchaseRecords, purchasesLoading, purchasesError } = usePurchases();
   const [editing, setEditing] = useState(false);
@@ -43,7 +41,7 @@ export default function Profile() {
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     } catch (err) {
-      setError(err.message || t('profile.saveError'));
+      setError(err.message || 'No se pudieron guardar los cambios');
     } finally {
       setSaving(false);
     }
@@ -67,17 +65,17 @@ export default function Profile() {
 
       <div className="card-flat rounded-2xl px-4 py-10 animate-fade-up mt-5 mb-5">
           <div className="flex items-center justify-between mb-5">
-            <h2 className="font-display text-text-ink text-3xl">{t('profile.personalInfo')}</h2>
+            <h2 className="font-display text-text-ink text-3xl">Información personal</h2>
             {!editing && (
               <button onClick={() => setEditing(true)} className="btn btn-ghost text-sm">
-                {t('profile.edit')}
+                Editar
               </button>
             )}
           </div>
 
           {saved && (
             <div className="text-primary text-sm px-0 py-2 mb-4">
-              {t('profile.saved')}
+              ✓ Cambios guardados correctamente
             </div>
           )}
 
@@ -90,7 +88,7 @@ export default function Profile() {
           {editing ? (
             <form onSubmit={handleSave} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-text-ink mb-1.5">{t('profile.name')}</label>
+                <label className="block text-sm font-medium text-text-ink mb-1.5">Nombre</label>
                 <input
                   type="text"
                   required
@@ -100,7 +98,7 @@ export default function Profile() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-text-ink mb-1.5">{t('common.email')}</label>
+                <label className="block text-sm font-medium text-text-ink mb-1.5">Email</label>
                 <input
                   type="email"
                   required
@@ -110,40 +108,40 @@ export default function Profile() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-text-ink mb-1.5">{t('profile.country')}</label>
+                <label className="block text-sm font-medium text-text-ink mb-1.5">País</label>
                 <select
                   required
                   value={form.country}
                   onChange={e => setForm({ ...form, country: e.target.value })}
                   className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-secondary bg-bg-soft"
                 >
-                  <option value="">{t('profile.selectCountry')}</option>
+                  <option value="">Seleccioná un país</option>
                   <option value="ARS">Argentina (ARS)</option>
                   <option value="AUD">Australia (AUD)</option>
                 </select>
               </div>
               <div className="flex gap-3">
                 <button type="submit" disabled={saving} className="btn btn-primary text-sm disabled:opacity-60">
-                  {saving ? t('profile.saving') : t('profile.save')}
+                  {saving ? 'Guardando...' : 'Guardar cambios'}
                 </button>
                 <button type="button" onClick={() => { setEditing(false); setForm({ name: user.name, email: user.email, country: user.country }); setError(null); }} className="btn btn-ghost text-sm">
-                  {t('profile.cancel')}
+                  Cancelar
                 </button>
               </div>
             </form>
           ) : (
             <div className="space-y-3">
               <div className="flex items-center gap-3">
-                <span className="text-text-ink text-sm w-16">{t('profile.name')}</span>
+                <span className="text-text-ink text-sm w-16">Nombre</span>
                 <span className="text-text-ink font-medium">{user?.name}</span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-text-ink text-sm w-16">{t('common.email')}</span>
+                <span className="text-text-ink text-sm w-16">Email</span>
                 <span className="text-text-ink font-medium">{user?.email}</span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-text-ink text-sm w-16">{t('profile.country')}</span>
-                <span className="text-text-ink font-medium">{user?.country || t('profile.notSpecified')}</span>
+                <span className="text-text-ink text-sm w-16">País</span>
+                <span className="text-text-ink font-medium">{user?.country || 'No especificado'}</span>
               </div>
             </div>
           )}
@@ -151,14 +149,14 @@ export default function Profile() {
 
         <div className="px-1 py-10 animate-fade-up mt-5 mb-5">
           <div className="flex items-center justify-between mb-5">
-            <h2 className="font-display text-text-ink text-3xl">{t('profile.purchaseHistory')}</h2>
+            <h2 className="font-display text-text-ink text-3xl">Historial de compras</h2>
           </div>
           {purchasesLoading ? (
-            <p className="text-text-ink text-sm">{t('profile.loadingPurchases')}</p>
+            <p className="text-text-ink text-sm">Cargando tus compras...</p>
           ) : purchasesError ? (
-            <p className="text-text-ink text-sm">{t('profile.purchasesError')}</p>
+            <p className="text-text-ink text-sm">No se pudieron cargar tus compras. Verificá tu conexión e intentá de nuevo más tarde.</p>
           ) : approvedRecords.length === 0 ? (
-            <p className="text-text-ink text-sm">{t('profile.noPurchases')}</p>
+            <p className="text-text-ink text-sm">Todavía no realizaste ninguna compra.</p>
           ) : (
             <div className="space-y-3">
               {approvedRecords.map(record => {
@@ -180,7 +178,7 @@ export default function Profile() {
                 );
               })}
               <div className="pt-2 flex justify-between text-sm font-semibold text-text-ink">
-                <span>{t('profile.totalInvested')}</span>
+                <span>Total invertido</span>
                 <span>{formatMoney(totalInvested, user?.country === 'AUD' ? 'AUD' : 'ARS')}</span>
               </div>
             </div>
