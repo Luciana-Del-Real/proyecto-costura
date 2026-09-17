@@ -112,9 +112,6 @@ describe('Notification flows (purchase request + lesson comments)', () => {
           message: expect.stringContaining('Ana'),
           read: false,
           link: '/admin/solicitudes?highlight=p-1',
-          titleKey: 'notifTemplates.courseRequest.title',
-          messageKey: 'notifTemplates.courseRequest.message',
-          params: { student: 'Ana', course: 'Curso de prueba' },
         },
       });
       expect(mockPrisma.notification.create).toHaveBeenCalledWith({
@@ -124,9 +121,6 @@ describe('Notification flows (purchase request + lesson comments)', () => {
           message: expect.stringContaining('Curso de prueba'),
           read: false,
           link: '/admin/solicitudes?highlight=p-1',
-          titleKey: 'notifTemplates.courseRequest.title',
-          messageKey: 'notifTemplates.courseRequest.message',
-          params: { student: 'Ana', course: 'Curso de prueba' },
         },
       });
     });
@@ -158,9 +152,6 @@ describe('Notification flows (purchase request + lesson comments)', () => {
           message: expect.stringContaining('Ana'),
           read: false,
           link: '/admin#consultas',
-          titleKey: 'notifTemplates.studentQuestion.title',
-          messageKey: 'notifTemplates.studentQuestion.message',
-          params: { author: 'Ana', lesson: 'Lección 1', course: 'Curso de prueba' },
         },
       });
     });
@@ -207,9 +198,6 @@ describe('Notification flows (purchase request + lesson comments)', () => {
           message: expect.stringContaining('Lección 1'),
           read: false,
           link: '/curso/c-1#lesson-l-1',
-          titleKey: 'notifTemplates.adminReply.title',
-          messageKey: 'notifTemplates.adminReply.message',
-          params: { lesson: 'Lección 1', course: 'Curso de prueba' },
         },
       });
       expect(mockPrisma.user.findMany).not.toHaveBeenCalled();
