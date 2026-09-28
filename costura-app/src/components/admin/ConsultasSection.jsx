@@ -106,7 +106,7 @@ export default function ConsultasSection() {
       <div className="flex items-center justify-between gap-4 mb-4">
         <div>
           <h2 className="font-display font-bold text-text-ink text-2xl">Consultas</h2>
-          <p className="font-dancing text-xl text-primary leading-tight">Consultas de tus alumnas</p>
+          <p className="font-body text-base text-primary leading-tight">Consultas de tus alumnas</p>
         </div>
         <span className="text-xs font-bold bg-primary-soft text-primary px-3 py-1 rounded-full">
           {unanswered.length} sin responder

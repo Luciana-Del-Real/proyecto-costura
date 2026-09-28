@@ -9,7 +9,7 @@ import CourseWelcomePanel from './CourseWelcomePanel';
 // material del curso). Es excluyente con las lecciones: abrir una lección la
 // cierra, y viceversa.
 export default function CourseAccordionItem({
-  course, prog, completedCount, downloadingCert, onDownloadCertificate, courseAttachments,
+  course, prog, completedCount, certStatus, requestingCert, onRequestCertificate, courseAttachments,
   isOpen, onToggle,
 }) {
   return (
@@ -40,8 +40,9 @@ export default function CourseAccordionItem({
             course={course}
             prog={prog}
             completedCount={completedCount}
-            downloadingCert={downloadingCert}
-            onDownloadCertificate={onDownloadCertificate}
+            certStatus={certStatus}
+            requestingCert={requestingCert}
+            onRequestCertificate={onRequestCertificate}
             courseAttachments={courseAttachments}
           />
         </div>

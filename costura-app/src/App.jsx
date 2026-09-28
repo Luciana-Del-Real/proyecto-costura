@@ -15,6 +15,8 @@ import ResetPassword from './pages/ResetPassword';
 import Dashboard from './pages/Dashboard';
 import Courses from './pages/Courses';
 import PatronesGratis from './pages/PatronesGratis';
+import PatternCheckout from './pages/PatternCheckout';
+import Events from './pages/Events';
 import CourseDetail from './pages/CourseDetail';
 import Checkout from './pages/Checkout';
 import MyCourses from './pages/MyCourses';
@@ -26,6 +28,9 @@ import AdminCourses from './pages/admin/AdminCourses';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminSales from './pages/admin/AdminSales';
 import AdminRequests from './pages/admin/AdminRequests';
+import AdminCertificates from './pages/admin/AdminCertificates';
+import AdminEvents from './pages/admin/AdminEvents';
+import AdminEventForm from './pages/admin/AdminEventForm';
 import AdminCourseForm from './pages/admin/AdminCourseForm';
 import AdminPatterns from './pages/admin/AdminPatterns';
 import AdminPatternForm from './pages/admin/AdminPatternForm';
@@ -75,12 +80,14 @@ export default function App() {
             <Route path="/reset-password" element={<Layout hideNavLinks={true}><ResetPassword /></Layout>} />
             <Route path="/cursos" element={<Layout><Courses /></Layout>} />
             <Route path="/patrones-gratis" element={<Layout><PatronesGratis /></Layout>} />
+            <Route path="/eventos" element={<Layout><Events /></Layout>} />
 
             {/* Alumno */}
             {/* /curso/:id es público: sin sesión muestra la vista previa del
                 curso (CoursePreviewView); "Inscribirme" lleva al login. */}
             <Route path="/curso/:id" element={<Layout><CourseDetail /></Layout>} />
             <Route path="/checkout/:id" element={<ProtectedRoute><Layout><Checkout /></Layout></ProtectedRoute>} />
+            <Route path="/checkout-patron/:id" element={<ProtectedRoute><Layout><PatternCheckout /></Layout></ProtectedRoute>} />
             <Route path="/dashboard" element={<ProtectedRoute><Layout><Dashboard /></Layout></ProtectedRoute>} />
             <Route path="/mis-cursos" element={<ProtectedRoute><Layout><MyCourses /></Layout></ProtectedRoute>} />
             <Route path="/perfil" element={<ProtectedRoute><Layout><Profile /></Layout></ProtectedRoute>} />
@@ -92,6 +99,10 @@ export default function App() {
             <Route path="/admin/usuarios" element={<AdminRoute><AdminLayout><AdminUsers /></AdminLayout></AdminRoute>} />
             <Route path="/admin/solicitudes" element={<AdminRoute><AdminLayout><AdminRequests /></AdminLayout></AdminRoute>} />
             <Route path="/admin/ventas" element={<AdminRoute><AdminLayout><AdminSales /></AdminLayout></AdminRoute>} />
+            <Route path="/admin/certificados" element={<AdminRoute><AdminLayout><AdminCertificates /></AdminLayout></AdminRoute>} />
+            <Route path="/admin/eventos" element={<AdminRoute><AdminLayout><AdminEvents /></AdminLayout></AdminRoute>} />
+            <Route path="/admin/eventos/nuevo" element={<AdminRoute><AdminLayout><AdminEventForm /></AdminLayout></AdminRoute>} />
+            <Route path="/admin/eventos/editar/:id" element={<AdminRoute><AdminLayout><AdminEventForm /></AdminLayout></AdminRoute>} />
             <Route path="/admin/courses/new" element={<AdminRoute><AdminLayout><AdminCourseForm /></AdminLayout></AdminRoute>} />
             <Route path="/admin/courses/edit/:id" element={<AdminRoute><AdminLayout><AdminCourseForm /></AdminLayout></AdminRoute>} />
             <Route path="/admin/patrones" element={<AdminRoute><AdminLayout><AdminPatterns /></AdminLayout></AdminRoute>} />

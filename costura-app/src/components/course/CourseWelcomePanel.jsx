@@ -10,7 +10,7 @@ import CourseProgressCard from './CourseProgressCard';
 // fila del acordeón (embedded=true quita el card exterior, porque la fila ya
 // tiene su propio borde).
 export default function CourseWelcomePanel({
-  course, prog, completedCount, downloadingCert, onDownloadCertificate, courseAttachments, embedded = false,
+  course, prog, completedCount, certStatus, requestingCert, onRequestCertificate, courseAttachments, embedded = false,
 }) {
   const content = (
     <>
@@ -31,8 +31,9 @@ export default function CourseWelcomePanel({
             prog={prog}
             completedCount={completedCount}
             total={course.lessons.length}
-            downloadingCert={downloadingCert}
-            onDownloadCertificate={onDownloadCertificate}
+            certStatus={certStatus}
+            requestingCert={requestingCert}
+            onRequestCertificate={onRequestCertificate}
           />
         </div>
 

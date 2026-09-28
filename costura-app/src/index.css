@@ -645,3 +645,10 @@ section.hero-no-sep + section {
 .delay-4 { animation-delay: 0.4s; }
 .delay-5 { animation-delay: 0.5s; }
 .delay-6 { animation-delay: 0.6s; }
+
+/* Highlight temporal (gris) al llegar desde una notificación: el elemento destino se marca unos segundos y luego se desvanece. */
+.highlight-gray {
+  background-color: rgba(28, 25, 23, 0.10) !important;
+  transition: background-color 0.5s ease;
+}
+

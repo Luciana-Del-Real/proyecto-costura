@@ -9,8 +9,8 @@ import FilePicker from '../../components/FilePicker';
 const EMPTY_FORM = {
   titulo: '',
   descripcion: '',
-  nivel: 'Principiante',
-  categoria: '',
+  precioARS: 0,
+  precioAUD: 0,
 };
 
 export default function AdminPatternForm() {
@@ -35,8 +35,8 @@ export default function AdminPatternForm() {
       setForm({
         titulo: data.titulo || '',
         descripcion: data.descripcion || '',
-        nivel: data.nivel || 'Principiante',
-        categoria: data.categoria || '',
+        precioARS: data.precioARS ?? 0,
+        precioAUD: data.precioAUD ?? 0,
       });
     } catch (error) {
       console.error('Error cargando el patrón:', error);
@@ -58,8 +58,8 @@ export default function AdminPatternForm() {
       const formData = new FormData();
       formData.append('titulo', form.titulo);
       formData.append('descripcion', form.descripcion);
-      formData.append('nivel', form.nivel);
-      formData.append('categoria', form.categoria);
+      formData.append('precioARS', String(Number(form.precioARS) || 0));
+      formData.append('precioAUD', String(Number(form.precioAUD) || 0));
       if (imagenFile) formData.append('imagen', imagenFile);
       // Todos los PDFs van por `pdfs`: el primero se guarda como PDF
       // principal (`archivo`) y el resto como attachments en el backend.
@@ -144,27 +144,33 @@ export default function AdminPatternForm() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-bold text-black mb-1.5">Nivel</label>
-                <select
-                  value={form.nivel}
-                  onChange={e => setForm({ ...form, nivel: e.target.value })}
+                <label className="block text-sm font-bold text-black mb-1.5">Precio ARS</label>
+                <input
+                  type="number"
+                  min={0}
+                  step="any"
+                  value={form.precioARS}
+                  onChange={e => setForm({ ...form, precioARS: e.target.value })}
+                  placeholder="0"
                   className="w-full border-2 border-border rounded-xl px-4 py-3"
-                >
-                  <option>Principiante</option>
-                  <option>Intermedio</option>
-                  <option>Avanzado</option>
-                </select>
+                />
               </div>
               <div>
-                <label className="block text-sm font-bold text-black mb-1.5">Categoría</label>
+                <label className="block text-sm font-bold text-black mb-1.5">Precio AUD</label>
                 <input
-                  value={form.categoria}
-                  onChange={e => setForm({ ...form, categoria: e.target.value })}
-                  placeholder="Ej: Accesorios, Hogar"
+                  type="number"
+                  min={0}
+                  step="any"
+                  value={form.precioAUD}
+                  onChange={e => setForm({ ...form, precioAUD: e.target.value })}
+                  placeholder="0"
                   className="w-full border-2 border-border rounded-xl px-4 py-3"
                 />
               </div>
             </div>
+            <p className="text-xs text-text-ink -mt-2">
+              Dejá 0 en ambos para que el patrón sea <strong>gratis</strong>. Si ponés un precio, será un patrón de pago con solicitud de compra (como los cursos).
+            </p>
 
             <div>
               <label className="block text-sm font-bold text-black mb-1.5">📷 Imagen de portada</label>

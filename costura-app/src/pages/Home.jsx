@@ -17,7 +17,7 @@ const categories = [
   { Icon: Feather, label: 'BORDADO' },
   { Icon: Palette, label: 'DISEÑO TEXTIL' },
   { Icon: Shirt, label: 'WORKSHOPS' },
-  { Icon: CalendarDays, label: 'EVENTOS' },
+  { Icon: CalendarDays, label: 'EVENTOS', to: '/eventos' },
   { Icon: ShoppingBag, label: 'PRODUCTOS Y SERVICIOS' },
 ];
 
@@ -31,7 +31,7 @@ export default function Home() {
     <div>
       {/* Hero */}
       <section
-        className="relative min-h-[60vh] md:min-h-[80vh] flex items-center py-12 px-4 bg-cover bg-center bg-no-repeat hero-no-sep"
+        className="relative min-h-screen flex items-center py-12 px-4 bg-cover bg-center bg-no-repeat hero-no-sep"
         style={{
           backgroundImage: "url('/Images/IMG_8373.jpg')",
           backgroundPosition: 'right 20%',
@@ -42,14 +42,14 @@ export default function Home() {
         <div className="relative z-10 w-full">
           <div className="max-w-6xl mx-auto px-4 flex items-center justify-center">
             <div className="hero-card text-text-ink mx-auto max-w-md">
-              <h1 className="animate-fade-up-delay-1 text-3xl md:text-5xl font-bold font-display mb-4 leading-tight" style={{ textShadow: '0 8px 28px rgba(0,0,0,0.18)' }}>
-                Creá con tus<br />
-                <span className="font-display" style={{ color: 'var(--accent)' }}>propias manos</span>
+              <h1 className="animate-fade-up-delay-1 font-display mb-4 leading-none" style={{ textShadow: '0 8px 28px rgba(0,0,0,0.18)' }}>
+                <span className="block text-4xl md:text-5xl font-bold" style={{ color: 'var(--color-success)' }}>Creá con tus</span>
+                <span className="block text-3xl md:text-4xl font-normal" style={{ color: 'var(--accent)' }}>propias manos</span>
               </h1>
               <p className="font-body animate-fade-up-delay-2 text-base md:text-lg mb-4 max-w-xl md:mx-0 opacity-95">
                 Cursos online de costura, bordado y diseño textil para todos los niveles. A tu ritmo, con acompañamiento profesional.
               </p>
-              <p className="font-dancing animate-fade-up-delay-3 text-xl md:text-2xl mb-6 max-w-lg md:mx-0 opacity-90">
+              <p className="font-body animate-fade-up-delay-3 text-sm md:text-base text-right mb-6 opacity-80 max-w-lg md:ml-auto">
                 "Creemos que todas las personas pueden crear, incluso si empiezan desde cero."
               </p>
               <div className="animate-fade-up-delay-4 actions">
@@ -67,7 +67,7 @@ export default function Home() {
             <div className="card-glow rounded-2xl p-8 h-full flex items-center">
               <RevealSection animation="reveal-left">
                 <div className="w-full flex flex-col items-center text-center">
-                  <div className="w-24 h-24 md:w-36 md:h-36 rounded-full overflow-hidden flex-shrink-0 border-2 border-primary shadow-[0_0_20px_rgba(232,62,140,0.30)] mb-5">
+                  <div className="w-24 h-24 md:w-36 md:h-36 rounded-full overflow-hidden flex-shrink-0 border-2 border-primary shadow-[0_0_20px_rgba(232,62,140,0.30),0_0_30px_rgba(78,109,91,0.50)] mb-5">
                     <img
                       src="/Images/IMG_6837_circle.jpg"
                       alt="Grow Creative Education Studio"
@@ -92,7 +92,7 @@ export default function Home() {
             <div className="card-glow rounded-2xl p-8 h-full flex items-center">
               <div ref={daiaRef} className={`w-full`}>
                 <div className={`mb-5 flex justify-center reveal-right ${daiaInView ? 'visible' : ''}`}>
-                  <div className="w-24 h-24 md:w-36 md:h-36 rounded-full overflow-hidden border-2 border-primary shadow-[0_0_20px_rgba(232,62,140,0.30)]">
+                  <div className="w-24 h-24 md:w-36 md:h-36 rounded-full overflow-hidden border-2 border-primary shadow-[0_0_20px_rgba(232,62,140,0.30),0_0_30px_rgba(78,109,91,0.50)]">
                     <img
                       src="/Images/IMG_7148_circle.jpg"
                       alt="Daia"
@@ -145,18 +145,34 @@ export default function Home() {
             <h2 className="font-display font-bold text-4xl text-text-ink text-center mb-10">Nuestras especialidades</h2>
           </RevealSection>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
-            {categories.map((cat, i) => (
-              <RevealSection key={i} animation="reveal" delay={delays[i]}>
-                <div className="card-glow feature-card rounded-2xl p-4 md:p-6 text-center h-full cursor-default" aria-disabled="true">
+            {categories.map((cat, i) => {
+              const content = (
+                <>
                   <div className="flex items-center justify-center mb-2">
                     <div className="icon-wrapper" aria-hidden>
                       <cat.Icon className="specialty-icon" color="var(--color-accent)" aria-hidden />
                     </div>
                   </div>
                   <p className="font-body text-text-ink text-base md:text-lg font-bold mb-2 leading-tight">{cat.label}</p>
-                </div>
-              </RevealSection>
-            ))}
+                </>
+              );
+              return (
+                <RevealSection key={i} animation="reveal" delay={delays[i]}>
+                  {cat.to ? (
+                    <Link
+                      to={cat.to}
+                      className="card-glow feature-card rounded-2xl p-4 md:p-6 text-center h-full block cursor-pointer transition-transform hover:scale-[1.03]"
+                    >
+                      {content}
+                    </Link>
+                  ) : (
+                    <div className="card-glow feature-card rounded-2xl p-4 md:p-6 text-center h-full cursor-default" aria-disabled="true">
+                      {content}
+                    </div>
+                  )}
+                </RevealSection>
+              );
+            })}
           </div>
       </section>
 

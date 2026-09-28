@@ -18,7 +18,7 @@ export default function TestimonialCard({ testimonial }) {
   return (
     <div className="card-glow rounded-2xl p-6 h-full flex flex-col justify-between">
       <div>
-        <p className="text-text-ink text-sm mb-4 italic leading-relaxed">
+        <p className="text-text-ink text-sm mb-4 leading-relaxed">
           "{expanded ? testimonial.text : short}"
         </p>
         {isTruncated && (

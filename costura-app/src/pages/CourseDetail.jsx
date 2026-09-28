@@ -6,7 +6,7 @@ import { useDialog } from '../context/DialogContext';
 import { usePurchases } from '../context/PurchaseContext';
 import { useProgress } from '../context/ProgressContext';
 import { useAuth } from '../context/AuthContext';
-import { downloadFile } from '../services/api';
+import { requestCertificate, getMyCertificateRequest } from '../services/api';
 import useLessonComments from '../hooks/useLessonComments';
 import CoursePreviewView from '../components/course/CoursePreviewView';
 import CourseWelcomePanel from '../components/course/CourseWelcomePanel';
@@ -152,7 +152,13 @@ function CourseLearningView({ course, progress, getProgress, completeLesson }) {
     setOpenLessonId(lessonId);
     loadComments(lessonId);
     const timer = setTimeout(() => {
-      document.getElementById(`lesson-${lessonId}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const lessonEl = document.getElementById(`lesson-${lessonId}`);
+      if (lessonEl) {
+        lessonEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Marca la lección en gris unos segundos (llegada desde la campanita).
+        lessonEl.classList.add('highlight-gray');
+        setTimeout(() => lessonEl.classList.remove('highlight-gray'), 3000);
+      }
     }, 100);
     window.history.replaceState(null, '', window.location.pathname + window.location.search);
     return () => clearTimeout(timer);
@@ -174,16 +180,32 @@ function CourseLearningView({ course, progress, getProgress, completeLesson }) {
       alertDialog('No se pudo marcar la lección como completada. Probá de nuevo.');
     }
   };
-  const [downloadingCert, setDownloadingCert] = useState(false);
-  const handleDownloadCertificate = async () => {
-    setDownloadingCert(true);
+  // Solicitud de certificado: la alumna solo puede PEDIRLO (al completar el
+  // 100%), la profesora lo arma y lo envía por mail fuera de la app. El estado
+  // de la solicitud se consulta al montar para no perderlo tras un refresh.
+  const [certStatus, setCertStatus] = useState(null);
+  const [requestingCert, setRequestingCert] = useState(false);
+  useEffect(() => {
+    let cancelled = false;
+    getMyCertificateRequest(course.id)
+      .then((data) => {
+        if (cancelled) return;
+        setCertStatus(data.request?.status || null);
+      })
+      .catch((err) => console.error('Error consultando solicitud de certificado:', err));
+    return () => { cancelled = true; };
+  }, [course.id]);
+
+  const handleRequestCertificate = async () => {
+    setRequestingCert(true);
     try {
-      await downloadFile(`/courses/${course.id}/certificate`, `certificado-${course.title}.pdf`);
+      await requestCertificate(course.id);
+      setCertStatus('PENDING');
     } catch (err) {
       console.error(err);
-      alertDialog('No se pudo descargar el certificado. Probá de nuevo en un momento.');
+      alertDialog(err.message || 'No se pudo enviar la solicitud. Probá de nuevo en un momento.');
     } finally {
-      setDownloadingCert(false);
+      setRequestingCert(false);
     }
   };
 
@@ -254,8 +276,9 @@ function CourseLearningView({ course, progress, getProgress, completeLesson }) {
                 course={course}
                 prog={prog}
                 completedCount={completedCount}
-                downloadingCert={downloadingCert}
-                onDownloadCertificate={handleDownloadCertificate}
+                certStatus={certStatus}
+                requestingCert={requestingCert}
+                onRequestCertificate={handleRequestCertificate}
                 courseAttachments={courseAttachments}
               />
             )}
@@ -271,8 +294,9 @@ function CourseLearningView({ course, progress, getProgress, completeLesson }) {
             course={course}
             prog={prog}
             completedCount={completedCount}
-            downloadingCert={downloadingCert}
-            onDownloadCertificate={handleDownloadCertificate}
+            certStatus={certStatus}
+            requestingCert={requestingCert}
+            onRequestCertificate={handleRequestCertificate}
             courseAttachments={courseAttachments}
             isOpen={openLessonId === null}
             onToggle={() => setOpenLessonId(null)}

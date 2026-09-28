@@ -10,6 +10,8 @@ const navLinks = [
   { to: '/admin/usuarios', label: 'Usuarios' },
   { to: '/admin/solicitudes', label: 'Solicitudes' },
   { to: '/admin/ventas', label: 'Ventas' },
+  { to: '/admin/certificados', label: 'Certificados' },
+  { to: '/admin/eventos', label: 'Eventos' },
   { to: '/admin/patrones', label: 'Patrones' },
 ];
 

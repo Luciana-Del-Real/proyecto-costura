@@ -110,6 +110,9 @@ export default function AdminPatterns() {
                   <div className="flex gap-4 text-xs text-black/70 font-medium">
                     <span>{p.nivel}</span>
                     <span>{p.categoria}</span>
+                    <span className={`font-bold px-2 py-0.5 rounded-full ${p.esPago ? 'bg-success/10 text-success' : 'bg-primary-soft text-primary'}`}>
+                      {p.esPago ? 'De pago' : 'Gratis'}
+                    </span>
                   </div>
                 </div>
 

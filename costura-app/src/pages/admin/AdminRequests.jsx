@@ -4,6 +4,7 @@ import PageHeader from '../../components/PageHeader';
 import Pagination from '../../components/Pagination';
 import { usePurchases } from '../../context/PurchaseContext';
 import { formatMoney } from '../../utils/currency';
+import { listPatternPurchasesPending, approvePatternPurchase, rejectPatternPurchase } from '../../services/api';
 
 export default function AdminRequests() {
   const { getPendingRequests, approvePurchase, denyPurchase } = usePurchases();
@@ -13,6 +14,10 @@ export default function AdminRequests() {
   const [loading, setLoading] = useState(false);
   const [processingId, setProcessingId] = useState(null);
   const [search, setSearch] = useState('');
+  // Solicitudes de patrones de pago (misma bandeja, sección propia).
+  const [patternRequests, setPatternRequests] = useState([]);
+  const [patternLoading, setPatternLoading] = useState(false);
+  const [patternProcessingId, setPatternProcessingId] = useState(null);
   // Solicitud a resaltar al llegar desde la campanita (?highlight=<id>): se
   // marca unos segundos y luego se desvanece.
   const [searchParams, setSearchParams] = useSearchParams();
@@ -39,6 +44,67 @@ export default function AdminRequests() {
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
+
+  // Solicitudes de patrones de pago: se cargan una vez (sin paginación, son
+  // pocas; se refrescan al aprobar/rechazar). Si venimos desde la campanita
+  // con ?highlight=<id> de un patrón, scrollear y marcarlo en gris.
+  useEffect(() => {
+    (async () => {
+      setPatternLoading(true);
+      try {
+        const data = await listPatternPurchasesPending();
+        setPatternRequests(data);
+        if (highlightId && data.some(r => r.id === highlightId)) {
+          setTimeout(() => {
+            const el = document.getElementById(highlightId);
+            if (el) {
+              el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              el.classList.add('highlight-gray');
+              setTimeout(() => el.classList.remove('highlight-gray'), 3000);
+            }
+          }, 150);
+        }
+      } catch (err) {
+        console.error('Error cargando solicitudes de patrones:', err);
+        setPatternRequests([]);
+      } finally {
+        setPatternLoading(false);
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const loadPatterns = async () => {
+    try {
+      setPatternRequests(await listPatternPurchasesPending());
+    } catch (err) {
+      console.error('Error cargando solicitudes de patrones:', err);
+    }
+  };
+
+  const handleApprovePattern = async (id) => {
+    try {
+      setPatternProcessingId(id);
+      await approvePatternPurchase(id);
+      await loadPatterns();
+    } catch (err) {
+      console.error('Error aprobando solicitud de patrón', err);
+    } finally {
+      setPatternProcessingId(null);
+    }
+  };
+
+  const handleRejectPattern = async (id) => {
+    try {
+      setPatternProcessingId(id);
+      await rejectPatternPurchase(id);
+      await loadPatterns();
+    } catch (err) {
+      console.error('Error rechazando solicitud de patrón', err);
+    } finally {
+      setPatternProcessingId(null);
+    }
+  };
 
   const load = async () => {
     setLoading(true);
@@ -144,7 +210,7 @@ export default function AdminRequests() {
                   key={req.id}
                   ref={highlightId === req.id ? highlightRef : undefined}
                   className={`p-3 border-b border-border last:border-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors duration-700 ${
-                    highlightId === req.id ? 'bg-primary-soft/70' : ''
+                    highlightId === req.id ? 'highlight-gray' : ''
                   }`}
                 >
                   <div>
@@ -172,6 +238,43 @@ export default function AdminRequests() {
             totalPages={Math.max(1, requests.length === 0 && page > 1 ? page - 1 : page + (requests.length === limit ? 1 : 0))}
             onPageChange={setPage}
           />
+        </div>
+
+        {/* Solicitudes de patrones de pago */}
+        <div className="card-flat rounded-2xl px-6 py-10 animate-fade-up mt-5">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="font-display font-bold text-text-ink text-2xl">Solicitudes de patrones</h2>
+          </div>
+
+          {patternLoading ? (
+            <div className="py-6 text-center text-sm text-text-tan">Cargando...</div>
+          ) : patternRequests.length === 0 ? (
+            <p className="text-text-tan text-sm">No hay solicitudes de patrones pendientes.</p>
+          ) : (
+            <div className="grid gap-3">
+              {patternRequests.map(req => (
+                <div
+                  key={req.id}
+                  id={req.id}
+                  className={`p-3 border-b border-border last:border-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors duration-700 ${
+                    highlightId === req.id ? 'highlight-gray' : ''
+                  }`}
+                >
+                  <div>
+                    <p className="font-medium text-text-ink">{req.user?.name} <span className="text-xs text-text-tan">({req.user?.email})</span></p>
+                    <p className="text-xs text-text-ink">Patrón: {req.pattern?.titulo} — {formatMoney(req.total ?? req.pattern?.precioARS, req.user?.country === 'AUD' ? 'AUD' : 'ARS')}</p>
+                    <p className="text-xs text-text-tan">Solicitado: {new Date(req.createdAt).toLocaleString()}</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <button onClick={() => handleApprovePattern(req.id)} disabled={patternProcessingId === req.id}
+                      className="btn btn-primary text-xs">{patternProcessingId === req.id ? 'Procesando...' : 'Aprobar'}</button>
+                    <button onClick={() => handleRejectPattern(req.id)} disabled={patternProcessingId === req.id}
+                      className="btn btn-ghost text-xs bg-bg-soft text-text-ink hover:bg-border">{patternProcessingId === req.id ? 'Procesando...' : 'Rechazar'}</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
     </div>
   );

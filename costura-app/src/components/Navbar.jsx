@@ -12,7 +12,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const pathname = location?.pathname || '';
-  const simplifiedRoutes = ['/login', '/registro', '/cursos', '/forgot-password', '/reset-password'];
+  const simplifiedRoutes = ['/login', '/registro', '/forgot-password', '/reset-password'];
   const isAuthPage = pathname === '/login' || pathname === '/registro';
   const isCourseDetail = pathname.startsWith('/curso/');
   const isSimplified = simplifiedRoutes.includes(pathname) || isCourseDetail;
@@ -59,7 +59,7 @@ export default function Navbar() {
               <Link to="/dashboard" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/dashboard' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Inicio</Link>
               <Link to="/cursos" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/cursos' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Cursos disponibles</Link>
               <Link to="/favoritos" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/favoritos' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Favoritos</Link>
-              <Link to="/patrones-gratis" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/patrones-gratis' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Patrones gratis</Link>
+              <Link to="/patrones-gratis" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/patrones-gratis' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Patrones</Link>
 
               {/* Notifications bell */}
               <NotificationBell />
@@ -104,7 +104,7 @@ export default function Navbar() {
               {(!isSimplified || isAuthPage) && (
                 <>
                   <Link to="/cursos" className="px-1 py-1 rounded-lg text-sm font-medium text-text-ink hover:text-primary transition-colors">Cursos disponibles</Link>
-                  <Link to="/patrones-gratis" className="px-1 py-1 rounded-lg text-sm font-medium text-text-ink hover:text-primary transition-colors">Patrones gratis</Link>
+                  <Link to="/patrones-gratis" className="px-1 py-1 rounded-lg text-sm font-medium text-text-ink hover:text-primary transition-colors">Patrones</Link>
                   <Link to="/login" className="btn btn-primary text-sm text-white hover:shadow-none">Iniciar sesión</Link>
                 </>
               )}
@@ -145,7 +145,7 @@ export default function Navbar() {
               <Link to="/dashboard" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Inicio</Link>
               <Link to="/cursos" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Cursos disponibles</Link>
               <Link to="/favoritos" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Favoritos</Link>
-              <Link to="/patrones-gratis" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Patrones gratis</Link>
+              <Link to="/patrones-gratis" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Patrones</Link>
               <Link to="/perfil" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Perfil</Link>
               <Link to="/mis-cursos" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Mis cursos</Link>
               <button onClick={handleLogout} className="btn btn-ghost w-full justify-start text-sm text-accent">Cerrar sesión</button>
@@ -154,7 +154,7 @@ export default function Navbar() {
             (!isSimplified || isAuthPage) && (
               <>
                   <Link to="/cursos" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Cursos disponibles</Link>
-                  <Link to="/patrones-gratis" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Patrones gratis</Link>
+                  <Link to="/patrones-gratis" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Patrones</Link>
                   <Link to="/login" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Iniciar sesión</Link>
               </>
             )

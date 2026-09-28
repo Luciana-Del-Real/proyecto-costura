@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Coins, ShoppingBag, Inbox, Users } from 'lucide-react';
 import { useCourseCatalog } from '../../context/CourseCatalogContext';
 import { usePurchases } from '../../context/PurchaseContext';
@@ -8,6 +8,7 @@ import { sumByCurrency } from '../../utils/currency';
 import CourseCover from '../../components/CourseCover';
 import WelcomeToast from '../../components/WelcomeToast';
 import ConsultasSection from '../../components/admin/ConsultasSection';
+import useHighlightTarget from '../../hooks/useHighlightTarget';
 
 export default function AdminDashboard() {
   const { courses } = useCourseCatalog();
@@ -16,20 +17,10 @@ export default function AdminDashboard() {
   const [allPurchases, setAllPurchases] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
   const [pendingRequests, setPendingRequests] = useState([]);
-  const location = useLocation();
 
-  // Al llegar con #consultas (desde la campanita "Nueva consulta"), scrollear
-  // hasta la bandeja de consultas. El hash se limpia para no repetirlo.
-  useEffect(() => {
-    if (location.hash === '#consultas') {
-      const timer = setTimeout(() => {
-        document.getElementById('consultas')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 150);
-      window.history.replaceState(null, '', window.location.pathname + window.location.search);
-      return () => clearTimeout(timer);
-    }
-    return undefined;
-  }, [location.hash]);
+  // Al llegar desde una notificación con #consultas (o ?highlight=), scrollear
+  // hasta la bandeja y marcarla en gris unos segundos.
+  useHighlightTarget();
 
   useEffect(() => {
     const load = async () => {
