@@ -28,6 +28,11 @@ enum PurchaseStatus {
   REJECTED
 }
 
+enum CertificateRequestStatus {
+  PENDING
+  SENT
+}
+
 model User {
   id            String    @id @default(cuid())
   email         String    @unique
@@ -46,6 +51,8 @@ model User {
   passwordResetTokens PasswordResetToken[]
   lessonComments LessonComment[]
   pushSubscriptions PushSubscription[]
+  certificateRequests CertificateRequest[]
+  patternPurchases PatternPurchase[]
 
   @@map("users")
 }
@@ -73,6 +80,7 @@ model User {
     purchases         Purchase[]
     favorites         Favorite[]
     attachments       Attachment[]
+    certificateRequests CertificateRequest[]
 
     @@map("courses")
   }
@@ -149,6 +157,24 @@ model User {
     @@unique([userId, courseId])
     @@map("purchases")
   }
+
+model CertificateRequest {
+  id        String                    @id @default(cuid())
+  userId    String
+  courseId  String
+  status    CertificateRequestStatus  @default(PENDING)
+  createdAt DateTime                  @default(now())
+  sentAt    DateTime?
+
+  // El certificado lo arma y envía la profesora fuera de la app; acá solo se
+  // registra la solicitud de la alumna y su estado (PENDING -> SENT).
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  // Máximo UNA solicitud por alumna y curso: re-pedir actualiza la existente.
+  @@unique([userId, courseId])
+  @@map("certificate_requests")
+}
 
 model Attachment {
   id        String   @id @default(cuid())
@@ -230,10 +256,52 @@ model Pattern {
   categoria   String   @default("")
   imagen      String?
   archivo     String?
+  precioARS   Float    @default(0)
+  precioAUD   Float    @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  attachments Attachment[]
+  attachments       Attachment[]
+  patternPurchases  PatternPurchase[]
 
   @@map("patterns")
+}
+
+// Solicitud de compra de un patrón de pago (mismo flujo que las compras de
+// cursos: la alumna solicita, el admin aprueba y se desbloquea el PDF).
+model PatternPurchase {
+  id        String         @id @default(cuid())
+  userId    String
+  patternId String
+  status    PurchaseStatus @default(PENDING)
+  total     Float
+  deletedAt DateTime?
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id])
+  pattern Pattern @relation(fields: [patternId], references: [id])
+
+  @@unique([userId, patternId])
+  @@map("pattern_purchases")
+}
+
+// Eventos de la página pública (folletos). El admin sube la IMAGEN del
+// folleto diseñado a mano; los campos de texto quedan como respaldo/legacy
+// para folletos que todavía no tienen imagen propia. `order` define la
+// posición en la grilla y `active` si se muestra en la web.
+model Event {
+  id        String   @id @default(cuid())
+  title     String?
+  subtitle  String?
+  detail    String?
+  waMessage String?
+  image     String?
+  icon      String   @default("Sparkles")
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("events")
 }

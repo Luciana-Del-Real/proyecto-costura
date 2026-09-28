@@ -15,7 +15,9 @@ import { FavoritesModule } from './favorites/favorites.module';
 import { MailModule } from './mail/mail.module';
 import { AttachmentsModule } from './attachments/attachments.module';
 import { LessonCommentsModule } from './lesson-comments/lesson-comments.module';
-import { CertificatesModule } from './certificates/certificates.module';
+import { CertificateRequestsModule } from './certificate-requests/certificate-requests.module';
+import { EventsModule } from './events/events.module';
+import { PatternPurchasesModule } from './pattern-purchases/pattern-purchases.module';
 import { PatternsModule } from './patterns/patterns.module';
 import { PushNotificationsModule } from './push-notifications/push-notifications.module';
 
@@ -43,8 +45,10 @@ import { PushNotificationsModule } from './push-notifications/push-notifications
     MailModule,
     AttachmentsModule,
     LessonCommentsModule,
-    CertificatesModule,
+    CertificateRequestsModule,
+    EventsModule,
     PatternsModule,
+    PatternPurchasesModule,
     PushNotificationsModule,
   ],
   controllers: [],

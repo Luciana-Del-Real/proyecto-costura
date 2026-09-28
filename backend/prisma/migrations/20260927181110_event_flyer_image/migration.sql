@@ -1,0 +1,6 @@
+-- AlterTable
+ALTER TABLE "events" ADD COLUMN     "image" TEXT,
+ALTER COLUMN "title" DROP NOT NULL,
+ALTER COLUMN "subtitle" DROP NOT NULL,
+ALTER COLUMN "detail" DROP NOT NULL,
+ALTER COLUMN "waMessage" DROP NOT NULL;

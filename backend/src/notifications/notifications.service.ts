@@ -163,6 +163,35 @@ export class NotificationsService {
     return admins.length;
   }
 
+  // Crea una notificación para cada ALUMNA (fan-out inverso al de admins:
+  // contenido nuevo que la profesora publica — cursos, patrones — debe
+  // avisar a todas las alumnas). Mismo patrón que createNotificationsForAdmins.
+  async createNotificationsForStudents(
+    title: string,
+    message: string,
+    tx?: Prisma.TransactionClient,
+    link?: string,
+  ) {
+    const client = tx ?? this.prisma;
+    const students = await client.user.findMany({
+      where: { role: Role.ALUMNO },
+      select: { id: true },
+    });
+    for (const student of students) {
+      await client.notification.create({
+        data: {
+          userId: student.id,
+          title,
+          message,
+          read: false,
+          ...(link ? { link } : {}),
+        },
+      });
+      this.schedulePush(student.id, title, message, link);
+    }
+    return students.length;
+  }
+
   /**
    * Fire-and-forget push dispatch (isolation contract). setImmediate defers
    * the send past the caller's transaction commit — queueMicrotask could

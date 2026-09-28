@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, UseInterceptors, UploadedFiles, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Request, UseGuards, UseInterceptors, UploadedFiles, BadRequestException, Logger } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
@@ -8,6 +8,9 @@ import { CreatePatternDto } from './dto/create-pattern.dto';
 import { UpdatePatternDto } from './dto/update-pattern.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { AdminGuard } from '../auth/guards/admin.guard';
+import { OptionalJwtAuthGuard } from '../auth/guards/optional-jwt.guard';
+import { Principal } from '../common/principal';
+import { NotificationsService } from '../notifications/notifications.service';
 
 const uploadsDir = './uploads/patterns';
 mkdirSync(uploadsDir, { recursive: true });
@@ -61,17 +64,27 @@ function splitPdfs(files: PatternFiles): { archivoPath?: string; extraPdfs: Expr
 
 @Controller('patterns')
 export class PatternsController {
-  constructor(private readonly patternsService: PatternsService) {}
+  private readonly logger = new Logger(PatternsController.name);
 
-  // Público: el catálogo de patrones gratis no requiere sesión.
+  constructor(
+    private readonly patternsService: PatternsService,
+    private readonly notificationsService: NotificationsService,
+  ) {}
+
+  // Público: el catálogo de patrones no requiere sesión (el PDF de patrones
+  // de pago se oculta hasta que la alumna tenga la compra aprobada).
   @Get()
-  findAll() {
-    return this.patternsService.findAll();
+  @UseGuards(OptionalJwtAuthGuard)
+  findAll(@Request() req: { user?: Principal }) {
+    return this.patternsService.findAllPublic(req.user);
   }
 
+  // Detalle público con acceso condicional (el checkout de un patrón de pago
+  // no expone el PDF; el admin sí lo ve completo para editar).
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.patternsService.findOne(id);
+  @UseGuards(OptionalJwtAuthGuard)
+  findOne(@Param('id') id: string, @Request() req: { user?: Principal }) {
+    return this.patternsService.findOnePublic(id, req.user);
   }
 
   @Post()
@@ -89,6 +102,19 @@ export class PatternsController {
 
     if (extraPdfs.length) {
       await this.patternsService.addAttachments(pattern.id, extraPdfs);
+    }
+
+    // Avisa a todas las alumnas del patrón nuevo. La notificación nunca debe
+    // romper la creación: si falla, se loguea y la creación sigue.
+    try {
+      await this.notificationsService.createNotificationsForStudents(
+        'Nuevo patrón gratis',
+        `${pattern.titulo} ya está disponible en Patrones gratis. ¡Descargalo!`,
+        undefined,
+        '/patrones-gratis',
+      );
+    } catch (err) {
+      this.logger.warn('No se pudo notificar a las alumnas del nuevo patrón', err);
     }
 
     return this.patternsService.findOne(pattern.id);

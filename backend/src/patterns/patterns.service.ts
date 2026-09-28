@@ -3,6 +3,8 @@ import { PrismaService } from '../prisma/prisma.service';
 import { AttachmentsService } from '../attachments/attachments.service';
 import { CreatePatternDto } from './dto/create-pattern.dto';
 import { UpdatePatternDto } from './dto/update-pattern.dto';
+import { PurchaseStatus } from '../common/enums';
+import { Principal } from '../common/principal';
 
 const patternInclude = {
   // PDFs adicionales del patrón; el PDF principal queda en `archivo`.
@@ -16,11 +18,102 @@ export class PatternsService {
     private readonly attachmentsService: AttachmentsService,
   ) {}
 
+  // Catálogo público con acceso condicional: un patrón de pago SOLO expone
+  // su PDF (archivo + attachments) a quien tiene la compra aprobada (o al
+  // admin). Para el resto queda con el PDF oculto, y se agregan campos
+  // auxiliares (esPago, hasAccess, purchaseStatus) para que el frontend
+  // muestre el estado correcto (Gratis / De pago / Pendiente / Descargar).
+  async findAllPublic(principal?: Principal) {
+    const patterns = await this.prisma.pattern.findMany({
+      orderBy: { createdAt: 'asc' },
+      include: patternInclude,
+    });
+    const userId = principal?.id;
+    const isAdmin = principal?.role === 'ADMIN';
+
+    const owned = new Set<string>();
+    const pending = new Set<string>();
+    if (userId) {
+      const purchases = await this.prisma.patternPurchase.findMany({
+        where: { userId, deletedAt: null },
+        select: { patternId: true, status: true },
+      });
+      for (const p of purchases) {
+        if (p.status === PurchaseStatus.APPROVED) owned.add(p.patternId);
+        else if (p.status === PurchaseStatus.PENDING) pending.add(p.patternId);
+      }
+    }
+
+    return patterns.map((p) => {
+      const esPago = p.precioARS > 0 || p.precioAUD > 0;
+      const hasAccess = !esPago || isAdmin || owned.has(p.id);
+      return {
+        ...p,
+        esPago,
+        hasAccess,
+        purchaseStatus: userId
+          ? owned.has(p.id)
+            ? PurchaseStatus.APPROVED
+            : pending.has(p.id)
+              ? PurchaseStatus.PENDING
+              : null
+          : null,
+        archivo: hasAccess ? p.archivo : null,
+        attachments: hasAccess ? p.attachments : [],
+      };
+    });
+  }
+
   findAll() {
     return this.prisma.pattern.findMany({
       orderBy: { createdAt: 'asc' },
       include: patternInclude,
     });
+  }
+
+  // Detalle para la vista (checkout de patrón de pago y admin): mismo acceso
+  // condicional que findAllPublic (el PDF de un patrón de pago solo se
+  // expone con compra aprobada o siendo admin).
+  async findOnePublic(id: string, principal?: Principal) {
+    const pattern = await this.prisma.pattern.findUnique({
+      where: { id },
+      include: patternInclude,
+    });
+    if (!pattern) {
+      throw new NotFoundException('Patrón no encontrado');
+    }
+
+    const userId = principal?.id;
+    const isAdmin = principal?.role === 'ADMIN';
+    let owned = false;
+    let pending = false;
+    if (userId && !isAdmin) {
+      const purchase = await this.prisma.patternPurchase.findUnique({
+        where: { userId_patternId: { userId, patternId: id } },
+        select: { status: true },
+      });
+      owned = purchase?.status === PurchaseStatus.APPROVED;
+      pending = purchase?.status === PurchaseStatus.PENDING;
+    } else if (isAdmin) {
+      owned = true;
+    }
+
+    const esPago = pattern.precioARS > 0 || pattern.precioAUD > 0;
+    const hasAccess = !esPago || owned;
+    return {
+      ...pattern,
+      esPago,
+      hasAccess,
+      purchaseStatus: userId
+        ? owned
+          ? PurchaseStatus.APPROVED
+          : pending
+            ? PurchaseStatus.PENDING
+            : null
+        : null,
+      archivo: hasAccess ? pattern.archivo : null,
+      attachments: hasAccess ? pattern.attachments : [],
+    };
   }
 
   async findOne(id: string) {
