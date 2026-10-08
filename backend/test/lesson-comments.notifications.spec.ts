@@ -151,7 +151,7 @@ describe('Notification flows (purchase request + lesson comments)', () => {
           title: 'Nueva consulta',
           message: expect.stringContaining('Ana'),
           read: false,
-          link: '/admin#consultas',
+          link: '/admin#comment-c-1',
         },
       });
     });
