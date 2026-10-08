@@ -98,33 +98,51 @@ export default function ConsultasSection() {
     return [...students.values()];
   };
 
-  const renderStudent = (studentGroup) => (
-    <div
-      key={studentGroup.student.id}
-      data-testid={`consulta-student-${studentGroup.student.id}`}
-      className="mb-6 border-t border-border pt-4 first:border-t-0 first:pt-0"
-    >
-      <p className="text-sm font-bold text-text-ink mb-3">{studentGroup.student.name}</p>
-      {[...studentGroup.courses.values()].map((courseGroup) => (
-        <div key={courseGroup.course.id} className="mb-4">
-          <p className="text-xs font-bold uppercase tracking-wide text-text-ink mb-1">{courseGroup.course.title}</p>
-          {[...courseGroup.lessons.values()].map((lessonGroup) => (
-            <div key={lessonGroup.lesson.id} className="mb-3">
-              <p className="text-xs text-accent mb-2">{lessonGroup.lesson.title}</p>
-              <CommentThread
-                items={threadFor(lessonGroup.questions)}
-                onReply={handleReply}
-                labels={labels}
-                canReply
-                replySending={sending}
-                image={{ preview: replyPreview, onChange: updateReplyPreview, onRemove: clearReplyImage }}
-              />
-            </div>
-          ))}
+  // Cada alumna es una tarjeta propia y bien diferenciada (avatar + nombre +
+  // contador) para que las consultas no se mezclen ni se pierdan entre alumnas.
+  const renderStudent = (studentGroup) => {
+    const student = studentGroup.student;
+    const initial = (student.name || 'A').trim().charAt(0).toUpperCase();
+    const total = [...studentGroup.courses.values()].reduce(
+      (acc, c) => acc + [...c.lessons.values()].reduce((a, l) => a + l.questions.length, 0),
+      0,
+    );
+    return (
+      <div
+        key={student.id}
+        data-testid={`consulta-student-${student.id}`}
+        className="mb-4 rounded-2xl border border-border bg-bg-soft/40 p-4"
+      >
+        <div className="flex items-center gap-3 mb-3">
+          <div className="w-9 h-9 rounded-full bg-primary-soft text-primary font-bold flex items-center justify-center text-sm shrink-0">
+            {initial}
+          </div>
+          <p className="font-body font-bold text-text-ink text-base truncate">{student.name}</p>
+          <span className="ml-auto text-[11px] font-bold bg-white text-text-ink border border-border px-2 py-0.5 rounded-full shrink-0">
+            {total} consulta{total !== 1 ? 's' : ''}
+          </span>
         </div>
-      ))}
-    </div>
-  );
+        {[...studentGroup.courses.values()].map((courseGroup) => (
+          <div key={courseGroup.course.id} className="mb-4 last:mb-0">
+            <p className="text-xs font-bold uppercase tracking-wide text-text-ink mb-1">{courseGroup.course.title}</p>
+            {[...courseGroup.lessons.values()].map((lessonGroup) => (
+              <div key={lessonGroup.lesson.id} className="mb-3 last:mb-0">
+                <p className="text-xs text-accent mb-2">{lessonGroup.lesson.title}</p>
+                <CommentThread
+                  items={threadFor(lessonGroup.questions)}
+                  onReply={handleReply}
+                  labels={labels}
+                  canReply
+                  replySending={sending}
+                  image={{ preview: replyPreview, onChange: updateReplyPreview, onRemove: clearReplyImage }}
+                />
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    );
+  };
 
   return (
     <div id="consultas" className="card-flat rounded-xl p-6 mt-6">
