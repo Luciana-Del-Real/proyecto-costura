@@ -6,9 +6,10 @@ const DialogContext = createContext(null);
 // Modal de marca Grow que reemplaza los diálogos nativos del navegador
 // (window.confirm / alert). Un solo diálogo a la vez:
 // - confirmDialog(message, title?) -> Promise<boolean>; resuelve true solo si
-//   la usuaria confirma explícitamente, false al cancelar. No se cierra con
-//   click en el backdrop ni con Esc (decisión explícita requerida): el onClose
-//   del Modal compartido es un no-op para el confirm.
+//   la usuaria confirma explícitamente, false al cancelar. La X y Esc cierran
+//   cancelando (resuelven false); el backdrop queda inerte para evitar
+//   cancelaciones accidentales (decisión explícita requerida por un control,
+//   no por un click casual).
 // - alertDialog(message, title?) -> Promise<void>; se descarta con click en el
 //   backdrop, con Esc, con la X o en "Entendido".
 // El resolver vive en un ref para completar el Promise fuera del ciclo de
@@ -41,7 +42,8 @@ export function DialogProvider({ children }) {
       {children}
       <Modal
         open={Boolean(dialog)}
-        onClose={() => { if (!isConfirm) closeDialog(true); }}
+        onClose={() => closeDialog(isConfirm ? false : true)}
+        overlayCloses={!isConfirm}
         title={title}
         size="sm"
         zIndex={100}

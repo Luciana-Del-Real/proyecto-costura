@@ -14,7 +14,7 @@ const sizes = {
   lg: 'max-w-2xl',
 };
 
-export default function Modal({ open, onClose, title, subtitle, children, footer, size = 'md', zIndex = 100 }) {
+export default function Modal({ open, onClose, title, subtitle, children, footer, size = 'md', zIndex = 100, overlayCloses = true }) {
   const closeRef = useRef(null);
 
   // Esc closes the modal (window listener so it also works while focus is
@@ -37,8 +37,9 @@ export default function Modal({ open, onClose, title, subtitle, children, footer
 
   return createPortal(
     <div className="fixed inset-0 animate-fade-in" style={{ zIndex }} role="dialog" aria-modal="true" aria-label={title}>
-      {/* Overlay: click on the backdrop closes the modal */}
-      <div className="absolute inset-0 bg-black/40" aria-hidden="true" onClick={onClose} />
+      {/* Overlay: when overlayCloses is true, clicking the backdrop closes the
+          modal (the confirm dialog keeps it inert to avoid accidental cancels) */}
+      <div className="absolute inset-0 bg-black/40" aria-hidden="true" onClick={overlayCloses ? onClose : undefined} />
 
       {/* Centered panel (wrapper caps the width; the box below is the panel) */}
       <div
@@ -63,7 +64,7 @@ export default function Modal({ open, onClose, title, subtitle, children, footer
               onClick={onClose}
               ref={closeRef}
               aria-label="Cerrar"
-              className="btn btn-icon text-xl leading-none text-text-tan hover:text-text-ink shrink-0"
+              className="btn btn-icon text-xl leading-none text-text-tan hover:text-text-ink hover:bg-transparent shrink-0"
             >
               ×
             </button>

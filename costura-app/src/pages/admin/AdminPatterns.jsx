@@ -41,6 +41,7 @@ export default function AdminPatterns() {
   const salesCount = (p) => p._count?.patternPurchases ?? 0;
 
   const handleShow = async (p) => {
+    if (!await confirmDialog('¿Volver a mostrar este patrón en el catálogo?')) return;
     try {
       await put(`/patterns/${p.id}`, { active: true });
       await load();

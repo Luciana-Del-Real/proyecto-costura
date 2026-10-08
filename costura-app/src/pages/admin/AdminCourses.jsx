@@ -47,6 +47,7 @@ export default function AdminCourses() {
   useEffect(() => { load(); }, []);
 
   const handleShow = async (course) => {
+    if (!await confirmDialog('¿Volver a mostrar este curso en el catálogo?')) return;
     try {
       await put(`/courses/${course.id}`, { active: true });
       await load();
