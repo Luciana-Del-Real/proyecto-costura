@@ -105,11 +105,13 @@ export class PatternsController {
     }
 
     // Avisa a todas las alumnas del patrón nuevo. La notificación nunca debe
-    // romper la creación: si falla, se loguea y la creación sigue.
+    // romper la creación: si falla, se loguea y la creación sigue. El mensaje
+    // distingue patrón gratuito vs patrón de pago.
     try {
+      const esPago = (pattern.precioARS ?? 0) > 0 || (pattern.precioAUD ?? 0) > 0;
       await this.notificationsService.createNotificationsForStudents(
-        'Nuevo patrón gratis',
-        `${pattern.titulo} ya está disponible en Patrones gratis. ¡Descargalo!`,
+        esPago ? 'Nuevo patrón de pago' : 'Nuevo patrón gratis',
+        `${pattern.titulo} ya está disponible en Patrones. ¡${esPago ? 'Conocelo' : 'Descargalo'}!`,
         undefined,
         '/patrones-gratis',
       );
