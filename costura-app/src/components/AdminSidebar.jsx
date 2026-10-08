@@ -13,6 +13,7 @@ import {
   Home,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import NotificationBell from './NotificationBell';
 
 // Grouped admin navigation. Sections keep the sidebar easy to scan;
 // every item carries a lucide icon and a route-based active state.
@@ -84,23 +85,6 @@ function SidebarContent({ onNavigate }) {
 
   return (
     <>
-      {/* Brand header — the institution name has vertical room, so it wraps
-          to at most two lines and is never truncated. */}
-      <Link
-        to="/admin"
-        onClick={onNavigate}
-        className="flex items-center gap-3 px-5 py-5 border-b border-border shrink-0"
-      >
-        <img
-          src="/Images/Logo%20sin%20Slogan.png"
-          alt="Creative Education Studio"
-          className="w-9 h-9 object-contain shrink-0"
-        />
-        <span className="text-sm uppercase tracking-widest leading-tight text-text-ink">
-          Creative Education Studio
-        </span>
-      </Link>
-
       <nav className="flex-1 min-h-0 overflow-y-auto px-3 py-4 flex flex-col gap-5" aria-label="Navegación principal">
         {NAV_GROUPS.map((group) => (
           <div key={group.label}>
@@ -121,8 +105,10 @@ function SidebarContent({ onNavigate }) {
         ))}
       </nav>
 
-      {/* User footer — name and role keep their own room (no truncation). */}
+      {/* Footer — notifications, then identity, logout and public-site link.
+          Name and role keep their own room (no truncation). */}
       <div className="border-t border-border px-4 py-4 flex flex-col gap-3 shrink-0">
+        <NotificationBell align="left" />
         <div className="flex flex-col">
           <p className="text-sm font-semibold text-text-ink">{user?.name}</p>
           <p className="text-[10px] uppercase tracking-widest text-text-muted">Administradora</p>
@@ -156,8 +142,9 @@ export default function AdminSidebar({ open = false, onClose }) {
 
   return (
     <>
-      {/* Desktop rail (in flow, sticky full height). */}
-      <aside className="hidden lg:flex lg:flex-col w-64 shrink-0 bg-white border-r border-border lg:sticky lg:top-0 lg:h-screen">
+      {/* Desktop rail (in flow). It sticks below the h-16 topbar, so it only
+          occupies the remaining viewport height. */}
+      <aside className="hidden lg:flex lg:flex-col w-64 shrink-0 bg-white border-r border-border lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)]">
         <SidebarContent />
       </aside>
 

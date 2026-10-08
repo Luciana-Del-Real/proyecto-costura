@@ -15,6 +15,19 @@ vi.mock('../context/AuthContext', () => ({
   useAuth: () => ({ user: mocks.user, logout: mocks.logout }),
 }));
 
+// The footer now renders the notification bell, which reads this context.
+vi.mock('../context/NotificationsContext', () => ({
+  useNotifications: () => ({
+    notifications: [],
+    unreadCount: 0,
+    notificationsLoading: false,
+    notificationsError: null,
+    markAsRead: vi.fn(),
+    markAllAsRead: vi.fn(),
+    deleteNotification: vi.fn(),
+  }),
+}));
+
 import AdminSidebar from './AdminSidebar';
 
 const renderSidebar = (path = '/admin') =>
@@ -53,13 +66,11 @@ describe('AdminSidebar', () => {
     );
   });
 
-  it('renders the institution name in full without truncating', () => {
-    const { container } = renderSidebar();
-    const brand = [...container.querySelectorAll('span')].find((el) =>
-      el.textContent.includes('Creative Education Studio'),
-    );
-    expect(brand).toBeTruthy();
-    expect(brand.className).not.toContain('truncate');
+  it('renders the notification bell and the user block in the footer', () => {
+    const { getByRole, getByText } = renderSidebar();
+    expect(getByRole('button', { name: 'Notificaciones' })).toBeTruthy();
+    expect(getByText('Daiana Pérez')).toBeTruthy();
+    expect(getByText('Administradora')).toBeTruthy();
   });
 
   it('marks the active item for the current route', () => {

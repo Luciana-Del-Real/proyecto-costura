@@ -56,18 +56,18 @@ function ScrollToTop() {
   return null;
 }
 
-// Admin shell: a left sidebar (sticky on desktop, drawer on mobile) plus a
-// thin top bar. The drawer state lives here so the topbar trigger and the
-// sidebar can share it.
+// Admin shell: a full-width brand topbar plus a left sidebar (sticky below
+// the topbar on desktop, drawer on mobile). The drawer state lives here so
+// the topbar trigger and the sidebar can share it.
 function AdminLayout({ children }) {
   const [navOpen, setNavOpen] = useState(false);
 
   return (
-    <div className="min-h-screen flex bg-bg-surface">
-      <AdminSidebar open={navOpen} onClose={() => setNavOpen(false)} />
-      <div className="flex-1 min-w-0 flex flex-col">
-        <AdminTopbar onMenuClick={() => setNavOpen(true)} />
-        <main className="flex-1">{children}</main>
+    <div className="min-h-screen flex flex-col bg-bg-surface">
+      <AdminTopbar onMenuClick={() => setNavOpen(true)} />
+      <div className="flex flex-1 min-w-0">
+        <AdminSidebar open={navOpen} onClose={() => setNavOpen(false)} />
+        <main className="flex-1 min-w-0">{children}</main>
       </div>
     </div>
   );
