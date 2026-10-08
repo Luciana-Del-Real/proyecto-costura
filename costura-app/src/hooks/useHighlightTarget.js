@@ -22,8 +22,13 @@ export default function useHighlightTarget() {
       const el = document.getElementById(target);
       if (el) {
         el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        el.classList.add('highlight-gray');
-        setTimeout(() => el.classList.remove('highlight-gray'), 3000);
+        // Los contenedores (ej. la sección Consultas) se scrollean pero NO se
+        // tiñen: el resaltado gris es para el ítem puntual (un comentario o una
+        // solicitud), nunca para toda la sección.
+        if (!el.hasAttribute('data-highlight-container')) {
+          el.classList.add('highlight-gray');
+          setTimeout(() => el.classList.remove('highlight-gray'), 3000);
+        }
         setSearchParams({}, { replace: true });
         window.history.replaceState(null, '', window.location.pathname + window.location.search);
         return;

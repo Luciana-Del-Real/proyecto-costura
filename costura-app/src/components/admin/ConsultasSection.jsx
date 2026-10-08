@@ -108,17 +108,13 @@ export default function ConsultasSection() {
       0,
     );
     return (
-      <div
-        key={student.id}
-        data-testid={`consulta-student-${student.id}`}
-        className="mb-4 rounded-2xl border border-border bg-bg-soft/40 p-4"
-      >
-        <div className="flex items-center gap-3 mb-3">
+      <div key={student.id} data-testid={`consulta-student-${student.id}`} className="mb-6">
+        <div className="flex items-center gap-3 pb-2 mb-3 border-b border-border">
           <div className="w-9 h-9 rounded-full bg-primary-soft text-primary font-bold flex items-center justify-center text-sm shrink-0">
             {initial}
           </div>
           <p className="font-body font-bold text-text-ink text-base truncate">{student.name}</p>
-          <span className="ml-auto text-[11px] font-bold bg-white text-text-ink border border-border px-2 py-0.5 rounded-full shrink-0">
+          <span className="ml-auto text-[11px] font-bold text-text-ink bg-bg-soft px-2 py-0.5 rounded-full shrink-0">
             {total} consulta{total !== 1 ? 's' : ''}
           </span>
         </div>
@@ -145,7 +141,7 @@ export default function ConsultasSection() {
   };
 
   return (
-    <div id="consultas" className="card-flat rounded-xl p-6 mt-6">
+    <div id="consultas" data-highlight-container="true" className="card-flat rounded-xl p-6 mt-6">
       <div className="flex items-center justify-between gap-4 mb-4">
         <div>
           <h2 className="font-display font-bold text-text-ink text-2xl">Consultas</h2>
