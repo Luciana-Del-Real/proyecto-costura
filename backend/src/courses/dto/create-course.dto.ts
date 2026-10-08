@@ -50,4 +50,15 @@ export class CreateCourseDto {
   })
   @IsBoolean()
   featured?: boolean;
+
+  // Soft-hide: el admin puede ocultar/reactivar un curso desde la gestión.
+  // UpdateCourseDto (PartialType) hereda el campo y el transform.
+  @IsOptional()
+  @Transform(({ value }) => {
+    if (value === 'true' || value === true || value === 1 || value === '1') return true;
+    if (value === 'false' || value === false || value === 0 || value === '0') return false;
+    return value;
+  })
+  @IsBoolean()
+  active?: boolean;
 }
