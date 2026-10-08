@@ -14,7 +14,7 @@ export default function LessonEditorItem({
     editedLessons[lesson.id]?.[field] ?? lesson[field];
 
   return (
-    <div id={`lesson-${lesson.id}`} className={`bg-white border rounded-2xl shadow-sm overflow-hidden transition-colors ${isOpen ? 'border-secondary' : 'border-border'}`}>
+    <div id={`lesson-${lesson.id}`} className="border-b border-border last:border-0 transition-colors">
       {/* Cabecera del acordeón: título + duración, click para expandir/colapsar */}
       <button
         type="button"

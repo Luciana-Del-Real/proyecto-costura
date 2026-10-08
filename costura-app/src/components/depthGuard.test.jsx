@@ -36,8 +36,10 @@ import { MemoryRouter, Routes, Route } from 'react-router-dom';
  * effect-driven fetch and is exercised indirectly via the detail/summary boxes.
  *
  * Additionally, for pages that use the standard root container, the exact
- * duplicated class string `max-w-6xl mx-auto px-1 py-1` must appear exactly
- * once — this guards the Task 1 fix (nested duplicate page wrappers).
+ * duplicated class string must appear exactly once — this guards against
+ * nested duplicate page wrappers. Admin pages use `PAGE_ROOT_TOKEN`
+ * (`max-w-6xl mx-auto px-4 py-8`, the T5 list-page root). Public pages still
+ * use the legacy token and assert against `LEGACY_PAGE_ROOT_TOKEN`.
  */
 
 const mocks = vi.hoisted(() => ({
@@ -148,8 +150,10 @@ beforeEach(() => {
 });
 
 const BOX_TOKENS = ['card-glow', 'card-flat', 'card-glow-fixed'];
-// Exact class string of the page root container (Task 1 regression target).
-const PAGE_ROOT_TOKEN = 'max-w-6xl mx-auto px-1 py-1';
+// Exact class string of the admin list-page root container (T5 convention).
+const PAGE_ROOT_TOKEN = 'max-w-6xl mx-auto px-4 py-8';
+// Public pages (out of this task's scope) still use the legacy page root.
+const LEGACY_PAGE_ROOT_TOKEN = 'max-w-6xl mx-auto px-1 py-1';
 
 /**
  * Returns the opening tags of box divs that are nested inside another box div.
@@ -174,8 +178,8 @@ function findNestedBoxes(html, tokens = BOX_TOKENS) {
   return violations;
 }
 
-function countRootContainers(html) {
-  return html.split(PAGE_ROOT_TOKEN).length - 1;
+function countRootContainers(html, token = PAGE_ROOT_TOKEN) {
+  return html.split(token).length - 1;
 }
 
 function expectNoNestedBoxes(html, label) {
@@ -214,7 +218,7 @@ describe('depth guard: no box surface nested inside another box surface', () => 
     const html = renderToStaticMarkup(<Profile />);
 
     expect(html).toContain('card-flat');
-    expect(countRootContainers(html)).toBe(1);
+    expect(countRootContainers(html, LEGACY_PAGE_ROOT_TOKEN)).toBe(1);
     expectNoNestedBoxes(html, 'Profile');
   });
 
@@ -231,7 +235,7 @@ describe('depth guard: no box surface nested inside another box surface', () => 
 
     expect(html).toContain('card-flat');
     expect(html).toContain('Mis cursos');
-    expect(countRootContainers(html)).toBe(1);
+    expect(countRootContainers(html, LEGACY_PAGE_ROOT_TOKEN)).toBe(1);
     expectNoNestedBoxes(html, 'MyCourses');
   });
 
@@ -249,7 +253,7 @@ describe('depth guard: no box surface nested inside another box surface', () => 
     expect(html).toContain('card-glow');
     expect(html).toContain('Mis cursos');
     expect(html).not.toContain('Moldería');
-    expect(countRootContainers(html)).toBe(1);
+    expect(countRootContainers(html, LEGACY_PAGE_ROOT_TOKEN)).toBe(1);
     expectNoNestedBoxes(html, 'Dashboard');
   });
 
@@ -295,7 +299,7 @@ describe('depth guard: no box surface nested inside another box surface', () => 
 
   it('AdminCourseForm (create mode) renders a single form box', () => {
     const html = renderToStaticMarkup(
-      <MemoryRouter initialEntries={['/admin/courses/new']}>
+      <MemoryRouter initialEntries={['/admin/cursos/nuevo']}>
         <AdminCourseForm />
       </MemoryRouter>,
     );

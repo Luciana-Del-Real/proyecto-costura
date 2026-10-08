@@ -3,6 +3,7 @@ import { useCourseCatalog } from '../../context/CourseCatalogContext';
 import { useDialog } from '../../context/DialogContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import { get, postForm, putForm, del } from '../../services/api';
+import PageHeader from '../../components/PageHeader';
 import CourseFieldsForm from '../../components/admin/CourseFieldsForm';
 import LessonEditorItem from '../../components/admin/LessonEditorItem';
 import NewLessonForm from '../../components/admin/NewLessonForm';
@@ -72,7 +73,7 @@ export default function AdminCourseForm() {
         await reloadCourse();
       } else {
         const created = await addCourse(formData);
-        navigate(`/admin/courses/edit/${created.id}`);
+        navigate(`/admin/cursos/editar/${created.id}`);
       }
     } catch (err) {
       console.error(err);
@@ -189,69 +190,71 @@ export default function AdminCourseForm() {
   };
 
   if (loadingCourse) {
-    return <div className="min-h-screen bg-bg-surface flex items-center justify-center"><span className="text-4xl">🧵</span></div>;
+    return <div className="flex items-center justify-center py-24 animate-fade-in"><span className="text-4xl">🧵</span></div>;
   }
 
   return (
-    <div className="min-h-screen bg-bg-surface py-12 px-4">
-      <div className="max-w-2xl mx-auto">
-        <button onClick={() => navigate('/admin/cursos')} className="text-primary text-sm hover:text-primary-hover inline-flex items-center gap-1 mb-6">← Volver al listado</button>
+    <div className="max-w-2xl mx-auto px-4 py-8 animate-fade-in">
+      <PageHeader
+        title={isEditing ? 'Editar curso' : 'Nuevo curso'}
+        subtitle="Cargá los datos del curso y sus lecciones."
+      />
 
-        <div className="card-flat rounded-2xl p-8">
-          <h2 className="font-display font-bold text-text-ink text-2xl mb-8 border-b pb-4">{isEditing ? 'Editar curso' : 'Nuevo curso'}</h2>
-          {saved && <div className="bg-primary-soft text-success text-sm rounded-xl px-4 py-3 mb-4">✓ Guardado correctamente</div>}
+      <button onClick={() => navigate('/admin/cursos')} className="text-primary text-sm hover:text-primary-hover inline-flex items-center gap-1 mb-4">← Volver al listado</button>
 
-          <CourseFieldsForm
-            form={form}
-            onChange={setForm}
-            saving={saving}
-            isEditing={isEditing}
-            onSubmit={handleSaveCourse}
-            setImageFile={setImageFile}
-            coursePdfFiles={coursePdfFiles}
-            setCoursePdfFiles={setCoursePdfFiles}
-            course={course}
-            onDeleteAttachment={handleDeleteCourseAttachment}
-          />
+      <div className="card-flat rounded-2xl p-8">
+        {saved && <div className="bg-primary-soft text-success text-sm rounded-xl px-4 py-3 mb-4">✓ Guardado correctamente</div>}
 
-          {/* Lecciones: solo disponible una vez que el curso ya existe */}
-          {isEditing && (
-            <>
-              <h3 className="font-display font-bold text-text-ink text-2xl mt-10 mb-6 border-b pb-4">Lecciones</h3>
+        <CourseFieldsForm
+          form={form}
+          onChange={setForm}
+          saving={saving}
+          isEditing={isEditing}
+          onSubmit={handleSaveCourse}
+          setImageFile={setImageFile}
+          coursePdfFiles={coursePdfFiles}
+          setCoursePdfFiles={setCoursePdfFiles}
+          course={course}
+          onDeleteAttachment={handleDeleteCourseAttachment}
+        />
 
-              <div className="space-y-4 mb-8">
-                {(course?.lessons || []).map((lesson) => (
-                  <LessonEditorItem
-                    key={lesson.id}
-                    lesson={lesson}
-                    isOpen={openLessonId === lesson.id}
-                    onToggle={() => setOpenLessonId(openLessonId === lesson.id ? null : lesson.id)}
-                    editedLessons={editedLessons}
-                    onFieldChange={setLessonField}
-                    onLessonPdfChange={handleLessonPdfChange}
-                    savingLessonId={savingLessonId}
-                    onSaveLesson={handleSaveLesson}
-                    onDeleteLesson={handleDeleteLesson}
-                    onDeleteLessonAttachment={handleDeleteLessonAttachment}
-                  />
-                ))}
+        {/* Lecciones: solo disponible una vez que el curso ya existe */}
+        {isEditing && (
+          <>
+            <h3 className="font-display font-bold text-text-ink text-2xl mt-10 mb-6 border-b pb-4">Lecciones</h3>
 
-                {(!course?.lessons || course.lessons.length === 0) && (
-                  <p className="text-sm text-text-ink">Este curso todavía no tiene lecciones.</p>
-                )}
-              </div>
+            <div className="mb-8">
+              {(course?.lessons || []).map((lesson) => (
+                <LessonEditorItem
+                  key={lesson.id}
+                  lesson={lesson}
+                  isOpen={openLessonId === lesson.id}
+                  onToggle={() => setOpenLessonId(openLessonId === lesson.id ? null : lesson.id)}
+                  editedLessons={editedLessons}
+                  onFieldChange={setLessonField}
+                  onLessonPdfChange={handleLessonPdfChange}
+                  savingLessonId={savingLessonId}
+                  onSaveLesson={handleSaveLesson}
+                  onDeleteLesson={handleDeleteLesson}
+                  onDeleteLessonAttachment={handleDeleteLessonAttachment}
+                />
+              ))}
 
-              {/* Nueva lección */}
-              <NewLessonForm
-                newLesson={newLesson}
-                setNewLesson={setNewLesson}
-                setPdfs={setNewLessonPdfs}
-                creating={creatingLesson}
-                onSubmit={handleCreateLesson}
-              />
-            </>
-          )}
-        </div>
+              {(!course?.lessons || course.lessons.length === 0) && (
+                <p className="text-sm text-text-ink">Este curso todavía no tiene lecciones.</p>
+              )}
+            </div>
+
+            {/* Nueva lección */}
+            <NewLessonForm
+              newLesson={newLesson}
+              setNewLesson={setNewLesson}
+              setPdfs={setNewLessonPdfs}
+              creating={creatingLesson}
+              onSubmit={handleCreateLesson}
+            />
+          </>
+        )}
       </div>
     </div>
   );

@@ -111,8 +111,8 @@ export default function App() {
             <Route path="/admin/eventos" element={<AdminRoute><AdminLayout><AdminEvents /></AdminLayout></AdminRoute>} />
             <Route path="/admin/eventos/nuevo" element={<AdminRoute><AdminLayout><AdminEventForm /></AdminLayout></AdminRoute>} />
             <Route path="/admin/eventos/editar/:id" element={<AdminRoute><AdminLayout><AdminEventForm /></AdminLayout></AdminRoute>} />
-            <Route path="/admin/courses/new" element={<AdminRoute><AdminLayout><AdminCourseForm /></AdminLayout></AdminRoute>} />
-            <Route path="/admin/courses/edit/:id" element={<AdminRoute><AdminLayout><AdminCourseForm /></AdminLayout></AdminRoute>} />
+            <Route path="/admin/cursos/nuevo" element={<AdminRoute><AdminLayout><AdminCourseForm /></AdminLayout></AdminRoute>} />
+            <Route path="/admin/cursos/editar/:id" element={<AdminRoute><AdminLayout><AdminCourseForm /></AdminLayout></AdminRoute>} />
             <Route path="/admin/patrones" element={<AdminRoute><AdminLayout><AdminPatterns /></AdminLayout></AdminRoute>} />
             <Route path="/admin/patrones/nuevo" element={<AdminRoute><AdminLayout><AdminPatternForm /></AdminLayout></AdminRoute>} />
             <Route path="/admin/patrones/editar/:id" element={<AdminRoute><AdminLayout><AdminPatternForm /></AdminLayout></AdminRoute>} />

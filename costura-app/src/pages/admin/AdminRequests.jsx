@@ -176,7 +176,7 @@ export default function AdminRequests() {
   });
 
   return (
-    <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
+    <div className="max-w-6xl mx-auto px-4 py-8 animate-fade-in">
       <PageHeader title="Panel de Solicitudes" subtitle="Gestioná las solicitudes de pago pendientes." />
 
       <div className="card-flat rounded-2xl px-6 py-10 animate-fade-up mt-5">
@@ -222,7 +222,7 @@ export default function AdminRequests() {
                     <button onClick={() => handleApprove(req.id)} disabled={processingId === req.id}
                       className="btn btn-primary text-xs">{processingId === req.id ? 'Procesando...' : 'Aprobar'}</button>
                     <button onClick={() => handleReject(req.id)} disabled={processingId === req.id}
-                      className="btn btn-ghost text-xs bg-bg-soft text-text-ink hover:bg-border">{processingId === req.id ? 'Procesando...' : 'Rechazar'}</button>
+                      className="btn btn-ghost text-xs">{processingId === req.id ? 'Procesando...' : 'Rechazar'}</button>
                   </div>
                 </div>
               ))}
@@ -269,7 +269,7 @@ export default function AdminRequests() {
                     <button onClick={() => handleApprovePattern(req.id)} disabled={patternProcessingId === req.id}
                       className="btn btn-primary text-xs">{patternProcessingId === req.id ? 'Procesando...' : 'Aprobar'}</button>
                     <button onClick={() => handleRejectPattern(req.id)} disabled={patternProcessingId === req.id}
-                      className="btn btn-ghost text-xs bg-bg-soft text-text-ink hover:bg-border">{patternProcessingId === req.id ? 'Procesando...' : 'Rechazar'}</button>
+                      className="btn btn-ghost text-xs">{patternProcessingId === req.id ? 'Procesando...' : 'Rechazar'}</button>
                   </div>
                 </div>
               ))}
