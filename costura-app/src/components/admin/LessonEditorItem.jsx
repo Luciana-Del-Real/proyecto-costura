@@ -36,35 +36,47 @@ export default function LessonEditorItem({
       {/* Contenido expandible */}
       {isOpen && (
         <div className="border-t border-border p-4 space-y-3">
-          <input
-            placeholder="Título"
-            value={getLessonField('title')}
-            onChange={e => onFieldChange(lesson.id, 'title', e.target.value)}
-            className="w-full p-2 rounded-lg border border-border"
-          />
-          <textarea
-            placeholder="Descripción"
-            value={getLessonField('description') || ''}
-            onChange={e => onFieldChange(lesson.id, 'description', e.target.value)}
-            className="w-full p-2 rounded-lg border border-border h-20"
-          />
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label className="block text-sm font-medium text-text-ink mb-1.5">Título</label>
             <input
-              placeholder="Duración (ej. 12 min)"
-              value={getLessonField('duration')}
-              onChange={e => onFieldChange(lesson.id, 'duration', e.target.value)}
-              className="w-full p-2 rounded-lg border border-border"
-            />
-            <input
-              placeholder="Link de video"
-              value={getLessonField('videoUrl')}
-              onChange={e => onFieldChange(lesson.id, 'videoUrl', e.target.value)}
+              placeholder="Título"
+              value={getLessonField('title')}
+              onChange={e => onFieldChange(lesson.id, 'title', e.target.value)}
               className="w-full p-2 rounded-lg border border-border"
             />
           </div>
+          <div>
+            <label className="block text-sm font-medium text-text-ink mb-1.5">Descripción</label>
+            <textarea
+              placeholder="Descripción"
+              value={getLessonField('description') || ''}
+              onChange={e => onFieldChange(lesson.id, 'description', e.target.value)}
+              className="w-full p-2 rounded-lg border border-border h-20"
+            />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-sm font-medium text-text-ink mb-1.5">Duración</label>
+              <input
+                placeholder="Duración (ej. 12 min)"
+                value={getLessonField('duration')}
+                onChange={e => onFieldChange(lesson.id, 'duration', e.target.value)}
+                className="w-full p-2 rounded-lg border border-border"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-text-ink mb-1.5">Link de video</label>
+              <input
+                placeholder="Link de video"
+                value={getLessonField('videoUrl')}
+                onChange={e => onFieldChange(lesson.id, 'videoUrl', e.target.value)}
+                className="w-full p-2 rounded-lg border border-border"
+              />
+            </div>
+          </div>
 
           <div>
-            <label className="block text-xs font-bold text-text-ink mb-2">📎 Agregar PDFs a esta lección (podés elegir varios)</label>
+            <label className="block text-sm font-medium text-text-ink mb-1.5">📎 Agregar PDFs a esta lección (podés elegir varios)</label>
             <FilePicker accept=".pdf" multiple onChange={e => onLessonPdfChange(lesson.id, Array.from(e.target.files))} />
             {lesson.attachments?.length > 0 && (
               <div className="mt-3">

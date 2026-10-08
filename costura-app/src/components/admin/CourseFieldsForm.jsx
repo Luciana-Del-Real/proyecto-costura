@@ -7,14 +7,21 @@ export default function CourseFieldsForm({ form, onChange, saving, isEditing, on
   return (
     <form onSubmit={onSubmit} className="space-y-6">
       <div>
-        <label className="block text-sm font-medium text-text-ink mb-1.5">Título y Descripción</label>
+        <label className="block text-sm font-medium text-text-ink mb-1.5">Título</label>
         <input required value={form.title} onChange={e => onChange({ ...form, title: e.target.value })} placeholder="Título" className="w-full border-2 border-border rounded-xl px-4 py-3 mb-3" />
+        <label className="block text-sm font-medium text-text-ink mb-1.5">Descripción</label>
         <textarea required value={form.description} onChange={e => onChange({ ...form, description: e.target.value })} placeholder="Descripción general" className="w-full border-2 border-border rounded-xl px-4 py-3" />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <input type="number" required min={0} placeholder="Precio ARS" value={form.priceARS} onChange={e => onChange({ ...form, priceARS: e.target.value })} className="border-2 border-border rounded-xl px-4 py-3" />
-        <input type="number" required min={0} placeholder="Precio AUD" value={form.priceAUD} onChange={e => onChange({ ...form, priceAUD: e.target.value })} className="border-2 border-border rounded-xl px-4 py-3" />
+        <div>
+          <label className="block text-sm font-medium text-text-ink mb-1.5">Precio ARS</label>
+          <input type="number" required min={0} placeholder="Precio ARS" value={form.priceARS} onChange={e => onChange({ ...form, priceARS: e.target.value })} className="border-2 border-border rounded-xl px-4 py-3" />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-text-ink mb-1.5">Precio AUD</label>
+          <input type="number" required min={0} placeholder="Precio AUD" value={form.priceAUD} onChange={e => onChange({ ...form, priceAUD: e.target.value })} className="border-2 border-border rounded-xl px-4 py-3" />
+        </div>
       </div>
 
       <div>
