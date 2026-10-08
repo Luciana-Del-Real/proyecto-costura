@@ -91,18 +91,25 @@ export class CoursesService {
     if (l > MAX) l = MAX;
 
     const skip = (p - 1) * l;
-    const where = featured ? { featured: true, active: true } : { active: true };
 
     if (principal?.role === Role.ADMIN) {
+      // Rama admin: ve TODO (activos y ocultos) + conteo de ventas por curso,
+      // para que el frontend decida entre Ocultar (con ventas) o Eliminar.
+      const adminWhere = featured ? { featured: true } : {};
       return this.prisma.course.findMany({
-        where,
-        include: fullCourseInclude,
+        where: adminWhere,
+        include: {
+          ...fullCourseInclude,
+          _count: { select: { purchases: true } },
+        },
         orderBy: { createdAt: 'desc' },
         skip,
         take: l,
       });
     }
 
+    // Rama pública: solo cursos activos (los ocultos no se muestran).
+    const where = featured ? { featured: true, active: true } : { active: true };
     return this.prisma.course.findMany({
       where,
       select: publicCourseSelect,
@@ -135,11 +142,28 @@ export class CoursesService {
     return course;
   }
 
+  // Delete inteligente: si el curso tiene compras (historial de pagos) se
+  // OCULTA (active=false) en vez de borrarse, porque las FKs reales son
+  // ON DELETE RESTRICT y borrar el historial sería peligroso. Sin compras se
+  // borra definitivamente. Respuesta uniforme para el frontend:
+  //   { id, title, action: 'hidden' | 'deleted' } (+ active cuando se oculta).
   async delete(id: string) {
     await this.findOne(id);
-    return this.prisma.course.delete({
+    const count = await this.prisma.purchase.count({
+      where: { courseId: id, deletedAt: null },
+    });
+    if (count > 0) {
+      const hidden = await this.prisma.course.update({
+        where: { id },
+        data: { active: false },
+        select: { id: true, title: true, active: true },
+      });
+      return { ...hidden, action: 'hidden' as const };
+    }
+    const removed = await this.prisma.course.delete({
       where: { id },
       select: { id: true, title: true },
     });
+    return { ...removed, action: 'deleted' as const };
   }
 }

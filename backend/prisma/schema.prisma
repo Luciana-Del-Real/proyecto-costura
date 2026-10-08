@@ -262,6 +262,9 @@ model Pattern {
   archivo     String?
   precioARS   Float    @default(0)
   precioAUD   Float    @default(0)
+  // Oculto (active=false) cuando tiene ventas y el admin "elimina": no se
+  // borra para conservar el historial de pagos (misma estrategia que Course).
+  active      Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

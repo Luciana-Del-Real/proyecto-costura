@@ -1,5 +1,5 @@
-import { IsString, IsOptional, IsNumber, Min } from 'class-validator';
-import { Type } from 'class-transformer';
+import { IsString, IsOptional, IsNumber, IsBoolean, Min } from 'class-validator';
+import { Type, Transform } from 'class-transformer';
 
 export class UpdatePatternDto {
   @IsOptional()
@@ -37,4 +37,16 @@ export class UpdatePatternDto {
   @IsOptional()
   @IsString()
   archivo?: string;
+
+  // El update del admin también llega como multipart, así que `active` puede
+  // venir como string ("true"/"false"). @Transform lo normaliza a boolean
+  // antes de que corra @IsBoolean (igual que UpdateLessonProgressDto).
+  @IsOptional()
+  @Transform(({ value }) => {
+    if (value === 'true' || value === true || value === 1 || value === '1') return true;
+    if (value === 'false' || value === false || value === 0 || value === '0') return false;
+    return value;
+  })
+  @IsBoolean()
+  active?: boolean;
 }

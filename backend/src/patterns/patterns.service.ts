@@ -25,6 +25,9 @@ export class PatternsService {
   // muestre el estado correcto (Gratis / De pago / Pendiente / Descargar).
   async findAllPublic(principal?: Principal) {
     const patterns = await this.prisma.pattern.findMany({
+      // Solo patrones activos en el catálogo público; los ocultos por ventas
+      // quedan fuera (el admin los ve en findAll()).
+      where: { active: true },
       orderBy: { createdAt: 'asc' },
       include: patternInclude,
     });
@@ -64,10 +67,15 @@ export class PatternsService {
     });
   }
 
+  // Rama admin: ve TODOS los patrones (activos y ocultos) con el conteo de
+  // ventas, para que el frontend decida entre Ocultar (con ventas) o Eliminar.
   findAll() {
     return this.prisma.pattern.findMany({
       orderBy: { createdAt: 'asc' },
-      include: patternInclude,
+      include: {
+        ...patternInclude,
+        _count: { select: { patternPurchases: true } },
+      },
     });
   }
 
@@ -147,13 +155,29 @@ export class PatternsService {
     });
   }
 
-  // Consistente con courses: borra la fila pero NO los archivos del disco.
+  // Delete inteligente: si el patrón tiene compras (historial de pagos) se
+  // OCULTA (active=false) en vez de borrarse, porque las FKs reales son
+  // ON DELETE RESTRICT y borrar el historial sería peligroso. Sin compras se
+  // borra definitivamente. Respuesta uniforme para el frontend:
+  //   { id, titulo, action: 'hidden' | 'deleted' } (+ active cuando se oculta).
   async delete(id: string) {
     await this.findOne(id);
-    return this.prisma.pattern.delete({
+    const count = await this.prisma.patternPurchase.count({
+      where: { patternId: id, deletedAt: null },
+    });
+    if (count > 0) {
+      const hidden = await this.prisma.pattern.update({
+        where: { id },
+        data: { active: false },
+        select: { id: true, titulo: true, active: true },
+      });
+      return { ...hidden, action: 'hidden' as const };
+    }
+    const removed = await this.prisma.pattern.delete({
       where: { id },
       select: { id: true, titulo: true },
     });
+    return { ...removed, action: 'deleted' as const };
   }
 
   addAttachments(patternId: string, files: Express.Multer.File[]) {

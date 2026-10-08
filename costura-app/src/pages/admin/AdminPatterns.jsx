@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FileText } from 'lucide-react';
-import { get, del } from '../../services/api';
+import { get, del, put } from '../../services/api';
 import { useDialog } from '../../context/DialogContext';
 import { getImageUrl } from '../../utils/media';
 import PageHeader from '../../components/PageHeader';
@@ -38,14 +38,41 @@ export default function AdminPatterns() {
 
   useEffect(() => { load(); }, []);
 
-  const handleDelete = async (p) => {
-    if (!await confirmDialog(`¿Borrar el patrón "${p.titulo}"? Esta acción no se puede deshacer.`)) return;
+  const salesCount = (p) => p._count?.patternPurchases ?? 0;
+
+  const handleShow = async (p) => {
+    if (!await confirmDialog('¿Volver a mostrar este patrón en el catálogo?')) return;
     try {
-      await del(`/patterns/${p.id}`);
+      await put(`/patterns/${p.id}`, { active: true });
       await load();
     } catch (error) {
-      console.error('Error borrando el patrón:', error);
-      alertDialog('No se pudo borrar el patrón');
+      console.error('Error reactivando el patrón:', error);
+      alertDialog('No se pudo reactivar el patrón');
+    }
+  };
+
+  // Delete inteligente: el backend oculta (active=false) si el patrón tiene
+  // ventas y borra definitivamente si no tiene. La respuesta trae
+  // `action: 'hidden' | 'deleted'` para mostrar el resultado correcto.
+  const handleHideOrDelete = async (p) => {
+    const sales = salesCount(p);
+    if (sales > 0) {
+      if (!await confirmDialog(`Este patrón tiene ${sales} venta(s): se va a OCULTAR del catálogo conservando el historial.`)) return;
+    } else if (!await confirmDialog('Se va a ELIMINAR definitivamente. No se puede deshacer.')) {
+      return;
+    }
+    try {
+      const result = await del(`/patterns/${p.id}`);
+      await alertDialog(
+        result?.action === 'hidden'
+          ? 'El patrón se ocultó: conserva el historial de ventas y podés mostrarlo cuando quieras.'
+          : 'El patrón se eliminó definitivamente.',
+        result?.action === 'hidden' ? 'Patrón ocultado' : 'Patrón eliminado',
+      );
+      await load();
+    } catch (error) {
+      console.error('Error ocultando/eliminando el patrón:', error);
+      alertDialog('No se pudo ocultar/eliminar el patrón');
     }
   };
 
@@ -96,10 +123,14 @@ export default function AdminPatterns() {
 
               {/* Información */}
               <div className="flex-grow min-w-0">
-                <h3 className="font-body text-text-ink text-lg font-bold mb-2 leading-tight">{p.titulo}</h3>
+                <h3 className="font-body text-text-ink text-lg font-bold mb-2 leading-tight flex items-center gap-2">
+                  {p.titulo}
+                  {p.active === false && <Badge tone="neutral">Oculto</Badge>}
+                </h3>
                 <div className="flex gap-4 text-xs text-black/70 font-medium">
                   <span>{p.nivel}</span>
                   <span>{p.categoria}</span>
+                  <span>{salesCount(p)} venta{salesCount(p) === 1 ? '' : 's'}</span>
                   <Badge tone={p.esPago ? 'success' : 'primary'}>{p.esPago ? 'De pago' : 'Gratis'}</Badge>
                 </div>
               </div>
@@ -108,9 +139,19 @@ export default function AdminPatterns() {
               <Link to={`/admin/patrones/editar/${p.id}`} className="btn btn-primary text-sm w-full sm:w-auto">
                 Editar
               </Link>
-              <button onClick={() => handleDelete(p)} className="btn btn-ghost text-sm w-full sm:w-auto text-danger border-danger/30">
-                Borrar
-              </button>
+              {p.active === false ? (
+                <button onClick={() => handleShow(p)} className="btn btn-ghost text-sm w-full sm:w-auto">
+                  Mostrar
+                </button>
+              ) : salesCount(p) > 0 ? (
+                <button onClick={() => handleHideOrDelete(p)} className="btn btn-ghost text-sm w-full sm:w-auto text-accent">
+                  Ocultar
+                </button>
+              ) : (
+                <button onClick={() => handleHideOrDelete(p)} className="btn btn-ghost text-sm w-full sm:w-auto text-danger border-danger/30">
+                  Eliminar
+                </button>
+              )}
             </div>
           ))
         )}
