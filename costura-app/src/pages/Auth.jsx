@@ -10,21 +10,21 @@ export default function Auth({ defaultTab = 'login' }) {
   const [tab, setTab] = useState(defaultTab);
   const [showPassword, setShowPassword] = useState(false);
   useEffect(() => {
-    // Si entras a la página de Auth, cerramos la sesión actual 
+    // Si entras a la página de Auth, cerramos la sesión actual
     // para que no se superpongan estados
-    logout(); 
+    logout();
     // logout es estable (useCallback en AuthContext), el efecto corre una sola vez
   }, [logout]);
-  
+
   // Agregamos 'country' al estado inicial del formulario
-  const [form, setForm] = useState({ 
-    name: '', 
-    email: '', 
-    password: '', 
-    confirm: '', 
-    country: 'ARS' 
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirm: '',
+    country: 'ARS'
   });
-  
+
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -37,7 +37,7 @@ export default function Auth({ defaultTab = 'login' }) {
     e.preventDefault();
     setLoading(true);
     setError('');
-    
+
     try {
       if (tab === 'register') {
         await register(form.name, form.email, form.password, form.country);
@@ -55,7 +55,7 @@ export default function Auth({ defaultTab = 'login' }) {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-bg-surface">
       <div className="w-full max-w-md animate-fade-up">
-        
+
         <div className="text-center mb-8">
           <h1 className="font-display text-3xl font-bold text-text-ink mb-2">
             {tab === 'login' ? 'Bienvenida de nuevo' : 'Crear cuenta'}
@@ -71,51 +71,64 @@ export default function Auth({ defaultTab = 'login' }) {
               <ErrorState variant="inline" description={error} />
             </div>
           )}
-          
+
           <form onSubmit={handleSubmit} className="space-y-4">
             {tab === 'register' && (
-              <input type="text" placeholder="Nombre completo" className="bg-white w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-primary outline-none" onChange={e => setForm({...form, name: e.target.value})} />
+              <div>
+                <label className="block text-sm font-medium text-text-ink mb-1.5">Nombre completo</label>
+                <input type="text" placeholder="Nombre completo" className="bg-white w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-primary outline-none" onChange={e => setForm({...form, name: e.target.value})} />
+              </div>
             )}
-            
-            <input type="email" placeholder="Email" className="bg-white w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-primary outline-none" onChange={e => setForm({...form, email: e.target.value})} />
+
+            <div>
+              <label className="block text-sm font-medium text-text-ink mb-1.5">Email</label>
+              <input type="email" placeholder="Email" className="bg-white w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-primary outline-none" onChange={e => setForm({...form, email: e.target.value})} />
+            </div>
 
             {/* Selector de país - Solo visible en registro */}
             {tab === 'register' && (
-              <select 
-                required
-                className="w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-primary outline-none bg-white text-gray-600"
-                value={form.country}
-                onChange={e => setForm({...form, country: e.target.value})}
-              >
-                <option value="ARS">Argentina (ARS)</option>
-                <option value="AUD">Australia (AUD)</option>
-              </select>
+              <div>
+                <label className="block text-sm font-medium text-text-ink mb-1.5">País</label>
+                <select
+                  required
+                  className="w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-primary outline-none bg-white text-gray-600"
+                  value={form.country}
+                  onChange={e => setForm({...form, country: e.target.value})}
+                >
+                  <option value="ARS">Argentina (ARS)</option>
+                  <option value="AUD">Australia (AUD)</option>
+                </select>
+              </div>
             )}
 
-            <div className="relative">
-              <input 
-                type={showPassword ? "text" : "password"} 
-                placeholder="Contraseña" 
-                className="bg-white w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-primary outline-none pr-16" 
-                onChange={e => setForm({...form, password: e.target.value})} 
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-ink transition-colors cursor-pointer"
-              >
-                {showPassword ? <EyeOff className="w-5 h-5" strokeWidth={1.8} /> : <Eye className="w-5 h-5" strokeWidth={1.8} />}
-              </button>
+            <div>
+              <label className="block text-sm font-medium text-text-ink mb-1.5">Contraseña</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Contraseña"
+                  className="bg-white w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-primary outline-none pr-16"
+                  onChange={e => setForm({...form, password: e.target.value})}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-text-ink transition-colors cursor-pointer"
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" strokeWidth={1.8} /> : <Eye className="w-5 h-5" strokeWidth={1.8} />}
+                </button>
+              </div>
             </div>
 
             {tab === 'register' && (
               <div className="relative">
-                <input 
-                  type="password" 
-                  placeholder="Confirmar contraseña" 
-                  className="bg-white w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-primary outline-none" 
-                  onChange={e => setForm({...form, confirm: e.target.value})} 
+                <label className="block text-sm font-medium text-text-ink mb-1.5">Confirmar contraseña</label>
+                <input
+                  type="password"
+                  placeholder="Confirmar contraseña"
+                  className="bg-white w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-primary outline-none"
+                  onChange={e => setForm({...form, confirm: e.target.value})}
                 />
               </div>
             )}

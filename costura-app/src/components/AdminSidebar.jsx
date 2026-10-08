@@ -60,8 +60,8 @@ function NavItem({ item, active, onNavigate }) {
       aria-current={active ? 'page' : undefined}
       className={`flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-colors ${
         active
-          ? 'bg-primary-soft text-primary'
-          : 'text-text-ink hover:bg-bg-surface hover:text-primary'
+          ? 'bg-success/10 text-success'
+          : 'text-text-ink hover:bg-bg-surface hover:text-success'
       }`}
     >
       <Icon className="w-5 h-5 shrink-0" aria-hidden="true" />

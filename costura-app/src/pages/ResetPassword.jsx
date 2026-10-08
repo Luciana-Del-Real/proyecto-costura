@@ -62,22 +62,28 @@ export default function ResetPassword() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <input
-              type="password"
-              required
-              placeholder="Nueva contraseña"
-              value={form.password}
-              className="w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-primary outline-none"
-              onChange={e => setForm({...form, password: e.target.value})}
-            />
-            <input
-              type="password"
-              required
-              placeholder="Confirmar contraseña"
-              value={form.confirmPassword}
-              className="w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-primary outline-none"
-              onChange={e => setForm({...form, confirmPassword: e.target.value})}
-            />
+            <div>
+              <label className="block text-sm font-medium text-text-ink mb-1.5">Nueva contraseña</label>
+              <input
+                type="password"
+                required
+                placeholder="Nueva contraseña"
+                value={form.password}
+                className="w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-primary outline-none"
+                onChange={e => setForm({...form, password: e.target.value})}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-text-ink mb-1.5">Confirmar contraseña</label>
+              <input
+                type="password"
+                required
+                placeholder="Confirmar contraseña"
+                value={form.confirmPassword}
+                className="w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-primary outline-none"
+                onChange={e => setForm({...form, confirmPassword: e.target.value})}
+              />
+            </div>
             <button type="submit" disabled={loading} className="btn btn-primary w-full font-semibold">
               {loading ? 'Actualizando...' : 'Actualizar contraseña'}
             </button>
