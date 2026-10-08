@@ -3,9 +3,10 @@ import { createPortal } from 'react-dom';
 import { getImageUrl } from '../../utils/media';
 
 // Detalle de una solicitud de certificado para la revisión del admin: alumna +
-// curso, cada lección con su estado y su evidencia (imagen + nota), y los
-// comentarios que esa alumna dejó en el curso. Se abre como modal y pide el
-// detalle a GET /admin/certificate-requests/:id/detail al montarse.
+// curso y cada lección con su estado y su evidencia (imagen + nota). Se abre
+// como modal y pide el detalle a GET /admin/certificate-requests/:id/detail al
+// montarse. Los comentarios de la alumna NO se muestran acá a propósito: esta
+// vista es solo para corroborar las evidencias.
 export default function CertificateRequestDetail({ requestId, getDetail, onClose }) {
   const [detail, setDetail] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -112,42 +113,6 @@ export default function CertificateRequestDetail({ requestId, getDetail, onClose
                         )}
                       </div>
                     ))}
-                  </div>
-                </section>
-
-                <section>
-                  <p className="text-xs font-bold uppercase tracking-wide text-primary mb-3">Comentarios de la alumna</p>
-                  {(!detail.comments || detail.comments.length === 0) && (
-                    <p className="text-sm text-text-ink">Sin comentarios en este curso.</p>
-                  )}
-                  <div className="space-y-3">
-                    {(detail.comments || []).map((c) => {
-                      const isAdmin = c.user?.role === 'ADMIN';
-                      return (
-                        <div
-                          key={c.id}
-                          className={`rounded-xl border p-3 ${isAdmin ? 'bg-bg-soft/40 border-border' : 'bg-white border-border-sage'}`}
-                        >
-                          <div className="flex items-center justify-between gap-2 mb-1">
-                            <p className="text-xs font-bold uppercase tracking-wide text-accent">
-                              {isAdmin ? 'Profesora' : (c.user?.name || 'Alumna')}
-                            </p>
-                            <p className="text-[11px] text-accent/70">{formatDate(c.createdAt)}</p>
-                          </div>
-                          <p className="text-xs text-accent mb-1">{c.lesson?.order}. {c.lesson?.title}</p>
-                          <p className="text-sm text-text-ink whitespace-pre-line">{c.message}</p>
-                          {c.image && (
-                            <a href={getImageUrl(c.image)} target="_blank" rel="noreferrer" className="block w-fit">
-                              <img
-                                src={getImageUrl(c.image)}
-                                alt="Imagen adjunta"
-                                className="mt-2 max-h-48 rounded-lg border border-border object-contain"
-                              />
-                            </a>
-                          )}
-                        </div>
-                      );
-                    })}
                   </div>
                 </section>
               </>
