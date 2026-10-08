@@ -44,12 +44,12 @@ function toFeatures(detail) {
 // posición en la grilla: cada evento tiene su propio tono (rosa, verde,
 // crema, lila, durazno, celeste).
 const FLYER_VARIANTS = [
-  { bg: '#FBE9F2', border: '#F2C3D9' }, // rosa
-  { bg: '#E9F1ED', border: '#C3DACF' }, // verde
-  { bg: '#FAF1E6', border: '#EDDCC5' }, // crema
-  { bg: '#F1ECF7', border: '#DCCEEB' }, // lila
-  { bg: '#FDF0E7', border: '#F3D3BD' }, // durazno
-  { bg: '#EAF2F6', border: '#C7DCE7' }, // celeste
+  { bg: 'var(--color-event-rose)', border: 'var(--color-event-rose-border)' }, // rosa
+  { bg: 'var(--color-event-green)', border: 'var(--color-event-green-border)' }, // verde
+  { bg: 'var(--color-event-cream)', border: 'var(--color-event-cream-border)' }, // crema
+  { bg: 'var(--color-event-lilac)', border: 'var(--color-event-lilac-border)' }, // lila
+  { bg: 'var(--color-event-peach)', border: 'var(--color-event-peach-border)' }, // durazno
+  { bg: 'var(--color-event-sky)', border: 'var(--color-event-sky-border)' }, // celeste
 ];
 
 // Folleto de evento: flota sobre un fondo pastel propio con borde suave,
@@ -68,13 +68,13 @@ function EventCard({ event, variant }) {
           verde oscuro (más chica y sin negrita). Bebas = font-display,
           coherente con el resto de la página. */}
       <h3 className="font-display uppercase leading-none">
-        <span className="text-[#EC1778] block text-4xl md:text-5xl font-bold">{first}</span>
-        <span className="text-[#5A786E] block text-2xl md:text-3xl font-normal">{second}</span>
+        <span className="text-event-pink block text-4xl md:text-5xl font-bold">{first}</span>
+        <span className="text-event-green-deep block text-2xl md:text-3xl font-normal">{second}</span>
       </h3>
 
       {/* Bajada: texto corto centrado en rosa (Montserrat = font-body) */}
       {event.subtitle && (
-        <p className="font-body text-sm md:text-base text-[#C24575] mt-3 leading-relaxed">{event.subtitle}</p>
+        <p className="font-body text-sm md:text-base text-event-rose-deep mt-3 leading-relaxed">{event.subtitle}</p>
       )}
 
       {/* Detalles: líneas independientes sin viñetas, separadas por space-y-2 */}
@@ -93,7 +93,7 @@ function EventCard({ event, variant }) {
           href={whatsappUrl(event)}
           target="_blank"
           rel="noreferrer"
-          className="inline-flex items-center justify-center bg-[#EC1778] hover:bg-[#D10F67] text-white font-bold text-sm uppercase tracking-wide rounded-full px-10 py-3 transition-colors"
+          className="inline-flex items-center justify-center bg-event-pink hover:bg-event-pink-hover text-white font-bold text-sm uppercase tracking-wide rounded-full px-10 py-3 transition-colors"
         >
           Consultar
         </a>

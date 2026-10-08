@@ -68,6 +68,24 @@
   --color-ochre: #D988B0;          /* pink accent (level badges) */
   --color-border-sage: #F7C1D6;    /* soft pink comment-bubble border */
 
+  /* Eventos: paleta diseñada de los folletos (exact values preserved, PR5 style) */
+  --color-event-rose: #FBE9F2;
+  --color-event-rose-border: #F2C3D9;
+  --color-event-green: #E9F1ED;
+  --color-event-green-border: #C3DACF;
+  --color-event-cream: #FAF1E6;
+  --color-event-cream-border: #EDDCC5;
+  --color-event-lilac: #F1ECF7;
+  --color-event-lilac-border: #DCCEEB;
+  --color-event-peach: #FDF0E7;
+  --color-event-peach-border: #F3D3BD;
+  --color-event-sky: #EAF2F6;
+  --color-event-sky-border: #C7DCE7;
+  --color-event-pink: #EC1778;       /* titulo + boton Consultar */
+  --color-event-pink-hover: #D10F67; /* hover del boton */
+  --color-event-green-deep: #5A786E; /* 2da linea del titulo */
+  --color-event-rose-deep: #C24575;  /* bajada del folleto */
+
   /* Tailwind default-color parity keepers (utilities used across JSX) */
   --color-white: #FFFFFF;
   --color-black: #1D1D1B;
