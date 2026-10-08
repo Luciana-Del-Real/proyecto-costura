@@ -248,9 +248,10 @@ describe('useLessonComments', () => {
     await act(async () => click(container, 'send'));
     await act(async () => {}); // flush the rejection microtask
 
-    // El alert nativo se reemplazó por el modal de marca Grow: el mensaje
-    // aparece en el DOM del DialogProvider, no en un spy global.
-    expect(container.textContent).toContain('No se pudo enviar tu pregunta.');
+    // El alert nativo se reemplazó por el modal de marca Grow (Modal
+    // compartido), que porta a <body> por diseño (depth ≤ 1): el mensaje
+    // aparece en el DOM de document.body, no en un spy global.
+    expect(document.body.textContent).toContain('No se pudo enviar tu pregunta.');
     const state = readState(container);
     expect(state.drafts.l1).toBe('abc'); // draft preserved on error
     expect(state.sendingFor).toBeNull();

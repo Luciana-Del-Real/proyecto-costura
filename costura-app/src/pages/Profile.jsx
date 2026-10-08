@@ -7,6 +7,7 @@ import LoadingState from '../components/LoadingState';
 import EmptyState from '../components/EmptyState';
 import ErrorState from '../components/ErrorState';
 import SuccessBanner from '../components/SuccessBanner';
+import PageHeader from '../components/PageHeader';
 
 export default function Profile() {
   const { user, updateUser } = useAuth();
@@ -53,23 +54,16 @@ export default function Profile() {
 
   return (
     <div className="w-full px-4 py-1 animate-fade-in">
-      {/* Header: inicial al lado del nombre (mismo estilo plano que PageHeader) */}
-      <header className="w-full px-4 pt-6 pb-2 animate-fade-up">
-        <div className="flex items-center gap-4">
-          <div className="w-14 h-14 bg-primary-soft rounded-full flex items-center justify-center text-xl font-bold text-text-ink flex-shrink-0">
-            {user?.name?.charAt(0).toUpperCase()}
-          </div>
-          <div>
-            <h1 className="font-display text-3xl md:text-4xl font-bold text-text-ink">{user?.name}</h1>
-            {user?.email && <p className="text-text-muted mt-1">{user?.email}</p>}
-          </div>
-        </div>
-        <span aria-hidden="true" className="block w-16 h-1 bg-primary mt-3" />
-      </header>
+      <PageHeader title={user?.name} subtitle={user?.email} />
 
       <div className="card-flat rounded-2xl px-4 py-10 animate-fade-up mt-5 mb-5">
           <div className="flex items-center justify-between mb-5">
-            <h2 className="font-display text-text-ink text-3xl">Información personal</h2>
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 bg-primary-soft rounded-full flex items-center justify-center text-xl font-bold text-text-ink flex-shrink-0">
+                {user?.name?.charAt(0).toUpperCase()}
+              </div>
+              <h2 className="text-2xl font-display font-bold text-text-ink">Información personal</h2>
+            </div>
             {!editing && (
               <button onClick={() => setEditing(true)} className="btn btn-ghost text-sm">
                 Editar
@@ -151,7 +145,7 @@ export default function Profile() {
 
         <div className="px-1 py-10 animate-fade-up mt-5 mb-5">
           <div className="flex items-center justify-between mb-5">
-            <h2 className="font-display text-text-ink text-3xl">Historial de compras</h2>
+            <h2 className="text-2xl font-display font-bold text-text-ink">Historial de compras</h2>
           </div>
           {purchasesLoading ? (
             <LoadingState size="inline" />

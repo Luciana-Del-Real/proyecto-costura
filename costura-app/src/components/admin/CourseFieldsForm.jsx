@@ -7,7 +7,7 @@ export default function CourseFieldsForm({ form, onChange, saving, isEditing, on
   return (
     <form onSubmit={onSubmit} className="space-y-6">
       <div>
-        <label className="block text-sm font-bold text-black mb-1.5">Título y Descripción</label>
+        <label className="block text-sm font-medium text-text-ink mb-1.5">Título y Descripción</label>
         <input required value={form.title} onChange={e => onChange({ ...form, title: e.target.value })} placeholder="Título" className="w-full border-2 border-border rounded-xl px-4 py-3 mb-3" />
         <textarea required value={form.description} onChange={e => onChange({ ...form, description: e.target.value })} placeholder="Descripción general" className="w-full border-2 border-border rounded-xl px-4 py-3" />
       </div>
@@ -18,7 +18,7 @@ export default function CourseFieldsForm({ form, onChange, saving, isEditing, on
       </div>
 
       <div>
-        <label className="block text-sm font-bold text-black mb-1.5">Nivel</label>
+        <label className="block text-sm font-medium text-text-ink mb-1.5">Nivel</label>
         <select value={form.level} onChange={e => onChange({ ...form, level: e.target.value })} className="w-full border-2 border-border rounded-xl px-4 py-3">
           <option>Principiante</option>
           <option>Intermedio</option>

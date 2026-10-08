@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useRef, useState } from 'react';
+import Modal from '../components/Modal';
 
 const DialogContext = createContext(null);
 
@@ -6,9 +7,10 @@ const DialogContext = createContext(null);
 // (window.confirm / alert). Un solo diálogo a la vez:
 // - confirmDialog(message, title?) -> Promise<boolean>; resuelve true solo si
 //   la usuaria confirma explícitamente, false al cancelar. No se cierra con
-//   click en el backdrop (decisión explícita requerida).
+//   click en el backdrop ni con Esc (decisión explícita requerida): el onClose
+//   del Modal compartido es un no-op para el confirm.
 // - alertDialog(message, title?) -> Promise<void>; se descarta con click en el
-//   backdrop o en "Entendido".
+//   backdrop, con Esc, con la X o en "Entendido".
 // El resolver vive en un ref para completar el Promise fuera del ciclo de
 // render (el updater de setState no debe ejecutar side effects).
 export function DialogProvider({ children }) {
@@ -37,38 +39,36 @@ export function DialogProvider({ children }) {
   return (
     <DialogContext.Provider value={{ confirmDialog, alertDialog }}>
       {children}
-      {dialog && (
-        <div className="fixed inset-0 z-[80] flex items-center justify-center px-4" role="dialog" aria-modal="true">
-          {/* Backdrop: descarta solo el alert; el confirm exige botón explícito */}
-          <div
-            className="absolute inset-0 bg-black/40 animate-fade-in"
-            onClick={() => { if (!isConfirm) closeDialog(true); }}
-          />
-          <div className="relative rounded-2xl border border-border bg-white p-6 max-w-sm w-full shadow-[0_12px_40px_rgba(29,29,27,0.15)] animate-fade-up">
-            {/* Barra de acento fucsia, identidad Grow */}
-            <div className="h-1 bg-primary rounded-full mb-4" aria-hidden="true" />
-            <img src="/Images/Logo%20sin%20Slogan.png" alt="Grow" className="w-10 h-10 object-contain mx-auto mb-3" />
-            <h3 className="font-display font-bold text-text-ink text-xl text-center">{title}</h3>
-            <p className="text-sm text-text-ink text-center mt-2 mb-6 whitespace-pre-line">{dialog.message}</p>
-            <div className="flex justify-center gap-3">
-              {isConfirm ? (
-                <>
-                  <button type="button" className="btn btn-primary text-sm" onClick={() => closeDialog(true)}>
-                    Sí, confirmar
-                  </button>
-                  <button type="button" className="btn btn-ghost text-sm" onClick={() => closeDialog(false)}>
-                    Cancelar
-                  </button>
-                </>
-              ) : (
+      <Modal
+        open={Boolean(dialog)}
+        onClose={() => { if (!isConfirm) closeDialog(true); }}
+        title={title}
+        size="sm"
+        zIndex={100}
+        footer={
+          <div className="flex justify-center gap-3">
+            {isConfirm ? (
+              <>
                 <button type="button" className="btn btn-primary text-sm" onClick={() => closeDialog(true)}>
-                  Entendido
+                  Sí, confirmar
                 </button>
-              )}
-            </div>
+                <button type="button" className="btn btn-ghost text-sm" onClick={() => closeDialog(false)}>
+                  Cancelar
+                </button>
+              </>
+            ) : (
+              <button type="button" className="btn btn-primary text-sm" onClick={() => closeDialog(true)}>
+                Entendido
+              </button>
+            )}
           </div>
+        }
+      >
+        <div className="flex flex-col items-center text-center">
+          <img src="/Images/Logo%20sin%20Slogan.png" alt="Grow" className="w-10 h-10 object-contain mb-3" />
+          <p className="text-sm text-text-ink whitespace-pre-line">{dialog?.message}</p>
         </div>
-      )}
+      </Modal>
     </DialogContext.Provider>
   );
 }

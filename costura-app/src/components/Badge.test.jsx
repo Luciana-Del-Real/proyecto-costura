@@ -4,7 +4,7 @@ import { render, screen } from '@testing-library/react';
 import Badge from './Badge';
 
 describe('Badge', () => {
-  const BASE_SCALE = ['text-[10px]', 'font-bold', 'uppercase', 'tracking-wide', 'px-2', 'py-0.5', 'rounded-full', 'inline-flex', 'items-center'];
+  const BASE_SCALE = ['text-[10px]', 'font-bold', 'px-2', 'py-0.5', 'rounded-full', 'inline-flex', 'items-center'];
 
   it('neutral is the default tone and every badge carries the one size scale', () => {
     const { container } = render(<Badge>Sin responder</Badge>);

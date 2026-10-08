@@ -1,6 +1,8 @@
-// Shared status pill: ONE size scale (micro, uppercase, tracking-wide) and a
-// fixed set of token tones. Callers keep their copy (the words) and pick the
-// tone that matches the colour intent; `className` adds positioning extras.
+// Shared status pill: ONE size scale (micro) and a fixed set of token tones.
+// No forced casing: badges render in the natural case of the copy (sentence
+// case is common, e.g. "De pago"). Callers keep their copy (the words) and
+// pick the tone that matches the colour intent; `className` adds positioning
+// extras.
 const tones = {
   primary: 'bg-primary-soft text-primary',
   success: 'bg-success/10 text-success',
@@ -12,7 +14,7 @@ const tones = {
 
 export default function Badge({ children, tone = 'neutral', className = '' }) {
   return (
-    <span className={`text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full inline-flex items-center ${tones[tone]} ${className}`}>
+    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full inline-flex items-center ${tones[tone]} ${className}`}>
       {children}
     </span>
   );

@@ -92,7 +92,7 @@ export default function AdminEventForm() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-bold text-black mb-1.5">Título</label>
+            <label className="block text-sm font-medium text-text-ink mb-1.5">Título</label>
             <input
               required
               value={form.title}
@@ -106,7 +106,7 @@ export default function AdminEventForm() {
           </div>
 
           <div>
-            <label className="block text-sm font-bold text-black mb-1.5">Descripción</label>
+            <label className="block text-sm font-medium text-text-ink mb-1.5">Descripción</label>
             <textarea
               required
               value={form.subtitle}
@@ -118,7 +118,7 @@ export default function AdminEventForm() {
           </div>
 
           <div>
-            <label className="block text-sm font-bold text-black mb-1.5">Detalle</label>
+            <label className="block text-sm font-medium text-text-ink mb-1.5">Detalle</label>
             <textarea
               required
               value={form.detail}

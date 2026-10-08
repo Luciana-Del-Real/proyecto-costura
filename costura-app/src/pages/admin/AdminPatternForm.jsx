@@ -128,7 +128,7 @@ export default function AdminPatternForm() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-bold text-black mb-1.5">Título</label>
+            <label className="block text-sm font-medium text-text-ink mb-1.5">Título</label>
             <input
               required
               value={form.titulo}
@@ -139,7 +139,7 @@ export default function AdminPatternForm() {
           </div>
 
           <div>
-            <label className="block text-sm font-bold text-black mb-1.5">Descripción</label>
+            <label className="block text-sm font-medium text-text-ink mb-1.5">Descripción</label>
             <textarea
               required
               value={form.descripcion}
@@ -151,7 +151,7 @@ export default function AdminPatternForm() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-bold text-black mb-1.5">Precio ARS</label>
+              <label className="block text-sm font-medium text-text-ink mb-1.5">Precio ARS</label>
               <input
                 type="number"
                 min={0}
@@ -163,7 +163,7 @@ export default function AdminPatternForm() {
               />
             </div>
             <div>
-              <label className="block text-sm font-bold text-black mb-1.5">Precio AUD</label>
+              <label className="block text-sm font-medium text-text-ink mb-1.5">Precio AUD</label>
               <input
                 type="number"
                 min={0}
@@ -180,7 +180,7 @@ export default function AdminPatternForm() {
           </p>
 
           <div>
-            <label className="block text-sm font-bold text-black mb-1.5">📷 Imagen de portada</label>
+            <label className="block text-sm font-medium text-text-ink mb-1.5">📷 Imagen de portada</label>
             <FilePicker
               accept="image/*"
               onChange={e => setImagenFile(e.target.files?.[0] || null)}
@@ -191,7 +191,7 @@ export default function AdminPatternForm() {
           </div>
 
           <div>
-            <label className="block text-sm font-bold text-black mb-1.5 flex items-center gap-1.5"><FileText className="w-4 h-4" strokeWidth={1.5} /> PDFs (podés elegir varios)</label>
+            <label className="block text-sm font-medium text-text-ink mb-1.5 flex items-center gap-1.5"><FileText className="w-4 h-4" strokeWidth={1.5} /> PDFs (podés elegir varios)</label>
             <FilePicker
               accept=".pdf"
               multiple
