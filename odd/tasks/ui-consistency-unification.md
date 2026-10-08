@@ -39,8 +39,8 @@ Blank-while-loading routes:
 - [x] **T4** Add loading flags to `AdminDashboard` and `AdminSales` (do not render zeros/empty while loading).
 
 ### Work unit 2 — empty + error
-- [ ] **T5** `EmptyState` component (+ test) `{icon,title,description,action}`; migrate the ~20 sites and unify the search-empty copy + "Limpiar" action.
-- [ ] **T6** `ErrorState` component (+ test) `{icon,title,description,onRetry?}`; migrate the ~12 sites.
+- [x] **T5** `EmptyState` component (+ test) `{icon,title,description,action}`; migrate the ~20 sites and unify the search-empty copy + "Limpiar" action.
+- [x] **T6** `ErrorState` component (+ test) `{icon,title,description,onRetry?}`; migrate the ~12 sites.
 
 ### Work unit 3 — repeated controls
 - [ ] **T7** `SearchInput` component (+ test); migrate the 9 identical inputs (+ the `ConsultasSection` variant).
@@ -77,3 +77,5 @@ Forecast: large (touches most of `costura-app/src`). Work unit by work unit on `
 ## Progress
 
 - 2026-10-08: audit complete; document created; scope confirmed (do everything, in work units, starting with loading). Implementation not started.
+- 2026-10-08: WU1 (loading) done — `LoadingState` (page/section/inline), all loaders migrated, loading flags added to CourseCatalogContext/AdminDashboard/AdminSales. Frontend 132 -> 138 tests. Commits `dbbf511` + docs.
+- 2026-10-08: WU2 (empty + error) done — `EmptyState` and `ErrorState` (card/plain/inline and card/banner/inline), ~32 sites migrated, search-empty copy unified, red banners now use the `danger` token. Frontend 138 -> 151 tests. Not committed yet.

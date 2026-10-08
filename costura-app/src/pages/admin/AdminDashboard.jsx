@@ -9,6 +9,7 @@ import CourseCover from '../../components/CourseCover';
 import WelcomeToast from '../../components/WelcomeToast';
 import PageHeader from '../../components/PageHeader';
 import LoadingState from '../../components/LoadingState';
+import EmptyState from '../../components/EmptyState';
 import ConsultasSection from '../../components/admin/ConsultasSection';
 import useHighlightTarget from '../../hooks/useHighlightTarget';
 
@@ -99,7 +100,7 @@ export default function AdminDashboard() {
             <Link to="/admin/cursos" className="text-text-tan text-sm mt-0.5 hover:underline">Ver todos →</Link>
           </div>
           {topCourses.length === 0 ? (
-            <p className="text-text-ink text-sm">Sin ventas aún.</p>
+            <EmptyState variant="inline" title="Sin ventas aún." />
           ) : (
             <div className="space-y-4">
               {topCourses.map((c, i) => (
@@ -125,7 +126,7 @@ export default function AdminDashboard() {
             <Link to="/admin/usuarios" className="text-text-tan text-sm mt-0.5 hover:underline">Ver todos →</Link>
           </div>
           {allUsers.length === 0 ? (
-            <p className="text-text-ink text-sm">Sin alumnos registrados aún.</p>
+            <EmptyState variant="inline" title="Sin alumnos registrados aún." />
           ) : (
             <div className="space-y-4">
               {allUsers.slice(-5).reverse().map(u => (

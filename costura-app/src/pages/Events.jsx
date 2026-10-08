@@ -3,6 +3,8 @@ import { CalendarHeart } from 'lucide-react';
 import { listPublicEvents } from '../services/api';
 import PageHeader from '../components/PageHeader';
 import LoadingState from '../components/LoadingState';
+import EmptyState from '../components/EmptyState';
+import ErrorState from '../components/ErrorState';
 
 // Número de WhatsApp del estudio (el mismo que figura en el Footer:
 // +61 401 956 520 → wa.me/61401956520). Si las consultas de eventos van a
@@ -139,19 +141,19 @@ export default function Events() {
         )}
 
         {!loading && error && (
-          <div className="text-center py-16 card-flat rounded-2xl max-w-md mx-auto">
-            <CalendarHeart className="w-12 h-12 text-[#C24575] mx-auto" strokeWidth={1.5} />
-            <h2 className="font-display font-bold text-text-ink text-2xl mt-4">No se pudieron cargar los eventos</h2>
-            <p className="text-sm text-text-ink mt-2">Probá de nuevo en un momento.</p>
-          </div>
+          <ErrorState
+            icon={CalendarHeart}
+            title="No se pudieron cargar los eventos"
+            description="Probá de nuevo en un momento."
+          />
         )}
 
         {!loading && !error && events.length === 0 && (
-          <div className="text-center py-16 card-flat rounded-2xl max-w-md mx-auto">
-            <CalendarHeart className="w-12 h-12 text-[#C24575] mx-auto" strokeWidth={1.5} />
-            <h2 className="font-display font-bold text-text-ink text-2xl mt-4">Todavía no hay eventos cargados</h2>
-            <p className="text-sm text-text-ink mt-2">Volvé a visitarnos pronto.</p>
-          </div>
+          <EmptyState
+            icon={CalendarHeart}
+            title="Todavía no hay eventos cargados"
+            description="Volvé a visitarnos pronto."
+          />
         )}
 
         {/* Grilla de tarjetas: 3 columnas en desktop, 2 en tablet, 1 en mobile */}

@@ -6,6 +6,7 @@ import { useDialog } from '../../context/DialogContext';
 import { EVENT_ICONS } from '../../utils/eventIcons';
 import PageHeader from '../../components/PageHeader';
 import LoadingState from '../../components/LoadingState';
+import EmptyState from '../../components/EmptyState';
 
 // Gestión de eventos del admin: lista los folletos (visibles y ocultos),
 // permite editar, borrar y crear nuevos desde /admin/eventos/nuevo.
@@ -71,19 +72,17 @@ export default function AdminEvents() {
 
       <div className="space-y-4 pb-16">
         {events.length === 0 ? (
-          <div className="text-center py-16 card-flat rounded-2xl">
-            <CalendarHeart className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
-            <h2 className="font-display font-bold text-text-ink text-2xl mt-4">Todavía no hay eventos cargados.</h2>
-            <p className="text-sm text-text-ink mt-2">Creá el primero con el botón "＋ Nuevo evento".</p>
-          </div>
+          <EmptyState
+            icon={CalendarHeart}
+            title="Todavía no hay eventos cargados."
+            description={'Creá el primero con el botón "＋ Nuevo evento".'}
+          />
         ) : filtered.length === 0 ? (
-          <div className="text-center py-16 card-flat rounded-2xl">
-            <CalendarHeart className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
-            <h2 className="font-display font-bold text-text-ink text-2xl mt-4">Sin resultados para tu búsqueda.</h2>
-            <button onClick={() => setSearch('')} className="btn btn-ghost mt-3 text-sm text-primary">
-              Limpiar búsqueda
-            </button>
-          </div>
+          <EmptyState
+            icon={CalendarHeart}
+            title="Sin resultados para tu búsqueda."
+            action={{ label: 'Limpiar búsqueda', onClick: () => setSearch(''), variant: 'ghost' }}
+          />
         ) : (
           filtered.map((e) => {
             const Icon = EVENT_ICONS[e.icon] || EVENT_ICONS.Sparkles;

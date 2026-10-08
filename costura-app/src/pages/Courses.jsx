@@ -4,6 +4,7 @@ import { useCourseCatalog } from '../context/CourseCatalogContext';
 import CourseCard from '../components/CourseCard';
 import PageHeader from '../components/PageHeader';
 import LoadingState from '../components/LoadingState';
+import EmptyState from '../components/EmptyState';
 
 const levels = ['Todos', 'Principiante', 'Intermedio', 'Avanzado'];
 
@@ -68,16 +69,11 @@ export default function Courses() {
         {loading ? (
           <LoadingState size="section" />
         ) : filtered.length === 0 ? (
-          <div className="text-center py-16 card-flat rounded-2xl">
-            <Search className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
-            <h2 className="font-display font-bold text-text-ink text-2xl mt-4">No encontramos cursos con esa búsqueda.</h2>
-            <button 
-              onClick={() => { setSearch(''); setLevel('Todos'); }} 
-              className="btn btn-ghost mt-3 text-sm bg-white hover:bg-white text-primary border border-primary/30 hover:border-primary"
-            >
-              Limpiar filtros
-            </button>
-          </div>
+          <EmptyState
+            icon={Search}
+            title="Sin resultados para tu búsqueda."
+            action={{ label: 'Limpiar filtros', onClick: () => { setSearch(''); setLevel('Todos'); }, variant: 'ghost' }}
+          />
         ) : (
           <>
             <p className="text-text-muted text-sm mb-6 font-medium pl-1">

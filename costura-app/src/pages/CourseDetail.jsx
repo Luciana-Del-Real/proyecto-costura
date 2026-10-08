@@ -9,6 +9,7 @@ import { useAuth } from '../context/AuthContext';
 import { requestCertificate, getMyCertificateRequest } from '../services/api';
 import useLessonComments from '../hooks/useLessonComments';
 import LoadingState from '../components/LoadingState';
+import ErrorState from '../components/ErrorState';
 import CoursePreviewView from '../components/course/CoursePreviewView';
 import CourseWelcomePanel from '../components/course/CourseWelcomePanel';
 import CourseAccordionItem from '../components/course/CourseAccordionItem';
@@ -109,13 +110,13 @@ function OwnedCourseView({ course, progress, getProgress }) {
   if (contentError || !fullCourse) {
     return (
       <div className="min-h-screen bg-bg-surface flex items-center justify-center px-4">
-        <div className="max-w-md text-center bg-white border border-border rounded-3xl p-8 shadow-sm">
-          <AlertTriangle className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
-          <h2 className="font-display font-bold text-text-ink text-2xl mt-4 mb-2">No se pudo cargar el contenido</h2>
-          <p className="text-text-ink mb-6">Verificá tu conexión y volvé a intentar. Si el problema continúa, escribile a la profesora.</p>
-          <Link to="/mis-cursos" className="btn btn-primary inline-block font-semibold">
-            ← Volver a mis cursos
-          </Link>
+        <div className="max-w-md w-full">
+          <ErrorState
+            icon={AlertTriangle}
+            title="No se pudo cargar el contenido"
+            description="Verificá tu conexión y volvé a intentar. Si el problema continúa, escribile a la profesora."
+            action={{ label: '← Volver a mis cursos', to: '/mis-cursos' }}
+          />
         </div>
       </div>
     );

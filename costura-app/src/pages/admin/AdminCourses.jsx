@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import PageHeader from '../../components/PageHeader';
 import CourseCover from '../../components/CourseCover';
 import Pagination from '../../components/Pagination';
+import EmptyState from '../../components/EmptyState';
 
 export default function AdminCourses() {
   const { courses, deleteCourse } = useCourseCatalog();
@@ -45,16 +46,14 @@ export default function AdminCourses() {
       </div>
 
       {filtered.length === 0 ? (
-        <div className="text-center py-16 card-flat rounded-2xl">
-          <h2 className="font-display font-bold text-text-ink text-2xl">
-            {courses.length === 0 ? 'Todavía no hay cursos cargados.' : 'Sin resultados para tu búsqueda.'}
-          </h2>
-          {search && (
-            <button onClick={() => { setSearch(''); setPage(1); }} className="btn btn-ghost mt-3 text-sm text-primary">
-              Limpiar búsqueda
-            </button>
-          )}
-        </div>
+        <EmptyState
+          title={courses.length === 0 ? 'Todavía no hay cursos cargados.' : 'Sin resultados para tu búsqueda.'}
+          action={search && {
+            label: 'Limpiar búsqueda',
+            onClick: () => { setSearch(''); setPage(1); },
+            variant: 'ghost',
+          }}
+        />
       ) : (
         <>
         <div className="space-y-4">

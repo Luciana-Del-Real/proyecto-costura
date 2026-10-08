@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { get, postForm, putForm, del } from '../../services/api';
 import PageHeader from '../../components/PageHeader';
 import LoadingState from '../../components/LoadingState';
+import EmptyState from '../../components/EmptyState';
 import CourseFieldsForm from '../../components/admin/CourseFieldsForm';
 import LessonEditorItem from '../../components/admin/LessonEditorItem';
 import NewLessonForm from '../../components/admin/NewLessonForm';
@@ -242,7 +243,7 @@ export default function AdminCourseForm() {
               ))}
 
               {(!course?.lessons || course.lessons.length === 0) && (
-                <p className="text-sm text-text-ink">Este curso todavía no tiene lecciones.</p>
+                <EmptyState variant="inline" title="Este curso todavía no tiene lecciones." />
               )}
             </div>
 

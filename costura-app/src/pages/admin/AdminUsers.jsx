@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import PageHeader from '../../components/PageHeader';
 import Pagination from '../../components/Pagination';
 import LoadingState from '../../components/LoadingState';
+import EmptyState from '../../components/EmptyState';
 import { useCourseCatalog } from '../../context/CourseCatalogContext';
 import { useDialog } from '../../context/DialogContext';
 import { useAdmin } from '../../context/AdminContext';
@@ -210,9 +211,9 @@ export default function AdminUsers() {
       )}
 
       {filtered.length === 0 ? (
-        <div className="text-center py-16 mb-6">
-          <p className="text-text-tan mt-4">{allUsers.length === 0 ? 'Sin alumnos registrados aún.' : 'No se encontraron resultados.'}</p>
-        </div>
+        <EmptyState
+          title={allUsers.length === 0 ? 'Sin alumnos registrados aún.' : 'No se encontraron resultados.'}
+        />
       ) : (
         <div className="card-flat rounded-2xl overflow-x-auto animate-fade-up mb-6">
           <table className="w-full text-sm min-w-[560px]">

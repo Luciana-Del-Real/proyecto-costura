@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { post } from '../services/api';
+import ErrorState from '../components/ErrorState';
 
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();
@@ -55,8 +56,8 @@ export default function ResetPassword() {
           )}
 
           {error && (
-            <div className="bg-red-50 border border-red-100 text-red-600 text-sm rounded-xl px-4 py-3 mb-6">
-              {error}
+            <div className="mb-6">
+              <ErrorState variant="banner" description={error} />
             </div>
           )}
 

@@ -7,6 +7,7 @@ import { useProgress } from '../context/ProgressContext';
 import { getImageUrl } from '../utils/media';
 import PageHeader from '../components/PageHeader';
 import LoadingState from '../components/LoadingState';
+import EmptyState from '../components/EmptyState';
 
 export default function MyCourses() {
   const { purchases } = usePurchases();
@@ -29,14 +30,13 @@ export default function MyCourses() {
         {loading ? (
           <LoadingState size="section" />
         ) : myCourses.length === 0 ? (
-            <div className="text-center py-20">
-            <BookOpen className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
-            <h2 className="font-display font-bold text-text-ink text-2xl mt-4 mb-2">Todavía no tenés cursos</h2>
-            <p className="text-text-ink mb-6">Explorá nuestro catálogo y empezá a aprender hoy.</p>
-            <Link to="/cursos" className="btn btn-primary font-medium">
-              Ver cursos disponibles
-            </Link>
-          </div>
+          <EmptyState
+            variant="plain"
+            icon={BookOpen}
+            title="Todavía no tenés cursos"
+            description="Explorá nuestro catálogo y empezá a aprender hoy."
+            action={{ label: 'Ver cursos disponibles', to: '/cursos' }}
+          />
         ) : (
           <>
             <div className="relative max-w-sm mb-6">
@@ -53,13 +53,12 @@ export default function MyCourses() {
             </div>
 
             {filtered.length === 0 ? (
-              <div className="text-center py-16">
-                <BookOpen className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
-                <h2 className="font-display font-bold text-text-ink text-2xl mt-4">Sin resultados para tu búsqueda.</h2>
-                <button onClick={() => setSearch('')} className="btn btn-ghost mt-3 text-sm bg-white hover:bg-white text-primary border border-primary/30 hover:border-primary">
-                  Limpiar búsqueda
-                </button>
-              </div>
+              <EmptyState
+                variant="plain"
+                icon={BookOpen}
+                title="Sin resultados para tu búsqueda."
+                action={{ label: 'Limpiar búsqueda', onClick: () => setSearch(''), variant: 'ghost' }}
+              />
             ) : (
               <div className="space-y-4">
                 {filtered.map(course => {

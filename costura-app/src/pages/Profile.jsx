@@ -4,6 +4,8 @@ import { usePurchases } from '../context/PurchaseContext';
 import { formatMoney } from '../utils/currency';
 import { getImageUrl } from '../utils/media';
 import LoadingState from '../components/LoadingState';
+import EmptyState from '../components/EmptyState';
+import ErrorState from '../components/ErrorState';
 
 export default function Profile() {
   const { user, updateUser } = useAuth();
@@ -81,8 +83,8 @@ export default function Profile() {
           )}
 
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3 mb-4">
-              {error}
+            <div className="mb-4">
+              <ErrorState variant="banner" description={error} />
             </div>
           )}
 
@@ -155,9 +157,9 @@ export default function Profile() {
           {purchasesLoading ? (
             <LoadingState size="inline" />
           ) : purchasesError ? (
-            <p className="text-text-ink text-sm">No se pudieron cargar tus compras. Verificá tu conexión e intentá de nuevo más tarde.</p>
+            <ErrorState variant="inline" description="No se pudieron cargar tus compras. Verificá tu conexión e intentá de nuevo más tarde." />
           ) : approvedRecords.length === 0 ? (
-            <p className="text-text-ink text-sm">Todavía no realizaste ninguna compra.</p>
+            <EmptyState variant="inline" title="Todavía no realizaste ninguna compra." />
           ) : (
             <div className="space-y-3">
               {approvedRecords.map(record => {

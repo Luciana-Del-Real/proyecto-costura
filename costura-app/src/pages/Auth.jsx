@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import ErrorState from '../components/ErrorState';
 
 export default function Auth({ defaultTab = 'login' }) {
   const navigate = useNavigate();
@@ -65,7 +66,11 @@ export default function Auth({ defaultTab = 'login' }) {
         </div>
 
         <div className="card-glow-fixed rounded-2xl p-8">
-          {error && <p className="text-danger text-sm mb-4 text-center">{error}</p>}
+          {error && (
+            <div className="mb-4 text-center">
+              <ErrorState variant="inline" description={error} />
+            </div>
+          )}
           
           <form onSubmit={handleSubmit} className="space-y-4">
             {tab === 'register' && (

@@ -7,6 +7,7 @@ import { getImageUrl } from '../../utils/media';
 import PageHeader from '../../components/PageHeader';
 import Pagination from '../../components/Pagination';
 import LoadingState from '../../components/LoadingState';
+import EmptyState from '../../components/EmptyState';
 
 export default function AdminPatterns() {
   const { confirmDialog, alertDialog } = useDialog();
@@ -74,18 +75,13 @@ export default function AdminPatterns() {
 
       <div className="space-y-4 pb-16">
         {patrones.length === 0 ? (
-          <div className="text-center py-16 card-flat rounded-2xl">
-            <FileText className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
-            <h2 className="font-display font-bold text-text-ink text-2xl mt-4">Todavía no hay patrones cargados.</h2>
-          </div>
+          <EmptyState icon={FileText} title="Todavía no hay patrones cargados." />
         ) : filtered.length === 0 ? (
-          <div className="text-center py-16 card-flat rounded-2xl">
-            <FileText className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
-            <h2 className="font-display font-bold text-text-ink text-2xl mt-4">Sin resultados para tu búsqueda.</h2>
-            <button onClick={() => { setSearch(''); setPage(1); }} className="btn btn-ghost mt-3 text-sm text-primary">
-              Limpiar búsqueda
-            </button>
-          </div>
+          <EmptyState
+            icon={FileText}
+            title="Sin resultados para tu búsqueda."
+            action={{ label: 'Limpiar búsqueda', onClick: () => { setSearch(''); setPage(1); }, variant: 'ghost' }}
+          />
         ) : (
           pageItems.map((p) => (
             <div key={p.id} className="card-flat rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 shadow-sm">

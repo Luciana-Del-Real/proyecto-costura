@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import { getImageUrl } from '../utils/media';
 import PageHeader from '../components/PageHeader';
 import LoadingState from '../components/LoadingState';
+import EmptyState from '../components/EmptyState';
 
 // Filtro por tipo de patrón (mismo patrón visual que el filtro de nivel de cursos).
 const tipos = ['Todos', 'De pago', 'Gratis'];
@@ -115,19 +116,17 @@ export default function PatronesGratis() {
       {/* Galería de patrones */}
       <div className="w-full px-4 pb-16">
         {filtered.length === 0 ? (
-          <div className="text-center py-16 card-flat rounded-2xl">
-            <FileText className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
-            <h2 className="font-display font-bold text-text-ink text-2xl mt-4">
-              {search || tipo !== 'Todos'
-                ? 'No encontramos patrones con esos filtros.'
-                : 'Todavía no hay patrones disponibles.'}
-            </h2>
-            {(search || tipo !== 'Todos') && (
-              <button onClick={() => { setSearch(''); setTipo('Todos'); }} className="btn btn-ghost mt-3 text-sm bg-white hover:bg-white text-primary border border-primary/30 hover:border-primary">
-                Limpiar filtros
-              </button>
-            )}
-          </div>
+          <EmptyState
+            icon={FileText}
+            title={search || tipo !== 'Todos'
+              ? 'No encontramos patrones con esos filtros.'
+              : 'Todavía no hay patrones disponibles.'}
+            action={(search || tipo !== 'Todos') && {
+              label: 'Limpiar filtros',
+              onClick: () => { setSearch(''); setTipo('Todos'); },
+              variant: 'ghost',
+            }}
+          />
         ) : (
           <>
             <p className="text-text-muted text-sm mb-6 font-medium pl-1">

@@ -7,6 +7,7 @@ import { getImageUrl } from '../../utils/media';
 import PageHeader from '../../components/PageHeader';
 import Pagination from '../../components/Pagination';
 import LoadingState from '../../components/LoadingState';
+import EmptyState from '../../components/EmptyState';
 
 export default function AdminSales() {
   const { confirmDialog } = useDialog();
@@ -168,7 +169,7 @@ export default function AdminSales() {
             <LoadingState size="section" />
           ) : filtered.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-text-tan text-sm">Sin ventas para mostrar con los filtros seleccionados.</p>
+              <EmptyState variant="inline" title="Sin ventas para mostrar con los filtros seleccionados." />
             </div>
           ) : (
             <>

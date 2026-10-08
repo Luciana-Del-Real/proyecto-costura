@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import PageHeader from '../../components/PageHeader';
 import Pagination from '../../components/Pagination';
 import LoadingState from '../../components/LoadingState';
+import EmptyState from '../../components/EmptyState';
 import { usePurchases } from '../../context/PurchaseContext';
 import { formatMoney } from '../../utils/currency';
 import { listPatternPurchasesPending, approvePatternPurchase, rejectPatternPurchase } from '../../services/api';
@@ -201,9 +202,9 @@ export default function AdminRequests() {
           {loading ? (
             <div className="py-6"><LoadingState size="inline" /></div>
           ) : requests.length === 0 ? (
-            <p className="text-text-tan text-sm">No hay solicitudes pendientes.</p>
+            <EmptyState variant="inline" title="No hay solicitudes pendientes." />
           ) : filtered.length === 0 ? (
-            <p className="text-text-tan text-sm">Sin resultados para tu búsqueda.</p>
+            <EmptyState variant="inline" title="Sin resultados para tu búsqueda." />
           ) : (
             <div className="grid gap-3">
               {filtered.map(req => (
@@ -250,7 +251,7 @@ export default function AdminRequests() {
           {patternLoading ? (
             <div className="py-6"><LoadingState size="inline" /></div>
           ) : patternRequests.length === 0 ? (
-            <p className="text-text-tan text-sm">No hay solicitudes de patrones pendientes.</p>
+            <EmptyState variant="inline" title="No hay solicitudes de patrones pendientes." />
           ) : (
             <div className="grid gap-3">
               {patternRequests.map(req => (

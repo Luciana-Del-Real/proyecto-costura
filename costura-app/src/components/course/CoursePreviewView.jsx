@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { GraduationCap, BookOpen, Clock } from 'lucide-react';
 import CourseCover from '../CourseCover';
+import EmptyState from '../EmptyState';
 import { getLevelLabel } from '../../utils/levels';
 import { getCoursePrice } from '../../utils/currency';
 
@@ -43,7 +44,7 @@ export default function CoursePreviewView({ course, user, onBuy }) {
         {/* Vista previa de lecciones */}
         <h2 className="font-display font-bold text-text-ink text-2xl mb-4 border-b pb-4">Contenido del curso</h2>
         {!course.lessons || course.lessons.length === 0 ? (
-          <p className="text-text-ink text-sm">El contenido todavía se está armando. ¡Volvé pronto!</p>
+          <EmptyState variant="inline" title="El contenido todavía se está armando. ¡Volvé pronto!" />
         ) : (
           <div className="space-y-3">
             {course.lessons.map((lesson, idx) => {

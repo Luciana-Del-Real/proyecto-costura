@@ -4,6 +4,8 @@ import useCertificateRequests from '../../hooks/useCertificateRequests';
 import { useDialog } from '../../context/DialogContext';
 import CertificateRequestDetail from './CertificateRequestDetail';
 import LoadingState from '../LoadingState';
+import EmptyState from '../EmptyState';
+import ErrorState from '../ErrorState';
 
 // Bandeja de solicitudes de certificado del admin: la alumna pide el
 // certificado al completar el curso, la profesora lo arma y lo envía por mail
@@ -97,10 +99,10 @@ export default function CertificadosSection() {
       </div>
 
       {loading && <LoadingState size="inline" />}
-      {!loading && error && <p className="text-sm text-danger">No se pudieron cargar las solicitudes.</p>}
+      {!loading && error && <ErrorState variant="inline" description="No se pudieron cargar las solicitudes." />}
 
       {!loading && !error && pending.length === 0 && sent.length === 0 && (
-        <p className="text-sm text-text-ink">Sin solicitudes todavía.</p>
+        <EmptyState variant="inline" title="Sin solicitudes todavía." />
       )}
 
       {!loading && !error && pending.length > 0 && (

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { getImageUrl } from '../../utils/media';
 import LoadingState from '../LoadingState';
+import ErrorState from '../ErrorState';
 
 // Detalle de una solicitud de certificado para la revisión del admin: alumna +
 // curso y cada lección con su estado y su evidencia (imagen + nota). Se abre
@@ -79,7 +80,7 @@ export default function CertificateRequestDetail({ requestId, getDetail, onClose
           <div className="p-6" style={{ flex: '1 1 0%', minHeight: 0, overflowY: 'auto' }}>
             {loading && <LoadingState size="inline" />}
             {!loading && error && (
-              <p className="text-sm text-danger">No se pudo cargar el detalle de la solicitud.</p>
+              <ErrorState variant="inline" description="No se pudo cargar el detalle de la solicitud." />
             )}
 
             {!loading && !error && detail && (
