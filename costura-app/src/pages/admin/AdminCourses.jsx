@@ -1,10 +1,13 @@
 import { useState } from 'react';
+import { Search } from 'lucide-react';
 import { useCourseCatalog } from '../../context/CourseCatalogContext';
 import { useDialog } from '../../context/DialogContext';
 import { Link } from 'react-router-dom';
 import PageHeader from '../../components/PageHeader';
 import CourseCover from '../../components/CourseCover';
 import Pagination from '../../components/Pagination';
+import EmptyState from '../../components/EmptyState';
+import SearchInput from '../../components/SearchInput';
 
 export default function AdminCourses() {
   const { courses, deleteCourse } = useCourseCatalog();
@@ -24,18 +27,12 @@ export default function AdminCourses() {
       <PageHeader title="Gestión de cursos" />
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <div className="relative w-full max-w-sm">
-          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          <input
-            type="text"
-            value={search}
-            onChange={e => { setSearch(e.target.value); setPage(1); }}
-            placeholder="Buscar curso..."
-            className="w-full pl-10 pr-4 py-2 text-sm border-2 border-gray-300 hover:border-gray-400 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-300 bg-white text-gray-700 placeholder-gray-400 shadow-sm transition-all duration-300"
-          />
-        </div>
+        <SearchInput
+          value={search}
+          onChange={e => { setSearch(e.target.value); setPage(1); }}
+          placeholder="Buscar curso..."
+          className="w-full max-w-sm"
+        />
         <Link
           to="/admin/cursos/nuevo"
           className="btn btn-primary text-sm shrink-0"
@@ -45,16 +42,15 @@ export default function AdminCourses() {
       </div>
 
       {filtered.length === 0 ? (
-        <div className="text-center py-16 card-flat rounded-2xl">
-          <h2 className="font-display font-bold text-text-ink text-2xl">
-            {courses.length === 0 ? 'Todavía no hay cursos cargados.' : 'Sin resultados para tu búsqueda.'}
-          </h2>
-          {search && (
-            <button onClick={() => { setSearch(''); setPage(1); }} className="btn btn-ghost mt-3 text-sm text-primary">
-              Limpiar búsqueda
-            </button>
-          )}
-        </div>
+        <EmptyState
+          icon={Search}
+          title={courses.length === 0 ? 'Todavía no hay cursos cargados.' : 'Sin resultados para tu búsqueda.'}
+          action={search && {
+            label: 'Limpiar búsqueda',
+            onClick: () => { setSearch(''); setPage(1); },
+            variant: 'ghost',
+          }}
+        />
       ) : (
         <>
         <div className="space-y-4">

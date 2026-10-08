@@ -5,6 +5,10 @@ import { get } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { getImageUrl } from '../utils/media';
 import PageHeader from '../components/PageHeader';
+import LoadingState from '../components/LoadingState';
+import EmptyState from '../components/EmptyState';
+import SearchInput from '../components/SearchInput';
+import Badge from '../components/Badge';
 
 // Filtro por tipo de patrón (mismo patrón visual que el filtro de nivel de cursos).
 const tipos = ['Todos', 'De pago', 'Gratis'];
@@ -67,7 +71,7 @@ export default function PatronesGratis() {
   };
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center"><span className="text-4xl">🧵</span></div>;
+    return <LoadingState size="page" />;
   }
 
   return (
@@ -97,36 +101,28 @@ export default function PatronesGratis() {
         </div>
 
         {/* Buscador compacto integrado */}
-        <div className="relative w-full md:w-72">
-          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          <input
-            type="text"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder="Buscar patrón..."
-            className="w-full pl-10 pr-4 py-2 text-sm border-2 border-gray-300 hover:border-gray-400 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-300 bg-white text-gray-700 placeholder-gray-400 shadow-sm transition-all duration-300"
-          />
-        </div>
+        <SearchInput
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          placeholder="Buscar patrón..."
+          className="w-full md:w-72"
+        />
       </div>
 
       {/* Galería de patrones */}
       <div className="w-full px-4 pb-16">
         {filtered.length === 0 ? (
-          <div className="text-center py-16 card-flat rounded-2xl">
-            <FileText className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
-            <h2 className="font-display font-bold text-text-ink text-2xl mt-4">
-              {search || tipo !== 'Todos'
-                ? 'No encontramos patrones con esos filtros.'
-                : 'Todavía no hay patrones disponibles.'}
-            </h2>
-            {(search || tipo !== 'Todos') && (
-              <button onClick={() => { setSearch(''); setTipo('Todos'); }} className="btn btn-ghost mt-3 text-sm bg-white hover:bg-white text-primary border border-primary/30 hover:border-primary">
-                Limpiar filtros
-              </button>
-            )}
-          </div>
+          <EmptyState
+            icon={FileText}
+            title={search || tipo !== 'Todos'
+              ? 'Sin resultados para tu búsqueda.'
+              : 'Todavía no hay patrones disponibles.'}
+            action={(search || tipo !== 'Todos') && {
+              label: 'Limpiar búsqueda',
+              onClick: () => { setSearch(''); setTipo('Todos'); },
+              variant: 'ghost',
+            }}
+          />
         ) : (
           <>
             <p className="text-text-muted text-sm mb-6 font-medium pl-1">
@@ -152,9 +148,9 @@ export default function PatronesGratis() {
                     {/* Etiqueta Gratis/De pago */}
                     <div className="flex items-center gap-2 mb-2 flex-wrap">
                       {p.esPago ? (
-                        <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-success/10 text-success">De pago</span>
+                        <Badge tone="success">De pago</Badge>
                       ) : (
-                        <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-primary-soft text-primary">Gratis</span>
+                        <Badge tone="primary">Gratis</Badge>
                       )}
                     </div>
 

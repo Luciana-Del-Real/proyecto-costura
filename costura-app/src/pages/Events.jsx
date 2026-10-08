@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import { CalendarHeart } from 'lucide-react';
 import { listPublicEvents } from '../services/api';
 import PageHeader from '../components/PageHeader';
+import LoadingState from '../components/LoadingState';
+import EmptyState from '../components/EmptyState';
+import ErrorState from '../components/ErrorState';
 
 // Número de WhatsApp del estudio (el mismo que figura en el Footer:
 // +61 401 956 520 → wa.me/61401956520). Si las consultas de eventos van a
@@ -41,12 +44,12 @@ function toFeatures(detail) {
 // posición en la grilla: cada evento tiene su propio tono (rosa, verde,
 // crema, lila, durazno, celeste).
 const FLYER_VARIANTS = [
-  { bg: '#FBE9F2', border: '#F2C3D9' }, // rosa
-  { bg: '#E9F1ED', border: '#C3DACF' }, // verde
-  { bg: '#FAF1E6', border: '#EDDCC5' }, // crema
-  { bg: '#F1ECF7', border: '#DCCEEB' }, // lila
-  { bg: '#FDF0E7', border: '#F3D3BD' }, // durazno
-  { bg: '#EAF2F6', border: '#C7DCE7' }, // celeste
+  { bg: 'var(--color-event-rose)', border: 'var(--color-event-rose-border)' }, // rosa
+  { bg: 'var(--color-event-green)', border: 'var(--color-event-green-border)' }, // verde
+  { bg: 'var(--color-event-cream)', border: 'var(--color-event-cream-border)' }, // crema
+  { bg: 'var(--color-event-lilac)', border: 'var(--color-event-lilac-border)' }, // lila
+  { bg: 'var(--color-event-peach)', border: 'var(--color-event-peach-border)' }, // durazno
+  { bg: 'var(--color-event-sky)', border: 'var(--color-event-sky-border)' }, // celeste
 ];
 
 // Folleto de evento: flota sobre un fondo pastel propio con borde suave,
@@ -65,13 +68,13 @@ function EventCard({ event, variant }) {
           verde oscuro (más chica y sin negrita). Bebas = font-display,
           coherente con el resto de la página. */}
       <h3 className="font-display uppercase leading-none">
-        <span className="text-[#EC1778] block text-4xl md:text-5xl font-bold">{first}</span>
-        <span className="text-[#5A786E] block text-2xl md:text-3xl font-normal">{second}</span>
+        <span className="text-event-pink block text-4xl md:text-5xl font-bold">{first}</span>
+        <span className="text-event-green-deep block text-2xl md:text-3xl font-normal">{second}</span>
       </h3>
 
       {/* Bajada: texto corto centrado en rosa (Montserrat = font-body) */}
       {event.subtitle && (
-        <p className="font-body text-sm md:text-base text-[#C24575] mt-3 leading-relaxed">{event.subtitle}</p>
+        <p className="font-body text-sm md:text-base text-event-rose-deep mt-3 leading-relaxed">{event.subtitle}</p>
       )}
 
       {/* Detalles: líneas independientes sin viñetas, separadas por space-y-2 */}
@@ -90,7 +93,7 @@ function EventCard({ event, variant }) {
           href={whatsappUrl(event)}
           target="_blank"
           rel="noreferrer"
-          className="inline-flex items-center justify-center bg-[#EC1778] hover:bg-[#D10F67] text-white font-bold text-sm uppercase tracking-wide rounded-full px-10 py-3 transition-colors"
+          className="inline-flex items-center justify-center bg-event-pink hover:bg-event-pink-hover text-white font-bold text-sm uppercase tracking-wide rounded-full px-10 py-3 transition-colors"
         >
           Consultar
         </a>
@@ -134,23 +137,23 @@ export default function Events() {
         <div className="w-full px-4 mt-6 mb-10">
 
         {loading && (
-          <p className="text-center text-sm text-accent py-10">Cargando eventos...</p>
+          <LoadingState size="section" />
         )}
 
         {!loading && error && (
-          <div className="text-center py-16 card-flat rounded-2xl max-w-md mx-auto">
-            <CalendarHeart className="w-12 h-12 text-[#C24575] mx-auto" strokeWidth={1.5} />
-            <h2 className="font-display font-bold text-text-ink text-2xl mt-4">No se pudieron cargar los eventos</h2>
-            <p className="text-sm text-text-ink mt-2">Probá de nuevo en un momento.</p>
-          </div>
+          <ErrorState
+            icon={CalendarHeart}
+            title="No se pudieron cargar los eventos"
+            description="Probá de nuevo en un momento."
+          />
         )}
 
         {!loading && !error && events.length === 0 && (
-          <div className="text-center py-16 card-flat rounded-2xl max-w-md mx-auto">
-            <CalendarHeart className="w-12 h-12 text-[#C24575] mx-auto" strokeWidth={1.5} />
-            <h2 className="font-display font-bold text-text-ink text-2xl mt-4">Todavía no hay eventos cargados</h2>
-            <p className="text-sm text-text-ink mt-2">Volvé a visitarnos pronto.</p>
-          </div>
+          <EmptyState
+            icon={CalendarHeart}
+            title="Todavía no hay eventos cargados"
+            description="Volvé a visitarnos pronto."
+          />
         )}
 
         {/* Grilla de tarjetas: 3 columnas en desktop, 2 en tablet, 1 en mobile */}

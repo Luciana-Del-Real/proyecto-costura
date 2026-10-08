@@ -8,6 +8,9 @@ import { useProgress } from '../context/ProgressContext';
 import { useAuth } from '../context/AuthContext';
 import { requestCertificate, getMyCertificateRequest } from '../services/api';
 import useLessonComments from '../hooks/useLessonComments';
+import LoadingState from '../components/LoadingState';
+import ErrorState from '../components/ErrorState';
+import BackLink from '../components/BackLink';
 import CoursePreviewView from '../components/course/CoursePreviewView';
 import CourseWelcomePanel from '../components/course/CourseWelcomePanel';
 import CourseAccordionItem from '../components/course/CourseAccordionItem';
@@ -19,10 +22,14 @@ export default function CourseDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { courses } = useCourseCatalog();
+  const { courses, loading: coursesLoading } = useCourseCatalog();
   const { hasCourse } = usePurchases();
   const { progress, getProgress } = useProgress();
   const course = courses.find(c => String(c.id) === String(id));
+
+  if (coursesLoading) {
+    return <LoadingState size="page" />;
+  }
 
   if (!course) {
     return (
@@ -98,23 +105,19 @@ function OwnedCourseView({ course, progress, getProgress }) {
   }, [course, getCourseLessons]);
 
   if (loadingContent) {
-    return (
-      <div className="min-h-screen bg-bg-surface flex items-center justify-center px-4">
-        <p className="text-text-ink">Cargando el contenido del curso...</p>
-      </div>
-    );
+    return <LoadingState size="page" />;
   }
 
   if (contentError || !fullCourse) {
     return (
       <div className="min-h-screen bg-bg-surface flex items-center justify-center px-4">
-        <div className="max-w-md text-center bg-white border border-border rounded-3xl p-8 shadow-sm">
-          <AlertTriangle className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
-          <h2 className="font-display font-bold text-text-ink text-2xl mt-4 mb-2">No se pudo cargar el contenido</h2>
-          <p className="text-text-ink mb-6">Verificá tu conexión y volvé a intentar. Si el problema continúa, escribile a la profesora.</p>
-          <Link to="/mis-cursos" className="btn btn-primary inline-block font-semibold">
-            ← Volver a mis cursos
-          </Link>
+        <div className="max-w-md w-full">
+          <ErrorState
+            icon={AlertTriangle}
+            title="No se pudo cargar el contenido"
+            description="Verificá tu conexión y volvé a intentar. Si el problema continúa, escribile a la profesora."
+            action={{ label: '← Volver a mis cursos', to: '/mis-cursos' }}
+          />
         </div>
       </div>
     );
@@ -214,9 +217,7 @@ function CourseLearningView({ course, progress, getProgress }) {
   return (
     <div className="min-h-screen bg-bg-surface pb-12">
       <div className="w-full px-4 py-8 lg:py-10 animate-fade-in">
-        <Link to="/mis-cursos" className="text-primary text-sm hover:text-primary-hover inline-flex items-center gap-1 mb-4">
-          ← Volver a mis cursos
-        </Link>
+        <BackLink to="/mis-cursos">← Volver a mis cursos</BackLink>
 
         {/* Desktop: layout de dos paneles (lista de lecciones + contenido).
             Sin lección seleccionada, el panel derecho muestra la bienvenida

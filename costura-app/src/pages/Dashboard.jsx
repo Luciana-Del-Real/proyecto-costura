@@ -3,9 +3,10 @@ import { useCourseCatalog } from '../context/CourseCatalogContext';
 import { usePurchases } from '../context/PurchaseContext';
 import CourseCard from '../components/CourseCard';
 import WelcomeToast from '../components/WelcomeToast';
+import LoadingState from '../components/LoadingState';
 export default function Dashboard() {
   const { purchases } = usePurchases();
-  const { courses } = useCourseCatalog();
+  const { courses, loading } = useCourseCatalog();
 
   const myCourses = courses.filter(c => purchases.includes(c.id));
   const suggested = courses.filter(c => !purchases.includes(c.id)).slice(0, 3);
@@ -15,10 +16,12 @@ export default function Dashboard() {
       <WelcomeToast message="¡Bienvenida de vuelta!" />
 
       {/* Con compras: SOLO mis cursos. Sin compras: cursos disponibles */}
-      {myCourses.length > 0 ? (
+      {loading ? (
+        <LoadingState size="section" />
+      ) : myCourses.length > 0 ? (
         <div className="mb-10">
           <div className="flex items-center justify-between mt-5 mb-5">
-            <h2 className="font-display text-text-ink text-3xl">Mis cursos</h2>
+            <h2 className="text-2xl font-display font-bold text-text-ink">Mis cursos</h2>
             <Link to="/mis-cursos" className="text-text-ink text-sm hover:text-success">Ver todos →</Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
@@ -31,7 +34,7 @@ export default function Dashboard() {
         suggested.length > 0 && (
           <div>
             <div className="flex items-center justify-between mt-5 mb-5">
-              <h2 className="font-display text-text-ink text-3xl">Cursos disponibles</h2>
+              <h2 className="text-2xl font-display font-bold text-text-ink">Cursos disponibles</h2>
               <Link to="/cursos" className="text-text-ink text-sm hover:text-success">Ver todos →</Link>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">

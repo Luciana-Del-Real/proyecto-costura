@@ -6,6 +6,9 @@ import { sumByCurrency, formatMoney } from '../../utils/currency';
 import { getImageUrl } from '../../utils/media';
 import PageHeader from '../../components/PageHeader';
 import Pagination from '../../components/Pagination';
+import LoadingState from '../../components/LoadingState';
+import EmptyState from '../../components/EmptyState';
+import Badge from '../../components/Badge';
 
 export default function AdminSales() {
   const { confirmDialog } = useDialog();
@@ -13,6 +16,7 @@ export default function AdminSales() {
   const { getAllPurchases, getPendingRequests, approvePurchase, denyPurchase } = usePurchases();
   const [allPurchases, setAllPurchases] = useState([]);
   const [, setPendingRequests] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('todos');
   const [statusFilter, setStatusFilter] = useState('todos');
   const [page, setPage] = useState(1);
@@ -25,8 +29,12 @@ export default function AdminSales() {
   /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     const load = async () => {
-      setAllPurchases(await getAllPurchases());
-      setPendingRequests(await getPendingRequests());
+      try {
+        setAllPurchases(await getAllPurchases());
+        setPendingRequests(await getPendingRequests());
+      } finally {
+        setLoading(false);
+      }
     };
     load();
   }, []);
@@ -82,14 +90,24 @@ export default function AdminSales() {
           {/* Card de Ingresos Totales */}
           <div className="card-flat rounded-2xl p-6 animate-fade-up">
             <p className="text-xs uppercase tracking-wider font-bold text-text-tan mb-2">Ingresos totales</p>
-            <p className="text-lg font-bold text-text-ink">${revenueFiltered.ARS.toLocaleString()} ARS</p>
-            <p className="text-lg font-bold text-text-ink">${revenueFiltered.AUD.toLocaleString()} AUD</p>
+            {loading ? (
+              <LoadingState size="inline" />
+            ) : (
+              <>
+                <p className="text-lg font-bold text-text-ink">${revenueFiltered.ARS.toLocaleString()} ARS</p>
+                <p className="text-lg font-bold text-text-ink">${revenueFiltered.AUD.toLocaleString()} AUD</p>
+              </>
+            )}
           </div>
 
           {/* Card de Total de Ventas */}
           <div className="card-flat rounded-2xl p-6 animate-fade-up-delay-1">
             <p className="text-xs uppercase tracking-wider font-bold text-text-tan mb-2">Total de ventas</p>
-            <p className="text-3xl font-bold text-text-ink">{approved.length}</p>
+            {loading ? (
+              <LoadingState size="inline" />
+            ) : (
+              <p className="text-3xl font-bold text-text-ink">{approved.length}</p>
+            )}
           </div>
         </div>
 
@@ -148,9 +166,11 @@ export default function AdminSales() {
             </div>
           </div>
 
-          {filtered.length === 0 ? (
+          {loading ? (
+            <LoadingState size="section" />
+          ) : filtered.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-text-tan text-sm">Sin ventas para mostrar con los filtros seleccionados.</p>
+              <EmptyState variant="inline" title="Sin ventas para mostrar con los filtros seleccionados." />
             </div>
           ) : (
             <>
@@ -178,13 +198,12 @@ export default function AdminSales() {
                       </td>
                       <td className="px-4 py-4">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className={`text-xs font-bold px-2 py-0.5 rounded-full whitespace-nowrap ${
-                            p.status === 'APPROVED' ? 'bg-success/10 text-success' :
-                            p.status === 'PENDING' ? 'bg-bg-soft text-text-tan' :
-                            'bg-red-50 text-danger'
-                          }`}>
+                          <Badge
+                            tone={p.status === 'APPROVED' ? 'success' : p.status === 'PENDING' ? 'neutral' : 'danger'}
+                            className="whitespace-nowrap"
+                          >
                             {p.status === 'APPROVED' ? 'Aprobada' : p.status === 'PENDING' ? 'Pendiente' : 'Denegada'}
-                          </span>
+                          </Badge>
                           {p.status === 'APPROVED' && (
                             <button onClick={() => handleDeny(p)} className="text-xs font-semibold text-danger hover:text-danger-hover whitespace-nowrap">
                               Denegar

@@ -4,6 +4,8 @@ import { CheckCircle2, Clock, Copy } from 'lucide-react';
 import { get, requestPatternPurchase } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { getImageUrl } from '../utils/media';
+import LoadingState from '../components/LoadingState';
+import BackLink from '../components/BackLink';
 
 // Datos de transferencia según el país/moneda de la compradora (mismos que
 // el checkout de cursos).
@@ -36,7 +38,7 @@ export default function PatternCheckout() {
   }, [id]);
 
   if (loading) {
-    return <div className="min-h-screen bg-bg-surface flex items-center justify-center"><span className="text-4xl">🧵</span></div>;
+    return <LoadingState size="page" />;
   }
 
   if (!pattern) {
@@ -111,7 +113,7 @@ export default function PatternCheckout() {
   return (
     <div className="min-h-screen bg-bg-surface py-10 px-4">
       <div className="w-full">
-        <Link to="/patrones-gratis" className="text-primary text-sm hover:text-primary-hover mb-6 inline-block">← Volver a patrones</Link>
+        <BackLink to="/patrones-gratis">← Volver a patrones</BackLink>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="card-glow p-6 h-fit">
             <h2 className="font-display font-bold text-text-ink text-2xl mb-4">Resumen del pedido</h2>

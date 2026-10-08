@@ -1,11 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate, useParams, Link } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { FileText } from 'lucide-react';
 import { get, postForm, putForm, del } from '../../services/api';
 import { useDialog } from '../../context/DialogContext';
 import { getImageUrl } from '../../utils/media';
 import PageHeader from '../../components/PageHeader';
 import FilePicker from '../../components/FilePicker';
+import LoadingState from '../../components/LoadingState';
+import BackLink from '../../components/BackLink';
+import SuccessBanner from '../../components/SuccessBanner';
 
 const EMPTY_FORM = {
   titulo: '',
@@ -108,7 +111,7 @@ export default function AdminPatternForm() {
   };
 
   if (loading) {
-    return <div className="flex items-center justify-center py-24 animate-fade-in"><span className="text-4xl">🧵</span></div>;
+    return <LoadingState size="section" />;
   }
 
   return (
@@ -118,14 +121,14 @@ export default function AdminPatternForm() {
         subtitle="Cargá los datos y los PDFs del patrón."
       />
 
-      <Link to="/admin/patrones" className="text-primary text-sm hover:text-primary-hover inline-flex items-center gap-1 mb-4">← Volver al listado</Link>
+      <BackLink to="/admin/patrones">← Volver al listado</BackLink>
 
       <div className="card-flat rounded-2xl p-8">
-        {saved && <div className="bg-primary-soft text-success text-sm rounded-xl px-4 py-3 mb-4">✓ Guardado correctamente</div>}
+        {saved && <SuccessBanner>Guardado correctamente</SuccessBanner>}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-bold text-black mb-1.5">Título</label>
+            <label className="block text-sm font-medium text-text-ink mb-1.5">Título</label>
             <input
               required
               value={form.titulo}
@@ -136,7 +139,7 @@ export default function AdminPatternForm() {
           </div>
 
           <div>
-            <label className="block text-sm font-bold text-black mb-1.5">Descripción</label>
+            <label className="block text-sm font-medium text-text-ink mb-1.5">Descripción</label>
             <textarea
               required
               value={form.descripcion}
@@ -148,7 +151,7 @@ export default function AdminPatternForm() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-bold text-black mb-1.5">Precio ARS</label>
+              <label className="block text-sm font-medium text-text-ink mb-1.5">Precio ARS</label>
               <input
                 type="number"
                 min={0}
@@ -160,7 +163,7 @@ export default function AdminPatternForm() {
               />
             </div>
             <div>
-              <label className="block text-sm font-bold text-black mb-1.5">Precio AUD</label>
+              <label className="block text-sm font-medium text-text-ink mb-1.5">Precio AUD</label>
               <input
                 type="number"
                 min={0}
@@ -177,7 +180,7 @@ export default function AdminPatternForm() {
           </p>
 
           <div>
-            <label className="block text-sm font-bold text-black mb-1.5">📷 Imagen de portada</label>
+            <label className="block text-sm font-medium text-text-ink mb-1.5">📷 Imagen de portada</label>
             <FilePicker
               accept="image/*"
               onChange={e => setImagenFile(e.target.files?.[0] || null)}
@@ -188,7 +191,7 @@ export default function AdminPatternForm() {
           </div>
 
           <div>
-            <label className="block text-sm font-bold text-black mb-1.5 flex items-center gap-1.5"><FileText className="w-4 h-4" strokeWidth={1.5} /> PDFs (podés elegir varios)</label>
+            <label className="block text-sm font-medium text-text-ink mb-1.5 flex items-center gap-1.5"><FileText className="w-4 h-4" strokeWidth={1.5} /> PDFs (podés elegir varios)</label>
             <FilePicker
               accept=".pdf"
               multiple

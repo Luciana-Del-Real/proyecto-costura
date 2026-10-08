@@ -1,8 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate, useParams, Link } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { getEvent, createEvent, updateEvent } from '../../services/api';
 import { useDialog } from '../../context/DialogContext';
 import PageHeader from '../../components/PageHeader';
+import LoadingState from '../../components/LoadingState';
+import BackLink from '../../components/BackLink';
+import SuccessBanner from '../../components/SuccessBanner';
 
 const EMPTY_FORM = {
   title: '',
@@ -72,7 +75,7 @@ export default function AdminEventForm() {
   const set = (field, value) => setForm((prev) => ({ ...prev, [field]: value }));
 
   if (loading) {
-    return <div className="flex items-center justify-center py-24 animate-fade-in"><span className="text-4xl">🎉</span></div>;
+    return <LoadingState size="section" />;
   }
 
   return (
@@ -82,14 +85,14 @@ export default function AdminEventForm() {
         subtitle="Cargá el texto del folleto del evento."
       />
 
-      <Link to="/admin/eventos" className="text-primary text-sm hover:text-primary-hover inline-flex items-center gap-1 mb-4">← Volver al listado</Link>
+      <BackLink to="/admin/eventos">← Volver al listado</BackLink>
 
       <div className="card-flat rounded-2xl p-8">
-        {saved && <div className="bg-primary-soft text-success text-sm rounded-xl px-4 py-3 mb-4">✓ Guardado correctamente</div>}
+        {saved && <SuccessBanner>Guardado correctamente</SuccessBanner>}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-bold text-black mb-1.5">Título</label>
+            <label className="block text-sm font-medium text-text-ink mb-1.5">Título</label>
             <input
               required
               value={form.title}
@@ -103,7 +106,7 @@ export default function AdminEventForm() {
           </div>
 
           <div>
-            <label className="block text-sm font-bold text-black mb-1.5">Descripción</label>
+            <label className="block text-sm font-medium text-text-ink mb-1.5">Descripción</label>
             <textarea
               required
               value={form.subtitle}
@@ -115,7 +118,7 @@ export default function AdminEventForm() {
           </div>
 
           <div>
-            <label className="block text-sm font-bold text-black mb-1.5">Detalle</label>
+            <label className="block text-sm font-medium text-text-ink mb-1.5">Detalle</label>
             <textarea
               required
               value={form.detail}

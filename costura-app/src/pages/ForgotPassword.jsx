@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { post } from '../services/api';
+import ErrorState from '../components/ErrorState';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
@@ -39,14 +40,14 @@ export default function ForgotPassword() {
         )}
 
         {error && (
-          <div className="bg-red-50 border border-red-100 text-red-600 text-sm rounded-xl px-4 py-3 mb-6">
-            {error}
+          <div className="mb-6">
+            <ErrorState variant="banner" description={error} />
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1.5">Email</label>
+            <label className="block text-sm font-medium text-text-ink mb-1.5">Email</label>
             <input
               type="email"
               required

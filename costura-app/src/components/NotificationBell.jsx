@@ -1,6 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useNotifications } from '../context/NotificationsContext';
+import LoadingState from './LoadingState';
+import EmptyState from './EmptyState';
+import ErrorState from './ErrorState';
 
 // Campanita de notificaciones reutilizable (navbar de alumna y de admin).
 // Extraída del bloque inline que vivía en Navbar: mismo botón con campana,
@@ -75,15 +78,17 @@ export default function NotificationBell({ align = 'right' }) {
           </div>
           <div className="max-h-80 overflow-y-auto">
             {notificationsLoading && (
-              <p className="text-sm text-accent px-4 py-3">Cargando...</p>
+              <LoadingState size="inline" />
             )}
             {!notificationsLoading && notificationsError && (
-              <p className="text-sm text-accent px-4 py-3">
-                No se pudieron cargar las notificaciones.
-              </p>
+              <div className="px-4 py-3">
+                <ErrorState variant="inline" description="No se pudieron cargar las notificaciones." />
+              </div>
             )}
             {!notificationsLoading && !notificationsError && notifications.length === 0 && (
-              <p className="text-sm text-accent px-4 py-3">Todavía no tenés notificaciones.</p>
+              <div className="px-4 py-3">
+                <EmptyState variant="inline" tone="accent" title="Todavía no tenés notificaciones." />
+              </div>
             )}
             {!notificationsLoading && !notificationsError && notifications.length > 0 && (
               <ul>

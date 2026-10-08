@@ -5,6 +5,10 @@ import { listAdminEvents, deleteEvent } from '../../services/api';
 import { useDialog } from '../../context/DialogContext';
 import { EVENT_ICONS } from '../../utils/eventIcons';
 import PageHeader from '../../components/PageHeader';
+import LoadingState from '../../components/LoadingState';
+import EmptyState from '../../components/EmptyState';
+import SearchInput from '../../components/SearchInput';
+import Badge from '../../components/Badge';
 
 // Gestión de eventos del admin: lista los folletos (visibles y ocultos),
 // permite editar, borrar y crear nuevos desde /admin/eventos/nuevo.
@@ -43,7 +47,7 @@ export default function AdminEvents() {
   };
 
   if (loading) {
-    return <div className="flex items-center justify-center py-24 animate-fade-in"><span className="text-4xl">🎉</span></div>;
+    return <LoadingState size="section" />;
   }
 
   return (
@@ -51,18 +55,12 @@ export default function AdminEvents() {
       <PageHeader title="Gestión de eventos" />
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <div className="relative w-full max-w-sm">
-          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          <input
-            type="text"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder="Buscar evento..."
-            className="w-full pl-10 pr-4 py-2 text-sm border-2 border-gray-300 hover:border-gray-400 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-300 bg-white text-gray-700 placeholder-gray-400 shadow-sm transition-all duration-300"
-          />
-        </div>
+        <SearchInput
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          placeholder="Buscar evento..."
+          className="w-full max-w-sm"
+        />
         <Link to="/admin/eventos/nuevo" className="btn btn-primary text-sm shrink-0">
           ＋ Nuevo evento
         </Link>
@@ -70,19 +68,17 @@ export default function AdminEvents() {
 
       <div className="space-y-4 pb-16">
         {events.length === 0 ? (
-          <div className="text-center py-16 card-flat rounded-2xl">
-            <CalendarHeart className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
-            <h2 className="font-display font-bold text-text-ink text-2xl mt-4">Todavía no hay eventos cargados.</h2>
-            <p className="text-sm text-text-ink mt-2">Creá el primero con el botón "＋ Nuevo evento".</p>
-          </div>
+          <EmptyState
+            icon={CalendarHeart}
+            title="Todavía no hay eventos cargados."
+            description={'Creá el primero con el botón "＋ Nuevo evento".'}
+          />
         ) : filtered.length === 0 ? (
-          <div className="text-center py-16 card-flat rounded-2xl">
-            <CalendarHeart className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
-            <h2 className="font-display font-bold text-text-ink text-2xl mt-4">Sin resultados para tu búsqueda.</h2>
-            <button onClick={() => setSearch('')} className="btn btn-ghost mt-3 text-sm text-primary">
-              Limpiar búsqueda
-            </button>
-          </div>
+          <EmptyState
+            icon={CalendarHeart}
+            title="Sin resultados para tu búsqueda."
+            action={{ label: 'Limpiar búsqueda', onClick: () => setSearch(''), variant: 'ghost' }}
+          />
         ) : (
           filtered.map((e) => {
             const Icon = EVENT_ICONS[e.icon] || EVENT_ICONS.Sparkles;
@@ -98,9 +94,7 @@ export default function AdminEvents() {
                   <div className="flex items-center gap-2 flex-wrap">
                     <h3 className="font-body text-text-ink text-lg font-bold leading-tight">{e.title}</h3>
                     {!e.active && (
-                      <span className="text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-gray-100 text-gray-500">
-                        Oculto
-                      </span>
+                      <Badge tone="neutral">Oculto</Badge>
                     )}
                   </div>
                   {e.detail && (

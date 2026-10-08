@@ -9,7 +9,7 @@ export default function CourseAttachmentsSection({ setImageFile, coursePdfFiles,
   return (
     <>
       <div className="md:col-span-2">
-        <label className="block text-sm font-bold text-black mb-2">📷 Portada</label>
+        <label className="block text-sm font-medium text-text-ink mb-1.5">📷 Portada</label>
         <FilePicker accept="image/*" onChange={e => setImageFile(e.target.files[0])} />
         {isEditing && course?.image && (
           <img src={getImageUrl(course.image)} alt={course.title} className="mt-3 h-28 w-40 object-cover rounded-xl border border-border" />
@@ -17,7 +17,7 @@ export default function CourseAttachmentsSection({ setImageFile, coursePdfFiles,
       </div>
       {/* PDFs adicionales del curso (multiples) */}
       <div>
-        <label className="block text-sm font-bold text-black mb-2 flex items-center gap-1.5"><FileText className="w-4 h-4" strokeWidth={1.5} /> PDF's (podés elegir varios)</label>
+        <label className="block text-sm font-medium text-text-ink mb-1.5 flex items-center gap-1.5"><FileText className="w-4 h-4" strokeWidth={1.5} /> PDF's (podés elegir varios)</label>
         <FilePicker accept=".pdf" multiple onChange={e => setCoursePdfFiles(Array.from(e.target.files))} />
         {coursePdfFiles.length > 0 && (
           <p className="text-xs text-text-ink mt-2">{coursePdfFiles.length} archivo(s) seleccionados para subir al guardar.</p>

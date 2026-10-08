@@ -2,6 +2,10 @@ import { useMemo, useState } from 'react';
 import useAdminComments from '../../hooks/useAdminComments';
 import { useDialog } from '../../context/DialogContext';
 import CommentThread from '../CommentThread';
+import LoadingState from '../LoadingState';
+import EmptyState from '../EmptyState';
+import ErrorState from '../ErrorState';
+import Badge from '../Badge';
 
 // Bandeja de consultas del admin: vista pura sobre useAdminComments (fetch,
 // filtros, partición y envío viven en el hook). Acá quedan encabezados,
@@ -47,9 +51,9 @@ export default function ConsultasSection() {
     reply: 'Responder', cancel: 'Cancelar', send: 'Enviar',
     placeholder: 'Escribí tu respuesta...',
     badge: (c) => c.parentId ? null : (
-      <span className={`text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full ${answeredIds.has(c.id) ? 'bg-success/10 text-success' : 'bg-primary-soft text-primary'}`}>
+      <Badge tone={answeredIds.has(c.id) ? 'success' : 'primary'}>
         {answeredIds.has(c.id) ? 'Respondida' : 'Sin responder'}
-      </span>
+      </Badge>
     ),
   };
 
@@ -172,11 +176,11 @@ export default function ConsultasSection() {
         />
       </div>
 
-      {loading && <p className="text-sm text-accent">Cargando consultas...</p>}
-      {!loading && error && <p className="text-sm text-danger">No se pudieron cargar las consultas.</p>}
+      {loading && <LoadingState size="inline" />}
+      {!loading && error && <ErrorState variant="inline" description="No se pudieron cargar las consultas." />}
 
       {!loading && !error && unanswered.length === 0 && answered.length === 0 && (
-        <p className="text-sm text-text-ink">Sin consultas todavía.</p>
+        <EmptyState variant="inline" title="Sin consultas todavía." />
       )}
 
       {!loading && !error && unanswered.length > 0 && (

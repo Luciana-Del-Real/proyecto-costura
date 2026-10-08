@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { getImageUrl } from '../../utils/media';
 import { FileText } from 'lucide-react';
 import ImagePicker from '../ImagePicker';
+import ErrorState from '../ErrorState';
 import { useProgress } from '../../context/ProgressContext';
 import LessonCommentsSection from './LessonCommentsSection';
 
@@ -158,7 +159,7 @@ export default function LessonContent({
             placeholder="Nota opcional (qué aprendiste, dudas, detalles de tu muestra...)"
             className="w-full rounded-xl border border-border bg-white px-3 py-2 text-sm text-text-ink focus:outline-none focus:ring-2 focus:ring-primary"
           />
-          {error && <p className="text-sm text-danger">{error}</p>}
+          {error && <ErrorState variant="inline" description={error} />}
           <div className="flex flex-wrap items-center gap-3">
             <button
               onClick={handleSubmit}

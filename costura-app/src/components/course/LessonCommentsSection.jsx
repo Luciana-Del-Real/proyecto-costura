@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import ImagePicker from '../ImagePicker';
 import CommentThread from '../CommentThread';
+import LoadingState from '../LoadingState';
+import EmptyState from '../EmptyState';
 
 // Bloque de preguntas a la profesora dentro de una lección del curso
 // (vista alumna). Recibe el estado de useLessonComments resuelto por el padre.
@@ -64,11 +66,17 @@ export default function LessonCommentsSection({ lessonId, comments, draft, sendi
       <h4 className="font-bold text-text-ink text-sm mb-3">Preguntas sobre esta lección</h4>
 
       {comments?.loading && (
-        <p className="text-sm text-accent">Cargando...</p>
+        <LoadingState size="inline" />
       )}
 
       {comments?.loaded && comments.items.length === 0 && (
-        <p className="text-sm text-accent mb-3">Todavía no hay preguntas en esta lección. La profesora va a responder acá cuando dejes la tuya.</p>
+        <div className="mb-3">
+          <EmptyState
+            variant="inline"
+            tone="accent"
+            title="Todavía no hay preguntas en esta lección. La profesora va a responder acá cuando dejes la tuya."
+          />
+        </div>
       )}
 
       {comments?.loaded && comments.items.length > 0 && (

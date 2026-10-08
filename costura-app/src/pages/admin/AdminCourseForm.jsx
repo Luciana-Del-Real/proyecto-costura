@@ -4,6 +4,10 @@ import { useDialog } from '../../context/DialogContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import { get, postForm, putForm, del } from '../../services/api';
 import PageHeader from '../../components/PageHeader';
+import LoadingState from '../../components/LoadingState';
+import EmptyState from '../../components/EmptyState';
+import BackLink from '../../components/BackLink';
+import SuccessBanner from '../../components/SuccessBanner';
 import CourseFieldsForm from '../../components/admin/CourseFieldsForm';
 import LessonEditorItem from '../../components/admin/LessonEditorItem';
 import NewLessonForm from '../../components/admin/NewLessonForm';
@@ -190,7 +194,7 @@ export default function AdminCourseForm() {
   };
 
   if (loadingCourse) {
-    return <div className="flex items-center justify-center py-24 animate-fade-in"><span className="text-4xl">🧵</span></div>;
+    return <LoadingState size="section" />;
   }
 
   return (
@@ -200,10 +204,10 @@ export default function AdminCourseForm() {
         subtitle="Cargá los datos del curso y sus lecciones."
       />
 
-      <button onClick={() => navigate('/admin/cursos')} className="text-primary text-sm hover:text-primary-hover inline-flex items-center gap-1 mb-4">← Volver al listado</button>
+      <BackLink to="/admin/cursos">← Volver al listado</BackLink>
 
       <div className="card-flat rounded-2xl p-8">
-        {saved && <div className="bg-primary-soft text-success text-sm rounded-xl px-4 py-3 mb-4">✓ Guardado correctamente</div>}
+        {saved && <SuccessBanner>Guardado correctamente</SuccessBanner>}
 
         <CourseFieldsForm
           form={form}
@@ -241,7 +245,7 @@ export default function AdminCourseForm() {
               ))}
 
               {(!course?.lessons || course.lessons.length === 0) && (
-                <p className="text-sm text-text-ink">Este curso todavía no tiene lecciones.</p>
+                <EmptyState variant="inline" title="Este curso todavía no tiene lecciones." />
               )}
             </div>
 

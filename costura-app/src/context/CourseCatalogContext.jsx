@@ -5,6 +5,7 @@ const CourseCatalogContext = createContext(null);
 
 export function CourseCatalogProvider({ children }) {
   const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   // Fetch the catalog from the backend on app start.
   useEffect(() => {
@@ -14,6 +15,8 @@ export function CourseCatalogProvider({ children }) {
         setCourses(data);
       } catch (error) {
         console.error('Error fetching courses:', error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchCourses();
@@ -66,11 +69,12 @@ export function CourseCatalogProvider({ children }) {
   // llama postForm/putForm/del directo).
   const value = useMemo(() => ({
     courses,
+    loading,
     getCourseLessons,
     updateCourse,
     addCourse,
     deleteCourse,
-  }), [courses, getCourseLessons, updateCourse, addCourse, deleteCourse]);
+  }), [courses, loading, getCourseLessons, updateCourse, addCourse, deleteCourse]);
 
   return (
     <CourseCatalogContext.Provider value={value}>

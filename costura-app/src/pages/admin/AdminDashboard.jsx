@@ -8,6 +8,9 @@ import { sumByCurrency } from '../../utils/currency';
 import CourseCover from '../../components/CourseCover';
 import WelcomeToast from '../../components/WelcomeToast';
 import PageHeader from '../../components/PageHeader';
+import LoadingState from '../../components/LoadingState';
+import EmptyState from '../../components/EmptyState';
+import Badge from '../../components/Badge';
 import ConsultasSection from '../../components/admin/ConsultasSection';
 import useHighlightTarget from '../../hooks/useHighlightTarget';
 
@@ -18,6 +21,7 @@ export default function AdminDashboard() {
   const [allPurchases, setAllPurchases] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
   const [pendingRequests, setPendingRequests] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   // Al llegar desde una notificación con #consultas (o ?highlight=), scrollear
   // hasta la bandeja y marcarla en gris unos segundos.
@@ -25,9 +29,13 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     const load = async () => {
-      setAllPurchases(await getAllPurchases());
-      setAllUsers(await getAllUsers());
-      setPendingRequests(await getPendingRequests());
+      try {
+        setAllPurchases(await getAllPurchases());
+        setAllUsers(await getAllUsers());
+        setPendingRequests(await getPendingRequests());
+      } finally {
+        setLoading(false);
+      }
     };
     load();
   }, [getAllPurchases, getAllUsers, getPendingRequests]);
@@ -55,6 +63,10 @@ export default function AdminDashboard() {
 
       <WelcomeToast message="¡Bienvenida!" />
 
+      {loading ? (
+        <LoadingState size="section" />
+      ) : (
+        <>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-6">
         {stats.map((s, i) => (
           <div key={i} className="card-flat rounded-xl p-5 transition-all flex flex-col h-full">
@@ -89,7 +101,7 @@ export default function AdminDashboard() {
             <Link to="/admin/cursos" className="text-text-tan text-sm mt-0.5 hover:underline">Ver todos →</Link>
           </div>
           {topCourses.length === 0 ? (
-            <p className="text-text-ink text-sm">Sin ventas aún.</p>
+            <EmptyState variant="inline" title="Sin ventas aún." />
           ) : (
             <div className="space-y-4">
               {topCourses.map((c, i) => (
@@ -115,7 +127,7 @@ export default function AdminDashboard() {
             <Link to="/admin/usuarios" className="text-text-tan text-sm mt-0.5 hover:underline">Ver todos →</Link>
           </div>
           {allUsers.length === 0 ? (
-            <p className="text-text-ink text-sm">Sin alumnos registrados aún.</p>
+            <EmptyState variant="inline" title="Sin alumnos registrados aún." />
           ) : (
             <div className="space-y-4">
               {allUsers.slice(-5).reverse().map(u => (
@@ -127,15 +139,17 @@ export default function AdminDashboard() {
                     <p className="text-sm font-medium text-text-ink truncate">{u.name}</p>
                     <p className="text-xs text-text-ink opacity-70 truncate">{u.email}</p>
                   </div>
-                  <span className="text-xs bg-bg-surface text-text-ink px-2 py-0.5 rounded-full">
+                  <Badge tone="neutral">
                     {u.purchases?.length || 0} curso{u.purchases?.length !== 1 ? 's' : ''}
-                  </span>
+                  </Badge>
                 </div>
               ))}
             </div>
           )}
         </div>
       </div>
+        </>
+      )}
 
       {/* Bandeja de consultas: todas las preguntas de las alumnas */}
       <ConsultasSection />

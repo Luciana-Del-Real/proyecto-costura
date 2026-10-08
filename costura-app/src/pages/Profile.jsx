@@ -3,6 +3,11 @@ import { useAuth } from '../context/AuthContext';
 import { usePurchases } from '../context/PurchaseContext';
 import { formatMoney } from '../utils/currency';
 import { getImageUrl } from '../utils/media';
+import LoadingState from '../components/LoadingState';
+import EmptyState from '../components/EmptyState';
+import ErrorState from '../components/ErrorState';
+import SuccessBanner from '../components/SuccessBanner';
+import PageHeader from '../components/PageHeader';
 
 export default function Profile() {
   const { user, updateUser } = useAuth();
@@ -49,23 +54,16 @@ export default function Profile() {
 
   return (
     <div className="w-full px-4 py-1 animate-fade-in">
-      {/* Header: inicial al lado del nombre (mismo estilo plano que PageHeader) */}
-      <header className="w-full px-4 pt-6 pb-2 animate-fade-up">
-        <div className="flex items-center gap-4">
-          <div className="w-14 h-14 bg-primary-soft rounded-full flex items-center justify-center text-xl font-bold text-text-ink flex-shrink-0">
-            {user?.name?.charAt(0).toUpperCase()}
-          </div>
-          <div>
-            <h1 className="font-display text-3xl md:text-4xl font-bold text-text-ink">{user?.name}</h1>
-            {user?.email && <p className="text-text-muted mt-1">{user?.email}</p>}
-          </div>
-        </div>
-        <span aria-hidden="true" className="block w-16 h-1 bg-primary mt-3" />
-      </header>
+      <PageHeader title={user?.name} subtitle={user?.email} />
 
       <div className="card-flat rounded-2xl px-4 py-10 animate-fade-up mt-5 mb-5">
           <div className="flex items-center justify-between mb-5">
-            <h2 className="font-display text-text-ink text-3xl">Información personal</h2>
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 bg-primary-soft rounded-full flex items-center justify-center text-xl font-bold text-text-ink flex-shrink-0">
+                {user?.name?.charAt(0).toUpperCase()}
+              </div>
+              <h2 className="text-2xl font-display font-bold text-text-ink">Información personal</h2>
+            </div>
             {!editing && (
               <button onClick={() => setEditing(true)} className="btn btn-ghost text-sm">
                 Editar
@@ -74,14 +72,12 @@ export default function Profile() {
           </div>
 
           {saved && (
-            <div className="text-primary text-sm px-0 py-2 mb-4">
-              ✓ Cambios guardados correctamente
-            </div>
+            <SuccessBanner>Cambios guardados correctamente</SuccessBanner>
           )}
 
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3 mb-4">
-              {error}
+            <div className="mb-4">
+              <ErrorState variant="banner" description={error} />
             </div>
           )}
 
@@ -149,14 +145,14 @@ export default function Profile() {
 
         <div className="px-1 py-10 animate-fade-up mt-5 mb-5">
           <div className="flex items-center justify-between mb-5">
-            <h2 className="font-display text-text-ink text-3xl">Historial de compras</h2>
+            <h2 className="text-2xl font-display font-bold text-text-ink">Historial de compras</h2>
           </div>
           {purchasesLoading ? (
-            <p className="text-text-ink text-sm">Cargando tus compras...</p>
+            <LoadingState size="inline" />
           ) : purchasesError ? (
-            <p className="text-text-ink text-sm">No se pudieron cargar tus compras. Verificá tu conexión e intentá de nuevo más tarde.</p>
+            <ErrorState variant="inline" description="No se pudieron cargar tus compras. Verificá tu conexión e intentá de nuevo más tarde." />
           ) : approvedRecords.length === 0 ? (
-            <p className="text-text-ink text-sm">Todavía no realizaste ninguna compra.</p>
+            <EmptyState variant="inline" title="Todavía no realizaste ninguna compra." />
           ) : (
             <div className="space-y-3">
               {approvedRecords.map(record => {
