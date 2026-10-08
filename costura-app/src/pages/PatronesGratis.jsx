@@ -119,7 +119,7 @@ export default function PatronesGratis() {
           <EmptyState
             icon={FileText}
             title={search || tipo !== 'Todos'
-              ? 'No encontramos patrones con esos filtros.'
+              ? 'Sin resultados para tu búsqueda.'
               : 'Todavía no hay patrones disponibles.'}
             action={(search || tipo !== 'Todos') && {
               label: 'Limpiar búsqueda',
