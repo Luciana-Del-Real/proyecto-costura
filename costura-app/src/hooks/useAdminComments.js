@@ -2,26 +2,34 @@ import { useState, useEffect, useCallback } from 'react';
 import { get, post, postForm } from '../services/api';
 import { groupCommentsByParent } from '../utils/commentTree';
 
-// Agrupa las preguntas top-level (de alumnas) por curso → lección, en el
-// orden estable de la lista plana (createdAt asc).
-function buildByCourse(topLevel) {
-  const map = new Map();
+// Agrupa las preguntas top-level (de alumnas) por alumna → curso → lección, en
+// el orden estable de la lista plana (createdAt asc). Cada alumna queda en su
+// propia sección para que los hilos de distintas alumnas no se mezclen.
+function buildByStudent(topLevel) {
+  const students = new Map();
   for (const c of topLevel) {
     if (c.user?.role === 'ADMIN') continue;
+    const studentId = c.user?.id || 'sin-alumna';
+    const studentName = c.user?.name || 'Alumna';
     const courseId = c.lesson?.course?.id || 'sin-curso';
     const courseTitle = c.lesson?.course?.title || 'Sin curso';
     const lessonId = c.lesson?.id || 'sin-leccion';
     const lessonTitle = c.lesson?.title || 'Sin lección';
-    if (!map.has(courseId)) {
-      map.set(courseId, { id: courseId, title: courseTitle, lessons: new Map() });
+
+    if (!students.has(studentId)) {
+      students.set(studentId, { id: studentId, name: studentName, courses: new Map() });
     }
-    const course = map.get(courseId);
+    const student = students.get(studentId);
+    if (!student.courses.has(courseId)) {
+      student.courses.set(courseId, { id: courseId, title: courseTitle, lessons: new Map() });
+    }
+    const course = student.courses.get(courseId);
     if (!course.lessons.has(lessonId)) {
       course.lessons.set(lessonId, { id: lessonId, title: lessonTitle, questions: [] });
     }
     course.lessons.get(lessonId).questions.push(c);
   }
-  return map;
+  return students;
 }
 
 // Lógica de la bandeja de consultas del admin: fetch de /admin/comments,
@@ -65,16 +73,21 @@ export default function useAdminComments() {
     return false;
   }, [childrenOf]);
 
-  // Agrupar por curso → lección → preguntas (top-level). Solo las preguntas
-  // de alumnas son consultas; los comentarios del admin solo aparecen como
-  // respuestas dentro de un hilo, nunca como pregunta.
-  const byCourse = buildByCourse(topLevel);
+  // Agrupar por alumna → curso → lección → preguntas (top-level). Solo las
+  // preguntas de alumnas son consultas; los comentarios del admin solo
+  // aparecen como respuestas dentro de un hilo, nunca como pregunta.
+  const byStudent = buildByStudent(topLevel);
 
-  const courseOptions = [...byCourse.values()].map(c => ({ id: c.id, title: c.title }));
-
-  const filteredByCourse = courseFilter === 'all'
-    ? byCourse
-    : new Map([...byCourse].filter(([id]) => id === courseFilter));
+  const courseOptions = [];
+  const seenCourses = new Set();
+  for (const student of byStudent.values()) {
+    for (const course of student.courses.values()) {
+      if (!seenCourses.has(course.id)) {
+        seenCourses.add(course.id);
+        courseOptions.push({ id: course.id, title: course.title });
+      }
+    }
+  }
 
   const matchesStudent = (q) => {
     const needle = studentFilter.trim().toLowerCase();
@@ -82,12 +95,16 @@ export default function useAdminComments() {
     return (q.user?.name || '').toLowerCase().includes(needle);
   };
 
-  // Items filtrados con su grupo (curso + lección) para renderizar encabezados.
+  // Items filtrados con su grupo (alumna + curso + lección) para renderizar
+  // encabezados. El filtro de curso se aplica a nivel curso.
   const filtered = [];
-  for (const course of filteredByCourse.values()) {
-    for (const lesson of course.lessons.values()) {
-      for (const q of lesson.questions) {
-        if (matchesStudent(q)) filtered.push({ course, lesson, q });
+  for (const student of byStudent.values()) {
+    for (const course of student.courses.values()) {
+      if (courseFilter !== 'all' && course.id !== courseFilter) continue;
+      for (const lesson of course.lessons.values()) {
+        for (const q of lesson.questions) {
+          if (matchesStudent(q)) filtered.push({ student, course, lesson, q });
+        }
       }
     }
   }

@@ -76,30 +76,55 @@ export default function ConsultasSection() {
     return result.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
   };
 
-  const renderGroup = (group) => (
-    <div key={`${group.course.id}-${group.lesson.id}`} className="mb-4">
-      <p className="text-xs font-bold uppercase tracking-wide text-text-ink mb-1">{group.course.title}</p>
-      <p className="text-xs text-accent mb-2">{group.lesson.title}</p>
-      <CommentThread
-        items={threadFor(group.questions)}
-        onReply={handleReply}
-        labels={labels}
-        canReply
-        replySending={sending}
-        image={{ preview: replyPreview, onChange: updateReplyPreview, onRemove: clearReplyImage }}
-      />
+  // Sección por alumna → curso → lección. Cada alumna tiene su propio bloque
+  // para que las consultas de distintas alumnas no se mezclen, aunque compartan
+  // curso y lección.
+  const groupByStudent = (list) => {
+    const students = new Map();
+    for (const item of list) {
+      if (!students.has(item.student.id)) {
+        students.set(item.student.id, { student: item.student, courses: new Map() });
+      }
+      const student = students.get(item.student.id);
+      if (!student.courses.has(item.course.id)) {
+        student.courses.set(item.course.id, { course: item.course, lessons: new Map() });
+      }
+      const course = student.courses.get(item.course.id);
+      if (!course.lessons.has(item.lesson.id)) {
+        course.lessons.set(item.lesson.id, { lesson: item.lesson, questions: [] });
+      }
+      course.lessons.get(item.lesson.id).questions.push(item.q);
+    }
+    return [...students.values()];
+  };
+
+  const renderStudent = (studentGroup) => (
+    <div
+      key={studentGroup.student.id}
+      data-testid={`consulta-student-${studentGroup.student.id}`}
+      className="mb-6 border-t border-border pt-4 first:border-t-0 first:pt-0"
+    >
+      <p className="text-sm font-bold text-text-ink mb-3">{studentGroup.student.name}</p>
+      {[...studentGroup.courses.values()].map((courseGroup) => (
+        <div key={courseGroup.course.id} className="mb-4">
+          <p className="text-xs font-bold uppercase tracking-wide text-text-ink mb-1">{courseGroup.course.title}</p>
+          {[...courseGroup.lessons.values()].map((lessonGroup) => (
+            <div key={lessonGroup.lesson.id} className="mb-3">
+              <p className="text-xs text-accent mb-2">{lessonGroup.lesson.title}</p>
+              <CommentThread
+                items={threadFor(lessonGroup.questions)}
+                onReply={handleReply}
+                labels={labels}
+                canReply
+                replySending={sending}
+                image={{ preview: replyPreview, onChange: updateReplyPreview, onRemove: clearReplyImage }}
+              />
+            </div>
+          ))}
+        </div>
+      ))}
     </div>
   );
-
-  const groupItems = (list) => {
-    const groups = [];
-    for (const item of list) {
-      const last = groups[groups.length - 1];
-      if (last && last.course.id === item.course.id && last.lesson.id === item.lesson.id) last.questions.push(item.q);
-      else groups.push({ course: item.course, lesson: item.lesson, questions: [item.q] });
-    }
-    return groups;
-  };
 
   return (
     <div id="consultas" className="card-flat rounded-xl p-6 mt-6">
@@ -143,7 +168,7 @@ export default function ConsultasSection() {
       {!loading && !error && unanswered.length > 0 && (
         <div className="mb-6">
           <p className="text-xs font-bold uppercase tracking-wide text-primary mb-3">Sin responder</p>
-          {groupItems(unanswered).map(renderGroup)}
+          {groupByStudent(unanswered).map(renderStudent)}
         </div>
       )}
 
@@ -159,7 +184,7 @@ export default function ConsultasSection() {
           {showAnswered && (
             <div className="mt-3">
               <p className="text-xs font-bold uppercase tracking-wide text-text-ink mb-3">Respondidas</p>
-              {groupItems(answered).map(renderGroup)}
+              {groupByStudent(answered).map(renderStudent)}
             </div>
           )}
         </div>

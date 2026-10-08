@@ -36,6 +36,13 @@ export default function useCertificateRequests() {
     await refresh();
   }, [refresh]);
 
+  // Detalle de una solicitud para la revisión: alumna, curso, cada lección con
+  // su estado/evidencia y los comentarios de esa alumna en el curso. El fetch
+  // vive acá para no repetir el path en la vista.
+  const getDetail = useCallback(async (id) => {
+    return get(`/admin/certificate-requests/${id}/detail`);
+  }, []);
+
   return {
     requests,
     pending,
@@ -44,5 +51,6 @@ export default function useCertificateRequests() {
     error,
     refresh,
     markSent,
+    getDetail,
   };
 }
