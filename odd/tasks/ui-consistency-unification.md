@@ -33,10 +33,10 @@ Blank-while-loading routes:
 ## Tasks
 
 ### Work unit 1 — loading (the user's example)
-- [ ] **T1** `LoadingState` component (+ test): props `size` (`page` | `section` | `inline`), optional `label`, optional `emoji` (default 🧵). `page` = `min-h-screen flex items-center justify-center`; `section` = `flex items-center justify-center py-24 animate-fade-in`; `inline` = small centered text style.
-- [ ] **T2** Migrate every loading UI to `LoadingState` (route guards, public pages, admin sections, dropdown/modal inline loaders). Remove the `🎉` variant.
-- [ ] **T3** Add a `loading` flag to `CourseCatalogContext` and use it in `Courses`, `Dashboard`, `MyCourses`, `Favorites`, `CourseDetail` so they show `LoadingState` instead of a false empty state.
-- [ ] **T4** Add loading flags to `AdminDashboard` and `AdminSales` (do not render zeros/empty while loading).
+- [x] **T1** `LoadingState` component (+ test): props `size` (`page` | `section` | `inline`), optional `label`, optional `emoji` (default 🧵). `page` = `min-h-screen flex items-center justify-center`; `section` = `flex items-center justify-center py-24 animate-fade-in`; `inline` = small centered text style.
+- [x] **T2** Migrate every loading UI to `LoadingState` (route guards, public pages, admin sections, dropdown/modal inline loaders). Remove the `🎉` variant.
+- [x] **T3** Add a `loading` flag to `CourseCatalogContext` and use it in `Courses`, `Dashboard`, `MyCourses`, `Favorites`, `CourseDetail` so they show `LoadingState` instead of a false empty state.
+- [x] **T4** Add loading flags to `AdminDashboard` and `AdminSales` (do not render zeros/empty while loading).
 
 ### Work unit 2 — empty + error
 - [ ] **T5** `EmptyState` component (+ test) `{icon,title,description,action}`; migrate the ~20 sites and unify the search-empty copy + "Limpiar" action.
