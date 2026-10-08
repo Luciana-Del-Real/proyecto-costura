@@ -1,15 +1,28 @@
-# Render blueprint — backend API (NestJS + Prisma + PostgreSQL)
-# Build command: npm ci && npm run build
-# Start command: node dist/main.js
+# ⚠️ SOLO REFERENCIA — NO SE APLICA EN RENDER.
+# Este servicio NO está gestionado por un Blueprint, así que Render IGNORA este
+# archivo: la configuración real vive en el dashboard de Render
+# (Settings / Environment). Editar este archivo NO cambia producción.
+# Se mantiene como referencia de los valores esperados.
+#
+# Config real esperada del servicio (dashboard de Render):
+#   Root Directory : backend
+#   Build Command  : npm ci && npx prisma generate && npm run build
+#   Start Command  : npx prisma migrate deploy && npm start   (= node dist/main.js)
+#   Health Check   : /api/courses
+#
+# Migraciones: "prisma migrate deploy" va en el Start Command porque el
+# Pre-Deploy Command está disponible SOLO en planes pagos (hoy: free).
+# Al pasar a un plan pago se puede mover a preDeployCommand y quitarlo del start.
+#
 # Render inyecta PORT automáticamente; el backend escucha en process.env.PORT (0.0.0.0).
 services:
   - type: web
     name: costura-api
     runtime: node
     rootDir: backend
-    buildCommand: npm ci && npm run build
-    startCommand: node dist/main.js
-    preDeployCommand: npx prisma migrate deploy
+    buildCommand: npm ci && npx prisma generate && npm run build
+    startCommand: npx prisma migrate deploy && npm start
+    # preDeployCommand: npx prisma migrate deploy   # solo en planes pagos
     healthCheckPath: /api/courses
     envVars:
       - key: NODE_ENV
