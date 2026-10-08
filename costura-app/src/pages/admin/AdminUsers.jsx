@@ -1,17 +1,23 @@
 import { useState, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
+import PageHeader from '../../components/PageHeader';
+import Pagination from '../../components/Pagination';
 import { useCourseCatalog } from '../../context/CourseCatalogContext';
+import { useDialog } from '../../context/DialogContext';
 import { useAdmin } from '../../context/AdminContext';
 import { getCoursePrice, getCurrencyCode } from '../../utils/currency';
 import { getImageUrl } from '../../utils/media';
 
 export default function AdminUsers() {
+  const { alertDialog, confirmDialog } = useDialog();
   const { courses } = useCourseCatalog();
   const { getAllUsers, toggleUserActive } = useAdmin();
   const [allUsers, setAllUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
-  const [confirmToggle, setConfirmToggle] = useState(null); // { user, action }
   const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const PER_PAGE = 10;
 
   const refreshUsers = useCallback(async () => {
     try {
@@ -26,18 +32,21 @@ export default function AdminUsers() {
 
   useEffect(() => { refreshUsers(); }, [refreshUsers]);
 
-  const handleToggle = async () => {
+  const handleToggle = async (user, action) => {
+    const message = action === 'deactivate'
+      ? 'La alumna no podrá iniciar sesión hasta que se reactive su cuenta.'
+      : 'La alumna podrá volver a iniciar sesión normalmente.';
+    const title = action === 'deactivate' ? '¿Dar de baja a esta alumna?' : '¿Reactivar esta cuenta?';
+    if (!await confirmDialog(message, title)) return;
     try {
-      await toggleUserActive(confirmToggle.user.id);
+      await toggleUserActive(user.id);
       await refreshUsers();
-      if (selected?.id === confirmToggle.user.id) {
+      if (selected?.id === user.id) {
         setSelected(prev => ({ ...prev, active: prev.active === false ? true : false }));
       }
     } catch (err) {
       console.error(err);
-      alert('No se pudo actualizar el estado de la cuenta');
-    } finally {
-      setConfirmToggle(null);
+      alertDialog('No se pudo actualizar el estado de la cuenta');
     }
   };
 
@@ -45,6 +54,8 @@ export default function AdminUsers() {
     u.name.toLowerCase().includes(search.toLowerCase()) ||
     u.email.toLowerCase().includes(search.toLowerCase())
   );
+
+  const pageItems = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
   // user.purchases viene del backend como [{ courseId }, ...]
   const getPurchasedCourseIds = (user) => (user.purchases || []).map(p => p.courseId);
@@ -70,141 +81,140 @@ export default function AdminUsers() {
 
   return (
     <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
-      <div className="bg-white rounded-2xl border-2 border-primary shadow-md px-4 py-10 animate-fade-up mt-5">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="font-display text-3xl font-bold text-text-ink">Alumnos</h1>
-          <p className="text-text-tan text-sm mt-0.5">{allUsers.length} alumna{allUsers.length !== 1 ? 's' : ''} registrada{allUsers.length !== 1 ? 's' : ''}</p>
-        </div>
-      </div>
+      <PageHeader
+        title="Alumnos"
+        subtitle={`${allUsers.length} alumna${allUsers.length !== 1 ? 's' : ''} registrada${allUsers.length !== 1 ? 's' : ''}`}
+      />
 
-      <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in mt-4 mb-5">
-        {/* Search */}
-        <div className="relative max-w-sm mb-6">
-          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-tan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      {/* Search */}
+        <div className="relative max-w-sm mb-6 mt-4">
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
-          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Buscar alumna..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-grey bg-bg-soft shadow-sm border border-gray-100 animate-fade-up" />
+          <input
+            type="text"
+            value={search}
+            onChange={e => { setSearch(e.target.value); setPage(1); }}
+            placeholder="Buscar alumna..."
+            className="w-full pl-10 pr-4 py-2 text-sm border-2 border-gray-300 hover:border-gray-400 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-300 bg-white text-gray-700 placeholder-gray-400 shadow-sm transition-all duration-300"
+          />
         </div>
 
-        {/* Confirm toggle modal */}
-        {confirmToggle && (
-          <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-[60] animate-fade-in px-4">
-            <div className="card-glow rounded-2xl p-6 max-w-sm w-full animate-fade-up justify-center text-center font-medium">
-              <h3 className="font-medium text-text-ink mb-2">
-                {confirmToggle.action === 'deactivate' ? '¿Dar de baja a esta alumna?' : '¿Reactivar esta cuenta?'}
-              </h3>
-              <p className="text-text-tan text-sm mb-5">
-                {confirmToggle.action === 'deactivate'
-                  ? 'La alumna no podrá iniciar sesión hasta que se reactive su cuenta.'
-                  : 'La alumna podrá volver a iniciar sesión normalmente.'}
-              </p>
-              <div className="flex justify-center items-center gap-3">
-                <button onClick={handleToggle}
-                  className={`btn text-sm font-medium ${
-                    confirmToggle.action === 'deactivate'
-                      ? 'btn-danger'
-                      : 'btn-primary'
-                  }`}>
-                  {confirmToggle.action === 'deactivate' ? 'Dar de baja' : 'Reactivar'}
-                </button>
-                <button onClick={() => setConfirmToggle(null)} className="btn btn-ghost text-sm">Cancelar</button>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* Detail modal — Portal directo a <body>: el position:fixed queda
+            relativo al viewport (no a un ancestro con transform) y el modal
+            flota por encima del navbar. */}
+        {selected && createPortal(
+          <div className="fixed inset-0 animate-fade-in" style={{ zIndex: 100 }} role="dialog" aria-modal="true">
+            <div className="absolute inset-0 bg-black/30" aria-hidden="true" onClick={() => setSelected(null)} />
+            <div
+              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg px-4"
+              style={{ maxHeight: '90vh' }}
+            >
+              <div
+                className="rounded-2xl border border-border bg-white w-full shadow-[0_12px_40px_rgba(29,29,27,0.15)] animate-fade-up"
+                style={{ display: 'flex', flexDirection: 'column', maxHeight: '90vh', overflow: 'hidden' }}
+              >
+              {/* Barra de acento fucsia, identidad Grow */}
+              <div className="h-1 bg-primary flex-shrink-0" aria-hidden="true" />
 
-        {/* Detail modal */}
-        {selected && (
-          <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 animate-fade-in px-4">
-            <div className="card-glow rounded-2xl p-6 max-w-lg w-full animate-fade-up max-h-[80vh] overflow-y-auto">
-              <div className="flex items-center justify-between mb-5">
-                <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${isActive(selected) ? 'bg-primary-soft text-success' : 'bg-red-50 text-red-400'}`}>
-                    {selected.name?.charAt(0).toUpperCase()}
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-medium text-xl text-text-ink">{selected.name}</h3>
-                      {!isActive(selected) && (
-                        <span className="text-xs bg-red-50 text-red-400 border border-red-200 px-2 py-0.5 rounded-full">Suspendida</span>
-                      )}
+              {/* Header con avatar grande (fijo) */}
+              <div className="p-6 pb-4 flex-shrink-0">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center font-display text-2xl font-bold ${isActive(selected) ? 'bg-primary-soft text-primary' : 'bg-red-50 text-red-400'}`}>
+                      {selected.name?.charAt(0).toUpperCase()}
                     </div>
-                    <p className="text-text-tan text-xs">{selected.email}</p>
+                    <div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h3 className="font-display font-bold text-2xl text-text-ink">{selected.name}</h3>
+                        {!isActive(selected) && (
+                          <span className="text-xs bg-red-50 text-red-400 border border-red-200 px-2 py-0.5 rounded-full font-semibold">Suspendida</span>
+                        )}
+                      </div>
+                      <p className="text-text-tan text-sm mt-0.5">{selected.email}</p>
+                      <p className="text-xs text-text-muted mt-0.5">
+                        Registrada el {new Date(selected.createdAt).toLocaleDateString('es-AR', { year: 'numeric', month: 'long', day: 'numeric' })}
+                      </p>
+                    </div>
                   </div>
+                  <button onClick={() => setSelected(null)} aria-label="Cerrar" className="btn btn-icon text-xl leading-none text-text-tan hover:text-text-ink">×</button>
                 </div>
-                <button onClick={() => setSelected(null)} className="btn btn-icon text-xl leading-none">×</button>
               </div>
 
-              <div className="grid grid-cols-2 gap-3 mb-5">
-                <div className="card-glow rounded-xl p-3 text-center">
-                  <p className="text-xl font-bold text-text-ink">{getPurchasedCourseIds(selected).length}</p>
-                  <p className="text-xs text-text-tan">Cursos comprados</p>
+              {/* Cuerpo scrolleable (stats + cursos + acción) */}
+              <div className="px-6 pb-6" style={{ flex: '1 1 0%', minHeight: 0, overflowY: 'auto' }}>
+                {/* Stats en dos tarjetas */}
+                <div className="grid grid-cols-2 gap-3 mb-6">
+                <div className="bg-bg-soft/40 rounded-xl px-4 py-3 border border-border/60">
+                  <p className="text-[11px] uppercase tracking-wide text-text-tan font-bold">Cursos comprados</p>
+                  <p className="text-2xl font-display font-bold text-text-ink mt-0.5">{getPurchasedCourseIds(selected).length}</p>
                 </div>
-                <div className="card-glow rounded-xl p-3 text-center">
-                  <p className="text-xl font-bold text-text-ink">
+                <div className="bg-bg-soft/40 rounded-xl px-4 py-3 border border-border/60">
+                  <p className="text-[11px] uppercase tracking-wide text-text-tan font-bold">Total invertido</p>
+                  <p className="text-2xl font-display font-bold text-text-ink mt-0.5">
                     ${getUserCourses(selected).reduce((s, c) => s + getCoursePrice(c, selected), 0).toLocaleString()} {getCurrencyCode(selected)}
                   </p>
-                  <p className="text-xs text-text-tan">Total invertido</p>
                 </div>
               </div>
 
-              <h4 className="font-semibold text-text-ink text-sm mb-3">Cursos y progreso</h4>
-              {getUserCourses(selected).length === 0 ? (
-                <p className="text-text-tan text-sm mb-5">Sin cursos aún.</p>
-              ) : (
-                <div className="space-y-3 mb-5">
-                  {getUserCourses(selected).map(course => {
-                    const prog = getProgress(selected, course);
-                    return (
-                      <div key={course.id} className="flex items-center gap-3">
-                        <img src={getImageUrl(course.image)} alt={course.title} className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-text-ink truncate">{course.title}</p>
-                          <div className="flex items-center gap-2 mt-1">
-                            <div className="flex-1 bg-bg-soft rounded-full h-1.5">
-                              <div className="bg-primary h-1.5 rounded-full" style={{ width: `${prog}%` }} />
+              {/* Cursos y progreso */}
+              <div>
+                <h4 className="font-display font-bold text-text-ink text-2xl mb-4 border-b border-border pb-2">Cursos y progreso</h4>
+                {getUserCourses(selected).length === 0 ? (
+                  <p className="text-text-tan text-sm mb-5">Sin cursos aún.</p>
+                ) : (
+                  <div className="space-y-3 mb-5">
+                    {getUserCourses(selected).map(course => {
+                      const prog = getProgress(selected, course);
+                      return (
+                        <div key={course.id} className="flex items-center gap-3 bg-white border border-border rounded-xl p-3">
+                          <img src={getImageUrl(course.image)} alt={course.title} className="w-12 h-12 rounded-lg object-cover flex-shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-base font-semibold text-text-ink truncate leading-snug">{course.title}</p>
+                            <div className="flex items-center gap-2 mt-2">
+                              <div className="flex-1 bg-bg-soft rounded-full h-2">
+                                <div className="bg-primary h-2 rounded-full" style={{ width: `${prog}%` }} />
+                              </div>
+                              <span className="text-sm font-bold text-text-ink flex-shrink-0">{prog}%</span>
                             </div>
-                            <span className="text-xs text-text-tan flex-shrink-0">{prog}%</span>
                           </div>
                         </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-
-              <p className="text-xs text-text-tan mb-5">
-                Registrada el {new Date(selected.createdAt).toLocaleDateString('es-AR', { year: 'numeric', month: 'long', day: 'numeric' })}
-              </p>
-
-              {/* Action button */}
-              <div className="border-t border-bg-soft pt-4">
-                {isActive(selected) ? (
-                  <button
-                    onClick={() => setConfirmToggle({ user: selected, action: 'deactivate' })}
-                    className="btn btn-ghost w-full text-sm text-danger border-red-200">
-                    Dar de baja esta cuenta
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => setConfirmToggle({ user: selected, action: 'activate' })}
-                    className="btn btn-ghost w-full text-sm text-danger border-red-200">
-                    Reactivar esta cuenta
-                  </button>
+                      );
+                    })}
+                  </div>
                 )}
+
+                {/* Action button */}
+                <div className="border-t border-bg-soft pt-4">
+                  {isActive(selected) ? (
+                    <button
+                      onClick={() => handleToggle(selected, 'deactivate')}
+                      className="btn btn-ghost w-full text-sm text-danger border-red-200">
+                      Dar de baja esta cuenta
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => handleToggle(selected, 'activate')}
+                      className="btn btn-ghost w-full text-sm text-danger border-red-200">
+                      Reactivar esta cuenta
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
+            </div>
+            </div>
+          </div>,
+          document.body
         )}
 
         {filtered.length === 0 ? (
-          <div className="text-center py-16">
+          <div className="text-center py-16 mb-5">
             <p className="text-text-tan mt-4">{allUsers.length === 0 ? 'Sin alumnos registrados aún.' : 'No se encontraron resultados.'}</p>
           </div>
         ) : (
-          <div className="card-glow rounded-2xl overflow-hidden animate-fade-up">
-            <table className="w-full text-sm">
+          <div className="card-flat rounded-2xl overflow-x-auto animate-fade-up mb-5">
+            <table className="w-full text-sm min-w-[560px]">
               <thead>
                 {/* Eliminamos el fondo del tr y dejamos que el bg del div principal sea el fondo */}
                 <tr className="border-b border-border">
@@ -216,7 +226,7 @@ export default function AdminUsers() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {filtered.map((u) => (
+                {pageItems.map((u) => (
                   <tr key={u.id} className={`transition-colors ${isActive(u) ? 'hover:bg-black/5' : 'bg-red-50/30 hover:bg-red-50/50'}`}>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
@@ -247,9 +257,9 @@ export default function AdminUsers() {
                 ))}
               </tbody>
             </table>
+            <Pagination page={page} total={filtered.length} perPage={PER_PAGE} onPageChange={setPage} />
           </div>
         )}
-      </div>
     </div>
   );
 }

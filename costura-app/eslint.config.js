@@ -27,6 +27,15 @@ export default defineConfig([
     },
   },
   {
+    // public/sw.js runs in the ServiceWorkerGlobalScope (self, clients,
+    // registration, skipWaiting...), which browser globals do not cover.
+    files: ['public/sw.js'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      globals: { ...globals.browser, ...globals.serviceworker },
+    },
+  },
+  {
     // Node scripts (scripts/*.js) run under Node, not the browser, so give them
     // the Node globals (process, require, Buffer, __dirname, ...). Scoped to
     // scripts/ only — src/ keeps the browser globals configured above.

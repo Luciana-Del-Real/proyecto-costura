@@ -280,6 +280,7 @@ describe('purchase approve/reject/re-approve lifecycle + ownership (HTTP level)'
       'Acceso desbloqueado',
       expect.stringContaining('aprobada'),
       expect.anything(), // tx client (the prisma mock, passed for atomicity)
+      '/curso/c-1',
     );
   });
 

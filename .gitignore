@@ -6,3 +6,9 @@ backend/*.backup
 
 # CodeGraph local index (regenerable, machine-local)
 .codegraph/
+
+# Build/lint/test log artifacts (regenerable via local commands)
+*.out
+
+# Local editor configuration (machine-local, not for version control)
+.vscode/

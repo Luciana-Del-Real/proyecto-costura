@@ -1,4 +1,6 @@
 import { getImageUrl } from '../../utils/media';
+import { FileText } from 'lucide-react';
+import FilePicker from '../FilePicker';
 
 // Sección de adjuntos del curso dentro del formulario: portada + PDFs
 // generales (nuevos a subir y ya subidos). El estado de archivos y el delete
@@ -6,35 +8,37 @@ import { getImageUrl } from '../../utils/media';
 export default function CourseAttachmentsSection({ setImageFile, coursePdfFiles, setCoursePdfFiles, course, isEditing, onDeleteAttachment }) {
   return (
     <>
-<div className="bg-white border border-border rounded-xl p-4 md:col-span-2">
+      <div className="md:col-span-2">
         <label className="block text-sm font-bold text-black mb-2">📷 Portada</label>
-        <input 
-          type="file" 
-          lang="es" 
-          accept="image/*" 
-          onChange={e => setImageFile(e.target.files[0])} 
-          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-hover cursor-pointer" 
-        />
+        <FilePicker accept="image/*" onChange={e => setImageFile(e.target.files[0])} />
+        {isEditing && course?.image && (
+          <img src={getImageUrl(course.image)} alt={course.title} className="mt-3 h-28 w-40 object-cover rounded-xl border border-border" />
+        )}
       </div>
       {/* PDFs adicionales del curso (multiples) */}
-      <div className="bg-white border border-border rounded-xl p-4">
-        <label className="block text-sm font-bold text-black mb-2">📎 PDF's (podés elegir varios)</label>
-        <input
-          type="file"
-          accept=".pdf"
-          multiple
-          onChange={e => setCoursePdfFiles(Array.from(e.target.files))}
-          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-hover cursor-pointer"
-        />
+      <div>
+        <label className="block text-sm font-bold text-black mb-2 flex items-center gap-1.5"><FileText className="w-4 h-4" strokeWidth={1.5} /> PDF's (podés elegir varios)</label>
+        <FilePicker accept=".pdf" multiple onChange={e => setCoursePdfFiles(Array.from(e.target.files))} />
         {coursePdfFiles.length > 0 && (
           <p className="text-xs text-text-ink mt-2">{coursePdfFiles.length} archivo(s) seleccionados para subir al guardar.</p>
         )}
 
+        {isEditing && course?.pdfGuide && (
+          <a
+            href={course.pdfGuide.startsWith('/uploads/') ? getImageUrl(course.pdfGuide) : course.pdfGuide}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-block mt-3 text-sm text-primary font-medium hover:underline"
+          >
+            Ver PDF actual
+          </a>
+        )}
+
         {isEditing && course?.attachments?.length > 0 && (
-          <div className="mt-4 space-y-2">
-            <p className="text-xs font-bold text-text-ink">PDFs ya subidos:</p>
+          <div className="mt-4">
+            <p className="text-xs font-bold text-text-ink mb-2">PDFs ya subidos:</p>
             {course.attachments.map(att => (
-              <div key={att.id} className="flex items-center justify-between bg-white rounded-lg px-3 py-2 border border-border">
+              <div key={att.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
                 <a href={getImageUrl(att.url)} target="_blank" rel="noreferrer" className="text-sm text-primary underline truncate">{att.filename}</a>
                 <button type="button" onClick={() => onDeleteAttachment(att.id)} className="text-danger text-xs font-bold hover:underline flex-shrink-0 ml-3">Eliminar</button>
               </div>

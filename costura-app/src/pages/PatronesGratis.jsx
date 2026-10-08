@@ -1,108 +1,131 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { FileText } from 'lucide-react';
+import { get } from '../services/api';
+import { useAuth } from '../context/AuthContext';
+import { getImageUrl } from '../utils/media';
+import PageHeader from '../components/PageHeader';
 
-// Patrones gratis para descargar. Cada patrón apunta a un PDF en
-// /patrones/<archivo>.pdf (public/patrones/). Para agregar uno nuevo:
-// 1) Copiá el PDF a costura-app/public/patrones/
-// 2) Agregá una entrada a esta lista con su archivo, título y descripción.
-const patrones = [
-  {
-    id: 1,
-    titulo: 'Tote bag reversible',
-    descripcion: 'Patrón en tamaño real para armar tu primer tote bag. Incluye guía de corte y costura paso a paso.',
-    nivel: 'Principiante',
-    categoria: 'Accesorios',
-    archivo: '/patrones/tote-bag.pdf',
-    color: 'bg-primary-soft',
-  },
-  {
-    id: 2,
-    titulo: 'Neceser con cremallera',
-    descripcion: 'Patrón clásico de neceser con forrería y cremallera. Medidas y margen de costura incluidos.',
-    nivel: 'Intermedio',
-    categoria: 'Accesorios',
-    archivo: '/patrones/neceser.pdf',
-    color: 'bg-accent-soft',
-  },
-  {
-    id: 3,
-    titulo: 'Falda elástico',
-    descripcion: 'Patrón de falda con cintura elástica, sin cremallera. Tallas S a XL con tabla de medidas.',
-    nivel: 'Principiante',
-    categoria: 'Indumentaria',
-    archivo: '/patrones/falda-elastico.pdf',
-    color: 'bg-primary-soft',
-  },
-  {
-    id: 4,
-    titulo: 'Delantal de cocina',
-    descripcion: 'Delantal práctico con bolsillo frontal y tiras ajustables. Patrón en tamaño real listo para imprimir.',
-    nivel: 'Principiante',
-    categoria: 'Hogar',
-    archivo: '/patrones/delantal.pdf',
-    color: 'bg-accent-soft',
-  },
-  {
-    id: 5,
-    titulo: 'Funda de almohadón',
-    descripcion: 'Funda de almohadón 40x40 con cierre escondido. Patrón simple con explicación de dobladillos.',
-    nivel: 'Principiante',
-    categoria: 'Hogar',
-    archivo: '/patrones/funda-almohadon.pdf',
-    color: 'bg-primary-soft',
-  },
-  {
-    id: 6,
-    titulo: 'Top de verano',
-    descripcion: 'Top escotado con frunces, elástico en el busto. Tallas S a XL con guía de escalado.',
-    nivel: 'Intermedio',
-    categoria: 'Indumentaria',
-    archivo: '/patrones/top-verano.pdf',
-    color: 'bg-accent-soft',
-  },
-];
-
-const niveles = ['Todos', 'Principiante', 'Intermedio', 'Avanzado'];
+// Filtro por tipo de patrón (mismo patrón visual que el filtro de nivel de cursos).
+const tipos = ['Todos', 'De pago', 'Gratis'];
 
 export default function PatronesGratis() {
-  const [nivel, setNivel] = useState('Todos');
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [patrones, setPatrones] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [tipo, setTipo] = useState('Todos');
 
-  const filtered = nivel === 'Todos'
-    ? patrones
-    : patrones.filter(p => p.nivel === nivel);
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      try {
+        const data = await get('/patterns');
+        if (active) setPatrones(data);
+      } catch (error) {
+        console.error('Error cargando patrones:', error);
+      } finally {
+        if (active) setLoading(false);
+      }
+    })();
+    return () => { active = false; };
+  }, []);
+
+  // Normalizamos quitando acentos y pasando todo a minúsculas
+  const normalizeText = (text) =>
+    text ? text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") : "";
+
+  const filtered = patrones.filter(p => {
+    const matchSearch = normalizeText(p.titulo).includes(normalizeText(search)) ||
+      normalizeText(p.descripcion).includes(normalizeText(search));
+
+    // `esPago` lo calcula el backend (precioARS/precioAUD > 0).
+    const matchTipo =
+      tipo === 'Todos' ||
+      (tipo === 'De pago' && p.esPago) ||
+      (tipo === 'Gratis' && !p.esPago);
+
+    return matchSearch && matchTipo;
+  });
+
+  // Compra del patrón de pago: lleva al checkout (formulario de transferencia
+  // según la moneda), igual que los cursos. Sin sesión pide login.
+  const handleBuy = (p) => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    navigate(`/checkout-patron/${p.id}`);
+  };
+
+  // Mensaje de comprobante por WhatsApp (igual que el checkout de cursos).
+  const waComprobanteUrl = (p) => {
+    const userIdentifier = user?.name || user?.email || 'mi usuario';
+    const message = `¡Hola! Acabo de abonar el patrón "${p.titulo}". Mi usuario es ${userIdentifier}. ¡Les paso mi comprobante!`;
+    return `https://wa.me/5493447404952?text=${encodeURIComponent(message)}`;
+  };
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center"><span className="text-4xl">🧵</span></div>;
+  }
 
   return (
     <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
-      {/* Banner principal */}
-      <div className="bg-white rounded-2xl border-2 border-primary shadow-md px-4 py-10 animate-fade-up mt-5 mb-5">
-        <div className="max-w-6xl mx-auto">
-          <h1 className="font-display text-3xl md:text-4xl font-bold text-text-ink mb-2">Patrones gratis</h1>
-          <p className="text-text-muted">Descargá patrones en PDF para coser en casa, paso a paso</p>
-        </div>
-      </div>
+      <PageHeader
+        title="Patrones"
+        subtitle="Descargá patrones en PDF para coser en casa, paso a paso"
+      />
 
-      {/* Filtro por nivel */}
-      <div className="max-w-6xl mx-auto px-1 mt-6 mb-8 flex flex-wrap gap-3">
-        {niveles.map(n => (
-          <button
-            key={n}
-            onClick={() => setNivel(n)}
-            className={`btn text-sm tracking-wide transition-all duration-300 shadow-sm ${
-              nivel === n
-                ? 'btn-primary shadow-md scale-105'
-                : 'btn-ghost border border-primary/30 hover:border-primary'
-            }`}
-          >
-            {n}
-          </button>
-        ))}
+      {/* Filtros por tipo + buscador (mismo estilo que los filtros de nivel de cursos) */}
+      <div className="max-w-6xl mx-auto px-1 mt-6 mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        {/* Filtros por tipo */}
+        <div className="flex flex-wrap gap-3">
+          {tipos.map(t => (
+            <button
+              key={t}
+              onClick={() => setTipo(t)}
+              className={`btn text-sm tracking-wide transition-all duration-300 shadow-sm ${
+                tipo === t
+                  ? 'btn-primary shadow-md scale-105'
+                  : 'btn-ghost border border-primary/30 hover:border-primary'
+              }`}
+            >
+              {t}
+            </button>
+          ))}
+        </div>
+
+        {/* Buscador compacto integrado */}
+        <div className="relative w-full md:w-72">
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input
+            type="text"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder="Buscar patrón..."
+            className="w-full pl-10 pr-4 py-2 text-sm border-2 border-gray-300 hover:border-gray-400 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-300 bg-white text-gray-700 placeholder-gray-400 shadow-sm transition-all duration-300"
+          />
+        </div>
       </div>
 
       {/* Galería de patrones */}
       <div className="max-w-6xl mx-auto px-1 pb-16">
         {filtered.length === 0 ? (
-          <div className="text-center py-16 card-glow rounded-2xl">
-            <span className="text-5xl">📄</span>
-            <p className="text-text-muted mt-4">Todavía no hay patrones de ese nivel.</p>
+          <div className="text-center py-16 card-flat rounded-2xl">
+            <FileText className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
+            <h2 className="font-display font-bold text-text-ink text-2xl mt-4">
+              {search || tipo !== 'Todos'
+                ? 'No encontramos patrones con esos filtros.'
+                : 'Todavía no hay patrones disponibles.'}
+            </h2>
+            {(search || tipo !== 'Todos') && (
+              <button onClick={() => { setSearch(''); setTipo('Todos'); }} className="btn btn-ghost mt-3 text-sm bg-white hover:bg-white text-primary border border-primary/30 hover:border-primary">
+                Limpiar filtros
+              </button>
+            )}
           </div>
         ) : (
           <>
@@ -113,30 +136,117 @@ export default function PatronesGratis() {
               {filtered.map((p, index) => (
                 <div key={p.id} className={`animate-stagger delay-${(index % 6) + 1}`}>
                   <div className="card-glow rounded-2xl p-6 h-full flex flex-col">
-                    {/* Vista previa tipo documento */}
-                    <div className={`${p.color} rounded-xl h-36 flex items-center justify-center mb-4`}>
-                      <svg className="w-12 h-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
+                    {/* Vista previa: imagen de portada o bloque de color con ícono */}
+                    <div className="rounded-xl h-36 overflow-hidden mb-4">
+                      {p.imagen ? (
+                        <img src={getImageUrl(p.imagen)} alt={p.titulo} className="w-full h-full object-cover rounded-xl" />
+                      ) : (
+                        <div className={`${index % 2 === 0 ? 'bg-primary-soft' : 'bg-accent-soft'} w-full h-full flex items-center justify-center`}>
+                          <svg className="w-12 h-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                        </div>
+                      )}
                     </div>
 
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-primary-soft text-primary">{p.nivel}</span>
-                      <span className="text-xs text-text-muted">{p.categoria}</span>
+                    {/* Etiqueta Gratis/De pago */}
+                    <div className="flex items-center gap-2 mb-2 flex-wrap">
+                      {p.esPago ? (
+                        <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-success/10 text-success">De pago</span>
+                      ) : (
+                        <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-primary-soft text-primary">Gratis</span>
+                      )}
                     </div>
 
-                    <h3 className="font-display text-2xl font-bold text-text-ink mb-2 leading-tight">{p.titulo}</h3>
+                    <h3 className="font-body text-text-ink text-lg font-bold mb-2 leading-tight">{p.titulo}</h3>
                     <p className="text-text-ink text-sm leading-relaxed mb-4 flex-1">{p.descripcion}</p>
 
-                    <a
-                      href={p.archivo}
-                      download
-                      target="_blank"
-                      rel="noreferrer"
-                      className="btn btn-primary w-full text-sm"
-                    >
-                      Descargar PDF
-                    </a>
+                    {/* Acción según el tipo de patrón y el estado de la alumna */}
+                    {(() => {
+                      // Gratis o compra aprobada (o admin): descarga libre.
+                      if (!p.esPago || p.hasAccess) {
+                        return p.archivo ? (
+                          <a
+                            href={p.archivo.startsWith('/uploads/') ? getImageUrl(p.archivo) : p.archivo}
+                            download
+                            target="_blank"
+                            rel="noreferrer"
+                            className="btn btn-primary w-full text-sm"
+                          >
+                            Descargar PDF
+                          </a>
+                        ) : (
+                          <span className="btn w-full text-sm bg-stone-200 text-stone-500 cursor-not-allowed" aria-disabled="true">
+                            PDF en preparación
+                          </span>
+                        );
+                      }
+
+                      // Patrón de pago con solicitud pendiente.
+                      if (p.purchaseStatus === 'PENDING') {
+                        return (
+                          <div className="space-y-2">
+                            <div className="text-center">
+                              <p className="text-xs font-bold text-primary">Solicitud enviada</p>
+                              <p className="text-xs text-text-muted mt-1">
+                                Tu pago está en revisión. Te notificamos cuando se confirme.
+                              </p>
+                            </div>
+                            {user?.country !== 'AUD' && (
+                              <a
+                                href={waComprobanteUrl(p)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="btn btn-primary w-full text-sm font-semibold"
+                              >
+                                Enviar comprobante por WhatsApp
+                              </a>
+                            )}
+                          </div>
+                        );
+                      }
+
+                      // Patrón de pago sin compra: precio + botón Comprar que
+                      // lleva al formulario de transferencia (como los cursos).
+                      return (
+                        <div className="space-y-2">
+                          {user ? (
+                            <p className="text-center text-lg font-bold text-text-ink">
+                              ${(user.country === 'AUD' ? p.precioAUD : p.precioARS).toLocaleString()} {user.country === 'AUD' ? 'AUD' : 'ARS'}
+                            </p>
+                          ) : (
+                            <div className="flex items-center justify-center gap-3 text-center">
+                              <p className="text-lg font-bold text-text-ink">${p.precioARS.toLocaleString()} ARS</p>
+                              <span className="text-text-muted">·</span>
+                              <p className="text-lg font-bold text-text-ink">${p.precioAUD.toLocaleString()} AUD</p>
+                            </div>
+                          )}
+                          <button
+                            onClick={() => handleBuy(p)}
+                            className="btn btn-primary w-full text-sm font-semibold"
+                          >
+                            {user ? 'Comprar' : 'Iniciar sesión para comprar'}
+                          </button>
+                        </div>
+                      );
+                    })()}
+
+                    {p.attachments?.length > 0 && (
+                      <div className="mt-2 space-y-1">
+                        {p.attachments.map(att => (
+                          <a
+                            key={att.id}
+                            href={getImageUrl(att.url)}
+                            download
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-xs text-primary underline block truncate"
+                          >
+                            {att.filename}
+                          </a>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}

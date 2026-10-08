@@ -31,6 +31,18 @@ export class AttachmentsService {
     return this.prisma.attachment.findMany({ where: { lessonId } });
   }
 
+  async createManyForPattern(patternId: string, files: Express.Multer.File[]) {
+    if (!files?.length) return [];
+    await this.prisma.attachment.createMany({
+      data: files.map((f) => ({
+        filename: f.originalname,
+        url: `/uploads/patterns/${f.filename}`,
+        patternId,
+      })),
+    });
+    return this.prisma.attachment.findMany({ where: { patternId } });
+  }
+
   async delete(id: string) {
     const attachment = await this.prisma.attachment.findUnique({ where: { id } });
     if (!attachment) throw new NotFoundException('Adjunto no encontrado');

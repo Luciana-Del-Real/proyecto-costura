@@ -91,29 +91,78 @@ export async function del(path) {
   return apiFetch(path, { method: 'DELETE' });
 }
 
-// Para descargar archivos binarios (ej. el PDF del certificado), que no
-// son JSON y necesitan el token de sesión igual que cualquier otro pedido.
-export async function downloadFile(path, filename) {
-  const url = path.startsWith('http') ? path : `${API_BASE_URL}${path}`;
-  const token = sessionStorage.getItem('costura_token');
-  const response = await fetch(url, {
-    headers: token ? { Authorization: `Bearer ${token}` } : {},
-  });
-  if (!response.ok) {
-    let message = `${response.status} ${response.statusText}`;
-    try {
-      const body = await response.json();
-      if (body?.message) message = body.message;
-    } catch { /* la respuesta no era JSON */ }
-    throw new Error(message);
-  }
-  const blob = await response.blob();
-  const blobUrl = window.URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = blobUrl;
-  link.download = filename;
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  window.URL.revokeObjectURL(blobUrl);
+// Web Push (WU4 — pwa-installability spec). El backend identifica la
+// suscripción por su endpoint: POST hace upsert (reconcilia logouts corridos)
+// y DELETE recibe el endpoint URL-encoded en el path, como exige el
+// controller de Nest. Ambos heredan la inyección de Authorization: Bearer.
+export async function createPushSubscription(subscription) {
+  return post('/push-subscriptions', subscription);
+}
+
+export async function deletePushSubscription(endpoint) {
+  return del(`/push-subscriptions/${encodeURIComponent(endpoint)}`);
+}
+
+// Certificados: el certificado NO se genera en la app. La alumna lo solicita
+// (cuando completó el curso), la profesora lo arma y lo envía por mail fuera
+// del sistema. Acá solo se registra la solicitud y su estado (PENDING -> SENT).
+export async function requestCertificate(courseId) {
+  return post(`/courses/${courseId}/certificate/request`);
+}
+
+export async function getMyCertificateRequest(courseId) {
+  return get(`/courses/${courseId}/certificate/request`);
+}
+
+// Bandeja del admin: todas las solicitudes con alumna y curso.
+export async function listCertificateRequests() {
+  return get('/admin/certificate-requests');
+}
+
+export async function markCertificateRequestSent(id) {
+  return patch(`/admin/certificate-requests/${id}`, { status: 'SENT' });
+}
+
+// Eventos: la grilla pública (solo visibles) y el CRUD del admin. Los
+// folletos se arman con texto (título, descripción, detalle), así que el
+// admin manda JSON.
+export async function listPublicEvents() {
+  return get('/events');
+}
+
+export async function listAdminEvents() {
+  return get('/admin/events');
+}
+
+export async function getEvent(id) {
+  return get(`/admin/events/${id}`);
+}
+
+export async function createEvent(data) {
+  return post('/admin/events', data);
+}
+
+export async function updateEvent(id, data) {
+  return put(`/admin/events/${id}`, data);
+}
+
+export async function deleteEvent(id) {
+  return del(`/admin/events/${id}`);
+}
+
+// Solicitudes de compra de patrones de pago (mismo flujo que los cursos).
+export async function requestPatternPurchase(patternId) {
+  return post(`/patterns/${patternId}/purchase`);
+}
+
+export async function listPatternPurchasesPending() {
+  return get('/admin/pattern-purchases/pending');
+}
+
+export async function approvePatternPurchase(id) {
+  return patch(`/admin/pattern-purchases/${id}/approve`);
+}
+
+export async function rejectPatternPurchase(id) {
+  return patch(`/admin/pattern-purchases/${id}/reject`);
 }

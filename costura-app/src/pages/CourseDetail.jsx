@@ -1,17 +1,19 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
+import { BookOpen, AlertTriangle } from 'lucide-react';
 import { useCourseCatalog } from '../context/CourseCatalogContext';
+import { useDialog } from '../context/DialogContext';
 import { usePurchases } from '../context/PurchaseContext';
 import { useProgress } from '../context/ProgressContext';
 import { useAuth } from '../context/AuthContext';
-import { getImageUrl } from '../utils/media';
-import { getLevelLabel } from '../utils/levels';
-import CourseCover from '../components/CourseCover';
-import { downloadFile } from '../services/api';
+import { requestCertificate, getMyCertificateRequest } from '../services/api';
 import useLessonComments from '../hooks/useLessonComments';
-import CoursePublicHero from '../components/course/CoursePublicHero';
-import CourseProgressCard from '../components/course/CourseProgressCard';
+import CoursePreviewView from '../components/course/CoursePreviewView';
+import CourseWelcomePanel from '../components/course/CourseWelcomePanel';
+import CourseAccordionItem from '../components/course/CourseAccordionItem';
 import LessonAccordionItem from '../components/course/LessonAccordionItem';
+import LessonListItem from '../components/course/LessonListItem';
+import LessonContent from '../components/course/LessonContent';
 
 export default function CourseDetail() {
   const { id } = useParams();
@@ -36,8 +38,8 @@ export default function CourseDetail() {
     return (
       <div className="min-h-screen bg-bg-surface flex items-center justify-center px-4">
         <div className="max-w-md text-center bg-white border border-border rounded-3xl p-8 shadow-sm">
-          <span className="text-5xl">📚</span>
-          <h2 className="text-xl font-bold text-text-ink mt-4 mb-2">Todavía no hay lecciones cargadas</h2>
+          <BookOpen className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
+          <h2 className="font-display font-bold text-text-ink text-2xl mt-4 mb-2">Todavía no hay lecciones cargadas</h2>
           <p className="text-text-ink mb-6">Este curso está confirmado, pero la profesora todavía no subió ninguna clase. Volvé a entrar más adelante.</p>
           <Link to="/mis-cursos" className="btn btn-primary inline-block font-semibold">
             ← Volver a mis cursos
@@ -49,7 +51,7 @@ export default function CourseDetail() {
 
   if (!owned) {
     return (
-      <CoursePublicHero
+      <CoursePreviewView
         course={course}
         user={user}
         onBuy={() => navigate(user ? `/checkout/${course.id}` : '/login')}
@@ -108,8 +110,8 @@ function OwnedCourseView({ course, progress, getProgress, completeLesson }) {
     return (
       <div className="min-h-screen bg-bg-surface flex items-center justify-center px-4">
         <div className="max-w-md text-center bg-white border border-border rounded-3xl p-8 shadow-sm">
-          <span className="text-5xl">⚠️</span>
-          <h2 className="text-xl font-bold text-text-ink mt-4 mb-2">No se pudo cargar el contenido</h2>
+          <AlertTriangle className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
+          <h2 className="font-display font-bold text-text-ink text-2xl mt-4 mb-2">No se pudo cargar el contenido</h2>
           <p className="text-text-ink mb-6">Verificá tu conexión y volvé a intentar. Si el problema continúa, escribile a la profesora.</p>
           <Link to="/mis-cursos" className="btn btn-primary inline-block font-semibold">
             ← Volver a mis cursos
@@ -123,6 +125,7 @@ function OwnedCourseView({ course, progress, getProgress, completeLesson }) {
 }
 
 function CourseLearningView({ course, progress, getProgress, completeLesson }) {
+  const { alertDialog } = useDialog();
   const courseProgress = progress[course.id] || { completed: [], lastLesson: 0 };
   const isCompleted = (lessonId) => courseProgress.completed.includes(lessonId);
 
@@ -131,14 +134,36 @@ function CourseLearningView({ course, progress, getProgress, completeLesson }) {
     return courseProgress.completed.includes(course.lessons[index - 1].id);
   };
 
-  // Se abre por defecto la primera lección no completada (o la última si ya se terminó todo)
-  const firstOpenIndex = course.lessons.findIndex(l => !isCompleted(l.id));
-  const [openLessonId, setOpenLessonId] = useState(
-    course.lessons[firstOpenIndex >= 0 ? firstOpenIndex : course.lessons.length - 1].id
-  );
+  // Estado de lección seleccionada: null muestra la bienvenida del curso en el
+  // panel derecho (portada + nombre + descripción) hasta que se elige una lección.
+  const [openLessonId, setOpenLessonId] = useState(null);
 
   // Comentarios/preguntas por lección, cargados de a uno (al abrir la lección)
   const { commentsByLesson, loadComments, sendComment, drafts, setDraft, sendingFor } = useLessonComments();
+
+  // Al llegar con #lesson-<id> (desde una notificación de la campanita), abrir
+  // esa lección, cargar sus preguntas y scrollear hasta ella. El hash se limpia
+  // al final para que un refresh no lo repita.
+  const location = useLocation();
+  useEffect(() => {
+    const m = location.hash.match(/^#lesson-(.+)$/);
+    if (!m) return;
+    const lessonId = m[1];
+    setOpenLessonId(lessonId);
+    loadComments(lessonId);
+    const timer = setTimeout(() => {
+      const lessonEl = document.getElementById(`lesson-${lessonId}`);
+      if (lessonEl) {
+        lessonEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Marca la lección en gris unos segundos (llegada desde la campanita).
+        lessonEl.classList.add('highlight-gray');
+        setTimeout(() => lessonEl.classList.remove('highlight-gray'), 3000);
+      }
+    }, 100);
+    window.history.replaceState(null, '', window.location.pathname + window.location.search);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const toggleLesson = (lesson, blocked) => {
     if (blocked) return;
@@ -152,19 +177,35 @@ function CourseLearningView({ course, progress, getProgress, completeLesson }) {
       await completeLesson(course.id, lessonId);
     } catch (err) {
       console.error(err);
-      alert('No se pudo marcar la lección como completada. Probá de nuevo.');
+      alertDialog('No se pudo marcar la lección como completada. Probá de nuevo.');
     }
   };
-  const [downloadingCert, setDownloadingCert] = useState(false);
-  const handleDownloadCertificate = async () => {
-    setDownloadingCert(true);
+  // Solicitud de certificado: la alumna solo puede PEDIRLO (al completar el
+  // 100%), la profesora lo arma y lo envía por mail fuera de la app. El estado
+  // de la solicitud se consulta al montar para no perderlo tras un refresh.
+  const [certStatus, setCertStatus] = useState(null);
+  const [requestingCert, setRequestingCert] = useState(false);
+  useEffect(() => {
+    let cancelled = false;
+    getMyCertificateRequest(course.id)
+      .then((data) => {
+        if (cancelled) return;
+        setCertStatus(data.request?.status || null);
+      })
+      .catch((err) => console.error('Error consultando solicitud de certificado:', err));
+    return () => { cancelled = true; };
+  }, [course.id]);
+
+  const handleRequestCertificate = async () => {
+    setRequestingCert(true);
     try {
-      await downloadFile(`/courses/${course.id}/certificate`, `certificado-${course.title}.pdf`);
+      await requestCertificate(course.id);
+      setCertStatus('PENDING');
     } catch (err) {
       console.error(err);
-      alert('No se pudo descargar el certificado. Probá de nuevo en un momento.');
+      alertDialog(err.message || 'No se pudo enviar la solicitud. Probá de nuevo en un momento.');
     } finally {
-      setDownloadingCert(false);
+      setRequestingCert(false);
     }
   };
 
@@ -175,62 +216,92 @@ function CourseLearningView({ course, progress, getProgress, completeLesson }) {
     ...(course.attachments || []),
   ];
 
+  // Lección seleccionada (desktop): el panel derecho muestra su contenido.
+  const activeLesson = course.lessons.find(l => l.id === openLessonId);
+  const activeIdx = activeLesson ? course.lessons.findIndex(l => l.id === activeLesson.id) : -1;
+
   return (
     <div className="min-h-screen bg-bg-surface pb-12">
-      <div className="max-w-4xl mx-auto px-4 py-8 lg:py-10 animate-fade-in">
+      <div className="max-w-6xl mx-auto px-4 py-8 lg:py-10 animate-fade-in">
         <Link to="/mis-cursos" className="text-primary text-sm hover:text-primary-hover inline-flex items-center gap-1 mb-4">
           ← Volver a mis cursos
         </Link>
 
-        {/* Encabezado del curso */}
-        <div className="bg-white rounded-3xl border border-border shadow-sm overflow-hidden mb-6">
-          {/* Portada: CourseCover muestra el nombre del curso si no hay imagen */}
-          <CourseCover course={course} className="w-full h-48 lg:h-64 object-cover" />
-          <div className="p-6 lg:p-8">
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <div className="flex-1 min-w-[240px]">
-                <span className="text-xs font-semibold bg-bg-soft text-accent px-3 py-1 rounded-full">{getLevelLabel(course.level)}</span>
-                <h1 className="font-display text-3xl md:text-4xl font-bold text-text-ink mt-3">{course.title}</h1>
-                <p className="text-text-ink mt-2 max-w-2xl">{course.longDescription || course.description}</p>
-                <div className="flex flex-wrap gap-4 text-sm text-text-ink mt-4">
-                  <span>👩‍🏫 {course.instructor}</span>
-                  <span>🕐 {course.duration}</span>
-                  <span>📚 {course.lessons.length} lecciones</span>
-                </div>
+        {/* Desktop: layout de dos paneles (lista de lecciones + contenido).
+            Sin lección seleccionada, el panel derecho muestra la bienvenida
+            del curso (portada + nombre + descripción). */}
+        <div className="hidden lg:grid lg:grid-cols-[320px_1fr] lg:gap-6 lg:items-start">
+          {/* Lista compacta de lecciones (panel izquierdo): seleccionar una
+              lección la resalta y muestra su contenido en el panel derecho */}
+          <div className="space-y-2">
+            {course.lessons.map((lesson, idx) => {
+              const blocked = !isSequentialAllowed(idx);
+              const completed = isCompleted(lesson.id);
+
+              return (
+                <LessonListItem
+                  key={lesson.id}
+                  lesson={lesson}
+                  idx={idx}
+                  isActive={openLessonId === lesson.id}
+                  blocked={blocked}
+                  completed={completed}
+                  onClick={() => toggleLesson(lesson, blocked)}
+                />
+              );
+            })}
+          </div>
+
+          {/* Contenido del panel derecho: bienvenida del curso o lección */}
+          <div>
+            {activeLesson ? (
+              <div className="card-flat rounded-2xl p-6">
+                <LessonContent
+                  lesson={activeLesson}
+                  idx={activeIdx}
+                  total={course.lessons.length}
+                  completed={isCompleted(activeLesson.id)}
+                  comments={commentsByLesson[activeLesson.id]}
+                  draft={drafts[activeLesson.id] || ''}
+                  sendingFor={sendingFor}
+                  onComplete={handleCompleteLesson}
+                  onSendComment={sendComment}
+                  onDraftChange={setDraft}
+                  onNext={() => toggleLesson(course.lessons[activeIdx + 1], false)}
+                  canComplete={!isCompleted(activeLesson.id) && isSequentialAllowed(activeIdx)}
+                />
               </div>
-              <CourseProgressCard
+            ) : (
+              <CourseWelcomePanel
+                course={course}
                 prog={prog}
                 completedCount={completedCount}
-                total={course.lessons.length}
-                downloadingCert={downloadingCert}
-                onDownloadCertificate={handleDownloadCertificate}
+                certStatus={certStatus}
+                requestingCert={requestingCert}
+                onRequestCertificate={handleRequestCertificate}
+                courseAttachments={courseAttachments}
               />
-            </div>
-
-            {/* PDFs generales del curso (no de una lección puntual) */}
-            {courseAttachments.length > 0 && (
-              <div className="mt-6 pt-6 border-t border-border">
-                <p className="text-xs uppercase tracking-wide text-accent mb-2">Material del curso</p>
-                <div className="flex flex-wrap gap-2">
-                  {courseAttachments.map(att => (
-                    <a
-                      key={att.id}
-                      href={getImageUrl(att.url)}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="btn btn-ghost text-sm"
-                    >
-                      📄 {att.filename || 'Ver PDF'}
-                    </a>
-                  ))}
-                </div>
-              </div>
             )}
           </div>
         </div>
 
-        {/* Desglose de lecciones (acordeón) */}
-        <div className="space-y-3">
+        {/* Mobile: acordeón con la principal del curso primero (abierta por
+            defecto) y las lecciones después. Son excluyentes: abrir una
+            lección cierra la principal, y volver a la principal cierra la
+            lección. */}
+        <div className="lg:hidden space-y-3 mt-6">
+          <CourseAccordionItem
+            course={course}
+            prog={prog}
+            completedCount={completedCount}
+            certStatus={certStatus}
+            requestingCert={requestingCert}
+            onRequestCertificate={handleRequestCertificate}
+            courseAttachments={courseAttachments}
+            isOpen={openLessonId === null}
+            onToggle={() => setOpenLessonId(null)}
+          />
+
           {course.lessons.map((lesson, idx) => {
             const blocked = !isSequentialAllowed(idx);
             const completed = isCompleted(lesson.id);

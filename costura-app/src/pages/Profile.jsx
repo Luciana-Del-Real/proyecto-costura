@@ -49,21 +49,23 @@ export default function Profile() {
 
   return (
     <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
-      <div className="bg-white rounded-2xl border-2 border-primary shadow-md px-4 py-10 animate-fade-up mt-5 mb-5 flex justify-center">
-        <div className="flex flex-col items-center gap-4 text-center">
-          <div className="w-16 h-16 bg-primary-soft rounded-full flex items-center justify-center text-2xl font-bold text-text-ink">
+      {/* Header: inicial al lado del nombre (mismo estilo plano que PageHeader) */}
+      <header className="max-w-6xl mx-auto px-1 pt-6 pb-2 animate-fade-up">
+        <div className="flex items-center gap-4">
+          <div className="w-14 h-14 bg-primary-soft rounded-full flex items-center justify-center text-xl font-bold text-text-ink flex-shrink-0">
             {user?.name?.charAt(0).toUpperCase()}
           </div>
           <div>
-            <h1 className="font-display text-2xl font-bold text-text-ink">{user?.name}</h1>
+            <h1 className="font-display text-3xl md:text-4xl font-bold text-text-ink">{user?.name}</h1>
+            {user?.email && <p className="text-text-muted mt-1">{user?.email}</p>}
           </div>
         </div>
-      </div>
+        <span aria-hidden="true" className="block w-16 h-1 bg-primary mt-3" />
+      </header>
 
-      <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
-        <div className="card-glow rounded-2xl px-4 py-10 animate-fade-up mt-5 mb-5">
+      <div className="card-flat rounded-2xl px-4 py-10 animate-fade-up mt-5 mb-5">
           <div className="flex items-center justify-between mb-5">
-            <h2 className="font-display font-bold text-text-ink text-xl">Información personal</h2>
+            <h2 className="font-display text-text-ink text-3xl">Información personal</h2>
             {!editing && (
               <button onClick={() => setEditing(true)} className="btn btn-ghost text-sm">
                 Editar
@@ -72,7 +74,7 @@ export default function Profile() {
           </div>
 
           {saved && (
-            <div className="card-glow text-primary text-sm rounded-xl px-4 py-3 mb-4">
+            <div className="text-primary text-sm px-0 py-2 mb-4">
               ✓ Cambios guardados correctamente
             </div>
           )}
@@ -145,8 +147,10 @@ export default function Profile() {
           )}
         </div>
 
-        <div className="card-glow rounded-2xl px-4 py-10 animate-fade-up mt-5 mb-5">
-          <h2 className="font-display font-bold text-text-ink text-xl">Historial de compras</h2>
+        <div className="px-1 py-10 animate-fade-up mt-5 mb-5">
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="font-display text-text-ink text-3xl">Historial de compras</h2>
+          </div>
           {purchasesLoading ? (
             <p className="text-text-ink text-sm">Cargando tus compras...</p>
           ) : purchasesError ? (
@@ -180,7 +184,6 @@ export default function Profile() {
             </div>
           )}
         </div>
-      </div>
     </div>
   );
 }

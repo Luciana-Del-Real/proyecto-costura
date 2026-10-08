@@ -1,15 +1,22 @@
 import { useEffect, useState } from 'react';
 import { useCourseCatalog } from '../../context/CourseCatalogContext';
+import { useDialog } from '../../context/DialogContext';
 import { usePurchases } from '../../context/PurchaseContext';
 import { sumByCurrency, formatMoney } from '../../utils/currency';
 import { getImageUrl } from '../../utils/media';
+import PageHeader from '../../components/PageHeader';
+import Pagination from '../../components/Pagination';
 
 export default function AdminSales() {
+  const { confirmDialog } = useDialog();
   const { courses } = useCourseCatalog();
   const { getAllPurchases, getPendingRequests, approvePurchase, denyPurchase } = usePurchases();
   const [allPurchases, setAllPurchases] = useState([]);
   const [, setPendingRequests] = useState([]);
   const [filter, setFilter] = useState('todos');
+  const [statusFilter, setStatusFilter] = useState('todos');
+  const [page, setPage] = useState(1);
+  const PER_PAGE = 10;
 
   // getAllPurchases/getPendingRequests se recrean en cada render de
   // PurchaseProvider (no están memoizadas), así que incluirlas en las
@@ -25,9 +32,13 @@ export default function AdminSales() {
   }, []);
   /* eslint-enable react-hooks/exhaustive-deps */
 
-  const filtered = filter === 'todos'
+  // Filtro combinado: por curso + por estado (aprobada/pendiente/denegada)
+  const filtered = (filter === 'todos'
       ? allPurchases
-      : allPurchases.filter(p => p.course.id === filter);
+      : allPurchases.filter(p => p.course.id === filter))
+    .filter(p => statusFilter === 'todos' || p.status === statusFilter);
+
+  const pageItems = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
   const reload = async () => {
     setAllPurchases(await getAllPurchases());
@@ -35,13 +46,13 @@ export default function AdminSales() {
   };
 
   const handleReapprove = async (p) => {
-    if (!window.confirm(`¿Reaprobar el acceso de ${p.user.name} al curso ${p.course.title}?`)) return;
+    if (!await confirmDialog(`¿Reaprobar el acceso de ${p.user.name} al curso ${p.course.title}?`)) return;
     await approvePurchase(p.id);
     await reload();
   };
 
   const handleDeny = async (p) => {
-    if (!window.confirm(`¿Denegar y revocar el acceso de ${p.user.name} al curso ${p.course.title}?`)) return;
+    if (!await confirmDialog(`¿Denegar y revocar el acceso de ${p.user.name} al curso ${p.course.title}?`)) return;
     await denyPurchase(p.id);
     await reload();
   };
@@ -64,24 +75,19 @@ export default function AdminSales() {
 
   return (
     <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
-      <div className="bg-white rounded-2xl border-2 border-primary shadow-md px-4 py-10 animate-fade-up mt-5">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="font-display text-3xl font-bold text-text-ink">Historial de ventas</h1>
-        </div>
-      </div>
+      <PageHeader title="Historial de ventas" />
 
-      <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in mt-6 mb-5">
-        {/* Summary cards */}
-        <div className="grid grid-cols-2 gap-4 mb-8">
+      {/* Summary cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8 mt-6">
           {/* Card de Ingresos Totales */}
-          <div className="card-glow rounded-2xl p-6 animate-fade-up">
+          <div className="card-flat rounded-2xl p-6 animate-fade-up">
             <p className="text-xs uppercase tracking-wider font-bold text-text-tan mb-2">Ingresos totales</p>
             <p className="text-lg font-bold text-text-ink">${revenueFiltered.ARS.toLocaleString()} ARS</p>
             <p className="text-lg font-bold text-text-ink">${revenueFiltered.AUD.toLocaleString()} AUD</p>
           </div>
 
           {/* Card de Total de Ventas */}
-          <div className="card-glow rounded-2xl p-6 animate-fade-up-delay-1">
+          <div className="card-flat rounded-2xl p-6 animate-fade-up-delay-1">
             <p className="text-xs uppercase tracking-wider font-bold text-text-tan mb-2">Total de ventas</p>
             <p className="text-3xl font-bold text-text-ink">{approved.length}</p>
           </div>
@@ -89,18 +95,18 @@ export default function AdminSales() {
 
         {/* Revenue bar chart */}
         {salesPerCourse.length > 0 && (
-          <div className="card-glow rounded-2xl p-8 animate-fade-up mb-8">
+          <div className="card-flat rounded-2xl p-8 animate-fade-up mb-8">
             {/* Título con margen inferior para separar del contenido */}
-            <h2 className="font-display font-bold text-text-ink text-xl">Ventas por curso</h2>
+            <h2 className="font-display font-bold text-text-ink text-2xl">Ventas por curso</h2>
             
             <div className="space-y-6">
               {salesPerCourse.map(c => (
-                <div key={c.id} className="flex items-center gap-6">
+                <div key={c.id} className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
                   {/* Título del curso */}
-                  <p className="text-sm font-medium text-text-ink w-40 truncate flex-shrink-0">{c.title}</p>
+                  <p className="text-sm font-medium text-text-ink w-full sm:w-40 truncate flex-shrink-0">{c.title}</p>
                   
                   {/* Barra de progreso */}
-                  <div className="flex-1 bg-gray-100 rounded-full h-3 overflow-hidden">
+                  <div className="flex-none sm:flex-1 w-full bg-gray-100 rounded-full h-3 overflow-hidden">
                     <div
                       className="bg-primary h-3 rounded-full transition-all duration-700"
                       style={{ width: `${(c.count / maxCount) * 100}%` }}
@@ -108,7 +114,7 @@ export default function AdminSales() {
                   </div>
                   
                   {/* Estadísticas */}
-                  <div className="text-right w-32">
+                  <div className="text-right w-full sm:w-32">
                     <span className="text-xs font-bold text-text-ink block">{c.count} venta{c.count !== 1 ? 's' : ''}</span>
                     <span className="text-[10px] text-text-tan block font-medium">
                       ${c.revenueByCurrency.ARS.toLocaleString()} ARS · ${c.revenueByCurrency.AUD.toLocaleString()} AUD
@@ -121,25 +127,34 @@ export default function AdminSales() {
         )}
 
         {/* Contenedor unificado: bg-white, border-gray-100, bordes redondeados */}
-        <div className="card-glow rounded-2xl overflow-hidden animate-fade-up mb-8">
+        <div className="card-flat rounded-2xl overflow-x-auto animate-fade-up mb-8">
           
           {/* Cabecera con fondo sutil */}
           <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between gap-3 flex-wrap bg-gray-50/50">
-            <h2 className="font-display font-bold text-text-ink text-xl">Detalle de ventas</h2>
-            <select value={filter} onChange={e => setFilter(e.target.value)}
-              className="border border-gray-100 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-white text-text-ink">
-              <option value="todos">Todos los cursos</option>
-              {courses.map(c => <option key={c.id} value={c.id}>{c.title}</option>)}
-            </select>
+            <h2 className="font-display font-bold text-text-ink text-2xl">Detalle de ventas</h2>
+            <div className="flex items-center gap-3 flex-wrap w-full sm:w-auto">
+              <select value={statusFilter} onChange={e => { setStatusFilter(e.target.value); setPage(1); }}
+                className="border border-gray-100 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-white text-text-ink w-full sm:w-auto">
+                <option value="todos">Todos los estados</option>
+                <option value="APPROVED">Aprobada</option>
+                <option value="PENDING">Pendiente</option>
+                <option value="REJECTED">Denegada</option>
+              </select>
+              <select value={filter} onChange={e => { setFilter(e.target.value); setPage(1); }}
+                className="border border-gray-100 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-white text-text-ink w-full sm:w-auto">
+                <option value="todos">Todos los cursos</option>
+                {courses.map(c => <option key={c.id} value={c.id}>{c.title}</option>)}
+              </select>
+            </div>
           </div>
 
           {filtered.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-text-tan text-sm">Sin ventas para mostrar.</p>
+              <p className="text-text-tan text-sm">Sin ventas para mostrar con los filtros seleccionados.</p>
             </div>
           ) : (
             <>
-              <table className="w-full text-sm">
+              <table className="w-full text-sm min-w-[480px]">
                 <thead>
                   <tr className="border-b border-gray-100 bg-gray-50/50">
                     <th className="text-left px-8 py-4 text-text-ink font-bold text-xs uppercase tracking-wider">Alumna</th>
@@ -149,7 +164,7 @@ export default function AdminSales() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
-                  {filtered.map((p, i) => (
+                  {pageItems.map((p, i) => (
                     <tr key={i} className="hover:bg-gray-50/50 transition-colors">
                       <td className="px-8 py-4">
                         <p className="font-semibold text-text-ink">{p.user.name}</p>
@@ -164,7 +179,7 @@ export default function AdminSales() {
                       <td className="px-4 py-4">
                         <div className="flex items-center gap-2 flex-wrap">
                           <span className={`text-xs font-bold px-2 py-0.5 rounded-full whitespace-nowrap ${
-                            p.status === 'APPROVED' ? 'bg-primary-soft text-primary' :
+                            p.status === 'APPROVED' ? 'bg-success/10 text-success' :
                             p.status === 'PENDING' ? 'bg-bg-soft text-text-tan' :
                             'bg-red-50 text-danger'
                           }`}>
@@ -193,17 +208,17 @@ export default function AdminSales() {
               </table>
 
               {/* Pie de tabla con estilo limpio */}
-              <div className="px-8 py-4 border-t border-gray-100 flex justify-between items-center bg-gray-50/50">
+              <div className="px-8 py-4 border-t border-gray-100 flex justify-between items-center flex-wrap gap-2 bg-gray-50/50">
                 <span className="text-xs text-text-tan">{filtered.length} registro{filtered.length !== 1 ? 's' : ''}</span>
                 <div className="text-right">
                     <p className="font-bold text-text-ink text-sm">Total: ${revenueFiltered.ARS.toLocaleString()} ARS</p>
                     <p className="font-bold text-text-ink text-xs">${revenueFiltered.AUD.toLocaleString()} AUD</p>
                 </div>
               </div>
+              <Pagination page={page} total={filtered.length} perPage={PER_PAGE} onPageChange={setPage} />
             </>
           )}
         </div>
-      </div>
     </div>
   );
 }

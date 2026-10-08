@@ -1,31 +1,31 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { User } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useNotifications } from '../context/NotificationsContext';
 import BackToHome from './BackToHome';
+import NotificationBell from './NotificationBell';
 
 export default function Navbar() {
   const { user, logout, isAdmin } = useAuth();
-  const { notifications, unreadCount, notificationsLoading, notificationsError, markAsRead, markAllAsRead } = useNotifications();
+  const { unreadCount } = useNotifications();
   const navigate = useNavigate();
   const location = useLocation();
   const pathname = location?.pathname || '';
-  const simplifiedRoutes = ['/login', '/registro', '/cursos', '/forgot-password', '/reset-password'];
+  const simplifiedRoutes = ['/login', '/registro', '/forgot-password', '/reset-password'];
+  const isAuthPage = pathname === '/login' || pathname === '/registro';
   const isCourseDetail = pathname.startsWith('/curso/');
   const isSimplified = simplifiedRoutes.includes(pathname) || isCourseDetail;
   const isHome = pathname === '/';
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const [notifOpen, setNotifOpen] = useState(false);
   const profileRef = useRef(null);
-  const notifRef = useRef(null);
 
   const handleLogout = () => {
     logout();
     navigate('/');
     setMenuOpen(false);
     setProfileOpen(false);
-    setNotifOpen(false);
   };
 
   // Close dropdowns when clicking outside
@@ -33,9 +33,6 @@ export default function Navbar() {
     const handler = (e) => {
       if (profileRef.current && !profileRef.current.contains(e.target)) {
         setProfileOpen(false);
-      }
-      if (notifRef.current && !notifRef.current.contains(e.target)) {
-        setNotifOpen(false);
       }
     };
     document.addEventListener('mousedown', handler);
@@ -55,84 +52,23 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop */}
-          {(!isSimplified || user) && (
+          {(!isSimplified || user || isAuthPage) && (
           <div className="hidden md:flex items-center gap-6">
             {user ? (
               <>
               <Link to="/dashboard" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/dashboard' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Inicio</Link>
               <Link to="/cursos" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/cursos' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Cursos disponibles</Link>
               <Link to="/favoritos" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/favoritos' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Favoritos</Link>
+              <Link to="/patrones-gratis" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/patrones-gratis' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Patrones</Link>
 
               {/* Notifications bell */}
-              <div className="relative" ref={notifRef}>
-                <button
-                  onClick={() => setNotifOpen(!notifOpen)}
-                  aria-label="Notificaciones"
-                  className="btn btn-icon relative"
-                >
-                  <svg className="w-5 h-5 text-text-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                  </svg>
-                  {unreadCount > 0 && (
-                    <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-accent text-white text-[10px] font-bold flex items-center justify-center">
-                      {unreadCount}
-                    </span>
-                  )}
-                </button>
-
-                {notifOpen && (
-                  <div className="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-lg border border-border overflow-hidden animate-slide-down z-50">
-                    <div className="px-4 py-3 border-b border-border flex items-center justify-between">
-                      <p className="text-xs font-semibold text-text-ink">Notificaciones</p>
-                      {unreadCount > 0 && (
-                        <button
-                          onClick={() => markAllAsRead()}
-                          className="btn btn-ghost text-xs text-primary hover:text-primary-hover"
-                        >
-                          Marcar todas como leídas
-                        </button>
-                      )}
-                    </div>
-                    <div className="max-h-80 overflow-y-auto">
-                      {notificationsLoading && (
-                        <p className="text-sm text-accent px-4 py-3">Cargando...</p>
-                      )}
-                      {!notificationsLoading && notificationsError && (
-                        <p className="text-sm text-accent px-4 py-3">
-                          No se pudieron cargar las notificaciones.
-                        </p>
-                      )}
-                      {!notificationsLoading && !notificationsError && notifications.length === 0 && (
-                        <p className="text-sm text-accent px-4 py-3">Todavía no tenés notificaciones.</p>
-                      )}
-                      {!notificationsLoading && !notificationsError && notifications.length > 0 && (
-                        <ul>
-                          {notifications.slice(0, 5).map(n => (
-                            <li key={n.id} className="border-b border-border last:border-0">
-                              <button
-                                onClick={() => { if (!n.read) markAsRead(n.id); }}
-                                className="w-full text-left px-4 py-3 hover:bg-bg-soft transition-colors"
-                              >
-                                <p className="text-xs font-semibold text-text-ink flex items-center gap-2">
-                                  {!n.read && <span className="w-2 h-2 rounded-full bg-accent flex-shrink-0" />}
-                                  {n.title}
-                                </p>
-                                <p className="text-xs text-accent mt-0.5 line-clamp-2">{n.message}</p>
-                              </button>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
+              <NotificationBell />
 
               {/* Profile dropdown */}
               <div className="relative" ref={profileRef}>
                 <button
                   onClick={() => setProfileOpen(!profileOpen)}
-                  className="btn btn-ghost text-sm"
+                  className={`btn btn-ghost text-sm bg-white hover:bg-white border border-primary/30 hover:border-primary transition-colors ${profileOpen ? 'border-primary' : ''}`}
                 >
                   <div className="w-7 h-7 bg-bg-soft rounded-full flex items-center justify-center text-text-ink text-xs font-bold">
                     {user.name?.charAt(0).toUpperCase()}
@@ -144,18 +80,14 @@ export default function Navbar() {
                 </button>
 
                 {profileOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-bg-surface rounded-2xl shadow-lg border border-border py-1 overflow-hidden animate-slide-down">
+                  <div className="absolute right-0 mt-2 w-48 bg-bg-surface rounded-2xl shadow-[0_8px_30px_rgba(29,29,27,0.12)] border border-border py-1 overflow-hidden animate-slide-down">
                     <div className="px-4 py-3 border-b border-border">
                       <p className="text-xs font-semibold text-text-ink truncate">{user.name}</p>
                       <p className="text-xs text-accent truncate">{user.email}</p>
                     </div>
                     <Link to="/perfil" onClick={() => setProfileOpen(false)}
-                      className="flex items-center gap-2 px-4 py-2.5 text-sm text-text-ink hover:bg-bg-soft transition-colors">
-                      👤 Mi perfil
-                    </Link>
-                    <Link to="/mis-cursos" onClick={() => setProfileOpen(false)}
-                      className="flex items-center gap-2 px-4 py-2.5 text-sm text-text-ink hover:bg-bg-soft transition-colors">
-                      📚 Mis cursos
+                      className="flex items-center gap-2 px-4 py-2.5 text-sm text-text-ink hover:bg-gray-100 transition-colors">
+                      <User className="w-4 h-4 text-primary" strokeWidth={1.5} /> Mi perfil
                     </Link>
                     <div className="border-t border-bg-soft py-3 px-3 mt-1">
                       <button onClick={handleLogout}
@@ -169,10 +101,11 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              {!isSimplified && (
+              {(!isSimplified || isAuthPage) && (
                 <>
-                  <Link to="/patrones-gratis" className="px-1 py-1 rounded-lg text-sm font-medium text-text-ink hover:text-primary transition-colors">Patrones gratis</Link>
-                  <Link to="/login" className="btn btn-ghost text-sm text-primary border-primary/40 hover:bg-primary-soft hover:text-primary-hover">Iniciar sesión</Link>
+                  <Link to="/cursos" className="px-1 py-1 rounded-lg text-sm font-medium text-text-ink hover:text-primary transition-colors">Cursos disponibles</Link>
+                  <Link to="/patrones-gratis" className="px-1 py-1 rounded-lg text-sm font-medium text-text-ink hover:text-primary transition-colors">Patrones</Link>
+                  <Link to="/login" className="btn btn-primary text-sm text-white hover:shadow-none">Iniciar sesión</Link>
                 </>
               )}
             </>
@@ -212,14 +145,16 @@ export default function Navbar() {
               <Link to="/dashboard" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Inicio</Link>
               <Link to="/cursos" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Cursos disponibles</Link>
               <Link to="/favoritos" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Favoritos</Link>
+              <Link to="/patrones-gratis" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Patrones</Link>
               <Link to="/perfil" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Perfil</Link>
               <Link to="/mis-cursos" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Mis cursos</Link>
               <button onClick={handleLogout} className="btn btn-ghost w-full justify-start text-sm text-accent">Cerrar sesión</button>
             </>
           ) : (
-            !isSimplified && (
+            (!isSimplified || isAuthPage) && (
               <>
-                  <Link to="/patrones-gratis" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Patrones gratis</Link>
+                  <Link to="/cursos" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Cursos disponibles</Link>
+                  <Link to="/patrones-gratis" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Patrones</Link>
                   <Link to="/login" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Iniciar sesión</Link>
               </>
             )

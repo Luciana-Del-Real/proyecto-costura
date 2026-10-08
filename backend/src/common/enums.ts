@@ -14,3 +14,8 @@ export enum PurchaseStatus {
   APPROVED = 'APPROVED',
   REJECTED = 'REJECTED',
 }
+
+export enum CertificateRequestStatus {
+  PENDING = 'PENDING',
+  SENT = 'SENT',
+}

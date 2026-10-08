@@ -1,8 +1,10 @@
 // Formulario de nueva lección dentro de la edición de un curso (rol profesora).
 // El estado del borrador y el submit viven en AdminCourseForm.
+import FilePicker from '../FilePicker';
+
 export default function NewLessonForm({ newLesson, setNewLesson, setPdfs, creating, onSubmit }) {
   return (
-    <form onSubmit={onSubmit} className="card-glow p-4 rounded-xl space-y-3 border-2 border-dashed border-primary/40">
+    <form onSubmit={onSubmit} className="p-4 space-y-3">
       <p className="text-sm font-bold text-text-ink">+ Agregar nueva lección</p>
       <input
         required
@@ -18,7 +20,7 @@ export default function NewLessonForm({ newLesson, setNewLesson, setPdfs, creati
         onChange={e => setNewLesson({ ...newLesson, description: e.target.value })}
         className="w-full p-2 rounded-lg border border-border h-20"
       />
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <input
           required
           placeholder="Duración (ej. 12 min)"
@@ -36,13 +38,7 @@ export default function NewLessonForm({ newLesson, setNewLesson, setPdfs, creati
       </div>
       <div>
         <label className="block text-xs font-bold text-text-ink mb-2">📎 PDFs de la lección (podés elegir varios)</label>
-        <input
-          type="file"
-          accept=".pdf"
-          multiple
-          onChange={e => setPdfs(Array.from(e.target.files))}
-          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-hover cursor-pointer"
-        />
+        <FilePicker accept=".pdf" multiple onChange={e => setPdfs(Array.from(e.target.files))} />
       </div>
       <button type="submit" disabled={creating} className="btn btn-primary w-full text-sm">
         {creating ? 'Creando...' : '+ Crear lección'}

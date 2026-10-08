@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export default function Auth({ defaultTab = 'login' }) {
@@ -63,7 +64,7 @@ export default function Auth({ defaultTab = 'login' }) {
           </p>
         </div>
 
-        <div className="card-glow rounded-2xl p-8">
+        <div className="card-glow-fixed rounded-2xl p-8">
           {error && <p className="text-danger text-sm mb-4 text-center">{error}</p>}
           
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -93,8 +94,13 @@ export default function Auth({ defaultTab = 'login' }) {
                 className="bg-white w-full rounded-xl px-4 py-3 border border-gray-200 focus:ring-2 focus:ring-primary outline-none pr-16" 
                 onChange={e => setForm({...form, password: e.target.value})} 
               />
-              <button type="button" className="btn btn-ghost absolute right-1 top-1/2 -translate-y-1/2 text-sm text-primary" onClick={() => setShowPassword(!showPassword)}>
-                {showPassword ? "Ocultar" : "Ver"}
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-ink transition-colors cursor-pointer"
+              >
+                {showPassword ? <EyeOff className="w-5 h-5" strokeWidth={1.8} /> : <Eye className="w-5 h-5" strokeWidth={1.8} />}
               </button>
             </div>
 

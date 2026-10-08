@@ -149,6 +149,15 @@
     font-family: var(--body-font);
   }
 
+  /* Cursor universal: todo botón clickeable muestra la manito y todo botón
+     deshabilitado, el cursor de no permitido. Complementa al .btn (que ya
+     era pointer); cubre los botones planos (iconos, acordeones, filas de
+     notificaciones, acciones de tabla) y los elementos con role="button".
+     Los <a> de texto plano ya muestran la manito por defecto del navegador. */
+  button:not(:disabled):not([disabled]) { cursor: pointer; }
+  button:disabled, button[disabled] { cursor: not-allowed; }
+  [role="button"] { cursor: pointer; }
+
   /* Estilo base unificado para botones/CTAs (aplicado globalmente) */
   /* ⚠️ ATENCIÓN: PR2 (button-system) removed the global button rule.
      Buttons are styled ONLY by explicit `.btn` classes (see @layer
@@ -258,7 +267,7 @@
     border-color: var(--color-border);
   }
   .btn-ghost:hover:not(:disabled) {
-    background-color: var(--color-bg-soft);
+    background-color: #F3F4F6; /* gris suave (mismo que hover de notificaciones) */
   }
 
   .btn-icon {
@@ -418,6 +427,39 @@
   box-shadow: 0 0 16px rgba(247, 193, 214, 0.45), 0 8px 24px rgba(247, 193, 214, 0.20);
 }
 
+/* Card plana para datos: mismo fondo/borde/radio que card-glow pero SIN glow
+   ni intensificación en hover. Se usa en tablas, filas, forms, stats y paneles
+   de datos donde el glow sobra; el glow queda reservado para contenido. */
+.card-flat {
+  background: #FFFFFF;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  transition: border-color 0.25s ease;
+}
+.card-flat:hover {
+  border-color: var(--color-border);
+}
+
+/* Card con glow FIJO para los forms de autenticación: el mismo glow de
+   card-glow pero SIN intensificarse en hover (el usuario pidió glow fijo).
+   Glow intensificado: resplandor más visible y una capa extra amplia. */
+.card-glow-fixed {
+  background: #FFFFFF;
+  border: 1.5px solid var(--color-primary);
+  border-radius: var(--radius-lg);
+  box-shadow:
+    0 0 24px rgba(232, 62, 140, 0.35),
+    0 0 60px rgba(232, 62, 140, 0.15),
+    0 8px 30px rgba(232, 62, 140, 0.18);
+}
+.card-glow-fixed:hover {
+  border-color: var(--color-primary);
+  box-shadow:
+    0 0 24px rgba(232, 62, 140, 0.35),
+    0 0 60px rgba(232, 62, 140, 0.15),
+    0 8px 30px rgba(232, 62, 140, 0.18);
+}
+
 /* Línea de costura: separador entre secciones con patrón de puntadas
    fucsia (identidad Grow). Se ve como una costura a máquina: guiones
    cortos y parejos sobre fondo transparente. */
@@ -493,7 +535,7 @@ footer.bg-black * {
   margin-bottom: 4rem;
 }
 .hero-card .badge { display: inline-block; }
-.hero-card .actions { display:flex; gap:0.75rem; justify-content:center; align-items:center; margin-top:0.5rem; }
+.hero-card .actions { display:flex; flex-wrap:wrap; gap:0.75rem; justify-content:center; align-items:center; margin-top:0.5rem; }
 
 /* PR3: removed dead .logo-circle helpers (no JSX consumers). */
 
@@ -560,8 +602,10 @@ section.hero-no-sep + section {
   box-shadow: none !important;
 }
 .nav-on-hero .logo-text { color: var(--color-text-cocoa) !important; font-weight:600; }
-.nav-on-hero a,
-.nav-on-hero .nav-link {
+/* Los .btn (canónicos) llevan su propio color (btn-primary blanco, ghost ink);
+   el override cocoa solo aplica a links planos del navbar, no a botones. */
+.nav-on-hero a:not(.btn),
+.nav-on-hero .nav-link:not(.btn) {
   color: var(--color-text-cocoa) !important;
 }
 /* PR5: dropped .text-black/.text-secondary/.text-brown-muted and the
@@ -601,3 +645,10 @@ section.hero-no-sep + section {
 .delay-4 { animation-delay: 0.4s; }
 .delay-5 { animation-delay: 0.5s; }
 .delay-6 { animation-delay: 0.6s; }
+
+/* Highlight temporal (gris) al llegar desde una notificación: el elemento destino se marca unos segundos y luego se desvanece. */
+.highlight-gray {
+  background-color: rgba(28, 25, 23, 0.10) !important;
+  transition: background-color 0.5s ease;
+}
+

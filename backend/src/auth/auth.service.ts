@@ -5,7 +5,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import type { User } from '@prisma/client';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
-import { MailService, resolveLocale } from '../mail/mail.service';
+import { MailService } from '../mail/mail.service';
 import { ConfigService } from '@nestjs/config';
 import * as crypto from 'crypto';
 import { jwtSecret } from '../config/jwt.config';
@@ -176,11 +176,8 @@ export class AuthService {
     const frontend = this.config.get<string>('FRONTEND_URL') || 'http://localhost:5173';
     const resetUrl = `${frontend}/reset-password?token=${token}`;
 
-    // Idioma del correo según el país del estudiante (es/en; sin país → es)
-    const isSpanish = resolveLocale(user.country) === 'es';
-    const subject = isSpanish ? 'Restablecer contraseña' : 'Reset your password';
-    const html = isSpanish
-      ? `
+const subject = 'Restablecer contraseña';
+    const html = `
       <div style="background-color:#F9F5F0;padding:32px 16px;font-family:Helvetica,Arial,sans-serif;">
         <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:560px;margin:0 auto;">
           <tr>
@@ -209,40 +206,6 @@ export class AuthService {
           <tr>
             <td align="center" style="padding:20px 0 0 0;font-size:12px;color:#A08060;">
               Grow Creative Education Studio — Cursos online de costura, bordado y diseño textil
-            </td>
-          </tr>
-        </table>
-      </div>
-    `
-      : `
-      <div style="background-color:#F9F5F0;padding:32px 16px;font-family:Helvetica,Arial,sans-serif;">
-        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:560px;margin:0 auto;">
-          <tr>
-            <td align="center" style="padding:0 0 24px 0;">
-              <img src="cid:logo" alt="Grow Creative Education Studio" width="120" style="max-width:120px;height:auto;" />
-            </td>
-          </tr>
-          <tr>
-            <td style="background-color:#FFFFFF;border:1px solid #E5D8CB;border-radius:16px;padding:32px;">
-              <h1 style="margin:0 0 12px 0;font-size:24px;line-height:1.3;color:#6B4C3B;font-family:Georgia,serif;">Hello ${user.name || ''}</h1>
-              <p style="margin:0 0 20px 0;font-size:15px;line-height:1.6;color:#8F7666;">
-                We received a request to reset your password. The link is valid for ${minutes} minutes.
-              </p>
-              <table role="presentation" cellspacing="0" cellpadding="0" style="margin:0 0 24px 0;">
-                <tr>
-                  <td style="background-color:#4E6D5B;border-radius:12px;">
-                    <a href="${resetUrl}" target="_blank" style="display:inline-block;padding:14px 32px;font-size:15px;font-weight:bold;color:#FFFFFF;text-decoration:none;border-radius:12px;">Reset password</a>
-                  </td>
-                </tr>
-              </table>
-              <p style="margin:0;font-size:13px;line-height:1.5;color:#A08060;">
-                If you didn't request this, you can ignore this email. Your password won't change.
-              </p>
-            </td>
-          </tr>
-          <tr>
-            <td align="center" style="padding:20px 0 0 0;font-size:12px;color:#A08060;">
-              Grow Creative Education Studio — Online sewing, embroidery and textile design courses
             </td>
           </tr>
         </table>

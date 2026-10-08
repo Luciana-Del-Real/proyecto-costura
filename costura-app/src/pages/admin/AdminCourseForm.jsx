@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useCourseCatalog } from '../../context/CourseCatalogContext';
+import { useDialog } from '../../context/DialogContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import { get, postForm, putForm, del } from '../../services/api';
-import useLessonComments from '../../hooks/useLessonComments';
 import CourseFieldsForm from '../../components/admin/CourseFieldsForm';
 import LessonEditorItem from '../../components/admin/LessonEditorItem';
 import NewLessonForm from '../../components/admin/NewLessonForm';
@@ -14,6 +14,7 @@ const EMPTY_LESSON = { title: '', duration: '', videoUrl: '' };
 
 export default function AdminCourseForm() {
   const { addCourse, updateCourse } = useCourseCatalog();
+  const { confirmDialog, alertDialog } = useDialog();
   const { id } = useParams();
   const navigate = useNavigate();
   const isEditing = Boolean(id);
@@ -75,20 +76,20 @@ export default function AdminCourseForm() {
       }
     } catch (err) {
       console.error(err);
-      alert('Error guardando el curso');
+      alertDialog('Error guardando el curso');
     } finally {
       setSaving(false);
     }
   };
 
   const handleDeleteCourseAttachment = async (attachmentId) => {
-    if (!confirm('¿Eliminar este PDF del curso?')) return;
+    if (!await confirmDialog('¿Eliminar este PDF del curso?')) return;
     try {
       await del(`/attachments/${attachmentId}`);
       await reloadCourse();
     } catch (err) {
       console.error(err);
-      alert('No se pudo eliminar el PDF');
+      alertDialog('No se pudo eliminar el PDF');
     }
   };
 
@@ -96,6 +97,9 @@ export default function AdminCourseForm() {
   const [editedLessons, setEditedLessons] = useState({});
   const [lessonPdfFiles, setLessonPdfFiles] = useState({});
   const [savingLessonId, setSavingLessonId] = useState(null);
+  // Acordeón: las lecciones guardadas arrancan colapsadas (solo título + duración)
+  // para scrollear fácil a la próxima; click para expandir y editar.
+  const [openLessonId, setOpenLessonId] = useState(null);
 
   const setLessonField = (lessonId, field, value) => {
     setEditedLessons((prev) => ({
@@ -113,7 +117,7 @@ export default function AdminCourseForm() {
     try {
       const formData = new FormData();
       formData.append('title', editedLessons[lesson.id]?.title ?? lesson.title);
-      formData.append('description', (editedLessons[lesson.id]?.description ?? lesson.description) || '');
+      formData.append('description', lesson.description);
       formData.append('duration', editedLessons[lesson.id]?.duration ?? lesson.duration);
       formData.append('videoUrl', editedLessons[lesson.id]?.videoUrl ?? lesson.videoUrl);
       formData.append('order', String(lesson.order ?? 0));
@@ -122,35 +126,35 @@ export default function AdminCourseForm() {
       filesToUpload.forEach((file) => formData.append('pdfs', file));
 
       await putForm(`/courses/${id}/lessons/${lesson.id}`, formData);
-      setLessonPdfFiles((prev) => ({ ...prev, [lesson.id]: [] }));
       await reloadCourse();
+      setOpenLessonId(null); // Al guardar, se colapsa y queda lista para scrollear a la próxima
     } catch (err) {
       console.error(err);
-      alert('Error guardando la lección');
+      alertDialog('Error guardando la lección');
     } finally {
       setSavingLessonId(null);
     }
   };
 
   const handleDeleteLesson = async (lessonId) => {
-    if (!confirm('¿Eliminar esta lección? Esta acción no se puede deshacer.')) return;
+    if (!await confirmDialog('¿Eliminar esta lección? Esta acción no se puede deshacer.')) return;
     try {
       await del(`/courses/${id}/lessons/${lessonId}`);
       await reloadCourse();
     } catch (err) {
       console.error(err);
-      alert('No se pudo eliminar la lección');
+      alertDialog('No se pudo eliminar la lección');
     }
   };
 
   const handleDeleteLessonAttachment = async (attachmentId) => {
-    if (!confirm('¿Eliminar este PDF de la lección?')) return;
+    if (!await confirmDialog('¿Eliminar este PDF de la lección?')) return;
     try {
       await del(`/attachments/${attachmentId}`);
       await reloadCourse();
     } catch (err) {
       console.error(err);
-      alert('No se pudo eliminar el PDF');
+      alertDialog('No se pudo eliminar el PDF');
     }
   };
 
@@ -158,16 +162,6 @@ export default function AdminCourseForm() {
   const [newLesson, setNewLesson] = useState(EMPTY_LESSON);
   const [newLessonPdfs, setNewLessonPdfs] = useState([]);
   const [creatingLesson, setCreatingLesson] = useState(false);
-
-  // --- Preguntas de alumnas, por lección ---
-  const [openQuestionsFor, setOpenQuestionsFor] = useState(null);
-  const { commentsByLesson, loadComments, sendComment, drafts, setDraft, sendingFor } = useLessonComments();
-
-  const toggleQuestions = (lessonId) => {
-    const willOpen = openQuestionsFor !== lessonId;
-    setOpenQuestionsFor(willOpen ? lessonId : null);
-    if (willOpen) loadComments(lessonId);
-  };
 
   const handleCreateLesson = async (e) => {
     e.preventDefault();
@@ -188,7 +182,7 @@ export default function AdminCourseForm() {
       await reloadCourse();
     } catch (err) {
       console.error(err);
-      alert('Error creando la lección');
+      alertDialog('Error creando la lección');
     } finally {
       setCreatingLesson(false);
     }
@@ -201,9 +195,9 @@ export default function AdminCourseForm() {
   return (
     <div className="min-h-screen bg-bg-surface py-12 px-4">
       <div className="max-w-2xl mx-auto">
-        <button onClick={() => navigate('/admin/cursos')} className="btn btn-ghost mb-6 text-sm">← Volver al listado</button>
+        <button onClick={() => navigate('/admin/cursos')} className="text-primary text-sm hover:text-primary-hover inline-flex items-center gap-1 mb-6">← Volver al listado</button>
 
-        <div className="card-glow rounded-2xl p-8 mb-8">
+        <div className="card-flat rounded-2xl p-8">
           <h2 className="font-display font-bold text-text-ink text-2xl mb-8 border-b pb-4">{isEditing ? 'Editar curso' : 'Nuevo curso'}</h2>
           {saved && <div className="bg-primary-soft text-success text-sm rounded-xl px-4 py-3 mb-4">✓ Guardado correctamente</div>}
 
@@ -219,50 +213,45 @@ export default function AdminCourseForm() {
             course={course}
             onDeleteAttachment={handleDeleteCourseAttachment}
           />
+
+          {/* Lecciones: solo disponible una vez que el curso ya existe */}
+          {isEditing && (
+            <>
+              <h3 className="font-display font-bold text-text-ink text-2xl mt-10 mb-6 border-b pb-4">Lecciones</h3>
+
+              <div className="space-y-4 mb-8">
+                {(course?.lessons || []).map((lesson) => (
+                  <LessonEditorItem
+                    key={lesson.id}
+                    lesson={lesson}
+                    isOpen={openLessonId === lesson.id}
+                    onToggle={() => setOpenLessonId(openLessonId === lesson.id ? null : lesson.id)}
+                    editedLessons={editedLessons}
+                    onFieldChange={setLessonField}
+                    onLessonPdfChange={handleLessonPdfChange}
+                    savingLessonId={savingLessonId}
+                    onSaveLesson={handleSaveLesson}
+                    onDeleteLesson={handleDeleteLesson}
+                    onDeleteLessonAttachment={handleDeleteLessonAttachment}
+                  />
+                ))}
+
+                {(!course?.lessons || course.lessons.length === 0) && (
+                  <p className="text-sm text-text-ink">Este curso todavía no tiene lecciones.</p>
+                )}
+              </div>
+
+              {/* Nueva lección */}
+              <NewLessonForm
+                newLesson={newLesson}
+                setNewLesson={setNewLesson}
+                setPdfs={setNewLessonPdfs}
+                creating={creatingLesson}
+                onSubmit={handleCreateLesson}
+              />
+            </>
+          )}
         </div>
-
-        {/* Lecciones: solo disponible una vez que el curso ya existe */}
-        {isEditing && (
-          <div className="card-glow rounded-2xl p-8">
-            <h3 className="font-display font-bold text-text-ink text-xl mb-6 border-b pb-4">Lecciones</h3>
-
-            <div className="space-y-4 mb-8">
-              {(course?.lessons || []).map((lesson) => (
-                <LessonEditorItem
-                  key={lesson.id}
-                  lesson={lesson}
-                  editedLessons={editedLessons}
-                  onFieldChange={setLessonField}
-                  onLessonPdfChange={handleLessonPdfChange}
-                  savingLessonId={savingLessonId}
-                  onSaveLesson={handleSaveLesson}
-                  onDeleteLesson={handleDeleteLesson}
-                  onDeleteLessonAttachment={handleDeleteLessonAttachment}
-                  questionsOpen={openQuestionsFor === lesson.id}
-                  onToggleQuestions={toggleQuestions}
-                  comments={commentsByLesson[lesson.id]}
-                  drafts={drafts}
-                  sendingFor={sendingFor}
-                  onSendComment={sendComment}
-                  onDraftChange={setDraft}
-                />
-              ))}
-
-              {(!course?.lessons || course.lessons.length === 0) && (
-                <p className="text-sm text-text-ink">Este curso todavía no tiene lecciones.</p>
-              )}
-            </div>
-
-            {/* Nueva lección */}
-            <NewLessonForm
-              newLesson={newLesson}
-              setNewLesson={setNewLesson}
-              setPdfs={setNewLessonPdfs}
-              creating={creatingLesson}
-              onSubmit={handleCreateLesson}
-            />
-          </div>
-        )}
       </div>
     </div>
   );

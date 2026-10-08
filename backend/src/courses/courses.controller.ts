@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Query, Request, UseGuards, UseInterceptors, UploadedFiles } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Query, Request, UseGuards, UseInterceptors, UploadedFiles, Logger } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
@@ -10,6 +10,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { AdminGuard } from '../auth/guards/admin.guard';
 import { OptionalJwtAuthGuard } from '../auth/guards/optional-jwt.guard';
 import { Principal } from '../common/principal';
+import { NotificationsService } from '../notifications/notifications.service';
 
 const uploadsDir = './uploads/courses';
 mkdirSync(uploadsDir, { recursive: true });
@@ -36,7 +37,12 @@ const courseFileFields = FileFieldsInterceptor([
 
 @Controller('courses')
 export class CoursesController {
-  constructor(private readonly coursesService: CoursesService) {}
+  private readonly logger = new Logger(CoursesController.name);
+
+  constructor(
+    private readonly coursesService: CoursesService,
+    private readonly notificationsService: NotificationsService,
+  ) {}
 
   @Get()
   @UseGuards(OptionalJwtAuthGuard)
@@ -63,6 +69,19 @@ export class CoursesController {
 
     if (files?.pdfs?.length) {
       await this.coursesService.addAttachments(course.id, files.pdfs);
+    }
+
+    // Avisa a todas las alumnas del curso nuevo. La notificación nunca debe
+    // romper la creación: si falla, se loguea y la creación sigue.
+    try {
+      await this.notificationsService.createNotificationsForStudents(
+        'Nuevo curso disponible',
+        `${course.title} ya está disponible. ¡Inscribite y empezá a crear!`,
+        undefined,
+        `/curso/${course.id}`,
+      );
+    } catch (err) {
+      this.logger.warn('No se pudo notificar a las alumnas del nuevo curso', err);
     }
 
     return this.coursesService.findOne(course.id);

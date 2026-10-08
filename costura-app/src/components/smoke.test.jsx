@@ -15,12 +15,14 @@ import { MemoryRouter } from 'react-router-dom';
 import CourseFieldsForm from './admin/CourseFieldsForm';
 import CourseAttachmentsSection from './admin/CourseAttachmentsSection';
 import LessonEditorItem from './admin/LessonEditorItem';
-import LessonQuestionsPanel from './admin/LessonQuestionsPanel';
 import NewLessonForm from './admin/NewLessonForm';
-import CoursePublicHero from './course/CoursePublicHero';
+import CoursePreviewView from './course/CoursePreviewView';
 import CourseProgressCard from './course/CourseProgressCard';
 import LessonAccordionItem from './course/LessonAccordionItem';
+import LessonListItem from './course/LessonListItem';
+import LessonContent from './course/LessonContent';
 import LessonCommentsSection from './course/LessonCommentsSection';
+import { registerServiceWorker } from '../utils/serviceWorkerRegistration';
 
 const noop = vi.fn();
 const emptyLesson = { id: 'l1', title: 'Lección 1', duration: '12 min', videoUrl: '', attachments: [] };
@@ -64,6 +66,8 @@ describe('extracted components smoke render', () => {
     const html = renderToStaticMarkup(
       <LessonEditorItem
         lesson={emptyLesson}
+        isOpen={true}
+        onToggle={noop}
         editedLessons={{}}
         onFieldChange={noop}
         onLessonPdfChange={noop}
@@ -71,33 +75,29 @@ describe('extracted components smoke render', () => {
         onSaveLesson={noop}
         onDeleteLesson={noop}
         onDeleteLessonAttachment={noop}
-        questionsOpen={false}
-        onToggleQuestions={noop}
-        comments={null}
-        drafts={{}}
-        sendingFor={null}
-        onSendComment={noop}
-        onDraftChange={noop}
       />,
     );
     expect(html).toContain('Lección 1');
     expect(html).toContain('Guardar lección');
   });
 
-  it('LessonQuestionsPanel renders the toggle (closed state)', () => {
+  it('LessonEditorItem collapses the editor content when closed', () => {
     const html = renderToStaticMarkup(
-      <LessonQuestionsPanel
-        lessonId="l1"
-        open={false}
-        comments={null}
-        drafts={{}}
-        sendingFor={null}
+      <LessonEditorItem
+        lesson={emptyLesson}
+        isOpen={false}
         onToggle={noop}
-        onSend={noop}
-        onDraftChange={noop}
+        editedLessons={{}}
+        onFieldChange={noop}
+        onLessonPdfChange={noop}
+        savingLessonId={null}
+        onSaveLesson={noop}
+        onDeleteLesson={noop}
+        onDeleteLessonAttachment={noop}
       />,
     );
-    expect(html).toContain('Ver preguntas de alumnas');
+    expect(html).toContain('Lección 1');
+    expect(html).not.toContain('Guardar lección');
   });
 
   it('NewLessonForm renders the new lesson form shell', () => {
@@ -114,14 +114,14 @@ describe('extracted components smoke render', () => {
     expect(html).toContain('type="file"');
   });
 
-  it('CoursePublicHero renders the public hero inside a router', () => {
+  it('CoursePreviewView renders the course preview with lessons and CTA', () => {
     const course = {
       level: 'INTERMEDIO',
       title: 'Moldería Avanzada',
       longDescription: 'Descripción larga',
       instructor: 'Luciana',
       duration: '8 semanas',
-      lessons: [{ id: 'l1' }],
+      lessons: [{ id: 'l1', title: 'Lección 1', duration: '10 min', description: 'Intro' }],
       rating: 4.5,
       students: 120,
       priceARS: 14000,
@@ -129,11 +129,12 @@ describe('extracted components smoke render', () => {
     };
     const html = renderToStaticMarkup(
       <MemoryRouter>
-        <CoursePublicHero course={course} user={null} onBuy={noop} />
+        <CoursePreviewView course={course} user={null} onBuy={noop} />
       </MemoryRouter>,
     );
     expect(html).toContain('Moldería Avanzada');
-    expect(html).toContain('Comprar curso');
+    expect(html).toContain('Lección 1');
+    expect(html).toContain('Inscribirme');
   });
 
   it('CourseProgressCard renders progress and counters', () => {
@@ -186,5 +187,68 @@ describe('extracted components smoke render', () => {
     );
     expect(html).toContain('Preguntas sobre esta lección');
     expect(html).toContain('Enviar pregunta');
+  });
+
+  it('LessonListItem renders the compact desktop row with status', () => {
+    const html = renderToStaticMarkup(
+      <LessonListItem
+        lesson={emptyLesson}
+        idx={0}
+        isActive={true}
+        blocked={false}
+        completed={false}
+        onClick={noop}
+      />,
+    );
+    expect(html).toContain('Lección 1');
+    expect(html).toContain('12 min');
+  });
+
+  it('LessonContent renders the lesson content block', () => {
+    const html = renderToStaticMarkup(
+      <LessonContent
+        lesson={{ ...emptyLesson, description: 'Descripción de la lección' }}
+        idx={0}
+        total={2}
+        completed={false}
+        comments={null}
+        draft=""
+        sendingFor={null}
+        onComplete={noop}
+        onSendComment={noop}
+        onDraftChange={noop}
+        onNext={noop}
+        canComplete={true}
+      />,
+    );
+    expect(html).toContain('Descripción de la lección');
+    expect(html).toContain('Marcar como completada');
+  });
+});
+
+describe('service worker registration guard (pwa-installability spec)', () => {
+  it('does not throw when navigator.serviceWorker is unavailable', () => {
+    // This file runs without jsdom: no navigator.serviceWorker exists, which
+    // is exactly the "Smoke test without service worker" scenario — boot code
+    // must no-op instead of throwing.
+    expect(() => registerServiceWorker()).not.toThrow();
+  });
+
+  it('registers sw.js when navigator.serviceWorker is available', async () => {
+    const register = vi.fn().mockResolvedValue(undefined);
+    const original = Object.getOwnPropertyDescriptor(globalThis, 'navigator');
+    Object.defineProperty(globalThis, 'navigator', {
+      value: { serviceWorker: { register } },
+      configurable: true,
+      writable: true,
+    });
+    try {
+      await registerServiceWorker();
+    } finally {
+      if (original) Object.defineProperty(globalThis, 'navigator', original);
+      else delete globalThis.navigator;
+    }
+    expect(register).toHaveBeenCalledTimes(1);
+    expect(register.mock.calls[0][0]).toMatch(/sw\.js$/);
   });
 });
