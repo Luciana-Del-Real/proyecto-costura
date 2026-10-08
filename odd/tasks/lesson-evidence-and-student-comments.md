@@ -36,13 +36,13 @@ Out of scope:
 
 ## Tasks
 
-- [ ] **T1** Backend schema: add `evidenceImage String?` and `evidenceNote String?` to `LessonProgress` (`backend/prisma/schema.prisma`) + migration `add_lesson_progress_evidence`.
-- [ ] **T2** Backend API: `PATCH /progress/lessons/:lessonId` becomes multipart; requires an image to mark complete; stores image path + optional note; returns the updated progress.
-- [ ] **T3** Backend API: `GET /admin/certificate-requests/:id/detail` returning the request, student, course, per-lesson progress with evidence, and that student's comments for the course (AdminGuard).
-- [ ] **T4** Frontend (student): evidence upload flow in the lesson view (`LessonContent.jsx` + `ProgressContext`): image required + optional note; show evidence once completed.
-- [ ] **T5** Frontend (admin): Consultas inbox grouped by **student** (then course -> lesson).
-- [ ] **T6** Frontend (admin): certificate review detail panel showing lessons + evidence + comments per student/course.
-- [ ] **T7** Tests: backend (completion rejected without evidence; stores image + note) and frontend (upload required; grouping by student).
+- [x] **T1** Backend schema: add `evidenceImage String?` and `evidenceNote String?` to `LessonProgress` (`backend/prisma/schema.prisma`) + migration `add_lesson_progress_evidence`.
+- [x] **T2** Backend API: `PATCH /progress/lessons/:lessonId` becomes multipart; requires an image to mark complete; stores image path + optional note; returns the updated progress.
+- [x] **T3** Backend API: `GET /admin/certificate-requests/:id/detail` returning the request, student, course, per-lesson progress with evidence, and that student's comments for the course (AdminGuard).
+- [x] **T4** Frontend (student): evidence upload flow in the lesson view (`LessonContent.jsx` + `ProgressContext`): image required + optional note; show evidence once completed.
+- [x] **T5** Frontend (admin): Consultas inbox grouped by **student** (then course -> lesson).
+- [x] **T6** Frontend (admin): certificate review detail panel showing lessons + evidence + comments per student/course.
+- [x] **T7** Tests: backend (completion rejected without evidence; stores image + note) and frontend (upload required; grouping by student).
 
 ## Route per task
 
@@ -76,4 +76,9 @@ Forecast: ~600-900 authored lines (backend + frontend + tests). Repo flow is `de
 
 ## Progress
 
-- 2026-10-08: feature document created. Exploration complete (comments, Consultas, certificates, lesson progress). Product decisions captured. Implementation not started.
+- 2026-10-08: feature document created. Exploration complete (comments, Consultas, certificates, lesson progress). Product decisions captured.
+- 2026-10-08: backend work unit done (T1-T3 + backend tests). Migration `20261008164940_add_lesson_progress_evidence` applied to Supabase. Backend tests 99 -> 105 passing, typecheck clean. Commit `5a805c8`.
+- 2026-10-08: frontend work unit done (T4-T6 + frontend tests). During review the parent removed the dead `onComplete`/`handleCompleteLesson` threading (old signature) so lesson completion flows only through `ProgressContext`. Frontend 116 -> 120 tests passing, lint clean, build passing. Commits `968b5dc` and `21d6ea8`.
+- Running count: roughly 780 authored lines across 4 commits (`3e78186` docs, `5a805c8` backend, `968b5dc` + `21d6ea8` frontend).
+- Remaining: manual end-to-end verification (upload evidence, complete a lesson, review as admin in both screens); push `dev` and open the PR into `main`.
+- Known gap: the certificate-request detail modal has no dedicated automated test (covered only by lint/build + following the existing modal pattern).
