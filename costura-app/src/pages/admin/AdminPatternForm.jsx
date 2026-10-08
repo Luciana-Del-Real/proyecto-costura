@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate, useParams, Link } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { FileText } from 'lucide-react';
 import { get, postForm, putForm, del } from '../../services/api';
 import { useDialog } from '../../context/DialogContext';
@@ -7,6 +7,8 @@ import { getImageUrl } from '../../utils/media';
 import PageHeader from '../../components/PageHeader';
 import FilePicker from '../../components/FilePicker';
 import LoadingState from '../../components/LoadingState';
+import BackLink from '../../components/BackLink';
+import SuccessBanner from '../../components/SuccessBanner';
 
 const EMPTY_FORM = {
   titulo: '',
@@ -119,10 +121,10 @@ export default function AdminPatternForm() {
         subtitle="Cargá los datos y los PDFs del patrón."
       />
 
-      <Link to="/admin/patrones" className="text-primary text-sm hover:text-primary-hover inline-flex items-center gap-1 mb-4">← Volver al listado</Link>
+      <BackLink to="/admin/patrones">← Volver al listado</BackLink>
 
       <div className="card-flat rounded-2xl p-8">
-        {saved && <div className="bg-primary-soft text-success text-sm rounded-xl px-4 py-3 mb-4">✓ Guardado correctamente</div>}
+        {saved && <SuccessBanner>Guardado correctamente</SuccessBanner>}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>

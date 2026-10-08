@@ -8,6 +8,8 @@ import PageHeader from '../../components/PageHeader';
 import Pagination from '../../components/Pagination';
 import LoadingState from '../../components/LoadingState';
 import EmptyState from '../../components/EmptyState';
+import SearchInput from '../../components/SearchInput';
+import Badge from '../../components/Badge';
 
 export default function AdminPatterns() {
   const { confirmDialog, alertDialog } = useDialog();
@@ -56,18 +58,12 @@ export default function AdminPatterns() {
       <PageHeader title="Gestión de patrones" />
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <div className="relative w-full max-w-sm">
-          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          <input
-            type="text"
-            value={search}
-            onChange={e => { setSearch(e.target.value); setPage(1); }}
-            placeholder="Buscar patrón..."
-            className="w-full pl-10 pr-4 py-2 text-sm border-2 border-gray-300 hover:border-gray-400 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-300 bg-white text-gray-700 placeholder-gray-400 shadow-sm transition-all duration-300"
-          />
-        </div>
+        <SearchInput
+          value={search}
+          onChange={e => { setSearch(e.target.value); setPage(1); }}
+          placeholder="Buscar patrón..."
+          className="w-full max-w-sm"
+        />
         <Link to="/admin/patrones/nuevo" className="btn btn-primary text-sm shrink-0">
           ＋ Nuevo patrón
         </Link>
@@ -104,9 +100,7 @@ export default function AdminPatterns() {
                 <div className="flex gap-4 text-xs text-black/70 font-medium">
                   <span>{p.nivel}</span>
                   <span>{p.categoria}</span>
-                  <span className={`font-bold px-2 py-0.5 rounded-full ${p.esPago ? 'bg-success/10 text-success' : 'bg-primary-soft text-primary'}`}>
-                    {p.esPago ? 'De pago' : 'Gratis'}
-                  </span>
+                  <Badge tone={p.esPago ? 'success' : 'primary'}>{p.esPago ? 'De pago' : 'Gratis'}</Badge>
                 </div>
               </div>
 

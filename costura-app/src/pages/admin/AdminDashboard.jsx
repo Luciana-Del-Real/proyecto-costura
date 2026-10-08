@@ -10,6 +10,7 @@ import WelcomeToast from '../../components/WelcomeToast';
 import PageHeader from '../../components/PageHeader';
 import LoadingState from '../../components/LoadingState';
 import EmptyState from '../../components/EmptyState';
+import Badge from '../../components/Badge';
 import ConsultasSection from '../../components/admin/ConsultasSection';
 import useHighlightTarget from '../../hooks/useHighlightTarget';
 
@@ -138,9 +139,9 @@ export default function AdminDashboard() {
                     <p className="text-sm font-medium text-text-ink truncate">{u.name}</p>
                     <p className="text-xs text-text-ink opacity-70 truncate">{u.email}</p>
                   </div>
-                  <span className="text-xs bg-bg-surface text-text-ink px-2 py-0.5 rounded-full">
+                  <Badge tone="neutral">
                     {u.purchases?.length || 0} curso{u.purchases?.length !== 1 ? 's' : ''}
-                  </span>
+                  </Badge>
                 </div>
               ))}
             </div>

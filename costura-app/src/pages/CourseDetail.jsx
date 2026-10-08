@@ -10,6 +10,7 @@ import { requestCertificate, getMyCertificateRequest } from '../services/api';
 import useLessonComments from '../hooks/useLessonComments';
 import LoadingState from '../components/LoadingState';
 import ErrorState from '../components/ErrorState';
+import BackLink from '../components/BackLink';
 import CoursePreviewView from '../components/course/CoursePreviewView';
 import CourseWelcomePanel from '../components/course/CourseWelcomePanel';
 import CourseAccordionItem from '../components/course/CourseAccordionItem';
@@ -216,9 +217,7 @@ function CourseLearningView({ course, progress, getProgress }) {
   return (
     <div className="min-h-screen bg-bg-surface pb-12">
       <div className="w-full px-4 py-8 lg:py-10 animate-fade-in">
-        <Link to="/mis-cursos" className="text-primary text-sm hover:text-primary-hover inline-flex items-center gap-1 mb-4">
-          ← Volver a mis cursos
-        </Link>
+        <BackLink to="/mis-cursos">← Volver a mis cursos</BackLink>
 
         {/* Desktop: layout de dos paneles (lista de lecciones + contenido).
             Sin lección seleccionada, el panel derecho muestra la bienvenida

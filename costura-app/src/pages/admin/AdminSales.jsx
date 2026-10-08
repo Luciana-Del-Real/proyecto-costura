@@ -8,6 +8,7 @@ import PageHeader from '../../components/PageHeader';
 import Pagination from '../../components/Pagination';
 import LoadingState from '../../components/LoadingState';
 import EmptyState from '../../components/EmptyState';
+import Badge from '../../components/Badge';
 
 export default function AdminSales() {
   const { confirmDialog } = useDialog();
@@ -197,13 +198,12 @@ export default function AdminSales() {
                       </td>
                       <td className="px-4 py-4">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className={`text-xs font-bold px-2 py-0.5 rounded-full whitespace-nowrap ${
-                            p.status === 'APPROVED' ? 'bg-success/10 text-success' :
-                            p.status === 'PENDING' ? 'bg-bg-soft text-text-tan' :
-                            'bg-red-50 text-danger'
-                          }`}>
+                          <Badge
+                            tone={p.status === 'APPROVED' ? 'success' : p.status === 'PENDING' ? 'neutral' : 'danger'}
+                            className="whitespace-nowrap"
+                          >
                             {p.status === 'APPROVED' ? 'Aprobada' : p.status === 'PENDING' ? 'Pendiente' : 'Denegada'}
-                          </span>
+                          </Badge>
                           {p.status === 'APPROVED' && (
                             <button onClick={() => handleDeny(p)} className="text-xs font-semibold text-danger hover:text-danger-hover whitespace-nowrap">
                               Denegar

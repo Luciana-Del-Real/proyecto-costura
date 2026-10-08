@@ -5,6 +5,7 @@ import CommentThread from '../CommentThread';
 import LoadingState from '../LoadingState';
 import EmptyState from '../EmptyState';
 import ErrorState from '../ErrorState';
+import Badge from '../Badge';
 
 // Bandeja de consultas del admin: vista pura sobre useAdminComments (fetch,
 // filtros, partición y envío viven en el hook). Acá quedan encabezados,
@@ -50,9 +51,9 @@ export default function ConsultasSection() {
     reply: 'Responder', cancel: 'Cancelar', send: 'Enviar',
     placeholder: 'Escribí tu respuesta...',
     badge: (c) => c.parentId ? null : (
-      <span className={`text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full ${answeredIds.has(c.id) ? 'bg-success/10 text-success' : 'bg-primary-soft text-primary'}`}>
+      <Badge tone={answeredIds.has(c.id) ? 'success' : 'primary'}>
         {answeredIds.has(c.id) ? 'Respondida' : 'Sin responder'}
-      </span>
+      </Badge>
     ),
   };
 

@@ -6,6 +6,8 @@ import { get, postForm, putForm, del } from '../../services/api';
 import PageHeader from '../../components/PageHeader';
 import LoadingState from '../../components/LoadingState';
 import EmptyState from '../../components/EmptyState';
+import BackLink from '../../components/BackLink';
+import SuccessBanner from '../../components/SuccessBanner';
 import CourseFieldsForm from '../../components/admin/CourseFieldsForm';
 import LessonEditorItem from '../../components/admin/LessonEditorItem';
 import NewLessonForm from '../../components/admin/NewLessonForm';
@@ -202,10 +204,10 @@ export default function AdminCourseForm() {
         subtitle="Cargá los datos del curso y sus lecciones."
       />
 
-      <button onClick={() => navigate('/admin/cursos')} className="text-primary text-sm hover:text-primary-hover inline-flex items-center gap-1 mb-4">← Volver al listado</button>
+      <BackLink to="/admin/cursos">← Volver al listado</BackLink>
 
       <div className="card-flat rounded-2xl p-8">
-        {saved && <div className="bg-primary-soft text-success text-sm rounded-xl px-4 py-3 mb-4">✓ Guardado correctamente</div>}
+        {saved && <SuccessBanner>Guardado correctamente</SuccessBanner>}
 
         <CourseFieldsForm
           form={form}

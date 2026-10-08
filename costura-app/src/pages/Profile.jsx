@@ -6,6 +6,7 @@ import { getImageUrl } from '../utils/media';
 import LoadingState from '../components/LoadingState';
 import EmptyState from '../components/EmptyState';
 import ErrorState from '../components/ErrorState';
+import SuccessBanner from '../components/SuccessBanner';
 
 export default function Profile() {
   const { user, updateUser } = useAuth();
@@ -77,9 +78,7 @@ export default function Profile() {
           </div>
 
           {saved && (
-            <div className="text-primary text-sm px-0 py-2 mb-4">
-              ✓ Cambios guardados correctamente
-            </div>
+            <SuccessBanner>Cambios guardados correctamente</SuccessBanner>
           )}
 
           {error && (

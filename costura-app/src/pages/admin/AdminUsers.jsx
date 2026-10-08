@@ -5,6 +5,8 @@ import PageHeader from '../../components/PageHeader';
 import Pagination from '../../components/Pagination';
 import LoadingState from '../../components/LoadingState';
 import EmptyState from '../../components/EmptyState';
+import SearchInput from '../../components/SearchInput';
+import Badge from '../../components/Badge';
 import { useCourseCatalog } from '../../context/CourseCatalogContext';
 import { useDialog } from '../../context/DialogContext';
 import { useAdmin } from '../../context/AdminContext';
@@ -90,18 +92,12 @@ export default function AdminUsers() {
       />
 
       {/* Search */}
-      <div className="relative max-w-sm mb-6">
-        <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-        </svg>
-        <input
-          type="text"
-          value={search}
-          onChange={e => { setSearch(e.target.value); setPage(1); }}
-          placeholder="Buscar alumna..."
-          className="w-full pl-10 pr-4 py-2 text-sm border-2 border-gray-300 hover:border-gray-400 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-300 bg-white text-gray-700 placeholder-gray-400 shadow-sm transition-all duration-300"
-        />
-      </div>
+      <SearchInput
+        value={search}
+        onChange={e => { setSearch(e.target.value); setPage(1); }}
+        placeholder="Buscar alumna..."
+        className="max-w-sm mb-6"
+      />
 
       {/* Detail modal — Portal directo a <body>: el position:fixed queda
           relativo al viewport (no a un ancestro con transform) y el modal
@@ -131,7 +127,7 @@ export default function AdminUsers() {
                     <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="font-display font-bold text-2xl text-text-ink">{selected.name}</h3>
                       {!isActive(selected) && (
-                        <span className="text-xs bg-red-50 text-red-400 border border-red-200 px-2 py-0.5 rounded-full font-semibold">Suspendida</span>
+                        <Badge tone="danger">Suspendida</Badge>
                       )}
                     </div>
                     <p className="text-text-tan text-sm mt-0.5">{selected.email}</p>
@@ -247,12 +243,12 @@ export default function AdminUsers() {
                   </td>
                   <td className="px-4 py-4 text-black hidden md:table-cell font-medium">{u.email}</td>
                   <td className="px-4 py-4 text-center">
-                    <span className="bg-border text-text-ink text-xs font-bold px-3 py-1 rounded-full">{getPurchasedCourseIds(u).length}</span>
+                    <Badge tone="neutral">{getPurchasedCourseIds(u).length}</Badge>
                   </td>
                   <td className="px-4 py-4 text-center hidden sm:table-cell">
                     {isActive(u)
-                      ? <span className="text-[10px] font-bold uppercase tracking-wide bg-primary-soft text-success px-2 py-1 rounded-full">Activa</span>
-                      : <span className="text-[10px] font-bold uppercase tracking-wide bg-red-100 text-red-400 px-2 py-1 rounded-full">Suspendida</span>}
+                      ? <Badge tone="success">Activa</Badge>
+                      : <Badge tone="danger">Suspendida</Badge>}
                   </td>
                   <td className="px-6 py-4 text-right">
                     <button

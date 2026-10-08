@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { getImageUrl } from '../../utils/media';
 import LoadingState from '../LoadingState';
 import ErrorState from '../ErrorState';
+import Badge from '../Badge';
 
 // Detalle de una solicitud de certificado para la revisión del admin: alumna +
 // curso y cada lección con su estado y su evidencia (imagen + nota). Se abre
@@ -94,9 +95,9 @@ export default function CertificateRequestDetail({ requestId, getDetail, onClose
                     {(detail.lessons || []).map((lesson) => (
                       <div key={lesson.id} className="rounded-xl border border-border p-3">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className={`text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full ${lesson.completed ? 'bg-success/10 text-success' : 'bg-primary-soft text-primary'}`}>
+                          <Badge tone={lesson.completed ? 'success' : 'primary'}>
                             {lesson.completed ? 'Completada' : 'Pendiente'}
-                          </span>
+                          </Badge>
                           <span className="text-sm font-medium text-text-ink">{lesson.order}. {lesson.title}</span>
                         </div>
                         {lesson.evidenceImage ? (

@@ -6,6 +6,7 @@ import CertificateRequestDetail from './CertificateRequestDetail';
 import LoadingState from '../LoadingState';
 import EmptyState from '../EmptyState';
 import ErrorState from '../ErrorState';
+import Badge from '../Badge';
 
 // Bandeja de solicitudes de certificado del admin: la alumna pide el
 // certificado al completar el curso, la profesora lo arma y lo envía por mail
@@ -57,13 +58,9 @@ export default function CertificadosSection() {
       <div className="flex items-center gap-3 sm:flex-none">
         <span className="text-xs text-text-ink opacity-70 whitespace-nowrap">{formatDate(r.createdAt)}</span>
         {r.status === 'PENDING' ? (
-          <span className="text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-primary-soft text-primary whitespace-nowrap">
-            Pendiente
-          </span>
+          <Badge tone="primary" className="whitespace-nowrap">Pendiente</Badge>
         ) : (
-          <span className="text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-success/10 text-success whitespace-nowrap">
-            Enviada
-          </span>
+          <Badge tone="success" className="whitespace-nowrap">Enviada</Badge>
         )}
         {r.status === 'PENDING' && (
           <button

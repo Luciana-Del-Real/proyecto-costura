@@ -43,10 +43,10 @@ Blank-while-loading routes:
 - [x] **T6** `ErrorState` component (+ test) `{icon,title,description,onRetry?}`; migrate the ~12 sites.
 
 ### Work unit 3 — repeated controls
-- [ ] **T7** `SearchInput` component (+ test); migrate the 9 identical inputs (+ the `ConsultasSection` variant).
-- [ ] **T8** `BackLink` component (+ test); migrate the 8 "← Volver" links.
-- [ ] **T9** `Badge` component (+ test); migrate the ~15 pills to one padding/size scale.
-- [ ] **T10** `SuccessBanner` (and a shared `InlineAlert` for danger) (+ test); migrate the "guardado" banners and the red error banners.
+- [x] **T7** `SearchInput` component (+ test); migrate the 9 identical inputs (+ the `ConsultasSection` variant).
+- [x] **T8** `BackLink` component (+ test); migrate the 8 "← Volver" links.
+- [x] **T9** `Badge` component (+ test); migrate the ~15 pills to one padding/size scale.
+- [x] **T10** `SuccessBanner` (and a shared `InlineAlert` for danger) (+ test); migrate the "guardado" banners and the red error banners.
 
 ### Work unit 4 — modals + typography
 - [ ] **T11** `Modal` component (+ test): portal + overlay + panel + header/close + scrollable body; one z-index scale. Migrate `DialogContext`, `AdminUsers` detail, `CertificateRequestDetail`, and the sidebar drawer; align `WelcomeToast`/`PushConsentBanner` overlays.
@@ -79,3 +79,4 @@ Forecast: large (touches most of `costura-app/src`). Work unit by work unit on `
 - 2026-10-08: audit complete; document created; scope confirmed (do everything, in work units, starting with loading). Implementation not started.
 - 2026-10-08: WU1 (loading) done — `LoadingState` (page/section/inline), all loaders migrated, loading flags added to CourseCatalogContext/AdminDashboard/AdminSales. Frontend 132 -> 138 tests. Commits `dbbf511` + docs.
 - 2026-10-08: WU2 (empty + error) done — `EmptyState` and `ErrorState` (card/plain/inline and card/banner/inline), ~32 sites migrated, search-empty copy unified, red banners now use the `danger` token. Frontend 138 -> 151 tests. Not committed yet.
+- 2026-10-08: WU3 (repeated controls) done — `SearchInput`, `BackLink`, `Badge`, `SuccessBanner` (+ tests): 9 search inputs migrated (ConsultasSection filter input left as-is: plain filter styled to match its sibling select, not the magnifier search pattern), 6 back links migrated (CourseDetail's btn-primary CTA and ErrorState action are different patterns; Checkout/PatternCheckout `mb-6 inline-block` normalized to the shared `mb-4`), ~16 pills unified to one scale/tones, 5 "guardado" banners migrated (Profile's plain-text notice became the boxed banner). `InlineAlert` intentionally NOT created — danger banners already use `ErrorState variant="banner"` (WU2). Kept as-is with justification: CourseCard level chip (image overlay, level colour scale, needs shadow/px-3), CourseProgressCard "✓ Certificado enviado" (small centred status line, not a banner). Frontend 151 -> 162 tests. Not committed yet.
