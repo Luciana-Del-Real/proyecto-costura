@@ -8,7 +8,7 @@ import LessonContent from './LessonContent';
 export default function LessonAccordionItem({
   lesson, idx, total, isOpen, blocked, completed,
   comments, drafts, sendingFor,
-  onToggle, onComplete, onSendComment, onDraftChange, onNext,
+  onToggle, onSendComment, onDraftChange, onNext,
 }) {
   const canComplete = !completed && !blocked;
 
@@ -48,7 +48,6 @@ export default function LessonAccordionItem({
             comments={comments}
             draft={drafts[lesson.id] || ''}
             sendingFor={sendingFor}
-            onComplete={onComplete}
             onSendComment={onSendComment}
             onDraftChange={onDraftChange}
             onNext={onNext}

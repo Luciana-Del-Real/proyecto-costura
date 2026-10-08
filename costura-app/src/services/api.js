@@ -87,6 +87,10 @@ export async function patch(path, body) {
   return apiFetch(path, { method: 'PATCH', body: JSON.stringify(body) });
 }
 
+export async function patchForm(path, formData) {
+  return apiFetch(path, { method: 'PATCH', body: formData });
+}
+
 export async function del(path) {
   return apiFetch(path, { method: 'DELETE' });
 }
