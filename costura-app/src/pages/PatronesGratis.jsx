@@ -6,12 +6,16 @@ import { useAuth } from '../context/AuthContext';
 import { getImageUrl } from '../utils/media';
 import PageHeader from '../components/PageHeader';
 
+// Filtro por tipo de patrón (mismo patrón visual que el filtro de nivel de cursos).
+const tipos = ['Todos', 'De pago', 'Gratis'];
+
 export default function PatronesGratis() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [patrones, setPatrones] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [tipo, setTipo] = useState('Todos');
 
   useEffect(() => {
     let active = true;
@@ -35,7 +39,14 @@ export default function PatronesGratis() {
   const filtered = patrones.filter(p => {
     const matchSearch = normalizeText(p.titulo).includes(normalizeText(search)) ||
       normalizeText(p.descripcion).includes(normalizeText(search));
-    return matchSearch;
+
+    // `esPago` lo calcula el backend (precioARS/precioAUD > 0).
+    const matchTipo =
+      tipo === 'Todos' ||
+      (tipo === 'De pago' && p.esPago) ||
+      (tipo === 'Gratis' && !p.esPago);
+
+    return matchSearch && matchTipo;
   });
 
   // Compra del patrón de pago: lleva al checkout (formulario de transferencia
@@ -66,8 +77,26 @@ export default function PatronesGratis() {
         subtitle="Descargá patrones en PDF para coser en casa, paso a paso"
       />
 
-      {/* Buscador */}
-      <div className="max-w-6xl mx-auto px-1 mt-6 mb-8 flex justify-end">
+      {/* Filtros por tipo + buscador (mismo estilo que los filtros de nivel de cursos) */}
+      <div className="max-w-6xl mx-auto px-1 mt-6 mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        {/* Filtros por tipo */}
+        <div className="flex flex-wrap gap-3">
+          {tipos.map(t => (
+            <button
+              key={t}
+              onClick={() => setTipo(t)}
+              className={`btn text-sm tracking-wide transition-all duration-300 shadow-sm ${
+                tipo === t
+                  ? 'btn-primary shadow-md scale-105'
+                  : 'btn-ghost border border-primary/30 hover:border-primary'
+              }`}
+            >
+              {t}
+            </button>
+          ))}
+        </div>
+
+        {/* Buscador compacto integrado */}
         <div className="relative w-full md:w-72">
           <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -88,11 +117,13 @@ export default function PatronesGratis() {
           <div className="text-center py-16 card-flat rounded-2xl">
             <FileText className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
             <h2 className="font-display font-bold text-text-ink text-2xl mt-4">
-              {search ? 'No encontramos patrones con esa búsqueda.' : 'Todavía no hay patrones de ese nivel.'}
+              {search || tipo !== 'Todos'
+                ? 'No encontramos patrones con esos filtros.'
+                : 'Todavía no hay patrones disponibles.'}
             </h2>
-            {search && (
-              <button onClick={() => setSearch('')} className="btn btn-ghost mt-3 text-sm bg-white hover:bg-white text-primary border border-primary/30 hover:border-primary">
-                Limpiar búsqueda
+            {(search || tipo !== 'Todos') && (
+              <button onClick={() => { setSearch(''); setTipo('Todos'); }} className="btn btn-ghost mt-3 text-sm bg-white hover:bg-white text-primary border border-primary/30 hover:border-primary">
+                Limpiar filtros
               </button>
             )}
           </div>
