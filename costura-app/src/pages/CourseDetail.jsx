@@ -8,6 +8,7 @@ import { useProgress } from '../context/ProgressContext';
 import { useAuth } from '../context/AuthContext';
 import { requestCertificate, getMyCertificateRequest } from '../services/api';
 import useLessonComments from '../hooks/useLessonComments';
+import LoadingState from '../components/LoadingState';
 import CoursePreviewView from '../components/course/CoursePreviewView';
 import CourseWelcomePanel from '../components/course/CourseWelcomePanel';
 import CourseAccordionItem from '../components/course/CourseAccordionItem';
@@ -19,10 +20,14 @@ export default function CourseDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { courses } = useCourseCatalog();
+  const { courses, loading: coursesLoading } = useCourseCatalog();
   const { hasCourse } = usePurchases();
   const { progress, getProgress } = useProgress();
   const course = courses.find(c => String(c.id) === String(id));
+
+  if (coursesLoading) {
+    return <LoadingState size="page" />;
+  }
 
   if (!course) {
     return (
@@ -98,11 +103,7 @@ function OwnedCourseView({ course, progress, getProgress }) {
   }, [course, getCourseLessons]);
 
   if (loadingContent) {
-    return (
-      <div className="min-h-screen bg-bg-surface flex items-center justify-center px-4">
-        <p className="text-text-ink">Cargando el contenido del curso...</p>
-      </div>
-    );
+    return <LoadingState size="page" />;
   }
 
   if (contentError || !fullCourse) {

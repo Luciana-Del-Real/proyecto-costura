@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { CalendarHeart } from 'lucide-react';
 import { listPublicEvents } from '../services/api';
 import PageHeader from '../components/PageHeader';
+import LoadingState from '../components/LoadingState';
 
 // Número de WhatsApp del estudio (el mismo que figura en el Footer:
 // +61 401 956 520 → wa.me/61401956520). Si las consultas de eventos van a
@@ -134,7 +135,7 @@ export default function Events() {
         <div className="w-full px-4 mt-6 mb-10">
 
         {loading && (
-          <p className="text-center text-sm text-accent py-10">Cargando eventos...</p>
+          <LoadingState size="section" />
         )}
 
         {!loading && error && (

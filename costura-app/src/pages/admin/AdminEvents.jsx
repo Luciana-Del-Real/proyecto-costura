@@ -5,6 +5,7 @@ import { listAdminEvents, deleteEvent } from '../../services/api';
 import { useDialog } from '../../context/DialogContext';
 import { EVENT_ICONS } from '../../utils/eventIcons';
 import PageHeader from '../../components/PageHeader';
+import LoadingState from '../../components/LoadingState';
 
 // Gestión de eventos del admin: lista los folletos (visibles y ocultos),
 // permite editar, borrar y crear nuevos desde /admin/eventos/nuevo.
@@ -43,7 +44,7 @@ export default function AdminEvents() {
   };
 
   if (loading) {
-    return <div className="flex items-center justify-center py-24 animate-fade-in"><span className="text-4xl">🎉</span></div>;
+    return <LoadingState size="section" />;
   }
 
   return (

@@ -6,6 +6,7 @@ import { useDialog } from '../../context/DialogContext';
 import { getImageUrl } from '../../utils/media';
 import PageHeader from '../../components/PageHeader';
 import Pagination from '../../components/Pagination';
+import LoadingState from '../../components/LoadingState';
 
 export default function AdminPatterns() {
   const { confirmDialog, alertDialog } = useDialog();
@@ -46,7 +47,7 @@ export default function AdminPatterns() {
   };
 
   if (loading) {
-    return <div className="flex items-center justify-center py-24 animate-fade-in"><span className="text-4xl">🧵</span></div>;
+    return <LoadingState size="section" />;
   }
 
   return (

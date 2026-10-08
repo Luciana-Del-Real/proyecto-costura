@@ -4,6 +4,7 @@ import { useDialog } from '../../context/DialogContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import { get, postForm, putForm, del } from '../../services/api';
 import PageHeader from '../../components/PageHeader';
+import LoadingState from '../../components/LoadingState';
 import CourseFieldsForm from '../../components/admin/CourseFieldsForm';
 import LessonEditorItem from '../../components/admin/LessonEditorItem';
 import NewLessonForm from '../../components/admin/NewLessonForm';
@@ -190,7 +191,7 @@ export default function AdminCourseForm() {
   };
 
   if (loadingCourse) {
-    return <div className="flex items-center justify-center py-24 animate-fade-in"><span className="text-4xl">🧵</span></div>;
+    return <LoadingState size="section" />;
   }
 
   return (

@@ -8,6 +8,7 @@ import { sumByCurrency } from '../../utils/currency';
 import CourseCover from '../../components/CourseCover';
 import WelcomeToast from '../../components/WelcomeToast';
 import PageHeader from '../../components/PageHeader';
+import LoadingState from '../../components/LoadingState';
 import ConsultasSection from '../../components/admin/ConsultasSection';
 import useHighlightTarget from '../../hooks/useHighlightTarget';
 
@@ -18,6 +19,7 @@ export default function AdminDashboard() {
   const [allPurchases, setAllPurchases] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
   const [pendingRequests, setPendingRequests] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   // Al llegar desde una notificación con #consultas (o ?highlight=), scrollear
   // hasta la bandeja y marcarla en gris unos segundos.
@@ -25,9 +27,13 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     const load = async () => {
-      setAllPurchases(await getAllPurchases());
-      setAllUsers(await getAllUsers());
-      setPendingRequests(await getPendingRequests());
+      try {
+        setAllPurchases(await getAllPurchases());
+        setAllUsers(await getAllUsers());
+        setPendingRequests(await getPendingRequests());
+      } finally {
+        setLoading(false);
+      }
     };
     load();
   }, [getAllPurchases, getAllUsers, getPendingRequests]);
@@ -55,6 +61,10 @@ export default function AdminDashboard() {
 
       <WelcomeToast message="¡Bienvenida!" />
 
+      {loading ? (
+        <LoadingState size="section" />
+      ) : (
+        <>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-6">
         {stats.map((s, i) => (
           <div key={i} className="card-flat rounded-xl p-5 transition-all flex flex-col h-full">
@@ -136,6 +146,8 @@ export default function AdminDashboard() {
           )}
         </div>
       </div>
+        </>
+      )}
 
       {/* Bandeja de consultas: todas las preguntas de las alumnas */}
       <ConsultasSection />

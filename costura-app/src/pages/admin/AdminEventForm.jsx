@@ -3,6 +3,7 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 import { getEvent, createEvent, updateEvent } from '../../services/api';
 import { useDialog } from '../../context/DialogContext';
 import PageHeader from '../../components/PageHeader';
+import LoadingState from '../../components/LoadingState';
 
 const EMPTY_FORM = {
   title: '',
@@ -72,7 +73,7 @@ export default function AdminEventForm() {
   const set = (field, value) => setForm((prev) => ({ ...prev, [field]: value }));
 
   if (loading) {
-    return <div className="flex items-center justify-center py-24 animate-fade-in"><span className="text-4xl">🎉</span></div>;
+    return <LoadingState size="section" />;
   }
 
   return (

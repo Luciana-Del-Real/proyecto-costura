@@ -6,6 +6,7 @@ import { useDialog } from '../../context/DialogContext';
 import { getImageUrl } from '../../utils/media';
 import PageHeader from '../../components/PageHeader';
 import FilePicker from '../../components/FilePicker';
+import LoadingState from '../../components/LoadingState';
 
 const EMPTY_FORM = {
   titulo: '',
@@ -108,7 +109,7 @@ export default function AdminPatternForm() {
   };
 
   if (loading) {
-    return <div className="flex items-center justify-center py-24 animate-fade-in"><span className="text-4xl">🧵</span></div>;
+    return <LoadingState size="section" />;
   }
 
   return (

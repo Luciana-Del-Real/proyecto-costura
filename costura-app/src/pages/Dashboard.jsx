@@ -3,9 +3,10 @@ import { useCourseCatalog } from '../context/CourseCatalogContext';
 import { usePurchases } from '../context/PurchaseContext';
 import CourseCard from '../components/CourseCard';
 import WelcomeToast from '../components/WelcomeToast';
+import LoadingState from '../components/LoadingState';
 export default function Dashboard() {
   const { purchases } = usePurchases();
-  const { courses } = useCourseCatalog();
+  const { courses, loading } = useCourseCatalog();
 
   const myCourses = courses.filter(c => purchases.includes(c.id));
   const suggested = courses.filter(c => !purchases.includes(c.id)).slice(0, 3);
@@ -15,7 +16,9 @@ export default function Dashboard() {
       <WelcomeToast message="¡Bienvenida de vuelta!" />
 
       {/* Con compras: SOLO mis cursos. Sin compras: cursos disponibles */}
-      {myCourses.length > 0 ? (
+      {loading ? (
+        <LoadingState size="section" />
+      ) : myCourses.length > 0 ? (
         <div className="mb-10">
           <div className="flex items-center justify-between mt-5 mb-5">
             <h2 className="font-display text-text-ink text-3xl">Mis cursos</h2>

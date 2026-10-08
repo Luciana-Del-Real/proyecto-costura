@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import PageHeader from '../../components/PageHeader';
 import Pagination from '../../components/Pagination';
+import LoadingState from '../../components/LoadingState';
 import { usePurchases } from '../../context/PurchaseContext';
 import { formatMoney } from '../../utils/currency';
 import { listPatternPurchasesPending, approvePatternPurchase, rejectPatternPurchase } from '../../services/api';
@@ -198,7 +199,7 @@ export default function AdminRequests() {
           </div>
 
           {loading ? (
-            <div className="py-6 text-center text-sm text-text-tan">Cargando...</div>
+            <div className="py-6"><LoadingState size="inline" /></div>
           ) : requests.length === 0 ? (
             <p className="text-text-tan text-sm">No hay solicitudes pendientes.</p>
           ) : filtered.length === 0 ? (
@@ -247,7 +248,7 @@ export default function AdminRequests() {
           </div>
 
           {patternLoading ? (
-            <div className="py-6 text-center text-sm text-text-tan">Cargando...</div>
+            <div className="py-6"><LoadingState size="inline" /></div>
           ) : patternRequests.length === 0 ? (
             <p className="text-text-tan text-sm">No hay solicitudes de patrones pendientes.</p>
           ) : (

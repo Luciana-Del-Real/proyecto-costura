@@ -5,6 +5,7 @@ import { get } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { getImageUrl } from '../utils/media';
 import PageHeader from '../components/PageHeader';
+import LoadingState from '../components/LoadingState';
 
 // Filtro por tipo de patrón (mismo patrón visual que el filtro de nivel de cursos).
 const tipos = ['Todos', 'De pago', 'Gratis'];
@@ -67,7 +68,7 @@ export default function PatronesGratis() {
   };
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center"><span className="text-4xl">🧵</span></div>;
+    return <LoadingState size="page" />;
   }
 
   return (

@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { usePurchases } from '../context/PurchaseContext';
 import { formatMoney } from '../utils/currency';
 import { getImageUrl } from '../utils/media';
+import LoadingState from '../components/LoadingState';
 
 export default function Profile() {
   const { user, updateUser } = useAuth();
@@ -152,7 +153,7 @@ export default function Profile() {
             <h2 className="font-display text-text-ink text-3xl">Historial de compras</h2>
           </div>
           {purchasesLoading ? (
-            <p className="text-text-ink text-sm">Cargando tus compras...</p>
+            <LoadingState size="inline" />
           ) : purchasesError ? (
             <p className="text-text-ink text-sm">No se pudieron cargar tus compras. Verificá tu conexión e intentá de nuevo más tarde.</p>
           ) : approvedRecords.length === 0 ? (

@@ -4,6 +4,7 @@ import { CheckCircle2, Clock, Copy } from 'lucide-react';
 import { get, requestPatternPurchase } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { getImageUrl } from '../utils/media';
+import LoadingState from '../components/LoadingState';
 
 // Datos de transferencia según el país/moneda de la compradora (mismos que
 // el checkout de cursos).
@@ -36,7 +37,7 @@ export default function PatternCheckout() {
   }, [id]);
 
   if (loading) {
-    return <div className="min-h-screen bg-bg-surface flex items-center justify-center"><span className="text-4xl">🧵</span></div>;
+    return <LoadingState size="page" />;
   }
 
   if (!pattern) {

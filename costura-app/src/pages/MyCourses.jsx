@@ -6,11 +6,12 @@ import { usePurchases } from '../context/PurchaseContext';
 import { useProgress } from '../context/ProgressContext';
 import { getImageUrl } from '../utils/media';
 import PageHeader from '../components/PageHeader';
+import LoadingState from '../components/LoadingState';
 
 export default function MyCourses() {
   const { purchases } = usePurchases();
   const { getProgress } = useProgress();
-  const { courses } = useCourseCatalog();
+  const { courses, loading } = useCourseCatalog();
   const [search, setSearch] = useState('');
   const myCourses = courses.filter(c => purchases.includes(c.id));
   const filtered = myCourses.filter(c =>
@@ -25,7 +26,9 @@ export default function MyCourses() {
       />
 
       <div className="w-full px-4 py-8">
-        {myCourses.length === 0 ? (
+        {loading ? (
+          <LoadingState size="section" />
+        ) : myCourses.length === 0 ? (
             <div className="text-center py-20">
             <BookOpen className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
             <h2 className="font-display font-bold text-text-ink text-2xl mt-4 mb-2">Todavía no tenés cursos</h2>

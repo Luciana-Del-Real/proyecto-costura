@@ -3,11 +3,12 @@ import { Search } from 'lucide-react';
 import { useCourseCatalog } from '../context/CourseCatalogContext';
 import CourseCard from '../components/CourseCard';
 import PageHeader from '../components/PageHeader';
+import LoadingState from '../components/LoadingState';
 
 const levels = ['Todos', 'Principiante', 'Intermedio', 'Avanzado'];
 
 export default function Courses() {
-  const { courses } = useCourseCatalog();
+  const { courses, loading } = useCourseCatalog();
   const [search, setSearch] = useState('');
   const [level, setLevel] = useState('Todos');
 
@@ -64,7 +65,9 @@ export default function Courses() {
 
       {/* Contenedor del listado de cursos */}
       <div className="w-full px-4 pb-16">
-        {filtered.length === 0 ? (
+        {loading ? (
+          <LoadingState size="section" />
+        ) : filtered.length === 0 ? (
           <div className="text-center py-16 card-flat rounded-2xl">
             <Search className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
             <h2 className="font-display font-bold text-text-ink text-2xl mt-4">No encontramos cursos con esa búsqueda.</h2>

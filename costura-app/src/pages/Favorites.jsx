@@ -5,10 +5,11 @@ import { useCourseCatalog } from '../context/CourseCatalogContext';
 import { useFavorites } from '../context/FavoritesContext';
 import CourseCard from '../components/CourseCard';
 import PageHeader from '../components/PageHeader';
+import LoadingState from '../components/LoadingState';
 
 export default function Favorites() {
   const { favorites, favoritesLoading, favoritesError } = useFavorites();
-  const { courses } = useCourseCatalog();
+  const { courses, loading: coursesLoading } = useCourseCatalog();
   const [search, setSearch] = useState('');
   const favCourses = courses.filter(c => favorites.includes(c.id));
   const filtered = favCourses.filter(c =>
@@ -24,10 +25,8 @@ export default function Favorites() {
       />
 
       <div className="w-full px-4 py-8">
-        {favoritesLoading ? (
-          <div className="text-center py-20">
-            <p className="text-text-ink">Cargando tus favoritos...</p>
-          </div>
+        {favoritesLoading || coursesLoading ? (
+          <LoadingState size="section" />
         ) : favoritesError ? (
           <div className="text-center py-20">
             <AlertTriangle className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />

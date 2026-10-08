@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { post, patch } from '../services/api';
+import LoadingState from '../components/LoadingState';
 
 const AuthContext = createContext(null);
 
@@ -120,7 +121,7 @@ export function AuthProvider({ children }) {
   const isAdmin = user?.role === 'ADMIN';
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Cargando...</div>;
+    return <LoadingState size="page" />;
   }
 
   return (

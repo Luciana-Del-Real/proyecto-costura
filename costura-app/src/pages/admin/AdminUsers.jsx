@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import PageHeader from '../../components/PageHeader';
 import Pagination from '../../components/Pagination';
+import LoadingState from '../../components/LoadingState';
 import { useCourseCatalog } from '../../context/CourseCatalogContext';
 import { useDialog } from '../../context/DialogContext';
 import { useAdmin } from '../../context/AdminContext';
@@ -76,7 +77,7 @@ export default function AdminUsers() {
   const isActive = (u) => u.active !== false;
 
   if (loading) {
-    return <div className="flex items-center justify-center py-24 animate-fade-in"><span className="text-4xl">🧵</span></div>;
+    return <LoadingState size="section" />;
   }
 
   return (

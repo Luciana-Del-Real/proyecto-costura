@@ -3,6 +3,7 @@ import { Mail, MailCheck } from 'lucide-react';
 import useCertificateRequests from '../../hooks/useCertificateRequests';
 import { useDialog } from '../../context/DialogContext';
 import CertificateRequestDetail from './CertificateRequestDetail';
+import LoadingState from '../LoadingState';
 
 // Bandeja de solicitudes de certificado del admin: la alumna pide el
 // certificado al completar el curso, la profesora lo arma y lo envía por mail
@@ -95,7 +96,7 @@ export default function CertificadosSection() {
         </span>
       </div>
 
-      {loading && <p className="text-sm text-accent">Cargando solicitudes...</p>}
+      {loading && <LoadingState size="inline" />}
       {!loading && error && <p className="text-sm text-danger">No se pudieron cargar las solicitudes.</p>}
 
       {!loading && !error && pending.length === 0 && sent.length === 0 && (

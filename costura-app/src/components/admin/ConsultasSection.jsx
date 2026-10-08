@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import useAdminComments from '../../hooks/useAdminComments';
 import { useDialog } from '../../context/DialogContext';
 import CommentThread from '../CommentThread';
+import LoadingState from '../LoadingState';
 
 // Bandeja de consultas del admin: vista pura sobre useAdminComments (fetch,
 // filtros, partición y envío viven en el hook). Acá quedan encabezados,
@@ -172,7 +173,7 @@ export default function ConsultasSection() {
         />
       </div>
 
-      {loading && <p className="text-sm text-accent">Cargando consultas...</p>}
+      {loading && <LoadingState size="inline" />}
       {!loading && error && <p className="text-sm text-danger">No se pudieron cargar las consultas.</p>}
 
       {!loading && !error && unanswered.length === 0 && answered.length === 0 && (
