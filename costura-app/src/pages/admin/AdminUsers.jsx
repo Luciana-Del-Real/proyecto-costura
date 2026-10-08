@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
+import { Search } from 'lucide-react';
 import PageHeader from '../../components/PageHeader';
 import Pagination from '../../components/Pagination';
 import LoadingState from '../../components/LoadingState';
@@ -211,9 +212,15 @@ export default function AdminUsers() {
       )}
 
       {filtered.length === 0 ? (
-        <EmptyState
-          title={allUsers.length === 0 ? 'Sin alumnos registrados aún.' : 'No se encontraron resultados.'}
-        />
+        allUsers.length === 0 ? (
+          <EmptyState title="Sin alumnos registrados aún." />
+        ) : (
+          <EmptyState
+            icon={Search}
+            title="Sin resultados para tu búsqueda."
+            action={{ label: 'Limpiar búsqueda', onClick: () => { setSearch(''); setPage(1); }, variant: 'ghost' }}
+          />
+        )
       ) : (
         <div className="card-flat rounded-2xl overflow-x-auto animate-fade-up mb-6">
           <table className="w-full text-sm min-w-[560px]">

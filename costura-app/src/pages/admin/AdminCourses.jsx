@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Search } from 'lucide-react';
 import { useCourseCatalog } from '../../context/CourseCatalogContext';
 import { useDialog } from '../../context/DialogContext';
 import { Link } from 'react-router-dom';
@@ -47,6 +48,7 @@ export default function AdminCourses() {
 
       {filtered.length === 0 ? (
         <EmptyState
+          icon={Search}
           title={courses.length === 0 ? 'Todavía no hay cursos cargados.' : 'Sin resultados para tu búsqueda.'}
           action={search && {
             label: 'Limpiar búsqueda',

@@ -26,6 +26,30 @@ describe('EmptyState', () => {
     expect(block.className).not.toContain('card-flat');
   });
 
+  it('compact renders a tight centred block with icon and ghost action, no card', () => {
+    const onClick = vi.fn();
+    const { container } = render(
+      <EmptyState
+        variant="compact"
+        icon={Search}
+        title="Sin resultados para tu búsqueda."
+        action={{ label: 'Limpiar búsqueda', onClick, variant: 'ghost' }}
+      />,
+    );
+    const block = container.firstChild;
+    expect(block.className).toContain('flex');
+    expect(block.className).toContain('gap-3');
+    expect(block.className).toContain('py-6');
+    expect(block.className).not.toContain('card-flat');
+    const icon = container.querySelector('svg');
+    expect(icon.getAttribute('class')).toContain('w-10');
+    expect(icon.getAttribute('class')).toContain('text-primary');
+    const button = screen.getByRole('button', { name: 'Limpiar búsqueda' });
+    expect(button.className).toContain('btn-ghost');
+    fireEvent.click(button);
+    expect(onClick).toHaveBeenCalledTimes(1);
+  });
+
   it('inline renders a single small paragraph, using the title as fallback', () => {
     const { container } = render(<EmptyState variant="inline" title="Sin consultas todavía." />);
     expect(container.firstChild.tagName).toBe('P');

@@ -72,7 +72,7 @@ export default function Courses() {
           <EmptyState
             icon={Search}
             title="Sin resultados para tu búsqueda."
-            action={{ label: 'Limpiar filtros', onClick: () => { setSearch(''); setLevel('Todos'); }, variant: 'ghost' }}
+            action={{ label: 'Limpiar búsqueda', onClick: () => { setSearch(''); setLevel('Todos'); }, variant: 'ghost' }}
           />
         ) : (
           <>

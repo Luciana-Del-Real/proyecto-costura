@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { Search } from 'lucide-react';
 import PageHeader from '../../components/PageHeader';
 import Pagination from '../../components/Pagination';
 import LoadingState from '../../components/LoadingState';
@@ -20,6 +21,7 @@ export default function AdminRequests() {
   const [patternRequests, setPatternRequests] = useState([]);
   const [patternLoading, setPatternLoading] = useState(false);
   const [patternProcessingId, setPatternProcessingId] = useState(null);
+  const [patternSearch, setPatternSearch] = useState('');
   // Solicitud a resaltar al llegar desde la campanita (?highlight=<id>): se
   // marca unos segundos y luego se desvanece.
   const [searchParams, setSearchParams] = useSearchParams();
@@ -177,6 +179,15 @@ export default function AdminRequests() {
       (req.status || '').toLowerCase().includes(q);
   });
 
+  // Filtro de búsqueda sobre las solicitudes de patrones: alumna o patrón
+  const filteredPatterns = patternRequests.filter(req => {
+    const q = patternSearch.toLowerCase();
+    if (q === '') return true;
+    return (req.user?.name || '').toLowerCase().includes(q) ||
+      (req.user?.email || '').toLowerCase().includes(q) ||
+      (req.pattern?.titulo || '').toLowerCase().includes(q);
+  });
+
   return (
     <div className="w-full px-4 py-8 animate-fade-in">
       <PageHeader title="Panel de Solicitudes" subtitle="Gestioná las solicitudes de pago pendientes." />
@@ -204,7 +215,12 @@ export default function AdminRequests() {
           ) : requests.length === 0 ? (
             <EmptyState variant="inline" title="No hay solicitudes pendientes." />
           ) : filtered.length === 0 ? (
-            <EmptyState variant="inline" title="Sin resultados para tu búsqueda." />
+            <EmptyState
+              variant="compact"
+              icon={Search}
+              title="Sin resultados para tu búsqueda."
+              action={{ label: 'Limpiar búsqueda', onClick: () => setSearch(''), variant: 'ghost' }}
+            />
           ) : (
             <div className="grid gap-3">
               {filtered.map(req => (
@@ -248,13 +264,33 @@ export default function AdminRequests() {
             <h2 className="font-display font-bold text-text-ink text-2xl">Solicitudes de patrones</h2>
           </div>
 
+          <div className="relative max-w-sm mb-4">
+            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              type="text"
+              value={patternSearch}
+              onChange={e => setPatternSearch(e.target.value)}
+              placeholder="Buscar solicitud de patrón..."
+              className="w-full pl-10 pr-4 py-2 text-sm border-2 border-gray-300 hover:border-gray-400 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-300 bg-white text-gray-700 placeholder-gray-400 shadow-sm transition-all duration-300"
+            />
+          </div>
+
           {patternLoading ? (
             <div className="py-6"><LoadingState size="inline" /></div>
           ) : patternRequests.length === 0 ? (
             <EmptyState variant="inline" title="No hay solicitudes de patrones pendientes." />
+          ) : filteredPatterns.length === 0 ? (
+            <EmptyState
+              variant="compact"
+              icon={Search}
+              title="Sin resultados para tu búsqueda."
+              action={{ label: 'Limpiar búsqueda', onClick: () => setPatternSearch(''), variant: 'ghost' }}
+            />
           ) : (
             <div className="grid gap-3">
-              {patternRequests.map(req => (
+              {filteredPatterns.map(req => (
                 <div
                   key={req.id}
                   id={req.id}

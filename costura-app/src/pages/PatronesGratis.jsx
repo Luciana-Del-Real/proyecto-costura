@@ -122,7 +122,7 @@ export default function PatronesGratis() {
               ? 'No encontramos patrones con esos filtros.'
               : 'Todavía no hay patrones disponibles.'}
             action={(search || tipo !== 'Todos') && {
-              label: 'Limpiar filtros',
+              label: 'Limpiar búsqueda',
               onClick: () => { setSearch(''); setTipo('Todos'); },
               variant: 'ghost',
             }}
