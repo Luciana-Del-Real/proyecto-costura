@@ -194,7 +194,7 @@ export default function AdminCourseForm() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8 animate-fade-in">
+    <div className="w-full px-4 py-8 animate-fade-in">
       <PageHeader
         title={isEditing ? 'Editar curso' : 'Nuevo curso'}
         subtitle="Cargá los datos del curso y sus lecciones."

@@ -112,7 +112,7 @@ export default function AdminPatternForm() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8 animate-fade-in">
+    <div className="w-full px-4 py-8 animate-fade-in">
       <PageHeader
         title={isEditing ? 'Editar patrón' : 'Nuevo patrón'}
         subtitle="Cargá los datos y los PDFs del patrón."

@@ -124,14 +124,14 @@ export default function Events() {
 
   return (
     <div className="min-h-screen bg-bg-surface">
-      <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
+      <div className="w-full px-4 py-1 animate-fade-in">
         {/* Encabezado idéntico al resto de las páginas (mismo PageHeader) */}
         <PageHeader
           title="Eventos"
           subtitle="Elegí la propuesta que más te guste y consultanos por WhatsApp: te contamos todos los detalles."
         />
 
-        <div className="max-w-6xl mx-auto px-1 mt-6 mb-10">
+        <div className="w-full px-4 mt-6 mb-10">
 
         {loading && (
           <p className="text-center text-sm text-accent py-10">Cargando eventos...</p>

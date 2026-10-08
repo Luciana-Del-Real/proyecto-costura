@@ -17,13 +17,13 @@ export default function Favorites() {
   );
 
   return (
-    <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
+    <div className="w-full px-4 py-1 animate-fade-in">
       <PageHeader
         title="Mis favoritos"
         subtitle={`${favCourses.length} curso${favCourses.length !== 1 ? 's' : ''} guardado${favCourses.length !== 1 ? 's' : ''}`}
       />
 
-      <div className="max-w-6xl mx-auto px-1 py-8">
+      <div className="w-full px-4 py-8">
         {favoritesLoading ? (
           <div className="text-center py-20">
             <p className="text-text-ink">Cargando tus favoritos...</p>

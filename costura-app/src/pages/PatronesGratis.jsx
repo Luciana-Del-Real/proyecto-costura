@@ -71,14 +71,14 @@ export default function PatronesGratis() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
+    <div className="w-full px-4 py-1 animate-fade-in">
       <PageHeader
         title="Patrones"
         subtitle="Descargá patrones en PDF para coser en casa, paso a paso"
       />
 
       {/* Filtros por tipo + buscador (mismo estilo que los filtros de nivel de cursos) */}
-      <div className="max-w-6xl mx-auto px-1 mt-6 mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="w-full px-4 mt-6 mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         {/* Filtros por tipo */}
         <div className="flex flex-wrap gap-3">
           {tipos.map(t => (
@@ -112,7 +112,7 @@ export default function PatronesGratis() {
       </div>
 
       {/* Galería de patrones */}
-      <div className="max-w-6xl mx-auto px-1 pb-16">
+      <div className="w-full px-4 pb-16">
         {filtered.length === 0 ? (
           <div className="text-center py-16 card-flat rounded-2xl">
             <FileText className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />

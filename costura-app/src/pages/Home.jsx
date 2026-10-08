@@ -40,7 +40,7 @@ export default function Home() {
       >
         <div className="absolute inset-0" aria-hidden="true" />
         <div className="relative z-10 w-full">
-          <div className="max-w-6xl mx-auto px-4 flex items-center justify-center">
+          <div className="w-full px-4 flex items-center justify-center">
             <div className="hero-card text-text-ink mx-auto max-w-md">
               <h1 className="animate-fade-up-delay-1 font-display mb-4 leading-none" style={{ textShadow: '0 8px 28px rgba(0,0,0,0.18)' }}>
                 <span className="block text-4xl md:text-5xl font-bold" style={{ color: 'var(--color-success)' }}>Creá con tus</span>
@@ -63,7 +63,7 @@ export default function Home() {
 
       {/* Combined About section: side-by-side on md+ */}
       <section className="bg-white py-16 px-4">
-          <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="card-glow rounded-2xl p-8 h-full flex items-center">
               <RevealSection animation="reveal-left">
                 <div className="w-full flex flex-col items-center text-center">

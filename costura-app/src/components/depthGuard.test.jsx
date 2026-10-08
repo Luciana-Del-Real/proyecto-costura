@@ -38,8 +38,9 @@ import { MemoryRouter, Routes, Route } from 'react-router-dom';
  * Additionally, for pages that use the standard root container, the exact
  * duplicated class string must appear exactly once — this guards against
  * nested duplicate page wrappers. Admin pages use `PAGE_ROOT_TOKEN`
- * (`max-w-6xl mx-auto px-4 py-8`, the T5 list-page root). Public pages still
- * use the legacy token and assert against `LEGACY_PAGE_ROOT_TOKEN`.
+ * (`w-full px-4 py-8`, the T5 list-page root). Public pages still
+ * use the legacy token and assert against `LEGACY_PAGE_ROOT_TOKEN`
+ * (`w-full px-4 py-1`).
  */
 
 const mocks = vi.hoisted(() => ({
@@ -151,9 +152,9 @@ beforeEach(() => {
 
 const BOX_TOKENS = ['card-glow', 'card-flat', 'card-glow-fixed'];
 // Exact class string of the admin list-page root container (T5 convention).
-const PAGE_ROOT_TOKEN = 'max-w-6xl mx-auto px-4 py-8';
-// Public pages (out of this task's scope) still use the legacy page root.
-const LEGACY_PAGE_ROOT_TOKEN = 'max-w-6xl mx-auto px-1 py-1';
+const PAGE_ROOT_TOKEN = 'w-full px-4 py-8';
+// Public pages use the legacy page root class string.
+const LEGACY_PAGE_ROOT_TOKEN = 'w-full px-4 py-1';
 
 /**
  * Returns the opening tags of box divs that are nested inside another box div.

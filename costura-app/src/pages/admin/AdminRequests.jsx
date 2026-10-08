@@ -176,7 +176,7 @@ export default function AdminRequests() {
   });
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8 animate-fade-in">
+    <div className="w-full px-4 py-8 animate-fade-in">
       <PageHeader title="Panel de Solicitudes" subtitle="Gestioná las solicitudes de pago pendientes." />
 
       <div className="card-flat rounded-2xl px-6 py-10 animate-fade-up mt-5">

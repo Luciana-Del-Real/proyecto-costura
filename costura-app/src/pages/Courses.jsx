@@ -25,11 +25,11 @@ export default function Courses() {
   });
 
   return (
-    <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
+    <div className="w-full px-4 py-1 animate-fade-in">
       <PageHeader title="Todos los cursos" subtitle="Encontrá el curso perfecto para vos" />
 
       {/* CONTENEDOR UNIFICADO: Agregamos mt-6 para controlar la distancia exacta con el texto */}
-      <div className="max-w-6xl mx-auto px-1 mt-6 mb-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="w-full px-4 mt-6 mb-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         {/* Filtros por Nivel */}
         <div className="flex flex-wrap gap-3">
           {levels.map(l => (
@@ -63,7 +63,7 @@ export default function Courses() {
       </div>
 
       {/* Contenedor del listado de cursos */}
-      <div className="max-w-6xl mx-auto px-1 pb-16">
+      <div className="w-full px-4 pb-16">
         {filtered.length === 0 ? (
           <div className="text-center py-16 card-flat rounded-2xl">
             <Search className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />
