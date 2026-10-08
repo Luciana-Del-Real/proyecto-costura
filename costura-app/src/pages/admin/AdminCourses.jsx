@@ -20,7 +20,7 @@ export default function AdminCourses() {
   const pageItems = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8 animate-fade-in">
+    <div className="w-full px-4 py-8 animate-fade-in">
       <PageHeader title="Gestión de cursos" />
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">

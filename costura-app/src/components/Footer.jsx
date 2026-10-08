@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 export default function Footer() {
   return (
     <footer className="bg-black">
-      <div className="max-w-6xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="w-full px-4 py-10 grid grid-cols-1 md:grid-cols-3 gap-8">
         <div>
           <div className="flex items-center gap-3 mb-3">
             <img src="/Images/logo%20sin%20fondo%20blanco.png" alt="Grow" className="w-12 h-12 object-contain" />

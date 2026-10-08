@@ -76,7 +76,7 @@ export default function AdminEventForm() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8 animate-fade-in">
+    <div className="w-full px-4 py-8 animate-fade-in">
       <PageHeader
         title={isEditing ? 'Editar evento' : 'Nuevo evento'}
         subtitle="Cargá el texto del folleto del evento."

@@ -48,9 +48,9 @@ export default function Profile() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
+    <div className="w-full px-4 py-1 animate-fade-in">
       {/* Header: inicial al lado del nombre (mismo estilo plano que PageHeader) */}
-      <header className="max-w-6xl mx-auto px-1 pt-6 pb-2 animate-fade-up">
+      <header className="w-full px-4 pt-6 pb-2 animate-fade-up">
         <div className="flex items-center gap-4">
           <div className="w-14 h-14 bg-primary-soft rounded-full flex items-center justify-center text-xl font-bold text-text-ink flex-shrink-0">
             {user?.name?.charAt(0).toUpperCase()}

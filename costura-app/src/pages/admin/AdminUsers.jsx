@@ -80,7 +80,7 @@ export default function AdminUsers() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8 animate-fade-in">
+    <div className="w-full px-4 py-8 animate-fade-in">
       <PageHeader
         title="Alumnos"
         subtitle={`${allUsers.length} alumna${allUsers.length !== 1 ? 's' : ''} registrada${allUsers.length !== 1 ? 's' : ''}`}

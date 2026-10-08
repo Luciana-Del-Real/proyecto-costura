@@ -11,7 +11,7 @@ export default function AdminCertificates() {
   useHighlightTarget();
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8 animate-fade-in">
+    <div className="w-full px-4 py-8 animate-fade-in">
       <PageHeader title="Certificados" subtitle="Solicitudes de certificado de tus alumnas." />
       <CertificadosSection />
     </div>

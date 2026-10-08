@@ -18,13 +18,13 @@ export default function MyCourses() {
   );
 
   return (
-    <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
+    <div className="w-full px-4 py-1 animate-fade-in">
       <PageHeader
         title="Mis cursos"
         subtitle={`${myCourses.length} curso${myCourses.length !== 1 ? 's' : ''} adquirido${myCourses.length !== 1 ? 's' : ''}`}
       />
 
-      <div className="max-w-6xl mx-auto px-4 py-8">
+      <div className="w-full px-4 py-8">
         {myCourses.length === 0 ? (
             <div className="text-center py-20">
             <BookOpen className="w-12 h-12 text-primary mx-auto" strokeWidth={1.5} />

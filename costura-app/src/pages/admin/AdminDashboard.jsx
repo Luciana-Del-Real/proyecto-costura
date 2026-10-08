@@ -50,7 +50,7 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8 animate-fade-in">
+    <div className="w-full px-4 py-8 animate-fade-in">
       <PageHeader title="Panel" subtitle="Resumen de tu academia." />
 
       <WelcomeToast message="¡Bienvenida!" />

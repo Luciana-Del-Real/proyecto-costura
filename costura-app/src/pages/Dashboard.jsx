@@ -11,7 +11,7 @@ export default function Dashboard() {
   const suggested = courses.filter(c => !purchases.includes(c.id)).slice(0, 3);
 
   return (
-    <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in mt-5 mb-8">
+    <div className="w-full px-4 py-1 animate-fade-in mt-5 mb-8">
       <WelcomeToast message="¡Bienvenida de vuelta!" />
 
       {/* Con compras: SOLO mis cursos. Sin compras: cursos disponibles */}
