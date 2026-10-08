@@ -117,6 +117,73 @@ export class CertificateRequestsService {
     });
   }
 
+  // Detalle de una solicitud para la revisión del admin: alumna, curso,
+  // progreso lección por lección con su evidencia, y los comentarios que esa
+  // alumna dejó en el curso. El guard del controller ya exige rol ADMIN.
+  async findDetailForAdmin(id: string) {
+    const request = await this.prisma.certificateRequest.findUnique({
+      where: { id },
+      include: {
+        user: { select: { id: true, name: true, email: true } },
+        course: { select: { id: true, title: true } },
+      },
+    });
+    if (!request) {
+      throw new NotFoundException('Solicitud de certificado no encontrada');
+    }
+
+    const lessons = await this.prisma.lesson.findMany({
+      where: { courseId: request.courseId },
+      orderBy: { order: 'asc' },
+      select: { id: true, title: true, order: true },
+    });
+
+    const progressList = await this.prisma.lessonProgress.findMany({
+      where: {
+        userId: request.userId,
+        lessonId: { in: lessons.map((lesson) => lesson.id) },
+      },
+    });
+    const progressByLesson = new Map(
+      progressList.map((progress) => [progress.lessonId, progress]),
+    );
+
+    const comments = await this.prisma.lessonComment.findMany({
+      where: {
+        userId: request.userId,
+        lesson: { courseId: request.courseId },
+      },
+      include: {
+        user: { select: { id: true, name: true, role: true } },
+        lesson: { select: { id: true, title: true, order: true } },
+      },
+      orderBy: { createdAt: 'asc' },
+    });
+
+    return {
+      request: {
+        id: request.id,
+        status: request.status,
+        createdAt: request.createdAt,
+        sentAt: request.sentAt,
+      },
+      student: request.user,
+      course: request.course,
+      lessons: lessons.map((lesson) => {
+        const progress = progressByLesson.get(lesson.id);
+        return {
+          id: lesson.id,
+          title: lesson.title,
+          order: lesson.order,
+          completed: progress?.completed ?? false,
+          evidenceImage: progress?.evidenceImage ?? null,
+          evidenceNote: progress?.evidenceNote ?? null,
+        };
+      }),
+      comments,
+    };
+  }
+
   // El admin marca la solicitud como SENT después de enviar el certificado
   // por mail fuera de la app. Registra la fecha de envío.
   async markAsSent(id: string) {
