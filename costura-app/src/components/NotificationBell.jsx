@@ -6,7 +6,11 @@ import { useNotifications } from '../context/NotificationsContext';
 // Extraída del bloque inline que vivía en Navbar: mismo botón con campana,
 // badge de no leídas y dropdown con listado, "Marcar todas como leídas" y
 // borrado individual. Consume useNotifications internamente.
-export default function NotificationBell() {
+//
+// `align` controla hacia dónde abre el dropdown: 'right' (default, para una
+// barra superior) o 'left' (para el sidebar, donde el ancla está pegado al
+// borde izquierdo de la pantalla y un dropdown right-0 se saldría).
+export default function NotificationBell({ align = 'right' }) {
   const {
     notifications,
     unreadCount,
@@ -57,7 +61,7 @@ export default function NotificationBell() {
       </button>
 
       {notifOpen && (
-        <div className="absolute right-0 mt-2 w-80 max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-[0_8px_30px_rgba(29,29,27,0.12)] border border-border overflow-hidden animate-slide-down z-50">
+        <div className={`absolute mt-2 w-80 max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-[0_8px_30px_rgba(29,29,27,0.12)] border border-border overflow-hidden animate-slide-down z-50 ${align === 'left' ? 'left-0' : 'right-0'}`}>
           <div className="px-4 py-3 border-b border-border flex items-center justify-between">
             <p className="text-xs font-semibold text-text-ink">Notificaciones</p>
             {unreadCount > 0 && (

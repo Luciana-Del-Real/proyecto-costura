@@ -1,10 +1,11 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Providers from './components/providers';
 import { DialogProvider } from './context/DialogContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import AdminNavbar from './components/AdminNavbar';
+import AdminSidebar from './components/AdminSidebar';
+import AdminTopbar from './components/AdminTopbar';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
 
@@ -55,12 +56,19 @@ function ScrollToTop() {
   return null;
 }
 
-// CORREGIDO: Añadimos el fondo beige y aquí gestionamos el único Navbar de admin
+// Admin shell: a full-width brand topbar plus a left sidebar (sticky below
+// the topbar on desktop, drawer on mobile). The drawer state lives here so
+// the topbar trigger and the sidebar can share it.
 function AdminLayout({ children }) {
+  const [navOpen, setNavOpen] = useState(false);
+
   return (
     <div className="min-h-screen flex flex-col bg-bg-surface">
-      <AdminNavbar />
-      <main className="flex-1">{children}</main>
+      <AdminTopbar onMenuClick={() => setNavOpen(true)} />
+      <div className="flex flex-1 min-w-0">
+        <AdminSidebar open={navOpen} onClose={() => setNavOpen(false)} />
+        <main className="flex-1 min-w-0">{children}</main>
+      </div>
     </div>
   );
 }
@@ -103,8 +111,8 @@ export default function App() {
             <Route path="/admin/eventos" element={<AdminRoute><AdminLayout><AdminEvents /></AdminLayout></AdminRoute>} />
             <Route path="/admin/eventos/nuevo" element={<AdminRoute><AdminLayout><AdminEventForm /></AdminLayout></AdminRoute>} />
             <Route path="/admin/eventos/editar/:id" element={<AdminRoute><AdminLayout><AdminEventForm /></AdminLayout></AdminRoute>} />
-            <Route path="/admin/courses/new" element={<AdminRoute><AdminLayout><AdminCourseForm /></AdminLayout></AdminRoute>} />
-            <Route path="/admin/courses/edit/:id" element={<AdminRoute><AdminLayout><AdminCourseForm /></AdminLayout></AdminRoute>} />
+            <Route path="/admin/cursos/nuevo" element={<AdminRoute><AdminLayout><AdminCourseForm /></AdminLayout></AdminRoute>} />
+            <Route path="/admin/cursos/editar/:id" element={<AdminRoute><AdminLayout><AdminCourseForm /></AdminLayout></AdminRoute>} />
             <Route path="/admin/patrones" element={<AdminRoute><AdminLayout><AdminPatterns /></AdminLayout></AdminRoute>} />
             <Route path="/admin/patrones/nuevo" element={<AdminRoute><AdminLayout><AdminPatternForm /></AdminLayout></AdminRoute>} />
             <Route path="/admin/patrones/editar/:id" element={<AdminRoute><AdminLayout><AdminPatternForm /></AdminLayout></AdminRoute>} />

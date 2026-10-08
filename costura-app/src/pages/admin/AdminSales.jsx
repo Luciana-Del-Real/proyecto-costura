@@ -74,7 +74,7 @@ export default function AdminSales() {
   const maxCount = salesPerCourse[0]?.count || 1;
 
   return (
-    <div className="max-w-6xl mx-auto px-1 py-1 animate-fade-in">
+    <div className="max-w-6xl mx-auto px-4 py-8 animate-fade-in">
       <PageHeader title="Historial de ventas" />
 
       {/* Summary cards */}
