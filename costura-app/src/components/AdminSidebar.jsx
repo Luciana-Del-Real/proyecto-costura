@@ -10,10 +10,8 @@ import {
   Inbox,
   ShoppingBag,
   X,
-  Home,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import NotificationBell from './NotificationBell';
 
 // Grouped admin navigation. Sections keep the sidebar easy to scan;
 // every item carries a lucide icon and a route-based active state.
@@ -105,10 +103,9 @@ function SidebarContent({ onNavigate }) {
         ))}
       </nav>
 
-      {/* Footer — notifications, then identity, logout and public-site link.
-          Name and role keep their own room (no truncation). */}
+      {/* Footer — identity and logout. Name and role keep their own room
+          (no truncation). The notification bell lives in the topbar. */}
       <div className="border-t border-border px-4 py-4 flex flex-col gap-3 shrink-0">
-        <NotificationBell align="left" />
         <div className="flex flex-col">
           <p className="text-sm font-semibold text-text-ink">{user?.name}</p>
           <p className="text-[10px] uppercase tracking-widest text-text-muted">Administradora</p>
@@ -116,14 +113,6 @@ function SidebarContent({ onNavigate }) {
         <button type="button" onClick={handleLogout} className="btn btn-primary text-xs w-full">
           Salir
         </button>
-        <Link
-          to="/"
-          onClick={onNavigate}
-          className="flex items-center gap-2 px-1 text-xs font-medium text-text-ink hover:text-primary"
-        >
-          <Home className="w-4 h-4 shrink-0" aria-hidden="true" />
-          Ver sitio público
-        </Link>
       </div>
     </>
   );

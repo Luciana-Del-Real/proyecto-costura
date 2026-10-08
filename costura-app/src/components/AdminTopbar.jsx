@@ -1,31 +1,40 @@
 import { Link } from 'react-router-dom';
 import { Menu } from 'lucide-react';
+import NotificationBell from './NotificationBell';
 
-// Full-width admin brand bar. It owns the institution brand and the mobile
-// menu trigger; the sidebar carries the full nav and the notification bell.
+// Admin brand bar. Keeps the SAME brand disposition as every other screen
+// (logo + name, inside a centered max-w-6xl row) and surfaces the notification
+// bell on the right, matching the student navbar.
 export default function AdminTopbar({ onMenuClick }) {
   return (
-    <header className="sticky top-0 z-40 h-16 flex items-center gap-3 px-4 bg-white border-b border-border">
-      <button
-        type="button"
-        onClick={onMenuClick}
-        aria-label="Abrir menú de navegación"
-        className="btn btn-icon lg:hidden"
-      >
-        <Menu className="w-6 h-6" aria-hidden="true" />
-      </button>
+    <header className="sticky top-0 z-40 bg-white border-b border-border shadow-sm">
+      <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+        <div className="flex items-center gap-3 min-w-0">
+          <button
+            type="button"
+            onClick={onMenuClick}
+            aria-label="Abrir menú de navegación"
+            className="btn btn-icon lg:hidden shrink-0"
+          >
+            <Menu className="w-6 h-6" aria-hidden="true" />
+          </button>
 
-      {/* Brand is always visible and must never shrink or truncate. */}
-      <Link to="/admin" className="flex items-center gap-2 shrink-0">
-        <img
-          src="/Images/Logo%20sin%20Slogan.png"
-          alt="Creative Education Studio"
-          className="w-9 h-9 object-contain shrink-0"
-        />
-        <span className="text-sm uppercase tracking-widest leading-tight whitespace-nowrap text-text-ink">
-          Creative Education Studio
-        </span>
-      </Link>
+          <Link to="/admin" className="flex items-center gap-3">
+            <img
+              src="/Images/Logo%20sin%20Slogan.png"
+              alt="Creative Education Studio"
+              className="w-9 h-9 object-contain"
+            />
+            <div className="flex flex-col">
+              <span className="text-sm uppercase tracking-widest text-text-ink">
+                Creative Education Studio
+              </span>
+            </div>
+          </Link>
+        </div>
+
+        <NotificationBell />
+      </div>
     </header>
   );
 }

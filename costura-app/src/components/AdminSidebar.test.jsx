@@ -15,19 +15,6 @@ vi.mock('../context/AuthContext', () => ({
   useAuth: () => ({ user: mocks.user, logout: mocks.logout }),
 }));
 
-// The footer now renders the notification bell, which reads this context.
-vi.mock('../context/NotificationsContext', () => ({
-  useNotifications: () => ({
-    notifications: [],
-    unreadCount: 0,
-    notificationsLoading: false,
-    notificationsError: null,
-    markAsRead: vi.fn(),
-    markAllAsRead: vi.fn(),
-    deleteNotification: vi.fn(),
-  }),
-}));
-
 import AdminSidebar from './AdminSidebar';
 
 const renderSidebar = (path = '/admin') =>
@@ -66,11 +53,12 @@ describe('AdminSidebar', () => {
     );
   });
 
-  it('renders the notification bell and the user block in the footer', () => {
-    const { getByRole, getByText } = renderSidebar();
-    expect(getByRole('button', { name: 'Notificaciones' })).toBeTruthy();
+  it('renders the user block in the footer', () => {
+    const { getByText, queryByRole } = renderSidebar();
     expect(getByText('Daiana Pérez')).toBeTruthy();
     expect(getByText('Administradora')).toBeTruthy();
+    // The notification bell lives in the topbar, not in the sidebar.
+    expect(queryByRole('button', { name: 'Notificaciones' })).toBeNull();
   });
 
   it('marks the active item for the current route', () => {

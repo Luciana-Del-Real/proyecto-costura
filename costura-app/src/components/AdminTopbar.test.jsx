@@ -5,6 +5,19 @@ import { MemoryRouter } from 'react-router-dom';
 
 import AdminTopbar from './AdminTopbar';
 
+// The topbar renders the notification bell, which reads this context.
+vi.mock('../context/NotificationsContext', () => ({
+  useNotifications: () => ({
+    notifications: [],
+    unreadCount: 0,
+    notificationsLoading: false,
+    notificationsError: null,
+    markAsRead: vi.fn(),
+    markAllAsRead: vi.fn(),
+    deleteNotification: vi.fn(),
+  }),
+}));
+
 const renderTopbar = (props = {}) =>
   render(
     <MemoryRouter>
