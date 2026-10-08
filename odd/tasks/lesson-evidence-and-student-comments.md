@@ -1,0 +1,86 @@
+# Lesson evidence + comments grouped by student
+
+## Objective
+
+1. Require students to attach **evidence** (one image, mandatory + optional note) to complete each lesson.
+2. Give admins a **per-student** view of comments and evidence, both in the Consultas inbox and inside the certificate-request review, so they can corroborate that a student actually did everything.
+
+## Problem
+
+- Admins reviewing a certificate request cannot see the student's comments or proof of work, so they cannot verify the student completed the tasks.
+- The Consultas inbox groups threads by **course -> lesson**, so comments from different students get mixed and are hard to follow per student.
+- Completing a lesson is a bare `PATCH /progress/lessons/:id {completed:true}` with **no proof of work** at all.
+
+## Decisions (from the user)
+
+- Evidence = **one mandatory image + an optional note**, per lesson completion.
+- The admin sees the per-student view in **both** places: Consultas (grouped by student) and the certificate-request review (lessons + evidence + comments).
+
+## Scope
+
+In scope:
+- Backend: nullable evidence fields on `LessonProgress` + migration; completion endpoint requires an image; admin certificate detail endpoint.
+- Frontend (student): evidence upload flow (image required + optional note) to complete a lesson.
+- Frontend (admin): Consultas grouped by student; certificate review detail with lessons + evidence + comments.
+
+Out of scope:
+- Changing the comment threading model.
+- Retroactively requiring evidence for lessons already completed (existing progress stays valid and is not locked).
+- Notifications for new evidence.
+
+## Constraints
+
+- **Additive DB change only** (nullable columns) on the shared Supabase DB. Note: `backend/.env` points at the shared Supabase DB, so creating the migration applies it there immediately — acceptable because it is additive.
+- Reuse existing patterns: Multer `diskStorage`, `ImagePicker.jsx`, `api.js` helpers, `getImageUrl`.
+- No breaking change for already-completed lessons.
+
+## Tasks
+
+- [x] **T1** Backend schema: add `evidenceImage String?` and `evidenceNote String?` to `LessonProgress` (`backend/prisma/schema.prisma`) + migration `add_lesson_progress_evidence`.
+- [x] **T2** Backend API: `PATCH /progress/lessons/:lessonId` becomes multipart; requires an image to mark complete; stores image path + optional note; returns the updated progress.
+- [x] **T3** Backend API: `GET /admin/certificate-requests/:id/detail` returning the request, student, course, per-lesson progress with evidence, and that student's comments for the course (AdminGuard).
+- [x] **T4** Frontend (student): evidence upload flow in the lesson view (`LessonContent.jsx` + `ProgressContext`): image required + optional note; show evidence once completed.
+- [x] **T5** Frontend (admin): Consultas inbox grouped by **student** (then course -> lesson).
+- [x] **T6** Frontend (admin): certificate review detail panel showing lessons + evidence + comments per student/course.
+- [x] **T7** Tests: backend (completion rejected without evidence; stores image + note) and frontend (upload required; grouping by student).
+
+## Route per task
+
+| Task | Route | Trigger evidence |
+| --- | --- | --- |
+| T1 | delegated writer | schema + migration, part of the backend work unit |
+| T2 | delegated writer | backend multi-file |
+| T3 | delegated writer | backend multi-file |
+| T4 | delegated writer | frontend multi-file |
+| T5 | delegated writer | frontend multi-file |
+| T6 | delegated writer | frontend multi-file |
+| T7 | delegated writer | tests alongside the work units |
+
+## Acceptance criteria
+
+- A student cannot mark a lesson complete without attaching an image; with the image (and optional note) it completes and the evidence is visible afterwards.
+- Already-completed lessons remain completed and are not re-locked.
+- The Consultas inbox shows one section per student, with their courses/lessons underneath.
+- Opening a certificate request shows that student's lessons, their evidence images/notes, and their comments for that course.
+- Existing lesson comments (threads + optional images) keep working unchanged.
+
+## Verification
+
+- Backend: `cd backend && npm run typecheck`, `npm test`.
+- Frontend: `cd costura-app && npm test`, `npm run lint`, `npm run build`.
+- Manual: complete a lesson without an image (must be blocked), with an image (must succeed), then review it as admin in both screens.
+
+## Delivery
+
+Forecast: ~600-900 authored lines (backend + frontend + tests). Repo flow is `dev` -> PR -> `main`; plan is a single PR into `main` after the work units land on `dev`, revisiting a chain if the user prefers.
+
+## Progress
+
+- 2026-10-08: feature document created. Exploration complete (comments, Consultas, certificates, lesson progress). Product decisions captured.
+- 2026-10-08: backend work unit done (T1-T3 + backend tests). Migration `20261008164940_add_lesson_progress_evidence` applied to Supabase. Backend tests 99 -> 105 passing, typecheck clean. Commit `5a805c8`.
+- 2026-10-08: frontend work unit done (T4-T6 + frontend tests). During review the parent removed the dead `onComplete`/`handleCompleteLesson` threading (old signature) so lesson completion flows only through `ProgressContext`. Frontend 116 -> 120 tests passing, lint clean, build passing. Commits `968b5dc` and `21d6ea8`.
+- Running count: roughly 780 authored lines across 4 commits (`3e78186` docs, `5a805c8` backend, `968b5dc` + `21d6ea8` frontend).
+- Remaining: manual end-to-end verification (upload evidence, complete a lesson, review as admin in both screens); push `dev` and open the PR into `main`.
+- Known gap: the certificate-request detail modal has no dedicated automated test (covered only by lint/build + following the existing modal pattern).
+- 2026-10-08 (review round 1, from user feedback after manual testing): fixed three issues — (1) the certificate detail now shows ONLY the lesson evidence, no comments; (2) each student now renders as its own card (avatar + name + count) in Consultas so nothing blends; (3) the new-consultation notification now links to `#comment-<id>` and the highlight targets only that comment (it was `#consultas`, tinting the whole container), with retries while async lists render.
+- 2026-10-08 (review round 2): the whole Consultas container still tinted gray because EXISTING notifications in the DB already carry the old link `/admin#consultas` (the backend fix only affects new ones). Fixed by making `useHighlightTarget` scroll but never tint an element marked `data-highlight-container` (the Consultas root now has it). Also removed the nested card around each student (they looked like box-in-box): the student is now a header row (avatar + name + count) with a divider, and the comment threads are the only boxes.

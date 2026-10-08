@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useAuth } from './AuthContext';
 import { usePurchases } from './PurchaseContext';
-import { get, patch } from '../services/api';
+import { get, patchForm } from '../services/api';
 
 const ProgressContext = createContext(null);
 
@@ -12,6 +12,8 @@ export function ProgressProvider({ children }) {
   const [progress, setProgress] = useState({});
 
   // Progreso real de lecciones, por curso (viene del backend, ya no del navegador).
+  // Además de los ids completados guardamos las lecciones tal cual llegan del
+  // backend para poder mostrar la evidencia (imagen + nota) sin otro fetch.
   const refreshMyProgress = useCallback(async (courseIds) => {
     if (!user || !courseIds?.length) return;
     try {
@@ -19,7 +21,11 @@ export function ProgressProvider({ children }) {
         courseIds.map(async (courseId) => {
           const data = await get(`/progress/courses/${courseId}`);
           const completed = data.lessons.filter(l => l.completed).map(l => l.id);
-          return [courseId, { completed, lastLesson: completed[completed.length - 1] || 0 }];
+          return [courseId, {
+            completed,
+            lastLesson: completed[completed.length - 1] || 0,
+            lessons: data.lessons,
+          }];
         })
       );
       setProgress(prev => ({ ...prev, ...Object.fromEntries(entries) }));
@@ -41,20 +47,29 @@ export function ProgressProvider({ children }) {
     return () => { cancelled = true; };
   }, [refreshMyProgress, purchases]);
 
-  const completeLesson = async (courseId, lessonId) => {
-    const cp = progress[courseId] || { completed: [], lastLesson: 0 };
-    if (cp.completed.includes(lessonId)) return;
+  const completeLesson = async (lessonId, { image, note } = {}) => {
+    // El backend exige una imagen de evidencia para completar (o que la
+    // lección ya tenga una guardada) y valida el orden secuencial; acá solo
+    // armamos el multipart y refrescamos el progreso de los cursos comprados
+    // para que la UI refleje la evidencia recién guardada.
+    const formData = new FormData();
+    formData.append('completed', 'true');
+    if (note !== undefined && note !== null) formData.append('note', note);
+    if (image) formData.append('image', image);
 
-    // El backend ya valida el orden secuencial (no se puede completar una
-    // lección sin haber completado la anterior), así que confiamos en su
-    // respuesta en vez de duplicar esa lógica acá.
-    await patch(`/progress/lessons/${lessonId}`, { completed: true });
+    const updated = await patchForm(`/progress/lessons/${lessonId}`, formData);
+    await refreshMyProgress(purchases);
+    return updated;
+  };
 
-    setProgress(prev => {
-      const current = prev[courseId] || { completed: [], lastLesson: 0 };
-      const completed = [...current.completed, lessonId];
-      return { ...prev, [courseId]: { ...current, completed, lastLesson: lessonId } };
-    });
+  // Evidencia (imagen + nota) de una lección a partir del progreso ya cargado,
+  // para que la vista de la lección la muestre al estar completada.
+  const getLessonEvidence = (courseId, lessonId) => {
+    const lesson = progress[courseId]?.lessons?.find(l => l.id === lessonId);
+    return {
+      image: lesson?.evidenceImage || null,
+      note: lesson?.evidenceNote || null,
+    };
   };
 
   const getProgress = (courseId, totalLessons) => {
@@ -66,7 +81,7 @@ export function ProgressProvider({ children }) {
   return (
     <ProgressContext.Provider value={{
       progress,
-      refreshMyProgress, completeLesson, getProgress,
+      refreshMyProgress, completeLesson, getProgress, getLessonEvidence,
     }}>
       {children}
     </ProgressContext.Provider>

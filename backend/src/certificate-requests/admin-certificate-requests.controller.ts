@@ -16,6 +16,13 @@ export class AdminCertificateRequestsController {
     return this.certificateRequestsService.findAllForAdmin();
   }
 
+  // Detalle de una solicitud para la revisión: alumna, curso, progreso lección
+  // por lección con su evidencia, y los comentarios de esa alumna en el curso.
+  @Get(':id/detail')
+  async findDetail(@Param('id') id: string) {
+    return this.certificateRequestsService.findDetailForAdmin(id);
+  }
+
   @Patch(':id')
   async markAsSent(@Param('id') id: string) {
     return this.certificateRequestsService.markAsSent(id);

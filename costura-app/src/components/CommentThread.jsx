@@ -67,7 +67,7 @@ export default function CommentThread({
     const authorLabel = isAdmin ? admin : (typeof author === 'function' ? author(c) : author);
 
     return (
-      <div key={c.id} className={depth > 0 ? 'ml-4 sm:ml-8 border-l-2 border-border-sage pl-3 mt-2' : 'mt-0'}>
+      <div key={c.id} id={`comment-${c.id}`} className={depth > 0 ? 'ml-4 sm:ml-8 border-l-2 border-border-sage pl-3 mt-2' : 'mt-0'}>
         <div className={`rounded-xl p-3 border text-sm ${isAdmin ? 'bg-white border-border' : 'bg-white border-border-sage'}`}>
           <div className="flex items-center justify-between gap-2 mb-1">
             <p className="text-xs font-bold uppercase tracking-wide text-accent">{authorLabel}</p>

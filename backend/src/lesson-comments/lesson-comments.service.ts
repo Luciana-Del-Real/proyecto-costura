@@ -112,7 +112,7 @@ export class LessonCommentsService {
           'Nueva consulta',
           `${author?.name ?? 'Una alumna'} preguntó en la lección "${lessonTitle}" del curso "${courseTitle}".`,
           tx,
-          courseId ? '/admin#consultas' : undefined,
+          courseId ? `/admin#comment-${comment.id}` : undefined,
         );
       } else if (parentId && parentAuthorId) {
         // Una respuesta de la profesora notifica a la autora del comentario padre.

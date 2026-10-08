@@ -76,33 +76,72 @@ export default function ConsultasSection() {
     return result.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
   };
 
-  const renderGroup = (group) => (
-    <div key={`${group.course.id}-${group.lesson.id}`} className="mb-4">
-      <p className="text-xs font-bold uppercase tracking-wide text-text-ink mb-1">{group.course.title}</p>
-      <p className="text-xs text-accent mb-2">{group.lesson.title}</p>
-      <CommentThread
-        items={threadFor(group.questions)}
-        onReply={handleReply}
-        labels={labels}
-        canReply
-        replySending={sending}
-        image={{ preview: replyPreview, onChange: updateReplyPreview, onRemove: clearReplyImage }}
-      />
-    </div>
-  );
-
-  const groupItems = (list) => {
-    const groups = [];
+  // Sección por alumna → curso → lección. Cada alumna tiene su propio bloque
+  // para que las consultas de distintas alumnas no se mezclen, aunque compartan
+  // curso y lección.
+  const groupByStudent = (list) => {
+    const students = new Map();
     for (const item of list) {
-      const last = groups[groups.length - 1];
-      if (last && last.course.id === item.course.id && last.lesson.id === item.lesson.id) last.questions.push(item.q);
-      else groups.push({ course: item.course, lesson: item.lesson, questions: [item.q] });
+      if (!students.has(item.student.id)) {
+        students.set(item.student.id, { student: item.student, courses: new Map() });
+      }
+      const student = students.get(item.student.id);
+      if (!student.courses.has(item.course.id)) {
+        student.courses.set(item.course.id, { course: item.course, lessons: new Map() });
+      }
+      const course = student.courses.get(item.course.id);
+      if (!course.lessons.has(item.lesson.id)) {
+        course.lessons.set(item.lesson.id, { lesson: item.lesson, questions: [] });
+      }
+      course.lessons.get(item.lesson.id).questions.push(item.q);
     }
-    return groups;
+    return [...students.values()];
+  };
+
+  // Cada alumna es una tarjeta propia y bien diferenciada (avatar + nombre +
+  // contador) para que las consultas no se mezclen ni se pierdan entre alumnas.
+  const renderStudent = (studentGroup) => {
+    const student = studentGroup.student;
+    const initial = (student.name || 'A').trim().charAt(0).toUpperCase();
+    const total = [...studentGroup.courses.values()].reduce(
+      (acc, c) => acc + [...c.lessons.values()].reduce((a, l) => a + l.questions.length, 0),
+      0,
+    );
+    return (
+      <div key={student.id} data-testid={`consulta-student-${student.id}`} className="mb-6">
+        <div className="flex items-center gap-3 pb-2 mb-3 border-b border-border">
+          <div className="w-9 h-9 rounded-full bg-primary-soft text-primary font-bold flex items-center justify-center text-sm shrink-0">
+            {initial}
+          </div>
+          <p className="font-body font-bold text-text-ink text-base truncate">{student.name}</p>
+          <span className="ml-auto text-[11px] font-bold text-text-ink bg-bg-soft px-2 py-0.5 rounded-full shrink-0">
+            {total} consulta{total !== 1 ? 's' : ''}
+          </span>
+        </div>
+        {[...studentGroup.courses.values()].map((courseGroup) => (
+          <div key={courseGroup.course.id} className="mb-4 last:mb-0">
+            <p className="text-xs font-bold uppercase tracking-wide text-text-ink mb-1">{courseGroup.course.title}</p>
+            {[...courseGroup.lessons.values()].map((lessonGroup) => (
+              <div key={lessonGroup.lesson.id} className="mb-3 last:mb-0">
+                <p className="text-xs text-accent mb-2">{lessonGroup.lesson.title}</p>
+                <CommentThread
+                  items={threadFor(lessonGroup.questions)}
+                  onReply={handleReply}
+                  labels={labels}
+                  canReply
+                  replySending={sending}
+                  image={{ preview: replyPreview, onChange: updateReplyPreview, onRemove: clearReplyImage }}
+                />
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    );
   };
 
   return (
-    <div id="consultas" className="card-flat rounded-xl p-6 mt-6">
+    <div id="consultas" data-highlight-container="true" className="card-flat rounded-xl p-6 mt-6">
       <div className="flex items-center justify-between gap-4 mb-4">
         <div>
           <h2 className="font-display font-bold text-text-ink text-2xl">Consultas</h2>
@@ -143,7 +182,7 @@ export default function ConsultasSection() {
       {!loading && !error && unanswered.length > 0 && (
         <div className="mb-6">
           <p className="text-xs font-bold uppercase tracking-wide text-primary mb-3">Sin responder</p>
-          {groupItems(unanswered).map(renderGroup)}
+          {groupByStudent(unanswered).map(renderStudent)}
         </div>
       )}
 
@@ -159,7 +198,7 @@ export default function ConsultasSection() {
           {showAnswered && (
             <div className="mt-3">
               <p className="text-xs font-bold uppercase tracking-wide text-text-ink mb-3">Respondidas</p>
-              {groupItems(answered).map(renderGroup)}
+              {groupByStudent(answered).map(renderStudent)}
             </div>
           )}
         </div>

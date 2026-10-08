@@ -57,6 +57,8 @@ export class LessonProgressService {
           order: lesson.order,
           duration: lesson.duration,
           completed: progress?.completed || false,
+          evidenceImage: progress?.evidenceImage ?? null,
+          evidenceNote: progress?.evidenceNote ?? null,
         };
       }),
     };
@@ -117,8 +119,56 @@ export class LessonProgressService {
       }
     }
 
-    // Update or create progress
-    const progress = await this.prisma.lessonProgress.upsert({
+    // Progreso existente (si lo hay): preserva la evidencia previa cuando no
+    // se sube/adjunta nada nuevo.
+    const existing = await this.prisma.lessonProgress.findUnique({
+      where: {
+        userId_lessonId: {
+          userId,
+          lessonId,
+        },
+      },
+    });
+
+    // Completar exige evidencia (imagen); des-completar la conserva.
+    if (dto.completed) {
+      const evidenceImage = dto.image ?? existing?.evidenceImage ?? null;
+      if (!evidenceImage) {
+        throw new BadRequestException(
+          'Debés adjuntar una imagen de la muestra para completar la lección.',
+        );
+      }
+      // `note` presente (incluso vacío) reemplaza la nota; ausente la conserva.
+      const evidenceNote =
+        dto.note !== undefined ? dto.note : existing?.evidenceNote ?? null;
+
+      return this.prisma.lessonProgress.upsert({
+        where: {
+          userId_lessonId: {
+            userId,
+            lessonId,
+          },
+        },
+        update: {
+          completed: true,
+          evidenceImage,
+          evidenceNote,
+        },
+        create: {
+          userId,
+          lessonId,
+          completed: true,
+          evidenceImage,
+          evidenceNote,
+        },
+        include: {
+          lesson: true,
+        },
+      });
+    }
+
+    // Un-completing keeps the existing evidence.
+    return this.prisma.lessonProgress.upsert({
       where: {
         userId_lessonId: {
           userId,
@@ -126,19 +176,17 @@ export class LessonProgressService {
         },
       },
       update: {
-        completed: dto.completed,
+        completed: false,
       },
       create: {
         userId,
         lessonId,
-        completed: dto.completed,
+        completed: false,
       },
       include: {
         lesson: true,
       },
     });
-
-    return progress;
   }
 
   async getCourseProgress(principal: Principal, courseId: string) {

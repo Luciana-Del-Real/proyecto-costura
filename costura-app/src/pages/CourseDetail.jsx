@@ -21,7 +21,7 @@ export default function CourseDetail() {
   const { user } = useAuth();
   const { courses } = useCourseCatalog();
   const { hasCourse } = usePurchases();
-  const { progress, getProgress, completeLesson } = useProgress();
+  const { progress, getProgress } = useProgress();
   const course = courses.find(c => String(c.id) === String(id));
 
   if (!course) {
@@ -65,7 +65,6 @@ export default function CourseDetail() {
       course={course}
       progress={progress}
       getProgress={getProgress}
-      completeLesson={completeLesson}
     />
   );
 }
@@ -74,7 +73,7 @@ export default function CourseDetail() {
 // solo trae títulos; el contenido completo (video/pdf/attachments + material
 // del curso) se carga del endpoint protegido. `key={course.id}` resetea el
 // estado al navegar entre cursos.
-function OwnedCourseView({ course, progress, getProgress, completeLesson }) {
+function OwnedCourseView({ course, progress, getProgress }) {
   const { getCourseLessons } = useCourseCatalog();
   const [fullCourse, setFullCourse] = useState(null);
   const [loadingContent, setLoadingContent] = useState(true);
@@ -121,10 +120,10 @@ function OwnedCourseView({ course, progress, getProgress, completeLesson }) {
     );
   }
 
-  return <CourseLearningView course={fullCourse} progress={progress} getProgress={getProgress} completeLesson={completeLesson} />;
+  return <CourseLearningView course={fullCourse} progress={progress} getProgress={getProgress} />;
 }
 
-function CourseLearningView({ course, progress, getProgress, completeLesson }) {
+function CourseLearningView({ course, progress, getProgress }) {
   const { alertDialog } = useDialog();
   const courseProgress = progress[course.id] || { completed: [], lastLesson: 0 };
   const isCompleted = (lessonId) => courseProgress.completed.includes(lessonId);
@@ -172,14 +171,6 @@ function CourseLearningView({ course, progress, getProgress, completeLesson }) {
     if (willOpen) loadComments(lesson.id);
   };
 
-  const handleCompleteLesson = async (lessonId) => {
-    try {
-      await completeLesson(course.id, lessonId);
-    } catch (err) {
-      console.error(err);
-      alertDialog('No se pudo marcar la lección como completada. Probá de nuevo.');
-    }
-  };
   // Solicitud de certificado: la alumna solo puede PEDIRLO (al completar el
   // 100%), la profesora lo arma y lo envía por mail fuera de la app. El estado
   // de la solicitud se consulta al montar para no perderlo tras un refresh.
@@ -264,7 +255,6 @@ function CourseLearningView({ course, progress, getProgress, completeLesson }) {
                   comments={commentsByLesson[activeLesson.id]}
                   draft={drafts[activeLesson.id] || ''}
                   sendingFor={sendingFor}
-                  onComplete={handleCompleteLesson}
                   onSendComment={sendComment}
                   onDraftChange={setDraft}
                   onNext={() => toggleLesson(course.lessons[activeIdx + 1], false)}
@@ -319,7 +309,6 @@ function CourseLearningView({ course, progress, getProgress, completeLesson }) {
                 drafts={drafts}
                 sendingFor={sendingFor}
                 onToggle={toggleLesson}
-                onComplete={handleCompleteLesson}
                 onSendComment={sendComment}
                 onDraftChange={setDraft}
                 onNext={() => toggleLesson(course.lessons[idx + 1], false)}

@@ -129,6 +129,10 @@ model User {
     userId    String
     lessonId  String
     completed Boolean  @default(false)
+    // Evidencia de la muestra que la alumna adjunta al completar la lección:
+    // una imagen obligatoria (ruta "/uploads/progress/...") y una nota opcional.
+    evidenceImage String?
+    evidenceNote  String?
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 

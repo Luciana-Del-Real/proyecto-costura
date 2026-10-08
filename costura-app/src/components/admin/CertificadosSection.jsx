@@ -2,15 +2,17 @@ import { useState } from 'react';
 import { Mail, MailCheck } from 'lucide-react';
 import useCertificateRequests from '../../hooks/useCertificateRequests';
 import { useDialog } from '../../context/DialogContext';
+import CertificateRequestDetail from './CertificateRequestDetail';
 
 // Bandeja de solicitudes de certificado del admin: la alumna pide el
 // certificado al completar el curso, la profesora lo arma y lo envía por mail
 // FUERA de la app, y acá marca la solicitud como enviada (PENDING -> SENT).
 export default function CertificadosSection() {
   const { confirmDialog, alertDialog } = useDialog();
-  const { pending, sent, loading, error, markSent } = useCertificateRequests();
+  const { pending, sent, loading, error, markSent, getDetail } = useCertificateRequests();
   const [sendingId, setSendingId] = useState(null);
   const [showSent, setShowSent] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
 
   const formatDate = (iso) => {
     try {
@@ -39,11 +41,16 @@ export default function CertificadosSection() {
 
   const renderRow = (r) => (
     <div key={r.id} id={r.id} className="flex flex-col sm:flex-row sm:items-center gap-3 py-3 border-b border-border last:border-0">
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-text-ink truncate">{r.user?.name || 'Alumna'}</p>
+      <button
+        type="button"
+        onClick={() => setSelectedId(r.id)}
+        title="Ver lecciones, evidencia y comentarios"
+        className="flex-1 min-w-0 text-left group"
+      >
+        <p className="text-sm font-medium text-text-ink truncate group-hover:text-primary">{r.user?.name || 'Alumna'}</p>
         <p className="text-xs text-text-ink opacity-70 truncate">{r.user?.email || 'Sin email'}</p>
         <p className="text-xs text-accent truncate mt-0.5">{r.course?.title || 'Curso sin título'}</p>
-      </div>
+      </button>
       <div className="flex items-center gap-3 sm:flex-none">
         <span className="text-xs text-text-ink opacity-70 whitespace-nowrap">{formatDate(r.createdAt)}</span>
         {r.status === 'PENDING' ? (
@@ -118,6 +125,15 @@ export default function CertificadosSection() {
             </div>
           )}
         </div>
+      )}
+
+      {selectedId && (
+        <CertificateRequestDetail
+          key={selectedId}
+          requestId={selectedId}
+          getDetail={getDetail}
+          onClose={() => setSelectedId(null)}
+        />
       )}
     </div>
   );
