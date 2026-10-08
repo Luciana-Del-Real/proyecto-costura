@@ -1,10 +1,11 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Providers from './components/providers';
 import { DialogProvider } from './context/DialogContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import AdminNavbar from './components/AdminNavbar';
+import AdminSidebar from './components/AdminSidebar';
+import AdminTopbar from './components/AdminTopbar';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
 
@@ -55,12 +56,19 @@ function ScrollToTop() {
   return null;
 }
 
-// CORREGIDO: Añadimos el fondo beige y aquí gestionamos el único Navbar de admin
+// Admin shell: a left sidebar (sticky on desktop, drawer on mobile) plus a
+// thin top bar. The drawer state lives here so the topbar trigger and the
+// sidebar can share it.
 function AdminLayout({ children }) {
+  const [navOpen, setNavOpen] = useState(false);
+
   return (
-    <div className="min-h-screen flex flex-col bg-bg-surface">
-      <AdminNavbar />
-      <main className="flex-1">{children}</main>
+    <div className="min-h-screen flex bg-bg-surface">
+      <AdminSidebar open={navOpen} onClose={() => setNavOpen(false)} />
+      <div className="flex-1 min-w-0 flex flex-col">
+        <AdminTopbar onMenuClick={() => setNavOpen(true)} />
+        <main className="flex-1">{children}</main>
+      </div>
     </div>
   );
 }
