@@ -5,20 +5,20 @@
 export const testimonials = [
   {
     id: 1,
-    name: "Leonela Orellana",
-    text: "Hermoso lugar y hermosa clase ❤️ recomiendo por mil ! Dai hace que aprender costura sea simple divertido y funcional 🙌🏽…",
-    course: "Google Maps · Hace 6 meses",
+    name: "Wendy Piñuela",
+    text: "Fui a Grow y fue la mejor experiencia de mi vida. Daiana tiene un método de enseñanza increíble. ¡Lo recomiendo al 100%!",
+    course: "Google Maps · Hace un mes",
   },
   {
     id: 2,
-    name: "Natalia Michelet",
-    text: "Los mejores cursos para aprender desde 0, excelente experiencia!",
-    course: "Google Maps · Hace 6 meses",
+    name: "Vanina Lescano",
+    text: "¡Me encantan las clases! Dai es encantadora y muy profesional. ¡Aprendí a hacer vestidos y muchas otras cosas!",
+    course: "Google Maps · Hace un mes",
   },
   {
     id: 3,
-    name: "Maria Isabel Giaimo",
-    text: "Recomiendo 100%. Daiana es una docente con mucha paciencia y pasión por lo que hace, está acompañando mi proceso de aprendizaje con mucho cariño y buena energia. Me ha dado las herramientas para que yo pueda seguir patrones o moldes sola, por ende pueda volver a la clase con dudas puntuales. En dos semanas ya estaba haciendo totebags para mi familia y al mes ya me encontraba arreglando a mi medida un vestido. Aprendí muchisimo y me hice amigas en sus clases, le tengo mucho cariño a este instuto que me ha dado más que solamente aprender a coser. Orgullosa de ser parte de la sede en Sydney.",
-    course: "Google Maps · Hace 6 meses",
+    name: "romina pezzopane",
+    text: "Llevo un par de meses aprendiendo con Daia y ha sido increíble. Cuando empecé, ya sabía lo básico de la costura y he mejorado muchísimo. Daia es una profesora excelente, muy paciente, y su taller tiene todo el equipo necesario para realizar cualquier proyecto que quieras hacer.",
+    course: "Google Maps · Hace 2 meses",
   },
 ];
