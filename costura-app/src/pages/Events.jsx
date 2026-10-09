@@ -72,10 +72,10 @@ function EventCard({ event, variant }) {
         <img
           src={getImageUrl(event.image)}
           alt={event.title || 'Evento'}
-          className="w-2/5 shrink-0 self-stretch object-cover"
+          className="w-1/2 shrink-0 self-stretch object-cover"
         />
-        <div className="flex flex-col p-5 md:p-6 text-left flex-1 min-w-0">
-          <h3 className="font-display uppercase leading-none">
+        <div className="flex flex-col p-5 md:p-6 text-center flex-1 min-w-0">
+          <h3 className="font-display uppercase leading-none text-right">
             <span className="text-event-pink block text-2xl md:text-3xl font-bold">{first}</span>
             <span className="text-event-green-deep block text-lg md:text-xl font-normal">{second}</span>
           </h3>
