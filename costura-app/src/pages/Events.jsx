@@ -67,7 +67,7 @@ function EventCard({ event, variant }) {
     return (
       <div
         style={{ borderColor: variant.border }}
-        className="relative overflow-hidden flex items-stretch h-full rounded-3xl border bg-white"
+        className="relative overflow-hidden flex items-stretch h-full min-h-[360px] md:min-h-[480px] rounded-3xl border bg-white"
       >
         <img
           src={getImageUrl(event.image)}
@@ -76,18 +76,18 @@ function EventCard({ event, variant }) {
         />
         <div className="flex flex-col p-5 md:p-6 text-center flex-1 min-w-0">
           <h3 className="font-display uppercase leading-none text-right">
-            <span className="text-event-pink block text-2xl md:text-3xl font-bold">{first}</span>
-            <span className="text-event-green-deep block text-lg md:text-xl font-normal">{second}</span>
+            <span className="text-event-pink block text-3xl md:text-4xl font-bold">{first}</span>
+            <span className="text-event-green-deep block text-xl md:text-2xl font-normal">{second}</span>
           </h3>
 
           {event.subtitle && (
-            <p className="font-body text-sm md:text-base text-event-rose-deep mt-2 leading-relaxed">{event.subtitle}</p>
+            <p className="font-body text-xs md:text-sm text-event-rose-deep mt-2 leading-relaxed">{event.subtitle}</p>
           )}
 
           {features.length > 0 && (
             <div className="space-y-1.5 mt-3">
               {features.map((f) => (
-                <p key={f} className="font-body text-sm text-text-ink leading-snug">{f}</p>
+                <p key={f} className="font-body text-xs md:text-sm text-text-ink leading-snug">{f}</p>
               ))}
             </div>
           )}
