@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { CalendarHeart } from 'lucide-react';
 import { listPublicEvents } from '../services/api';
+import { getImageUrl } from '../utils/media';
 import PageHeader from '../components/PageHeader';
 import LoadingState from '../components/LoadingState';
 import EmptyState from '../components/EmptyState';
@@ -52,12 +53,61 @@ const FLYER_VARIANTS = [
   { bg: 'var(--color-event-sky)', border: 'var(--color-event-sky-border)' }, // celeste
 ];
 
-// Folleto de evento: flota sobre un fondo pastel propio con borde suave,
-// todo centrado. Título bicolor en dos líneas, bajada en rosa, detalles
+// Card de evento en dos formas:
+// - CON imagen: dos columnas — la imagen real y nítida a la izquierda (ocupa
+//   todo el alto) y la información a la derecha con el botón de consultar.
+// - SIN imagen: folleto pastel centrado de siempre (paleta del evento).
+// En ambos casos: título bicolor en dos líneas, bajada en rosa, detalles
 // como líneas independientes SIN viñetas y botón píldora rosa.
 function EventCard({ event, variant }) {
   const { first, second } = splitTitle(event.title || '');
   const features = toFeatures(event.detail || '');
+
+  if (event.image) {
+    return (
+      <div
+        style={{ borderColor: variant.border }}
+        className="relative overflow-hidden flex items-stretch h-full min-h-[360px] md:min-h-[480px] rounded-3xl border bg-white"
+      >
+        <img
+          src={getImageUrl(event.image)}
+          alt={event.title || 'Evento'}
+          className="w-1/2 shrink-0 self-stretch object-cover"
+        />
+        <div className="flex flex-col p-5 md:p-6 text-center flex-1 min-w-0">
+          <h3 className="font-display uppercase leading-none text-right">
+            <span className="text-event-pink block text-3xl md:text-4xl font-bold">{first}</span>
+            <span className="text-event-green-deep block text-xl md:text-2xl font-normal">{second}</span>
+          </h3>
+
+          {event.subtitle && (
+            <p className="font-body text-xs md:text-sm text-event-rose-deep mt-2 leading-relaxed">{event.subtitle}</p>
+          )}
+
+          {features.length > 0 && (
+            <div className="flex-1 flex flex-col justify-center space-y-4">
+              {features.map((f) => (
+                <p key={f} className="font-body text-xs md:text-sm text-text-ink leading-snug">{f}</p>
+              ))}
+            </div>
+          )}
+
+          {/* Botón CONSULTAR: píldora rosa, empujado al fondo (mt-auto) para
+              que todas las cards de la fila queden a la misma altura */}
+          <div className="mt-auto pt-5">
+            <a
+              href={whatsappUrl(event)}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center bg-event-pink hover:bg-event-pink-hover text-white font-bold text-sm uppercase tracking-wide rounded-full px-6 py-2.5 transition-colors"
+            >
+              Consultar
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
