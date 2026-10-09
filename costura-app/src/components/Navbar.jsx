@@ -60,6 +60,8 @@ export default function Navbar() {
               <Link to="/cursos" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/cursos' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Cursos disponibles</Link>
               <Link to="/favoritos" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/favoritos' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Favoritos</Link>
               <Link to="/patrones-gratis" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/patrones-gratis' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Patrones</Link>
+              <Link to="/eventos" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/eventos' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Eventos</Link>
+              <Link to="/productos" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/productos' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Productos</Link>
 
               {/* Notifications bell */}
               <NotificationBell />
@@ -105,6 +107,8 @@ export default function Navbar() {
                 <>
                   <Link to="/cursos" className="px-1 py-1 rounded-lg text-sm font-medium text-text-ink hover:text-primary transition-colors">Cursos disponibles</Link>
                   <Link to="/patrones-gratis" className="px-1 py-1 rounded-lg text-sm font-medium text-text-ink hover:text-primary transition-colors">Patrones</Link>
+                  <Link to="/eventos" className="px-1 py-1 rounded-lg text-sm font-medium text-text-ink hover:text-primary transition-colors">Eventos</Link>
+                  <Link to="/productos" className="px-1 py-1 rounded-lg text-sm font-medium text-text-ink hover:text-primary transition-colors">Productos</Link>
                   <Link to="/login" className="btn btn-primary text-sm text-white hover:shadow-none">Iniciar sesión</Link>
                 </>
               )}
@@ -149,6 +153,8 @@ export default function Navbar() {
               <Link to="/cursos" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Cursos disponibles</Link>
               <Link to="/favoritos" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Favoritos</Link>
               <Link to="/patrones-gratis" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Patrones</Link>
+              <Link to="/eventos" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Eventos</Link>
+              <Link to="/productos" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Productos</Link>
               <Link to="/perfil" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Perfil</Link>
               <Link to="/mis-cursos" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Mis cursos</Link>
               <button onClick={handleLogout} className="btn btn-ghost w-full justify-start text-sm text-accent">Cerrar sesión</button>
@@ -158,6 +164,8 @@ export default function Navbar() {
               <>
                   <Link to="/cursos" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Cursos disponibles</Link>
                   <Link to="/patrones-gratis" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Patrones</Link>
+                  <Link to="/eventos" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Eventos</Link>
+                  <Link to="/productos" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Productos</Link>
                   <Link to="/login" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Iniciar sesión</Link>
               </>
             )
