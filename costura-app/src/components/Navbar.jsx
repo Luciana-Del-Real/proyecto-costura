@@ -41,15 +41,19 @@ export default function Navbar() {
 
   return (
     <>
-      <BackToHome />
         <nav className={`${isHome ? 'absolute inset-x-0 top-0 z-50 nav-on-hero' : 'sticky top-0 z-50 bg-white border-b border-border shadow-sm'}`}>
         <div className="w-full px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <Link to={user ? (isAdmin ? "/admin" : "/dashboard") : "/"} className="flex items-center gap-3">
-            <img src="/Images/Logo%20sin%20Slogan.png" alt="Grow" className="w-9 h-9 object-contain" />
-            <div className="flex flex-col">
-              <span className="text-sm uppercase tracking-widest text-text-ink">Creative Education Studio</span>
-            </div>
-          </Link>
+          {/* The back arrow lives inside the navbar so it pushes the logo and
+              the name instead of overlapping them. */}
+          <div className="flex items-center gap-3 min-w-0">
+            <BackToHome />
+            <Link to={user ? (isAdmin ? "/admin" : "/dashboard") : "/"} className="flex items-center gap-3 min-w-0">
+              <img src="/Images/Logo%20sin%20Slogan.png" alt="Grow" className="w-9 h-9 object-contain shrink-0" />
+              <div className="flex flex-col min-w-0">
+                <span className="text-sm uppercase tracking-widest text-text-ink truncate">Creative Education Studio</span>
+              </div>
+            </Link>
+          </div>
 
           {/* Desktop */}
           {(!isSimplified || user || isAuthPage) && (
