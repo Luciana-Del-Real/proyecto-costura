@@ -156,9 +156,10 @@ export default function Events() {
           />
         )}
 
-        {/* Grilla de tarjetas: 3 columnas en desktop, 2 en tablet, 1 en mobile */}
+        {/* Grilla de tarjetas: 4 columnas en desktop ancho, 3 en desktop,
+            2 en tablet, 1 en mobile (igual que la grilla de Cursos) */}
         {!loading && !error && events.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {events.map((event, i) => (
               <EventCard
                 key={event.id}
