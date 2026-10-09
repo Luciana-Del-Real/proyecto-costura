@@ -128,7 +128,7 @@ export default function PatronesGratis() {
             <p className="text-text-muted text-sm mb-6 font-medium pl-1">
               {filtered.length} patrón{filtered.length !== 1 ? 'es' : ''} disponible{filtered.length !== 1 ? 's' : ''}
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
               {filtered.map((p, index) => (
                 <div key={p.id} className={`animate-stagger delay-${(index % 6) + 1}`}>
                   <div className="card-glow rounded-2xl p-6 h-full flex flex-col">
