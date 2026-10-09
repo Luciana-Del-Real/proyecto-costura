@@ -53,39 +53,67 @@ const FLYER_VARIANTS = [
   { bg: 'var(--color-event-sky)', border: 'var(--color-event-sky-border)' }, // celeste
 ];
 
-// Folleto de evento: flota sobre un fondo pastel propio con borde suave,
-// todo centrado. Si el evento tiene imagen, esa imagen es el fondo completo
-// de la tarjeta (difuminada y con una capa blanca suave encima para que el
-// texto siga siendo 100% legible); sin imagen queda la paleta pastel de
-// siempre. Título bicolor en dos líneas, bajada en rosa, detalles como
-// líneas independientes SIN viñetas y botón píldora rosa.
+// Card de evento en dos formas:
+// - CON imagen: dos columnas — la imagen real y nítida a la izquierda (ocupa
+//   todo el alto) y la información a la derecha con el botón de consultar.
+// - SIN imagen: folleto pastel centrado de siempre (paleta del evento).
+// En ambos casos: título bicolor en dos líneas, bajada en rosa, detalles
+// como líneas independientes SIN viñetas y botón píldora rosa.
 function EventCard({ event, variant }) {
   const { first, second } = splitTitle(event.title || '');
   const features = toFeatures(event.detail || '');
 
+  if (event.image) {
+    return (
+      <div
+        style={{ borderColor: variant.border }}
+        className="relative overflow-hidden flex items-stretch h-full rounded-3xl border bg-white"
+      >
+        <img
+          src={getImageUrl(event.image)}
+          alt={event.title || 'Evento'}
+          className="w-2/5 shrink-0 self-stretch object-cover"
+        />
+        <div className="flex flex-col p-5 md:p-6 text-left flex-1 min-w-0">
+          <h3 className="font-display uppercase leading-none">
+            <span className="text-event-pink block text-2xl md:text-3xl font-bold">{first}</span>
+            <span className="text-event-green-deep block text-lg md:text-xl font-normal">{second}</span>
+          </h3>
+
+          {event.subtitle && (
+            <p className="font-body text-sm md:text-base text-event-rose-deep mt-2 leading-relaxed">{event.subtitle}</p>
+          )}
+
+          {features.length > 0 && (
+            <div className="space-y-1.5 mt-3">
+              {features.map((f) => (
+                <p key={f} className="font-body text-sm text-text-ink leading-snug">{f}</p>
+              ))}
+            </div>
+          )}
+
+          {/* Botón CONSULTAR: píldora rosa, empujado al fondo (mt-auto) para
+              que todas las cards de la fila queden a la misma altura */}
+          <div className="mt-auto pt-5">
+            <a
+              href={whatsappUrl(event)}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center bg-event-pink hover:bg-event-pink-hover text-white font-bold text-sm uppercase tracking-wide rounded-full px-6 py-2.5 transition-colors"
+            >
+              Consultar
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       style={{ backgroundColor: variant.bg, borderColor: variant.border }}
-      className="relative overflow-hidden flex flex-col items-center h-full text-center rounded-3xl border p-6 md:p-8"
+      className="flex flex-col items-center h-full text-center rounded-3xl border p-6 md:p-8"
     >
-      {event.image && (
-        <>
-          {/* Imagen de fondo: cubre toda la tarjeta, difuminada y levemente
-              ampliada (scale-110) para que el blur no deje bordes visibles.
-              aria-hidden: es decorativa, el contenido real es el texto. */}
-          <img
-            src={getImageUrl(event.image)}
-            alt=""
-            aria-hidden="true"
-            className="absolute inset-0 h-full w-full object-cover blur scale-110"
-          />
-          {/* Capa suave blanca: garantiza contraste para el texto sin tapar
-              del todo la imagen (queda "difuminada pero notable"). */}
-          <div aria-hidden="true" className="absolute inset-0 bg-white/50" />
-        </>
-      )}
-
-      <div className="relative z-10 flex flex-col items-center w-full h-full">
       {/* Título principal: 1ra línea rosa (más grande y en negrita), 2da
           verde oscuro (más chica y sin negrita). Bebas = font-display,
           coherente con el resto de la página. */}
@@ -119,7 +147,6 @@ function EventCard({ event, variant }) {
         >
           Consultar
         </a>
-      </div>
       </div>
     </div>
   );
