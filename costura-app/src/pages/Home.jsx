@@ -18,7 +18,7 @@ const categories = [
   { Icon: Palette, label: 'DISEÑO TEXTIL' },
   { Icon: Shirt, label: 'WORKSHOPS' },
   { Icon: CalendarDays, label: 'EVENTOS', to: '/eventos' },
-  { Icon: ShoppingBag, label: 'PRODUCTOS Y SERVICIOS' },
+  { Icon: ShoppingBag, label: 'PRODUCTOS', to: '/productos' },
 ];
 
 const delays = ['', 'reveal-delay-1', 'reveal-delay-2', 'reveal-delay-3'];

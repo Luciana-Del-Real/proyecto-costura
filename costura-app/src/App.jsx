@@ -35,6 +35,8 @@ import AdminEventForm from './pages/admin/AdminEventForm';
 import AdminCourseForm from './pages/admin/AdminCourseForm';
 import AdminPatterns from './pages/admin/AdminPatterns';
 import AdminPatternForm from './pages/admin/AdminPatternForm';
+import AdminProductos from './pages/admin/AdminProductos';
+import Productos from './pages/Productos';
 
 function Layout({ children }) {
   return (
@@ -89,6 +91,7 @@ export default function App() {
             <Route path="/cursos" element={<Layout><Courses /></Layout>} />
             <Route path="/patrones-gratis" element={<Layout><PatronesGratis /></Layout>} />
             <Route path="/eventos" element={<Layout><Events /></Layout>} />
+            <Route path="/productos" element={<Layout><Productos /></Layout>} />
 
             {/* Alumno */}
             {/* /curso/:id es público: sin sesión muestra la vista previa del
@@ -116,6 +119,7 @@ export default function App() {
             <Route path="/admin/patrones" element={<AdminRoute><AdminLayout><AdminPatterns /></AdminLayout></AdminRoute>} />
             <Route path="/admin/patrones/nuevo" element={<AdminRoute><AdminLayout><AdminPatternForm /></AdminLayout></AdminRoute>} />
             <Route path="/admin/patrones/editar/:id" element={<AdminRoute><AdminLayout><AdminPatternForm /></AdminLayout></AdminRoute>} />
+            <Route path="/admin/productos" element={<AdminRoute><AdminLayout><AdminProductos /></AdminLayout></AdminRoute>} />
           </Routes>
       </Providers>
       </DialogProvider>
