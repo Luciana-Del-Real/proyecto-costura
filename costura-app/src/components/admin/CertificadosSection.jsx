@@ -55,7 +55,7 @@ export default function CertificadosSection() {
         <p className="text-xs text-text-ink opacity-70 truncate">{r.user?.email || 'Sin email'}</p>
         <p className="text-xs text-accent truncate mt-0.5">{r.course?.title || 'Curso sin título'}</p>
       </button>
-      <div className="flex items-center gap-3 sm:flex-none">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 sm:flex-none">
         <span className="text-xs text-text-ink opacity-70 whitespace-nowrap">{formatDate(r.createdAt)}</span>
         {r.status === 'PENDING' ? (
           <Badge tone="primary" className="whitespace-nowrap">Pendiente</Badge>
@@ -85,7 +85,7 @@ export default function CertificadosSection() {
 
   return (
     <div id="certificados" className="card-flat rounded-xl p-6 mt-6">
-      <div className="flex items-start justify-between gap-4 mb-4">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
         <p className="text-sm text-text-ink">
           Cuando una alumna termina un curso y pide su certificado, aparece acá. Lo armás vos y se lo
           enviás por mail fuera de la app; después marcás la solicitud como enviada.
