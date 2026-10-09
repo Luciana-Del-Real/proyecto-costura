@@ -13,7 +13,7 @@ Product request: image backgrounds give the event cards visual impact without sh
 - `backend/src/events/admin-events.controller.ts` — multer upload for field `image` (folder `./uploads/events`), same diskStorage pattern as `patterns.controller.ts`, on POST and PUT. Keep the "notify students on create" flow intact.
 - `costura-app/src/services/api.js` — `createEvent`/`updateEvent` become FormData-aware (FormData -> postForm/putForm, else JSON).
 - `costura-app/src/pages/admin/AdminEventForm.jsx` — image field with FilePicker + preview; submit FormData when a file is selected.
-- `costura-app/src/pages/Events.jsx` — EventCard renders the image as a blurred, noticeable background (absolute `img` blur + scale, white/50 overlay, content above with z-10); pastel palette stays as the no-image fallback.
+- `costura-app/src/pages/Events.jsx` — EventCard renders the image as a blurred, noticeable background (absolute `img` blur + scale, white/50 overlay, content above with z-10); pastel palette stays as the no-image fallback. **Refinado en T6**: con imagen, la card pasa a ser de DOS columnas (imagen nítida a la izquierda + info y botón Consultar a la derecha); el blur queda descartado para eventos con imagen y el folleto pastel sigue siendo el fallback sin imagen.
 
 ## Out of scope
 - No schema/migration change (column already exists).
@@ -32,6 +32,7 @@ Product request: image backgrounds give the event cards visual impact without sh
 - [x] T3 AdminEventForm: image field (label + FilePicker + preview) and FormData submit
 - [x] T4 EventCard: blurred noticeable background image when `event.image` is present
 - [x] T5 Verify: backend build + tests; frontend tests + lint + build
+- [x] T6 Card refine (user request): two-column card when the event has an image — sharp image on the left (full height), info + Consultar button on the right; blur removed for image events; pastel flyer kept as no-image fallback
 
 ## Route
 - T1–T4: delegated direct — ONE bounded writer (4 non-trivial files across backend + frontend; writer trigger applied).
@@ -53,7 +54,8 @@ Product request: image backgrounds give the event cards visual impact without sh
 - Parent spot check of the full diff: multer wiring mirrors patterns.controller.ts (field `image`, folder `./uploads/events`); notify-on-create flow intact; card keeps pastel fallback + `relative overflow-hidden` + blur/scale/white-50 overlay + z-10 content; form keeps the field-label and submit conventions.
 
 ## Review assessment
-- `gentle-ai review assess --base-ref 82d4242 --committed-only`: risk **medium** (executable_change: admin-events.controller.ts), 5 paths / 172 lines, `review_due: false` — **under_budget**: se queda pendiente dentro del slice (no avanza el boundary). Si un commit posterior acumula ~400 líneas sobre el slice, saltará `slice_budget_reached` y se ejecutará el preflight STATUS.
+- Commit 41f0ec2, `assess --base-ref 82d4242 --committed-only`: risk **medium** (executable_change: admin-events.controller.ts), 5 paths / 172 lines, `review_due: false` — **under_budget**.
+- Commit 3051824 (T6 two-column card), same base-ref: 197 lines acumuladas en el slice, `review_due: false` — **under_budget** (sigue < 400). El boundary no avanza; si un commit futuro acumula ~400 líneas sobre el slice saltará `slice_budget_reached` con el preflight STATUS.
 
 ## Next step
 Parent spot check -> work-unit commit -> assess -> report -> user decides push/PR.
