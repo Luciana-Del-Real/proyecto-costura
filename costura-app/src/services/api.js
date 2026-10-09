@@ -128,8 +128,9 @@ export async function markCertificateRequestSent(id) {
 }
 
 // Eventos: la grilla pública (solo visibles) y el CRUD del admin. Los
-// folletos se arman con texto (título, descripción, detalle), así que el
-// admin manda JSON.
+// folletos se arman con texto (título, descripción, detalle) y el admin
+// manda JSON; si el formulario incluye una imagen nueva, se envía como
+// FormData (los helpers postForm/putForm ya ponen los headers correctos).
 export async function listPublicEvents() {
   return get('/events');
 }
@@ -143,11 +144,11 @@ export async function getEvent(id) {
 }
 
 export async function createEvent(data) {
-  return post('/admin/events', data);
+  return data instanceof FormData ? postForm('/admin/events', data) : post('/admin/events', data);
 }
 
 export async function updateEvent(id, data) {
-  return put(`/admin/events/${id}`, data);
+  return data instanceof FormData ? putForm(`/admin/events/${id}`, data) : put(`/admin/events/${id}`, data);
 }
 
 export async function deleteEvent(id) {

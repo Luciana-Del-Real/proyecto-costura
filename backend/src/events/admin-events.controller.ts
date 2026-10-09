@@ -1,4 +1,8 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, Logger } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, UseInterceptors, UploadedFiles, Logger } from '@nestjs/common';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
+import { mkdirSync } from 'fs';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
@@ -6,9 +10,25 @@ import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { AdminGuard } from '../auth/guards/admin.guard';
 import { NotificationsService } from '../notifications/notifications.service';
 
+const uploadsDir = './uploads/events';
+mkdirSync(uploadsDir, { recursive: true });
+
+const storageOptions = {
+  storage: diskStorage({
+    destination: uploadsDir,
+    filename: (req, file, cb) => {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+      cb(null, `${file.fieldname}-${uniqueSuffix}${extname(file.originalname)}`);
+    },
+  }),
+};
+
+const eventImageFields = FileFieldsInterceptor([{ name: 'image', maxCount: 1 }], storageOptions);
+
 // CRUD completo de eventos para el panel admin (crear, editar, eliminar y
 // listar, incluidos los ocultos). El folleto se arma con TEXTO (título,
-// descripción y detalle); la imagen quedó como campo legacy sin uso.
+// descripción y detalle); la imagen se sube desde el formulario admin y se
+// usa como fondo difuminado de la tarjeta pública del evento.
 @Controller('admin/events')
 @UseGuards(JwtAuthGuard, AdminGuard)
 export class AdminEventsController {
@@ -30,7 +50,9 @@ export class AdminEventsController {
   }
 
   @Post()
-  async create(@Body() dto: CreateEventDto) {
+  @UseInterceptors(eventImageFields)
+  async create(@Body() dto: CreateEventDto, @UploadedFiles() files?: { image?: Express.Multer.File[] }) {
+    if (files?.image?.length) dto.image = '/uploads/events/' + files.image[0].filename;
     const event = await this.eventsService.create(dto);
 
     // Avisa a todas las alumnas del evento nuevo. La notificación nunca debe
@@ -50,7 +72,13 @@ export class AdminEventsController {
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() dto: UpdateEventDto) {
+  @UseInterceptors(eventImageFields)
+  update(
+    @Param('id') id: string,
+    @Body() dto: UpdateEventDto,
+    @UploadedFiles() files?: { image?: Express.Multer.File[] },
+  ) {
+    if (files?.image?.length) dto.image = '/uploads/events/' + files.image[0].filename;
     return this.eventsService.update(id, dto);
   }
 

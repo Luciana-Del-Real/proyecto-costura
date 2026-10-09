@@ -6,15 +6,18 @@ import PageHeader from '../../components/PageHeader';
 import LoadingState from '../../components/LoadingState';
 import BackLink from '../../components/BackLink';
 import SuccessBanner from '../../components/SuccessBanner';
+import FilePicker from '../../components/FilePicker';
+import { getImageUrl } from '../../utils/media';
 
 const EMPTY_FORM = {
   title: '',
   subtitle: '',
   detail: '',
+  image: '',
 };
 
-// Formulario de creación/edición de eventos: título, descripción y detalle
-// (el folleto se arma con texto, sin imágenes).
+// Formulario de creación/edición de eventos: título, descripción, detalle y
+// una imagen de fondo opcional (se muestra difuminada en la tarjeta pública).
 export default function AdminEventForm() {
   const { alertDialog } = useDialog();
   const { id } = useParams();
@@ -22,6 +25,7 @@ export default function AdminEventForm() {
   const isEditing = Boolean(id);
 
   const [form, setForm] = useState(EMPTY_FORM);
+  const [imageFile, setImageFile] = useState(null);
   const [loading, setLoading] = useState(isEditing);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -34,6 +38,7 @@ export default function AdminEventForm() {
         title: data.title || '',
         subtitle: data.subtitle || '',
         detail: data.detail || '',
+        image: data.image || '',
       });
     } catch (error) {
       console.error('Error cargando el evento:', error);
@@ -50,18 +55,29 @@ export default function AdminEventForm() {
     e.preventDefault();
     setSaving(true);
     try {
-      const payload = {
+      // Sin imagen nueva se manda JSON como siempre; con imagen, FormData
+      // (createEvent/updateEvent ya eligen el helper correcto según el tipo).
+      let data = {
         title: form.title.trim(),
         subtitle: form.subtitle.trim(),
         detail: form.detail.trim(),
       };
+      if (imageFile) {
+        const fd = new FormData();
+        fd.append('title', form.title.trim());
+        fd.append('subtitle', form.subtitle.trim());
+        fd.append('detail', form.detail.trim());
+        fd.append('image', imageFile);
+        data = fd;
+      }
       if (isEditing) {
-        await updateEvent(id, payload);
+        await updateEvent(id, data);
         setSaved(true);
         setTimeout(() => setSaved(false), 1500);
         await reloadEvent();
+        setImageFile(null);
       } else {
-        await createEvent(payload);
+        await createEvent(data);
         navigate('/admin/eventos');
       }
     } catch (error) {
@@ -130,6 +146,19 @@ export default function AdminEventForm() {
             <p className="text-xs text-text-ink mt-1">
               Se muestra como líneas separadas en el folleto. Separalas con " + " o con puntos para que queden como ítems distintos.
             </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-text-ink mb-1.5">Imagen de fondo (opcional)</label>
+            <FilePicker accept="image/*" onChange={e => setImageFile(e.target.files[0])} />
+            <p className="text-xs text-text-ink mt-1">
+              La imagen se muestra difuminada como fondo de la tarjeta del evento. Si no elegís ninguna, se usa el color pastel de siempre.
+            </p>
+            {imageFile ? (
+              <img src={URL.createObjectURL(imageFile)} alt="Vista previa de la imagen" className="mt-3 h-28 w-40 object-cover rounded-xl border border-border" />
+            ) : form.image ? (
+              <img src={getImageUrl(form.image)} alt="Imagen de fondo actual" className="mt-3 h-28 w-40 object-cover rounded-xl border border-border" />
+            ) : null}
           </div>
 
           <button type="submit" disabled={saving} className="btn btn-primary w-full">

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { CalendarHeart } from 'lucide-react';
 import { listPublicEvents } from '../services/api';
+import { getImageUrl } from '../utils/media';
 import PageHeader from '../components/PageHeader';
 import LoadingState from '../components/LoadingState';
 import EmptyState from '../components/EmptyState';
@@ -53,8 +54,11 @@ const FLYER_VARIANTS = [
 ];
 
 // Folleto de evento: flota sobre un fondo pastel propio con borde suave,
-// todo centrado. Título bicolor en dos líneas, bajada en rosa, detalles
-// como líneas independientes SIN viñetas y botón píldora rosa.
+// todo centrado. Si el evento tiene imagen, esa imagen es el fondo completo
+// de la tarjeta (difuminada y con una capa blanca suave encima para que el
+// texto siga siendo 100% legible); sin imagen queda la paleta pastel de
+// siempre. Título bicolor en dos líneas, bajada en rosa, detalles como
+// líneas independientes SIN viñetas y botón píldora rosa.
 function EventCard({ event, variant }) {
   const { first, second } = splitTitle(event.title || '');
   const features = toFeatures(event.detail || '');
@@ -62,8 +66,26 @@ function EventCard({ event, variant }) {
   return (
     <div
       style={{ backgroundColor: variant.bg, borderColor: variant.border }}
-      className="flex flex-col items-center h-full text-center rounded-3xl border p-6 md:p-8"
+      className="relative overflow-hidden flex flex-col items-center h-full text-center rounded-3xl border p-6 md:p-8"
     >
+      {event.image && (
+        <>
+          {/* Imagen de fondo: cubre toda la tarjeta, difuminada y levemente
+              ampliada (scale-110) para que el blur no deje bordes visibles.
+              aria-hidden: es decorativa, el contenido real es el texto. */}
+          <img
+            src={getImageUrl(event.image)}
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 h-full w-full object-cover blur scale-110"
+          />
+          {/* Capa suave blanca: garantiza contraste para el texto sin tapar
+              del todo la imagen (queda "difuminada pero notable"). */}
+          <div aria-hidden="true" className="absolute inset-0 bg-white/50" />
+        </>
+      )}
+
+      <div className="relative z-10 flex flex-col items-center w-full h-full">
       {/* Título principal: 1ra línea rosa (más grande y en negrita), 2da
           verde oscuro (más chica y sin negrita). Bebas = font-display,
           coherente con el resto de la página. */}
@@ -97,6 +119,7 @@ function EventCard({ event, variant }) {
         >
           Consultar
         </a>
+      </div>
       </div>
     </div>
   );
