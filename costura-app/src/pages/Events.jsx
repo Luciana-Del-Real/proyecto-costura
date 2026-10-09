@@ -85,7 +85,7 @@ function EventCard({ event, variant }) {
           )}
 
           {features.length > 0 && (
-            <div className="space-y-3 mt-3">
+            <div className="flex-1 flex flex-col justify-between py-3">
               {features.map((f) => (
                 <p key={f} className="font-body text-xs md:text-sm text-text-ink leading-snug">{f}</p>
               ))}
