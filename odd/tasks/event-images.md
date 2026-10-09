@@ -53,7 +53,7 @@ Product request: image backgrounds give the event cards visual impact without sh
 - Parent spot check of the full diff: multer wiring mirrors patterns.controller.ts (field `image`, folder `./uploads/events`); notify-on-create flow intact; card keeps pastel fallback + `relative overflow-hidden` + blur/scale/white-50 overlay + z-10 content; form keeps the field-label and submit conventions.
 
 ## Review assessment
-(pending — will run `gentle-ai review assess` over the work-unit commit; RDD on by global switch)
+- `gentle-ai review assess --base-ref 82d4242 --committed-only`: risk **medium** (executable_change: admin-events.controller.ts), 5 paths / 172 lines, `review_due: false` — **under_budget**: se queda pendiente dentro del slice (no avanza el boundary). Si un commit posterior acumula ~400 líneas sobre el slice, saltará `slice_budget_reached` y se ejecutará el preflight STATUS.
 
 ## Next step
 Parent spot check -> work-unit commit -> assess -> report -> user decides push/PR.
