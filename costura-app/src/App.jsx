@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import Providers from './components/providers';
 import { DialogProvider } from './context/DialogContext';
@@ -91,7 +91,8 @@ export default function App() {
             <Route path="/cursos" element={<Layout><Courses /></Layout>} />
             <Route path="/patrones-gratis" element={<Layout><PatronesGratis /></Layout>} />
             <Route path="/eventos" element={<Layout><Events /></Layout>} />
-            <Route path="/productos" element={<Layout><Productos /></Layout>} />
+            <Route path="/recomendaciones" element={<Layout><Productos /></Layout>} />
+            <Route path="/productos" element={<Navigate to="/recomendaciones" replace />} />
 
             {/* Alumno */}
             {/* /curso/:id es público: sin sesión muestra la vista previa del
@@ -119,7 +120,8 @@ export default function App() {
             <Route path="/admin/patrones" element={<AdminRoute><AdminLayout><AdminPatterns /></AdminLayout></AdminRoute>} />
             <Route path="/admin/patrones/nuevo" element={<AdminRoute><AdminLayout><AdminPatternForm /></AdminLayout></AdminRoute>} />
             <Route path="/admin/patrones/editar/:id" element={<AdminRoute><AdminLayout><AdminPatternForm /></AdminLayout></AdminRoute>} />
-            <Route path="/admin/productos" element={<AdminRoute><AdminLayout><AdminProductos /></AdminLayout></AdminRoute>} />
+            <Route path="/admin/recomendaciones" element={<AdminRoute><AdminLayout><AdminProductos /></AdminLayout></AdminRoute>} />
+            <Route path="/admin/productos" element={<Navigate to="/admin/recomendaciones" replace />} />
           </Routes>
       </Providers>
       </DialogProvider>
