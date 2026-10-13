@@ -67,47 +67,50 @@ function EventCard({ event, variant }) {
     return (
       <div
         style={{ borderColor: variant.border }}
-        className="relative overflow-hidden flex flex-col md:flex-row md:items-stretch h-full md:min-h-[480px] rounded-3xl border bg-white"
+        className="relative overflow-hidden flex flex-row items-stretch h-full min-h-[300px] md:min-h-[480px] rounded-3xl border bg-white"
       >
-        {/* Mobile: imagen arriba a todo el ancho (alto fijo, siempre visible).
-            Desktop: mitad izquierda a todo el alto. El wrapper es un div (se
-            estira como flex item) y la imagen va absoluta adentro: un <img>
-            con self-stretch no siempre se estira y quedaba sin altura. */}
-        <div className="relative w-full h-44 md:w-1/2 md:h-auto md:shrink-0">
+        {/* Mitad izquierda: la imagen, en TODOS los tamaños (celular y desktop
+            se ven igual). El wrapper es un div (se estira como flex item) y la
+            imagen va absoluta adentro: un <img> con self-stretch no siempre se
+            estira y podía quedar sin altura. */}
+        <div className="relative w-1/2 shrink-0">
           <img
             src={getImageUrl(event.image)}
             alt={event.title || 'Evento'}
             className="absolute inset-0 h-full w-full object-cover"
           />
         </div>
-        <div className="flex flex-col p-5 md:p-6 text-center flex-1 min-w-0">
-          <h3 className="font-display uppercase leading-none text-right">
-            <span className="text-event-pink block text-3xl md:text-4xl font-bold">{first}</span>
-            <span className="text-event-green-deep block text-xl md:text-2xl font-normal">{second}</span>
+        {/* Mitad derecha: título (alineado a la derecha), bajada, características
+            centradas y botón. En celular la tipografía y el padding bajan para
+            que todo entre en la mitad angosta. */}
+        <div className="flex flex-col p-3 md:p-6 text-center flex-1 min-w-0">
+          <h3 className="font-display uppercase leading-none text-right break-words">
+            <span className="text-event-pink block text-xl md:text-4xl font-bold">{first}</span>
+            <span className="text-event-green-deep block text-sm md:text-2xl font-normal">{second}</span>
           </h3>
 
           {event.subtitle && (
-            <p className="font-body text-xs md:text-sm text-event-rose-deep mt-2 leading-relaxed">{event.subtitle}</p>
+            <p className="font-body text-[11px] md:text-sm text-event-rose-deep mt-2 leading-relaxed">{event.subtitle}</p>
           )}
 
           {features.length > 0 && (
-            <div className="flex-1 flex flex-col justify-center space-y-4">
+            <div className="flex-1 flex flex-col justify-center space-y-2 md:space-y-4">
               {features.map((f) => (
-                <p key={f} className="font-body text-xs md:text-sm text-text-ink leading-snug">{f}</p>
+                <p key={f} className="font-body text-[11px] md:text-sm text-text-ink leading-snug">{f}</p>
               ))}
             </div>
           )}
 
-          {/* Botón CONSULTAR: píldora rosa centrada en su columna (igual que
-              la descripción) y con ancho tope para que nunca toque los bordes
-              cuando la columna es angosta (md). mt-auto lo empuja al fondo
-              para que todas las cards de la fila queden a la misma altura. */}
-          <div className="mt-auto pt-5 flex justify-center">
+          {/* Botón CONSULTAR: píldora rosa centrada en su mitad (igual que la
+              descripción) y con ancho tope para que nunca toque los bordes de
+              la card. mt-auto lo empuja al fondo para que todas las cards de la
+              fila queden a la misma altura. */}
+          <div className="mt-auto pt-3 md:pt-5 flex justify-center">
             <a
               href={whatsappUrl(event)}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center justify-center max-w-full bg-event-pink hover:bg-event-pink-hover text-white font-bold text-sm uppercase tracking-wide rounded-full px-5 md:px-6 py-2.5 transition-colors"
+              className="inline-flex items-center justify-center max-w-full bg-event-pink hover:bg-event-pink-hover text-white font-bold text-[11px] md:text-sm uppercase tracking-wide rounded-full px-3 md:px-6 py-2 md:py-2.5 transition-colors"
             >
               Consultar
             </a>
