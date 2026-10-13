@@ -1,45 +1,52 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { StorageService } from '../storage/storage.service';
 import { join } from 'path';
 import { unlink } from 'fs/promises';
 
 @Injectable()
 export class AttachmentsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly storage: StorageService,
+  ) {}
 
   async createManyForCourse(courseId: string, files: Express.Multer.File[]) {
     if (!files?.length) return [];
-    await this.prisma.attachment.createMany({
-      data: files.map((f) => ({
+    const data = await Promise.all(
+      files.map(async (f) => ({
         filename: f.originalname,
-        url: `/uploads/courses/${f.filename}`,
+        url: await this.storage.upload('courses', f),
         courseId,
       })),
-    });
+    );
+    await this.prisma.attachment.createMany({ data });
     return this.prisma.attachment.findMany({ where: { courseId } });
   }
 
   async createManyForLesson(lessonId: string, files: Express.Multer.File[]) {
     if (!files?.length) return [];
-    await this.prisma.attachment.createMany({
-      data: files.map((f) => ({
+    const data = await Promise.all(
+      files.map(async (f) => ({
         filename: f.originalname,
-        url: `/uploads/lessons/${f.filename}`,
+        url: await this.storage.upload('lessons', f),
         lessonId,
       })),
-    });
+    );
+    await this.prisma.attachment.createMany({ data });
     return this.prisma.attachment.findMany({ where: { lessonId } });
   }
 
   async createManyForPattern(patternId: string, files: Express.Multer.File[]) {
     if (!files?.length) return [];
-    await this.prisma.attachment.createMany({
-      data: files.map((f) => ({
+    const data = await Promise.all(
+      files.map(async (f) => ({
         filename: f.originalname,
-        url: `/uploads/patterns/${f.filename}`,
+        url: await this.storage.upload('patterns', f),
         patternId,
       })),
-    });
+    );
+    await this.prisma.attachment.createMany({ data });
     return this.prisma.attachment.findMany({ where: { patternId } });
   }
 

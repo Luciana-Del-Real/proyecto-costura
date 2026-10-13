@@ -1,8 +1,6 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Request, UseGuards, UseInterceptors, UploadedFiles, BadRequestException, Logger } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
-import { mkdirSync } from 'fs';
+import { memoryStorage } from 'multer';
 import { PatternsService } from './patterns.service';
 import { CreatePatternDto } from './dto/create-pattern.dto';
 import { UpdatePatternDto } from './dto/update-pattern.dto';
@@ -11,18 +9,10 @@ import { AdminGuard } from '../auth/guards/admin.guard';
 import { OptionalJwtAuthGuard } from '../auth/guards/optional-jwt.guard';
 import { Principal } from '../common/principal';
 import { NotificationsService } from '../notifications/notifications.service';
-
-const uploadsDir = './uploads/patterns';
-mkdirSync(uploadsDir, { recursive: true });
+import { StorageService } from '../storage/storage.service';
 
 const storageOptions = {
-  storage: diskStorage({
-    destination: uploadsDir,
-    filename: (req, file, cb) => {
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-      cb(null, `${file.fieldname}-${uniqueSuffix}${extname(file.originalname)}`);
-    },
-  }),
+  storage: memoryStorage(),
 };
 
 // - imagen: portada (1 sola)
@@ -45,17 +35,20 @@ type PatternFiles = {
 // Separa los PDFs recibidos en [principal, adicionales]: el primer archivo
 // (ya sea de `archivo` o de `pdfs`) es el PDF principal y el resto van como
 // attachments. Devuelve el path del principal y la lista de adicionales.
-function splitPdfs(files: PatternFiles): { archivoPath?: string; extraPdfs: Express.Multer.File[] } {
+async function splitPdfs(
+  storage: StorageService,
+  files: PatternFiles,
+): Promise<{ archivoPath?: string; extraPdfs: Express.Multer.File[] }> {
   const pdfs = files?.pdfs ?? [];
   if (files?.archivo?.length) {
     return {
-      archivoPath: `/uploads/patterns/${files.archivo[0].filename}`,
+      archivoPath: await storage.upload('patterns', files.archivo[0]),
       extraPdfs: pdfs,
     };
   }
   if (pdfs.length) {
     return {
-      archivoPath: `/uploads/patterns/${pdfs[0].filename}`,
+      archivoPath: await storage.upload('patterns', pdfs[0]),
       extraPdfs: pdfs.slice(1),
     };
   }
@@ -69,6 +62,7 @@ export class PatternsController {
   constructor(
     private readonly patternsService: PatternsService,
     private readonly notificationsService: NotificationsService,
+    private readonly storage: StorageService,
   ) {}
 
   // Público: el catálogo de patrones no requiere sesión (el PDF de patrones
@@ -91,11 +85,11 @@ export class PatternsController {
   @UseGuards(JwtAuthGuard, AdminGuard)
   @UseInterceptors(patternFileFields)
   async create(@Body() dto: CreatePatternDto, @UploadedFiles() files: PatternFiles) {
-    const { archivoPath, extraPdfs } = splitPdfs(files);
+    const { archivoPath, extraPdfs } = await splitPdfs(this.storage, files);
     if (!archivoPath) {
       throw new BadRequestException('El archivo PDF es obligatorio');
     }
-    if (files?.imagen) dto.imagen = `/uploads/patterns/${files.imagen[0].filename}`;
+    if (files?.imagen) dto.imagen = await this.storage.upload('patterns', files.imagen[0]);
     dto.archivo = archivoPath;
 
     const pattern = await this.patternsService.create(dto);
@@ -130,12 +124,12 @@ export class PatternsController {
     @Body() dto: UpdatePatternDto,
     @UploadedFiles() files: PatternFiles,
   ) {
-    if (files?.imagen) dto.imagen = `/uploads/patterns/${files.imagen[0].filename}`;
+    if (files?.imagen) dto.imagen = await this.storage.upload('patterns', files.imagen[0]);
     // En edición, el PDF principal NO se reemplaza con los nuevos: los pdfs
     // subidos se agregan como attachments adicionales. Para cambiar el
     // principal se usa el campo legacy `archivo` (el frontend actual no lo
     // manda; conserva el principal existente).
-    if (files?.archivo?.length) dto.archivo = `/uploads/patterns/${files.archivo[0].filename}`;
+    if (files?.archivo?.length) dto.archivo = await this.storage.upload('patterns', files.archivo[0]);
 
     await this.patternsService.update(id, dto);
 

@@ -1,8 +1,6 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query, Request, UseGuards, UseInterceptors, UploadedFiles, Logger } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
-import { mkdirSync } from 'fs';
+import { memoryStorage } from 'multer';
 import { CoursesService } from './courses.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
@@ -11,18 +9,10 @@ import { AdminGuard } from '../auth/guards/admin.guard';
 import { OptionalJwtAuthGuard } from '../auth/guards/optional-jwt.guard';
 import { Principal } from '../common/principal';
 import { NotificationsService } from '../notifications/notifications.service';
-
-const uploadsDir = './uploads/courses';
-mkdirSync(uploadsDir, { recursive: true });
+import { StorageService } from '../storage/storage.service';
 
 const storageOptions = {
-  storage: diskStorage({
-    destination: uploadsDir,
-    filename: (req, file, cb) => {
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-      cb(null, `${file.fieldname}-${uniqueSuffix}${extname(file.originalname)}`);
-    },
-  }),
+  storage: memoryStorage(),
 };
 
 // Campos de archivos que acepta el formulario de curso:
@@ -42,6 +32,7 @@ export class CoursesController {
   constructor(
     private readonly coursesService: CoursesService,
     private readonly notificationsService: NotificationsService,
+    private readonly storage: StorageService,
   ) {}
 
   @Get()
@@ -62,8 +53,8 @@ export class CoursesController {
   @UseGuards(JwtAuthGuard, AdminGuard)
   @UseInterceptors(courseFileFields)
   async create(@Body() dto: CreateCourseDto, @UploadedFiles() files: { image?: Express.Multer.File[]; pdfGuide?: Express.Multer.File[]; pdfs?: Express.Multer.File[] }) {
-    if (files?.image) dto.image = `/uploads/courses/${files.image[0].filename}`;
-    if (files?.pdfGuide) dto.pdfGuide = `/uploads/courses/${files.pdfGuide[0].filename}`;
+    if (files?.image) dto.image = await this.storage.upload('courses', files.image[0]);
+    if (files?.pdfGuide) dto.pdfGuide = await this.storage.upload('courses', files.pdfGuide[0]);
 
     const course = await this.coursesService.create(dto);
 
@@ -95,8 +86,8 @@ export class CoursesController {
     @Body() dto: UpdateCourseDto,
     @UploadedFiles() files: { image?: Express.Multer.File[]; pdfGuide?: Express.Multer.File[]; pdfs?: Express.Multer.File[] },
   ) {
-    if (files?.image) dto.image = `/uploads/courses/${files.image[0].filename}`;
-    if (files?.pdfGuide) dto.pdfGuide = `/uploads/courses/${files.pdfGuide[0].filename}`;
+    if (files?.image) dto.image = await this.storage.upload('courses', files.image[0]);
+    if (files?.pdfGuide) dto.pdfGuide = await this.storage.upload('courses', files.pdfGuide[0]);
 
     await this.coursesService.update(id, dto);
 

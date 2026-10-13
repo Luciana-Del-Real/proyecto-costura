@@ -10,31 +10,24 @@ import {
   UploadedFile,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
-import { mkdirSync } from 'fs';
+import { memoryStorage } from 'multer';
 import { LessonProgressService } from './lesson-progress.service';
 import { UpdateLessonProgressDto } from './dto/update-lesson-progress.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { Principal } from '../common/principal';
-
-const uploadsDir = './uploads/progress';
-mkdirSync(uploadsDir, { recursive: true });
+import { StorageService } from '../storage/storage.service';
 
 const storageOptions = {
-  storage: diskStorage({
-    destination: uploadsDir,
-    filename: (req, file, cb) => {
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-      cb(null, `${file.fieldname}-${uniqueSuffix}${extname(file.originalname)}`);
-    },
-  }),
+  storage: memoryStorage(),
 };
 
 @Controller('progress')
 @UseGuards(JwtAuthGuard)
 export class LessonProgressController {
-  constructor(private readonly progressService: LessonProgressService) {}
+  constructor(
+    private readonly progressService: LessonProgressService,
+    private readonly storage: StorageService,
+  ) {}
 
   @Get('courses/:courseId')
   async getCourseProgress(
@@ -56,7 +49,7 @@ export class LessonProgressController {
     @Body() dto: UpdateLessonProgressDto,
     @UploadedFile() image?: Express.Multer.File,
   ) {
-    if (image) dto.image = `/uploads/progress/${image.filename}`;
+    if (image) dto.image = await this.storage.upload('progress', image);
     return this.progressService.markLessonComplete(req.user.id, lessonId, dto);
   }
 }
