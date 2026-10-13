@@ -67,13 +67,19 @@ function EventCard({ event, variant }) {
     return (
       <div
         style={{ borderColor: variant.border }}
-        className="relative overflow-hidden flex items-stretch h-full min-h-[360px] md:min-h-[480px] rounded-3xl border bg-white"
+        className="relative overflow-hidden flex flex-col md:flex-row md:items-stretch h-full md:min-h-[480px] rounded-3xl border bg-white"
       >
-        <img
-          src={getImageUrl(event.image)}
-          alt={event.title || 'Evento'}
-          className="w-1/2 shrink-0 self-stretch object-cover"
-        />
+        {/* Mobile: imagen arriba a todo el ancho (alto fijo, siempre visible).
+            Desktop: mitad izquierda a todo el alto. El wrapper es un div (se
+            estira como flex item) y la imagen va absoluta adentro: un <img>
+            con self-stretch no siempre se estira y quedaba sin altura. */}
+        <div className="relative w-full h-44 md:w-1/2 md:h-auto md:shrink-0">
+          <img
+            src={getImageUrl(event.image)}
+            alt={event.title || 'Evento'}
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        </div>
         <div className="flex flex-col p-5 md:p-6 text-center flex-1 min-w-0">
           <h3 className="font-display uppercase leading-none text-right">
             <span className="text-event-pink block text-3xl md:text-4xl font-bold">{first}</span>
