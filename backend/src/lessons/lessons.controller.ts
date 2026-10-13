@@ -17,22 +17,12 @@ import { UpdateLessonDto } from './dto/update-lesson.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { AdminGuard } from '../auth/guards/admin.guard';
 import { Principal } from '../common/principal';
+import { StorageService } from '../storage/storage.service';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
-import { mkdirSync } from 'fs';
-
-const uploadsDir = './uploads/lessons';
-mkdirSync(uploadsDir, { recursive: true });
+import { memoryStorage } from 'multer';
 
 const storageOptions = {
-  storage: diskStorage({
-    destination: uploadsDir,
-    filename: (req, file, cb) => {
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-      cb(null, `${file.fieldname}-${uniqueSuffix}${extname(file.originalname)}`);
-    },
-  }),
+  storage: memoryStorage(),
 };
 
 // - pdf: PDF principal de la lección, se mantiene por compatibilidad (1 solo)
@@ -44,7 +34,10 @@ const lessonFileFields = FileFieldsInterceptor([
 
 @Controller('courses/:courseId/lessons')
 export class LessonsController {
-  constructor(private readonly lessonsService: LessonsService) {}
+  constructor(
+    private readonly lessonsService: LessonsService,
+    private readonly storage: StorageService,
+  ) {}
 
   // Lectura protegida: requiere JWT + compra aprobada (o ADMIN). El contenido
   // completo (videoUrl/pdf/attachments) NO se sirve por el catálogo público.
@@ -73,7 +66,7 @@ export class LessonsController {
       throw new Error('Course ID mismatch');
     }
     if (files?.pdf?.length) {
-      dto.pdf = `/uploads/lessons/${files.pdf[0].filename}`;
+      dto.pdf = await this.storage.upload('lessons', files.pdf[0]);
     }
     const lesson = await this.lessonsService.create(dto);
 
@@ -99,7 +92,7 @@ export class LessonsController {
       throw new Error('Lesson does not belong to this course');
     }
     if (files?.pdf?.length) {
-      dto.pdf = `/uploads/lessons/${files.pdf[0].filename}`;
+      dto.pdf = await this.storage.upload('lessons', files.pdf[0]);
     }
     await this.lessonsService.update(id, dto);
 

@@ -1,26 +1,16 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, UseInterceptors, UploadedFiles, Logger } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
-import { mkdirSync } from 'fs';
+import { memoryStorage } from 'multer';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { AdminGuard } from '../auth/guards/admin.guard';
 import { NotificationsService } from '../notifications/notifications.service';
-
-const uploadsDir = './uploads/events';
-mkdirSync(uploadsDir, { recursive: true });
+import { StorageService } from '../storage/storage.service';
 
 const storageOptions = {
-  storage: diskStorage({
-    destination: uploadsDir,
-    filename: (req, file, cb) => {
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-      cb(null, `${file.fieldname}-${uniqueSuffix}${extname(file.originalname)}`);
-    },
-  }),
+  storage: memoryStorage(),
 };
 
 const eventImageFields = FileFieldsInterceptor([{ name: 'image', maxCount: 1 }], storageOptions);
@@ -37,6 +27,7 @@ export class AdminEventsController {
   constructor(
     private readonly eventsService: EventsService,
     private readonly notificationsService: NotificationsService,
+    private readonly storage: StorageService,
   ) {}
 
   @Get()
@@ -52,7 +43,7 @@ export class AdminEventsController {
   @Post()
   @UseInterceptors(eventImageFields)
   async create(@Body() dto: CreateEventDto, @UploadedFiles() files?: { image?: Express.Multer.File[] }) {
-    if (files?.image?.length) dto.image = '/uploads/events/' + files.image[0].filename;
+    if (files?.image?.length) dto.image = await this.storage.upload('events', files.image[0]);
     const event = await this.eventsService.create(dto);
 
     // Avisa a todas las alumnas del evento nuevo. La notificación nunca debe
@@ -73,12 +64,12 @@ export class AdminEventsController {
 
   @Put(':id')
   @UseInterceptors(eventImageFields)
-  update(
+  async update(
     @Param('id') id: string,
     @Body() dto: UpdateEventDto,
     @UploadedFiles() files?: { image?: Express.Multer.File[] },
   ) {
-    if (files?.image?.length) dto.image = '/uploads/events/' + files.image[0].filename;
+    if (files?.image?.length) dto.image = await this.storage.upload('events', files.image[0]);
     return this.eventsService.update(id, dto);
   }
 

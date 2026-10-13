@@ -5,6 +5,7 @@ import { AdminRecommendationsController } from '../src/recommendations/admin-rec
 import { CreateRecommendationDto } from '../src/recommendations/dto/create-recommendation.dto';
 import { PrismaService } from '../src/prisma/prisma.service';
 import { NotificationsService } from '../src/notifications/notifications.service';
+import { StorageService } from '../src/storage/storage.service';
 
 /**
  * Recomendaciones (feature nueva): la lista pública expone SOLO las activas,
@@ -123,6 +124,12 @@ describe('Recommendations controllers', () => {
     createNotificationsForStudents: jest.fn().mockResolvedValue(0),
   });
 
+  const mockStorage = () => ({
+    upload: jest.fn().mockResolvedValue(
+      'https://proj.supabase.co/storage/v1/object/public/uploads/recommendations/image-123.png',
+    ),
+  });
+
   it('el listado público delega en findAllPublic', () => {
     const svc = { findAllPublic: jest.fn().mockReturnValue([]) };
     const controller = new RecommendationsController(svc as unknown as RecommendationsService);
@@ -132,19 +139,27 @@ describe('Recommendations controllers', () => {
     expect(svc.findAllPublic).toHaveBeenCalledTimes(1);
   });
 
-  it('el create admin traduce el archivo subido al path servido por /uploads', async () => {
+  it('el create admin sube la imagen y guarda la URL pública absoluta', async () => {
     const svc = { create: jest.fn().mockResolvedValue({ id: 'r1', title: 'Taladro' }) };
+    const storage = mockStorage();
     const controller = new AdminRecommendationsController(
       svc as unknown as RecommendationsService,
       mockNotifications() as unknown as NotificationsService,
+      storage as unknown as StorageService,
     );
     const dto: CreateRecommendationDto = { title: 'Taladro' };
 
     await controller.create(dto, {
-      image: [{ filename: 'image-123.png' }],
+      image: [{ fieldname: 'image', originalname: 'image-123.png', buffer: Buffer.from('x') }],
     } as unknown as { image: Express.Multer.File[] });
 
-    expect(dto.image).toBe('/uploads/recommendations/image-123.png');
+    expect(storage.upload).toHaveBeenCalledWith(
+      'recommendations',
+      expect.objectContaining({ originalname: 'image-123.png' }),
+    );
+    expect(dto.image).toBe(
+      'https://proj.supabase.co/storage/v1/object/public/uploads/recommendations/image-123.png',
+    );
     expect(svc.create).toHaveBeenCalledWith(dto);
   });
 
@@ -154,6 +169,7 @@ describe('Recommendations controllers', () => {
     const controller = new AdminRecommendationsController(
       svc as unknown as RecommendationsService,
       notifications as unknown as NotificationsService,
+      mockStorage() as unknown as StorageService,
     );
 
     await controller.create({ title: 'Taladro' }, undefined);
@@ -174,6 +190,7 @@ describe('Recommendations controllers', () => {
     const controller = new AdminRecommendationsController(
       svc as unknown as RecommendationsService,
       notifications as unknown as NotificationsService,
+      mockStorage() as unknown as StorageService,
     );
 
     await expect(controller.create({ title: 'Taladro' }, undefined)).resolves.toEqual({

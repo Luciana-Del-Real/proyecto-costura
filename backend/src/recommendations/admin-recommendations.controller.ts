@@ -1,26 +1,16 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, UseInterceptors, UploadedFiles, Logger } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
-import { mkdirSync } from 'fs';
+import { memoryStorage } from 'multer';
 import { RecommendationsService } from './recommendations.service';
 import { CreateRecommendationDto } from './dto/create-recommendation.dto';
 import { UpdateRecommendationDto } from './dto/update-recommendation.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { AdminGuard } from '../auth/guards/admin.guard';
 import { NotificationsService } from '../notifications/notifications.service';
-
-const uploadsDir = './uploads/recommendations';
-mkdirSync(uploadsDir, { recursive: true });
+import { StorageService } from '../storage/storage.service';
 
 const storageOptions = {
-  storage: diskStorage({
-    destination: uploadsDir,
-    filename: (req, file, cb) => {
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-      cb(null, `${file.fieldname}-${uniqueSuffix}${extname(file.originalname)}`);
-    },
-  }),
+  storage: memoryStorage(),
 };
 
 const recommendationImageFields = FileFieldsInterceptor([{ name: 'image', maxCount: 1 }], storageOptions);
@@ -36,6 +26,7 @@ export class AdminRecommendationsController {
   constructor(
     private readonly recommendationsService: RecommendationsService,
     private readonly notificationsService: NotificationsService,
+    private readonly storage: StorageService,
   ) {}
 
   @Get()
@@ -51,7 +42,7 @@ export class AdminRecommendationsController {
   @Post()
   @UseInterceptors(recommendationImageFields)
   async create(@Body() dto: CreateRecommendationDto, @UploadedFiles() files?: { image?: Express.Multer.File[] }) {
-    if (files?.image?.length) dto.image = '/uploads/recommendations/' + files.image[0].filename;
+    if (files?.image?.length) dto.image = await this.storage.upload('recommendations', files.image[0]);
     const recommendation = await this.recommendationsService.create(dto);
 
     // Avisa a todas las alumnas de la recomendación nueva (mismo mecanismo que
@@ -73,12 +64,12 @@ export class AdminRecommendationsController {
 
   @Put(':id')
   @UseInterceptors(recommendationImageFields)
-  update(
+  async update(
     @Param('id') id: string,
     @Body() dto: UpdateRecommendationDto,
     @UploadedFiles() files?: { image?: Express.Multer.File[] },
   ) {
-    if (files?.image?.length) dto.image = '/uploads/recommendations/' + files.image[0].filename;
+    if (files?.image?.length) dto.image = await this.storage.upload('recommendations', files.image[0]);
     return this.recommendationsService.update(id, dto);
   }
 

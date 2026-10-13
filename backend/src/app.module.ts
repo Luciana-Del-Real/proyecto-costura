@@ -4,6 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtConfig } from './config/jwt.config';
 import { PassportModule } from '@nestjs/passport';
 import { PrismaModule } from './prisma/prisma.module';
+import { StorageModule } from './storage/storage.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { CoursesModule } from './courses/courses.module';
@@ -35,6 +36,7 @@ import { PushNotificationsModule } from './push-notifications/push-notifications
     }),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     PrismaModule,
+    StorageModule,
     AuthModule,
     UsersModule,
     CoursesModule,
