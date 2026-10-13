@@ -85,8 +85,8 @@ function EventCard({ event, variant }) {
             que todo entre en la mitad angosta. */}
         <div className="flex flex-col p-3 md:p-6 text-center flex-1 min-w-0">
           <h3 className="font-display uppercase leading-none text-right break-words">
-            <span className="text-event-pink block text-xl md:text-4xl font-bold">{first}</span>
-            <span className="text-event-green-deep block text-sm md:text-2xl font-normal">{second}</span>
+            <span className="text-event-pink block text-2xl md:text-4xl font-bold">{first}</span>
+            <span className="text-event-green-deep block text-base md:text-2xl font-normal">{second}</span>
           </h3>
 
           {event.subtitle && (
