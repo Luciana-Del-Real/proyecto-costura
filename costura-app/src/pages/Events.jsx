@@ -98,14 +98,16 @@ function EventCard({ event, variant }) {
             </div>
           )}
 
-          {/* Botón CONSULTAR: píldora rosa, empujado al fondo (mt-auto) para
-              que todas las cards de la fila queden a la misma altura */}
-          <div className="mt-auto pt-5">
+          {/* Botón CONSULTAR: píldora rosa centrada en su columna (igual que
+              la descripción) y con ancho tope para que nunca toque los bordes
+              cuando la columna es angosta (md). mt-auto lo empuja al fondo
+              para que todas las cards de la fila queden a la misma altura. */}
+          <div className="mt-auto pt-5 flex justify-center">
             <a
               href={whatsappUrl(event)}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center justify-center bg-event-pink hover:bg-event-pink-hover text-white font-bold text-sm uppercase tracking-wide rounded-full px-6 py-2.5 transition-colors"
+              className="inline-flex items-center justify-center max-w-full bg-event-pink hover:bg-event-pink-hover text-white font-bold text-sm uppercase tracking-wide rounded-full px-5 md:px-6 py-2.5 transition-colors"
             >
               Consultar
             </a>
