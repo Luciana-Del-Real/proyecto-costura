@@ -116,7 +116,8 @@ export default function PatronesGratis() {
             icon={FileText}
             title={search || tipo !== 'Todos'
               ? 'Sin resultados para tu búsqueda.'
-              : 'Todavía no hay patrones disponibles.'}
+              : 'Todavía no hay patrones cargados'}
+            description={search || tipo !== 'Todos' ? undefined : 'Volvé a visitarnos pronto.'}
             action={(search || tipo !== 'Todos') && {
               label: 'Limpiar búsqueda',
               onClick: () => { setSearch(''); setTipo('Todos'); },

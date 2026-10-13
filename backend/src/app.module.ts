@@ -17,6 +17,7 @@ import { AttachmentsModule } from './attachments/attachments.module';
 import { LessonCommentsModule } from './lesson-comments/lesson-comments.module';
 import { CertificateRequestsModule } from './certificate-requests/certificate-requests.module';
 import { EventsModule } from './events/events.module';
+import { RecommendationsModule } from './recommendations/recommendations.module';
 import { PatternPurchasesModule } from './pattern-purchases/pattern-purchases.module';
 import { PatternsModule } from './patterns/patterns.module';
 import { PushNotificationsModule } from './push-notifications/push-notifications.module';
@@ -47,6 +48,7 @@ import { PushNotificationsModule } from './push-notifications/push-notifications
     LessonCommentsModule,
     CertificateRequestsModule,
     EventsModule,
+    RecommendationsModule,
     PatternsModule,
     PatternPurchasesModule,
     PushNotificationsModule,

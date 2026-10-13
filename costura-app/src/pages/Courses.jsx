@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search } from 'lucide-react';
+import { Search, BookOpen } from 'lucide-react';
 import { useCourseCatalog } from '../context/CourseCatalogContext';
 import CourseCard from '../components/CourseCard';
 import PageHeader from '../components/PageHeader';
@@ -63,6 +63,12 @@ export default function Courses() {
       <div className="w-full px-4 pb-16">
         {loading ? (
           <LoadingState size="section" />
+        ) : courses.length === 0 ? (
+          <EmptyState
+            icon={BookOpen}
+            title="Todavía no hay cursos cargados"
+            description="Volvé a visitarnos pronto."
+          />
         ) : filtered.length === 0 ? (
           <EmptyState
             icon={Search}
