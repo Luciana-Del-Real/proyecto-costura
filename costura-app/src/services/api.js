@@ -155,6 +155,34 @@ export async function deleteEvent(id) {
   return del(`/admin/events/${id}`);
 }
 
+// Recomendaciones: la grilla pública (solo visibles) y el CRUD del admin.
+// Las tarjetas llevan imagen, título, descripción y un enlace externo; si el
+// formulario incluye una imagen nueva se manda FormData (postForm/putForm),
+// si no, JSON plano.
+export async function listPublicRecommendations() {
+  return get('/recommendations');
+}
+
+export async function listAdminRecommendations() {
+  return get('/admin/recommendations');
+}
+
+export async function getRecommendation(id) {
+  return get(`/admin/recommendations/${id}`);
+}
+
+export async function createRecommendation(data) {
+  return data instanceof FormData ? postForm('/admin/recommendations', data) : post('/admin/recommendations', data);
+}
+
+export async function updateRecommendation(id, data) {
+  return data instanceof FormData ? putForm(`/admin/recommendations/${id}`, data) : put(`/admin/recommendations/${id}`, data);
+}
+
+export async function deleteRecommendation(id) {
+  return del(`/admin/recommendations/${id}`);
+}
+
 // Solicitudes de compra de patrones de pago (mismo flujo que los cursos).
 export async function requestPatternPurchase(patternId) {
   return post(`/patterns/${patternId}/purchase`);

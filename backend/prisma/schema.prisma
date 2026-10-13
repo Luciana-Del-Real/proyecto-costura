@@ -312,3 +312,19 @@ model Event {
 
   @@map("events")
 }
+
+// Recomendaciones de la página pública (estilo tarjetas de patrones): la
+// imagen la sube el admin, con título, descripción y un enlace externo
+// opcional. `active` controla si se muestra en la web.
+model Recommendation {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  image       String?
+  link        String?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("recommendations")
+}
