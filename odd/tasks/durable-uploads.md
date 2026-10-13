@@ -41,9 +41,10 @@ Verified end-to-end against the dev project: bucket created and set public, `POS
 
 ## Checklist
 - [ ] T1 `StorageService` + module (+ specs: success, error, unconfigured)
-- [ ] T2 Wire the 4 image/content controllers (courses, patterns, events, recommendations)
-- [ ] T3 Wire lessons, lesson-progress, lesson-comments and the attachments service
-- [ ] T4 Verify: backend build + full test suite; manual smoke upload against the dev bucket
+- [x] T2 Wire the 4 image/content controllers (courses, patterns, events, recommendations)
+- [x] T3 Wire lessons, lesson-progress, lesson-comments and the attachments service
+- [x] T4 Verify: backend build + full test suite; manual smoke upload against the dev bucket
+- [x] T5 Native-review finding R3-001 (CRITICAL): prove the upload contract of every call site (`backend/test/upload-contract.spec.ts`, 13 tests)
 
 ## Route
 - Delegated direct — ONE bounded writer (10+ files; writer trigger). Parent spot-checks, commits and assesses.
@@ -55,7 +56,14 @@ Verified end-to-end against the dev project: bucket created and set public, `POS
 - Backend suite green (18 suites / 126 tests before this change).
 
 ## Verification evidence
-(pending)
+- `npm run build` — ok. `npm test` — **20 suites / 142 tests** (18/126 before this feature).
+- End-to-end smoke against the dev bucket (temporary instance on port 3100, real API): login ok → `POST /api/admin/recommendations` with a multipart image → **201** with `image = https://dburxvaolkyflpqpybik.supabase.co/storage/v1/object/public/uploads/recommendations/…png` → public `GET` **200** without credentials → temporary row deleted (200).
+- Legacy `/uploads` static serving kept for old relative rows.
+
+## Review assessment
+- `review-7a927c93d8b0b8a6` (consent granted by the user; medium risk, 22 files / 505 lines; one lens: reliability). The reviewer relay was refused once by the transport and admitted on the retry.
+- **R3-001 (CRITICAL)**: only the recommendations controller tested the new absolute-URL contract. **Correction applied**: `backend/test/upload-contract.spec.ts` (13 tests: courses, patterns, events, lessons, lesson-progress, lesson-comments, attachments). No defects found — every call site already stored the absolute URL.
+- Closure blocked again by the local transport (the untracked-selection input, then the targeted validator) — same failure mode as the recommendations review.
 
 ## Next step
-Writer implements T1–T3 and runs T4; parent verifies a real upload, commits and reports. Render needs the PRODUCTION project's `SUPABASE_URL` + service-role key (pending from the user).
+Parent commits the correction, retries the closure and reports. **Render still needs the PRODUCTION project's `SUPABASE_URL` + service-role key** (the ones configured locally belong to the `-dev` project).
