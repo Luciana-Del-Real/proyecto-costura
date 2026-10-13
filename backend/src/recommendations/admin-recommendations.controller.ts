@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, UseInterceptors, UploadedFiles } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, UseInterceptors, UploadedFiles, Logger } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
@@ -8,6 +8,7 @@ import { CreateRecommendationDto } from './dto/create-recommendation.dto';
 import { UpdateRecommendationDto } from './dto/update-recommendation.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { AdminGuard } from '../auth/guards/admin.guard';
+import { NotificationsService } from '../notifications/notifications.service';
 
 const uploadsDir = './uploads/recommendations';
 mkdirSync(uploadsDir, { recursive: true });
@@ -30,7 +31,12 @@ const recommendationImageFields = FileFieldsInterceptor([{ name: 'image', maxCou
 @Controller('admin/recommendations')
 @UseGuards(JwtAuthGuard, AdminGuard)
 export class AdminRecommendationsController {
-  constructor(private readonly recommendationsService: RecommendationsService) {}
+  private readonly logger = new Logger(AdminRecommendationsController.name);
+
+  constructor(
+    private readonly recommendationsService: RecommendationsService,
+    private readonly notificationsService: NotificationsService,
+  ) {}
 
   @Get()
   findAll() {
@@ -44,9 +50,25 @@ export class AdminRecommendationsController {
 
   @Post()
   @UseInterceptors(recommendationImageFields)
-  create(@Body() dto: CreateRecommendationDto, @UploadedFiles() files?: { image?: Express.Multer.File[] }) {
+  async create(@Body() dto: CreateRecommendationDto, @UploadedFiles() files?: { image?: Express.Multer.File[] }) {
     if (files?.image?.length) dto.image = '/uploads/recommendations/' + files.image[0].filename;
-    return this.recommendationsService.create(dto);
+    const recommendation = await this.recommendationsService.create(dto);
+
+    // Avisa a todas las alumnas de la recomendación nueva (mismo mecanismo que
+    // cursos, patrones y eventos). La notificación nunca debe romper la
+    // creación: si falla, se loguea y la creación sigue.
+    try {
+      await this.notificationsService.createNotificationsForStudents(
+        'Nueva recomendación',
+        `${recommendation.title} ya está disponible en Recomendaciones. ¡Conocela!`,
+        undefined,
+        '/recomendaciones',
+      );
+    } catch (err) {
+      this.logger.warn('No se pudo notificar a las alumnas de la nueva recomendación', err);
+    }
+
+    return recommendation;
   }
 
   @Put(':id')

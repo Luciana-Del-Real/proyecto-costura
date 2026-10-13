@@ -43,17 +43,18 @@ Same as AdminEventForm: PageHeader + BackLink + `card-flat rounded-2xl p-8` form
 - Frontend verification must keep 171 tests green; backend 113 tests green.
 
 ## Checklist
-- [ ] T1 Model + migration `add_recommendation` + client regenerate
-- [ ] T2 Backend module `recommendations` (service, public + admin controllers with multer `image`, dtos, module, app.module registration)
-- [ ] T3 Frontend api functions
-- [ ] T4 Public page + pattern-style cards (Recommendations.jsx)
-- [ ] T5 Admin list page (AdminRecommendations.jsx)
-- [ ] T6 Admin form (AdminRecommendationForm.jsx) with Imagen/Título/Descripción/Link
-- [ ] T7 App.jsx routes + imports (old blank pages deleted, redirects kept)
-- [ ] T8 Verify: backend build + 113 tests + migrate status; frontend 171 tests + lint + build
+- [x] T1 Model + migration `add_recommendation` + client regenerate
+- [x] T2 Backend module `recommendations` (service, public + admin controllers with multer `image`, dtos, module, app.module registration)
+- [x] T3 Frontend api functions
+- [x] T4 Public page + pattern-style cards (Recommendations.jsx)
+- [x] T5 Admin list page (AdminRecommendations.jsx)
+- [x] T6 Admin form (AdminRecommendationForm.jsx) with Imagen/Título/Descripción/Link
+- [x] T7 App.jsx routes + imports (old blank pages deleted, redirects kept)
+- [x] T8 Verify: backend build + tests + migrate status; frontend tests + lint + build
+- [x] T9 Notificar a las alumnas al crear una recomendación (mismo mecanismo que cursos/patrones/eventos: `createNotificationsForStudents` + push, link `/recomendaciones`), sin romper la creación si la notificación falla, con tests
 
 ## Route
-- T1–T8: delegated direct — ONE bounded writer (13+ files across backend + frontend; writer trigger). Parent does the spot check, work-unit commit and the post-commit review assessment.
+- T1–T9: delegated direct for T1–T8 — ONE bounded writer (13+ files across backend + frontend; writer trigger). T9 (notificación al publicar) resuelta inline por el padre con tests. Parent does the spot check, work-unit commit and the post-commit review assessment.
 
 ## Acceptance criteria
 - `GET /recommendations` returns only active items with image/title/description/link.
