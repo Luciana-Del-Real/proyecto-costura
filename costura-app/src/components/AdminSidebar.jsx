@@ -26,7 +26,7 @@ const NAV_GROUPS = [
       { to: '/admin/cursos', label: 'Cursos', icon: GraduationCap },
       { to: '/admin/patrones', label: 'Patrones', icon: Scissors },
       { to: '/admin/eventos', label: 'Eventos', icon: CalendarDays },
-      { to: '/admin/productos', label: 'Recomendaciones', icon: ShoppingBag },
+      { to: '/admin/recomendaciones', label: 'Recomendaciones', icon: ShoppingBag },
     ],
   },
   {
