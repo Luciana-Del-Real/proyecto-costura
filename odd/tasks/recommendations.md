@@ -70,7 +70,11 @@ Same as AdminEventForm: PageHeader + BackLink + `card-flat rounded-2xl p-8` form
 - 2026-10-13: writer misused `--shadow-database-url` on the real DB (migrate dev is non-interactive in this shell). Recovery verified by parent. No data loss (DB was empty). Lesson: NEVER pass a real DB as shadow; for non-interactive shells use `migrate diff --from-migrations` pointing the shadow at a THROWAWAY local DB, or `migrate deploy` after authoring the migration SQL manually.
 
 ## Review assessment
-(pending — after the work-unit commit)
+- Native review started (`lineage review-c774a2f3323e66e5`, tier **high**, 4 lenses, correction budget 200, base `fd0e744e…`).
+- Reviewer lentes: resilience, risk and readability were admitted; **reliability** was refused twice by the transport (`opencode_review_transport_relay_refused: output_refused`). Native recovery (`capture-unachievable` declare + `--withdraw`) re-offered the slot and the retry was admitted.
+- **Finding R3-001** (reliability, CRITICAL, deterministic, introduced): the feature shipped its whole external contract with zero automated tests. **Bounded correction applied**: `backend/test/recommendations.spec.ts` (public list active-only, admin list, 404 unknown id, null optional fields, update-then-404, delete count 0 / success, controller delegation, `/uploads/recommendations/…` mapping) and `costura-app/src/pages/Recommendations.test.jsx` (title/description render, link normalized to https:// + `target=_blank`/`rel=noreferrer`, disabled `Sin enlace` state, empty state).
+- Post-correction verification: backend **18 suites / 124 tests**, frontend **31 files / 175 tests**, lint and build green.
+- Closure note: the native lifecycle then required an `intended-untracked-selection` document whose exact JSON shape is not documented (`review schema` does not cover it; probes were `not_started` and `retry_safe`). User decision: commit the correction and retry closure.
 
 ## Next step
-Parent re-verification -> work-unit commit -> assess -> user restarts backend (`cd backend && npm run start:dev`) -> user decides push/PR.
+Commit the correction, retry the native closure against the corrected committed candidate, then report and let the user decide push/PR.
