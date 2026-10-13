@@ -4,6 +4,7 @@ import { RecommendationsController } from '../src/recommendations/recommendation
 import { AdminRecommendationsController } from '../src/recommendations/admin-recommendations.controller';
 import { CreateRecommendationDto } from '../src/recommendations/dto/create-recommendation.dto';
 import { PrismaService } from '../src/prisma/prisma.service';
+import { NotificationsService } from '../src/notifications/notifications.service';
 
 /**
  * Recomendaciones (feature nueva): la lista pública expone SOLO las activas,
@@ -118,6 +119,10 @@ describe('RecommendationsService', () => {
 });
 
 describe('Recommendations controllers', () => {
+  const mockNotifications = () => ({
+    createNotificationsForStudents: jest.fn().mockResolvedValue(0),
+  });
+
   it('el listado público delega en findAllPublic', () => {
     const svc = { findAllPublic: jest.fn().mockReturnValue([]) };
     const controller = new RecommendationsController(svc as unknown as RecommendationsService);
@@ -128,8 +133,11 @@ describe('Recommendations controllers', () => {
   });
 
   it('el create admin traduce el archivo subido al path servido por /uploads', async () => {
-    const svc = { create: jest.fn().mockResolvedValue({ id: 'r1' }) };
-    const controller = new AdminRecommendationsController(svc as unknown as RecommendationsService);
+    const svc = { create: jest.fn().mockResolvedValue({ id: 'r1', title: 'Taladro' }) };
+    const controller = new AdminRecommendationsController(
+      svc as unknown as RecommendationsService,
+      mockNotifications() as unknown as NotificationsService,
+    );
     const dto: CreateRecommendationDto = { title: 'Taladro' };
 
     await controller.create(dto, {
@@ -138,5 +146,39 @@ describe('Recommendations controllers', () => {
 
     expect(dto.image).toBe('/uploads/recommendations/image-123.png');
     expect(svc.create).toHaveBeenCalledWith(dto);
+  });
+
+  it('avisa a las alumnas de la recomendación nueva con el link a /recomendaciones', async () => {
+    const svc = { create: jest.fn().mockResolvedValue({ id: 'r1', title: 'Taladro' }) };
+    const notifications = mockNotifications();
+    const controller = new AdminRecommendationsController(
+      svc as unknown as RecommendationsService,
+      notifications as unknown as NotificationsService,
+    );
+
+    await controller.create({ title: 'Taladro' }, undefined);
+
+    expect(notifications.createNotificationsForStudents).toHaveBeenCalledWith(
+      'Nueva recomendación',
+      'Taladro ya está disponible en Recomendaciones. ¡Conocela!',
+      undefined,
+      '/recomendaciones',
+    );
+  });
+
+  it('la notificación nunca rompe la creación', async () => {
+    const svc = { create: jest.fn().mockResolvedValue({ id: 'r1', title: 'Taladro' }) };
+    const notifications = {
+      createNotificationsForStudents: jest.fn().mockRejectedValue(new Error('push caído')),
+    };
+    const controller = new AdminRecommendationsController(
+      svc as unknown as RecommendationsService,
+      notifications as unknown as NotificationsService,
+    );
+
+    await expect(controller.create({ title: 'Taladro' }, undefined)).resolves.toEqual({
+      id: 'r1',
+      title: 'Taladro',
+    });
   });
 });
