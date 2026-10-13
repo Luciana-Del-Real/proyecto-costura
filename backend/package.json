@@ -10,6 +10,7 @@
     "db:studio": "prisma studio",
     "db:seed": "ts-node prisma/seed.ts",
     "db:create-admin": "node scripts/create-admin.js",
+    "db:whoami": "node scripts/db-whoami.js",
     "db:migrate": "prisma migrate dev",
     "lint": "eslint \"src/**/*.ts\" --fix",
     "typecheck": "tsc --noEmit",
