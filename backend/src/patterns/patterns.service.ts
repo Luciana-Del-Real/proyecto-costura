@@ -69,14 +69,21 @@ export class PatternsService {
 
   // Rama admin: ve TODOS los patrones (activos y ocultos) con el conteo de
   // ventas, para que el frontend decida entre Ocultar (con ventas) o Eliminar.
-  findAll() {
-    return this.prisma.pattern.findMany({
+  // Se agregan esPago/hasAccess (y se mantiene la forma del catálogo) para que
+  // las vistas públicas sigan viéndose bien cuando navega el admin.
+  async findAll() {
+    const patterns = await this.prisma.pattern.findMany({
       orderBy: { createdAt: 'asc' },
       include: {
         ...patternInclude,
         _count: { select: { patternPurchases: true } },
       },
     });
+    return patterns.map((p) => ({
+      ...p,
+      esPago: p.precioARS > 0 || p.precioAUD > 0,
+      hasAccess: true,
+    }));
   }
 
   // Detalle para la vista (checkout de patrón de pago y admin): mismo acceso
