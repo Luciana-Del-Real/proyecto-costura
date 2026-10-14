@@ -10,14 +10,16 @@ import Modal from '../../components/Modal';
 import { useCourseCatalog } from '../../context/CourseCatalogContext';
 import { useDialog } from '../../context/DialogContext';
 import { useAdmin } from '../../context/AdminContext';
-import { getCoursePrice, getCurrencyCode } from '../../utils/currency';
+import { getCoursePrice, getCurrencyCode, formatMoney } from '../../utils/currency';
 import { getImageUrl } from '../../utils/media';
+import { listAllPatternPurchases } from '../../services/api';
 
 export default function AdminUsers() {
   const { alertDialog, confirmDialog } = useDialog();
   const { courses } = useCourseCatalog();
   const { getAllUsers, toggleUserActive } = useAdmin();
   const [allUsers, setAllUsers] = useState([]);
+  const [patternPurchases, setPatternPurchases] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
   const [search, setSearch] = useState('');
@@ -28,6 +30,7 @@ export default function AdminUsers() {
     try {
       const data = await getAllUsers();
       setAllUsers(data);
+      setPatternPurchases(await listAllPatternPurchases());
     } catch (err) {
       console.error('Error cargando alumnas:', err);
     } finally {
@@ -68,6 +71,16 @@ export default function AdminUsers() {
     const ids = getPurchasedCourseIds(user);
     return courses.filter(c => ids.includes(c.id));
   };
+
+  // Patrones que la alumna compró (solo las compras aprobadas, igual que los
+  // cursos: user.purchases trae únicamente las aprobadas).
+  const getUserPatterns = (user) =>
+    patternPurchases.filter(p => p.userId === user.id && p.status === 'APPROVED');
+
+  // Total invertido = cursos (al precio de la moneda de la alumna) + patrones.
+  const getTotalInvested = (user) =>
+    getUserCourses(user).reduce((s, c) => s + getCoursePrice(c, user), 0) +
+    getUserPatterns(user).reduce((s, p) => s + (p.total || 0), 0);
 
   // user.progress viene del backend como [{ lessonId }, ...] (solo lecciones completadas)
   const getProgress = (user, course) => {
@@ -128,15 +141,19 @@ export default function AdminUsers() {
             </div>
 
             {/* Stats como filas planas (sin cajas anidadas) */}
-            <div className="grid grid-cols-2 gap-6 pb-4 mb-6 border-b border-border">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 pb-4 mb-6 border-b border-border">
               <div>
                 <p className="text-[11px] uppercase tracking-wide text-text-tan font-bold">Cursos comprados</p>
                 <p className="text-2xl font-display font-bold text-text-ink mt-0.5">{getPurchasedCourseIds(selected).length}</p>
               </div>
               <div>
+                <p className="text-[11px] uppercase tracking-wide text-text-tan font-bold">Patrones comprados</p>
+                <p className="text-2xl font-display font-bold text-text-ink mt-0.5">{getUserPatterns(selected).length}</p>
+              </div>
+              <div>
                 <p className="text-[11px] uppercase tracking-wide text-text-tan font-bold">Total invertido</p>
                 <p className="text-2xl font-display font-bold text-text-ink mt-0.5">
-                  ${getUserCourses(selected).reduce((s, c) => s + getCoursePrice(c, selected), 0).toLocaleString()} {getCurrencyCode(selected)}
+                  ${getTotalInvested(selected).toLocaleString()} {getCurrencyCode(selected)}
                 </p>
               </div>
             </div>
@@ -167,9 +184,33 @@ export default function AdminUsers() {
                   })}
                 </div>
               )}
+            </div>
 
-              {/* Action button */}
-              <div className="border-t border-bg-soft pt-4">
+            {/* Patrones comprados */}
+            <div className="mb-5">
+              <h4 className="font-display font-bold text-text-ink text-2xl mb-4 border-b border-border pb-2">Patrones comprados</h4>
+              {getUserPatterns(selected).length === 0 ? (
+                <p className="text-text-tan text-sm">Sin patrones aún.</p>
+              ) : (
+                getUserPatterns(selected).map(p => (
+                  <div key={p.id} className="flex items-center gap-3 py-3 border-b border-border last:border-0">
+                    <img src={getImageUrl(p.pattern?.imagen)} alt={p.pattern?.titulo} className="w-12 h-12 rounded-lg object-cover flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-base font-semibold text-text-ink truncate leading-snug">{p.pattern?.titulo}</p>
+                      <p className="text-xs text-text-tan mt-1">
+                        Comprado el {new Date(p.createdAt).toLocaleDateString('es-AR', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      </p>
+                    </div>
+                    <span className="text-sm font-bold text-text-ink flex-shrink-0">
+                      {formatMoney(p.total, getCurrencyCode(selected))}
+                    </span>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* Action button */}
+            <div className="border-t border-bg-soft pt-4">
                 {isActive(selected) ? (
                   <button
                     onClick={() => handleToggle(selected, 'deactivate')}
@@ -184,7 +225,6 @@ export default function AdminUsers() {
                   </button>
                 )}
               </div>
-            </div>
           </div>
         </Modal>
       )}
