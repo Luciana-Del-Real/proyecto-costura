@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { User } from 'lucide-react';
+import { User, Heart } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useNotifications } from '../context/NotificationsContext';
 import BackToHome from './BackToHome';
@@ -60,9 +60,7 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-6">
             {user ? (
               <>
-              <Link to="/dashboard" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/dashboard' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Inicio</Link>
               <Link to="/cursos" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/cursos' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Cursos disponibles</Link>
-              <Link to="/favoritos" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/favoritos' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Favoritos</Link>
               <Link to="/patrones-gratis" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/patrones-gratis' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Patrones</Link>
               <Link to="/eventos" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/eventos' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Eventos</Link>
               <Link to="/recomendaciones" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/recomendaciones' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Recomendaciones</Link>
@@ -94,6 +92,10 @@ export default function Navbar() {
                     <Link to="/perfil" onClick={() => setProfileOpen(false)}
                       className="flex items-center gap-2 px-4 py-2.5 text-sm text-text-ink hover:bg-gray-100 transition-colors">
                       <User className="w-4 h-4 text-primary" strokeWidth={1.5} /> Mi perfil
+                    </Link>
+                    <Link to="/favoritos" onClick={() => setProfileOpen(false)}
+                      className="flex items-center gap-2 px-4 py-2.5 text-sm text-text-ink hover:bg-gray-100 transition-colors">
+                      <Heart className="w-4 h-4 text-primary" strokeWidth={1.5} /> Favoritos
                     </Link>
                     <div className="border-t border-bg-soft py-3 px-3 mt-1">
                       <button onClick={handleLogout}
@@ -153,13 +155,12 @@ export default function Navbar() {
                   </span>
                 )}
               </div>
-              <Link to="/dashboard" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Inicio</Link>
               <Link to="/cursos" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Cursos disponibles</Link>
-              <Link to="/favoritos" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Favoritos</Link>
               <Link to="/patrones-gratis" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Patrones</Link>
               <Link to="/eventos" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Eventos</Link>
               <Link to="/recomendaciones" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Recomendaciones</Link>
               <Link to="/perfil" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Perfil</Link>
+              <Link to="/favoritos" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Favoritos</Link>
               <Link to="/mis-cursos" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Mis cursos</Link>
               <button onClick={handleLogout} className="btn btn-ghost w-full justify-start text-sm text-accent">Cerrar sesión</button>
             </>
