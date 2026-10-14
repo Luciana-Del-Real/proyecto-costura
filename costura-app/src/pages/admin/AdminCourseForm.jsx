@@ -18,7 +18,7 @@ const EMPTY_COURSE = {
 const EMPTY_LESSON = { title: '', duration: '', videoUrl: '' };
 
 export default function AdminCourseForm() {
-  const { addCourse, updateCourse } = useCourseCatalog();
+  const { addCourse, updateCourse, refreshCourses } = useCourseCatalog();
   const { confirmDialog, alertDialog } = useDialog();
   const { id } = useParams();
   const navigate = useNavigate();
@@ -46,12 +46,16 @@ export default function AdminCourseForm() {
         priceAUD: data.priceAUD ?? '',
         level: data.level ? data.level.charAt(0) + data.level.slice(1).toLowerCase() : 'Principiante',
       });
+      // El catálogo global (home / área de alumna) se carga una sola vez al
+      // iniciar, así que hay que refrescarlo para que el conteo de lecciones
+      // no quede viejo tras crear/editar/borrar una lección.
+      await refreshCourses();
     } catch (err) {
       console.error('Error cargando el curso:', err);
     } finally {
       setLoadingCourse(false);
     }
-  }, [id]);
+  }, [id, refreshCourses]);
 
   useEffect(() => { reloadCourse(); }, [reloadCourse]);
 

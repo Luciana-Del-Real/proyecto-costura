@@ -29,6 +29,21 @@ export function CourseCatalogProvider({ children }) {
     return get(`/courses/${courseId}/lessons`);
   }, []);
 
+  // Refresca el catálogo completo. Lo usan las pantallas de admin después de
+  // crear/editar un curso o sus lecciones: sin esto, el home y el área de
+  // alumna seguían mostrando el conteo viejo (p. ej. "0 lecciones") hasta
+  // recargar la página a mano.
+  const refreshCourses = useCallback(async () => {
+    try {
+      const data = await get('/courses');
+      setCourses(data);
+      return data;
+    } catch (error) {
+      console.error('Error refreshing courses:', error);
+      throw error;
+    }
+  }, []);
+
   // --- Admin: gestión de cursos ---
   const updateCourse = useCallback(async (courseId, formData) => {
     try {
@@ -71,10 +86,11 @@ export function CourseCatalogProvider({ children }) {
     courses,
     loading,
     getCourseLessons,
+    refreshCourses,
     updateCourse,
     addCourse,
     deleteCourse,
-  }), [courses, loading, getCourseLessons, updateCourse, addCourse, deleteCourse]);
+  }), [courses, loading, getCourseLessons, refreshCourses, updateCourse, addCourse, deleteCourse]);
 
   return (
     <CourseCatalogContext.Provider value={value}>
