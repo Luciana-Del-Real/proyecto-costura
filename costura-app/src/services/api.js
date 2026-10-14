@@ -192,6 +192,11 @@ export async function listPatternPurchasesPending() {
   return get('/admin/pattern-purchases/pending');
 }
 
+// Historial completo de compras de patrones (sin filtro de estado) para el panel de ventas.
+export async function listAllPatternPurchases() {
+  return get('/admin/pattern-purchases');
+}
+
 export async function approvePatternPurchase(id) {
   return patch(`/admin/pattern-purchases/${id}/approve`);
 }

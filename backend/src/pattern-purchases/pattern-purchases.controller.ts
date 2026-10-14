@@ -22,6 +22,14 @@ export class PatternPurchasesController {
     return this.patternPurchasesService.getPendingRequests();
   }
 
+  // Historial de todas las compras de patrones (sin filtro de estado) para el
+  // panel de ventas del admin. Ruta estática, no colisiona con las de abajo.
+  @Get('admin/pattern-purchases')
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  getAll() {
+    return this.patternPurchasesService.getAllPurchases();
+  }
+
   @Patch('admin/pattern-purchases/:id/approve')
   @UseGuards(JwtAuthGuard, AdminGuard)
   approve(@Param('id') id: string) {

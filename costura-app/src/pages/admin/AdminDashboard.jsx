@@ -5,6 +5,7 @@ import { useCourseCatalog } from '../../context/CourseCatalogContext';
 import { usePurchases } from '../../context/PurchaseContext';
 import { useAdmin } from '../../context/AdminContext';
 import { sumByCurrency } from '../../utils/currency';
+import { listAllPatternPurchases } from '../../services/api';
 import CourseCover from '../../components/CourseCover';
 import WelcomeToast from '../../components/WelcomeToast';
 import PageHeader from '../../components/PageHeader';
@@ -19,6 +20,7 @@ export default function AdminDashboard() {
   const { getAllPurchases, getPendingRequests } = usePurchases();
   const { getAllUsers } = useAdmin();
   const [allPurchases, setAllPurchases] = useState([]);
+  const [patternPurchases, setPatternPurchases] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
   const [pendingRequests, setPendingRequests] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -31,6 +33,7 @@ export default function AdminDashboard() {
     const load = async () => {
       try {
         setAllPurchases(await getAllPurchases());
+        setPatternPurchases(await listAllPatternPurchases());
         setAllUsers(await getAllUsers());
         setPendingRequests(await getPendingRequests());
       } finally {
@@ -40,7 +43,9 @@ export default function AdminDashboard() {
     load();
   }, [getAllPurchases, getAllUsers, getPendingRequests]);
 
-  const revenueByCurrency = sumByCurrency(allPurchases);
+  // Ventas de cursos + patrones: el panel contabiliza las dos.
+  const allSales = [...allPurchases, ...patternPurchases];
+  const revenueByCurrency = sumByCurrency(allSales);
   const topCourses = courses
     .map(c => ({ ...c, buyers: allPurchases.filter(p => p.course?.id === c.id).length }))
     .sort((a, b) => b.buyers - a.buyers)
@@ -52,7 +57,7 @@ export default function AdminDashboard() {
       values: { ars: revenueByCurrency.ARS, aud: revenueByCurrency.AUD },
       Icon: Coins,
     },
-    { label: 'Ventas totales', value: allPurchases.length, Icon: ShoppingBag },
+    { label: 'Ventas totales', value: allSales.length, Icon: ShoppingBag },
     { label: 'Solicitudes pendientes', value: pendingRequests.length, Icon: Inbox },
     { label: 'Alumnos', value: allUsers.length, Icon: Users },
   ];

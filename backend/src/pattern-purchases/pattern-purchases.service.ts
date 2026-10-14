@@ -87,6 +87,21 @@ export class PatternPurchasesService {
     });
   }
 
+  // Historial completo para el panel de ventas: mismas relaciones que las
+  // pendientes, pero sin filtrar por estado (la página decide qué mostrar).
+  getAllPurchases() {
+    return this.prisma.patternPurchase.findMany({
+      where: { deletedAt: null },
+      include: {
+        pattern: true,
+        user: {
+          select: { id: true, email: true, name: true, country: true },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
   async approve(id: string) {
     return this.prisma.runInTransaction(async (tx: Prisma.TransactionClient) => {
       const purchase = await tx.patternPurchase.findUnique({
