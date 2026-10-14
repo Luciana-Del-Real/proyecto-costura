@@ -60,7 +60,6 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-6">
             {user ? (
               <>
-              <Link to="/dashboard" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/dashboard' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Inicio</Link>
               <Link to="/cursos" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/cursos' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Cursos disponibles</Link>
               <Link to="/patrones-gratis" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/patrones-gratis' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Patrones</Link>
               <Link to="/eventos" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/eventos' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Eventos</Link>
@@ -156,7 +155,6 @@ export default function Navbar() {
                   </span>
                 )}
               </div>
-              <Link to="/dashboard" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Inicio</Link>
               <Link to="/cursos" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Cursos disponibles</Link>
               <Link to="/patrones-gratis" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Patrones</Link>
               <Link to="/eventos" onClick={() => setMenuOpen(false)} className="text-text-ink text-sm font-medium">Eventos</Link>
