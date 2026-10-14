@@ -20,6 +20,7 @@ describe('Notification flows (purchase request + lesson comments)', () => {
 
   const mockPrisma = {
     $transaction: jest.fn(),
+    runInTransaction: jest.fn(),
     user: {
       findUnique: jest.fn(),
       findMany: jest.fn(),
@@ -53,7 +54,7 @@ describe('Notification flows (purchase request + lesson comments)', () => {
   };
 
   // El tx es el mismo mock, así `tx.<model>` resuelve igual que `prisma.<model>`.
-  mockPrisma.$transaction.mockImplementation(async (fn: any) => fn(mockPrisma));
+  mockPrisma.runInTransaction.mockImplementation(async (fn: any) => fn(mockPrisma));
 
   const notificationsService = new NotificationsService(
     mockPrisma as unknown as PrismaService,
@@ -69,7 +70,7 @@ describe('Notification flows (purchase request + lesson comments)', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockPrisma.$transaction.mockImplementation(async (fn: any) => fn(mockPrisma));
+    mockPrisma.runInTransaction.mockImplementation(async (fn: any) => fn(mockPrisma));
 
     // assertAccess: lección resuelta (id + courseId) y compra aprobada del alumno.
     mockPrisma.lesson.findUnique.mockImplementation((args: any) =>

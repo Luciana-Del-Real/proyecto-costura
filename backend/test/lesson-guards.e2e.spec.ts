@@ -134,6 +134,7 @@ describe('lesson content guards (HTTP level)', () => {
     // can pass itself back as the tx client without a circular type
     // inference under ts-jest strict.
     $transaction: jest.fn(),
+    runInTransaction: jest.fn(),
     user: {
       findUnique: jest.fn((args: any) => users[args.where.id] ?? null),
       findMany: jest.fn(),
@@ -186,6 +187,7 @@ describe('lesson content guards (HTTP level)', () => {
         lessonId: args.create.lessonId,
         completed: false,
       })),
+      createMany: jest.fn(() => ({ count: 0 })),
       findMany: jest.fn(),
     },
     notification: {
@@ -202,7 +204,7 @@ describe('lesson content guards (HTTP level)', () => {
   // Wire the transaction runner after the literal: pass the mock itself back
   // as the tx client so tx.purchase/tx.lesson/tx.lessonProgress and
   // NotificationsService.createNotification(..., tx) all resolve.
-  prismaMock.$transaction.mockImplementation(async (fn: any) => fn(prismaMock));
+  prismaMock.runInTransaction.mockImplementation(async (fn: any) => fn(prismaMock));
 
   // Deterministic boot config: models "JWT_SECRET is set" regardless of the
   // ambient process.env / .env (a real ConfigService reads process.env first).

@@ -159,6 +159,7 @@ describe('purchase approve/reject/re-approve lifecycle + ownership (HTTP level)'
     // can pass itself back as the tx client without a circular type
     // inference under ts-jest strict.
     $transaction: jest.fn(),
+    runInTransaction: jest.fn(),
     user: {
       findUnique: jest.fn((args: any) => users[args.where.id] ?? null),
       findMany: jest.fn(),
@@ -204,6 +205,7 @@ describe('purchase approve/reject/re-approve lifecycle + ownership (HTTP level)'
         lessonId: args.create.lessonId,
         completed: false,
       })),
+      createMany: jest.fn(() => ({ count: 0 })),
       findMany: jest.fn(),
     },
     notification: {
@@ -220,7 +222,7 @@ describe('purchase approve/reject/re-approve lifecycle + ownership (HTTP level)'
   // Wire the transaction runner after the literal: pass the mock itself back
   // as the tx client so tx.purchase/tx.lesson/tx.lessonProgress and
   // NotificationsService.createNotification(..., tx) all resolve.
-  prismaMock.$transaction.mockImplementation(async (fn: any) => fn(prismaMock));
+  prismaMock.runInTransaction.mockImplementation(async (fn: any) => fn(prismaMock));
 
   const notificationsStub = {
     createNotification: jest.fn().mockResolvedValue({ id: 'n-new' }),

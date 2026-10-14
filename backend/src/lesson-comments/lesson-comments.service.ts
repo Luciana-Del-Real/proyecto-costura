@@ -64,7 +64,7 @@ export class LessonCommentsService {
 
     // El comentario y sus notificaciones se crean en la misma transacción
     // para que el hilo quede consistente y no se pierdan notificaciones.
-    return this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+    return this.prisma.runInTransaction(async (tx: Prisma.TransactionClient) => {
       // Si viene parentId, el padre debe existir y pertenecer a la misma lección.
       let parentAuthorId: string | null = null;
       if (parentId) {
