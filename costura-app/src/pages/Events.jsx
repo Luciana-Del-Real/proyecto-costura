@@ -84,17 +84,17 @@ function EventCard({ event, variant }) {
         {/* Contenido: título (alineado a la derecha), bajada, características
             centradas y botón centrado en su lado. */}
         <div className="flex flex-col p-4 sm:p-3 md:p-6 text-center flex-1 min-w-0">
-          <h3 className="font-display uppercase leading-none text-right break-words">
+          <h3 className="font-display uppercase leading-none text-center sm:text-right break-words">
             <span className="text-event-pink block text-2xl md:text-4xl font-bold">{first}</span>
             <span className="text-event-green-deep block text-base md:text-2xl font-normal">{second}</span>
           </h3>
 
           {event.subtitle && (
-            <p className="font-body text-[11px] md:text-sm text-event-rose-deep mt-2 leading-relaxed">{event.subtitle}</p>
+            <p className="font-body text-[11px] md:text-sm text-event-rose-deep mt-1 sm:mt-2 leading-relaxed">{event.subtitle}</p>
           )}
 
           {features.length > 0 && (
-            <div className="flex-1 flex flex-col justify-center space-y-2 md:space-y-4">
+            <div className="flex-1 flex flex-col justify-center space-y-2 md:space-y-4 mt-3 sm:mt-0">
               {features.map((f) => (
                 <p key={f} className="font-body text-[11px] md:text-sm text-text-ink leading-snug">{f}</p>
               ))}
