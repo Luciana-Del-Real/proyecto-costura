@@ -47,7 +47,7 @@ export class PatternPurchasesService {
 
     // Solicitud + notificación a admins en la misma transacción (patrón de
     // compras de cursos).
-    return this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+    return this.prisma.runInTransaction(async (tx: Prisma.TransactionClient) => {
       const purchase = await tx.patternPurchase.create({
         data: {
           userId,
@@ -88,7 +88,7 @@ export class PatternPurchasesService {
   }
 
   async approve(id: string) {
-    return this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+    return this.prisma.runInTransaction(async (tx: Prisma.TransactionClient) => {
       const purchase = await tx.patternPurchase.findUnique({
         where: { id },
         include: { pattern: true, user: true },

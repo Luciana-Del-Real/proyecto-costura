@@ -53,7 +53,7 @@ export class PurchasesService {
 
     // Create purchase request with PENDING status y notifica a los admins
     // dentro de la misma transacción para que queden atómicos.
-    return this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+    return this.prisma.runInTransaction(async (tx: Prisma.TransactionClient) => {
       const purchase = await tx.purchase.create({
         data: {
           userId,
@@ -89,7 +89,7 @@ export class PurchasesService {
     // Ejecutar todo en una transacción atómica para garantizar integridad.
     // Acepta PENDING y REJECTED: la denegación es reversible y una nueva
     // aprobación restaura el acceso sin perder el progreso guardado.
-    const updatedPurchase = await this.prisma.$transaction(
+    const updatedPurchase = await this.prisma.runInTransaction(
       async (tx: Prisma.TransactionClient) => {
         const purchase = await tx.purchase.findUnique({
           where: { id: purchaseId },
@@ -131,21 +131,17 @@ export class PurchasesService {
           orderBy: { order: 'asc' },
         });
 
-        // Crear o asegurar progress entries para cada lección
-        for (const lesson of lessons) {
-          await tx.lessonProgress.upsert({
-            where: {
-              userId_lessonId: {
-                userId: purchase.userId,
-                lessonId: lesson.id,
-              },
-            },
-            update: {},
-            create: {
+        // Crear los registros de progreso de una sola vez: una consulta en vez
+        // de una por lección (la transacción debe entrar holgada en el límite
+        // de tiempo). skipDuplicates evita pisar el progreso ya existente.
+        if (lessons.length > 0) {
+          await tx.lessonProgress.createMany({
+            data: lessons.map((lesson) => ({
               userId: purchase.userId,
               lessonId: lesson.id,
               completed: false,
-            },
+            })),
+            skipDuplicates: true,
           });
         }
 

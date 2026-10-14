@@ -75,7 +75,7 @@ export class CertificateRequestsService {
 
     // La solicitud y la notificación a los admins se crean en la misma
     // transacción para que queden atómicas (mismo patrón que purchases).
-    return this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+    return this.prisma.runInTransaction(async (tx: Prisma.TransactionClient) => {
       const request = await tx.certificateRequest.create({
         data: {
           userId,
