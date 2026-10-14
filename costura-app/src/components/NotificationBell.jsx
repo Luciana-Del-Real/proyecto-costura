@@ -65,12 +65,12 @@ export default function NotificationBell({ align = 'right' }) {
 
       {notifOpen && (
         <div className={`absolute mt-2 w-80 max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-[0_8px_30px_rgba(29,29,27,0.12)] border border-border overflow-hidden animate-slide-down z-50 ${align === 'left' ? 'left-0' : 'right-0'}`}>
-          <div className="px-4 py-3 border-b border-border flex items-center justify-between">
+          <div className="px-4 py-3 border-b border-border flex items-center justify-between gap-3">
             <p className="text-xs font-semibold text-text-ink">Notificaciones</p>
             {unreadCount > 0 && (
               <button
                 onClick={() => markAllAsRead()}
-                className="btn btn-ghost text-xs text-primary hover:text-primary-hover"
+                className="btn btn-ghost text-[11px] px-2 py-1 text-primary hover:text-primary-hover whitespace-nowrap shrink-0"
               >
                 Marcar todas como leídas
               </button>
