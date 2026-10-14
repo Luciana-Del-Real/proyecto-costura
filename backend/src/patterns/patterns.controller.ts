@@ -70,6 +70,13 @@ export class PatternsController {
   @Get()
   @UseGuards(OptionalJwtAuthGuard)
   findAll(@Request() req: { user?: Principal }) {
+    // El admin ve TODOS los patrones (activos y ocultos) con el conteo de
+    // ventas; el resto recibe el catálogo público con acceso condicional.
+    // Sin esta rama el listado del admin no podía contar ventas ni ver los
+    // patrones ocultos (el `findAll()` quedaba huérfano).
+    if (req.user?.role === 'ADMIN') {
+      return this.patternsService.findAll();
+    }
     return this.patternsService.findAllPublic(req.user);
   }
 
