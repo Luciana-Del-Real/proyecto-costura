@@ -90,11 +90,11 @@ function EventCard({ event, variant }) {
           </h3>
 
           {event.subtitle && (
-            <p className="font-body text-[11px] md:text-sm text-event-rose-deep mt-1 sm:mt-2 leading-relaxed">{event.subtitle}</p>
+            <p className="font-body text-[11px] md:text-sm text-event-rose-deep mt-1 md:mt-2 leading-relaxed">{event.subtitle}</p>
           )}
 
           {features.length > 0 && (
-            <div className="flex-1 flex flex-col justify-center space-y-2 md:space-y-4 mt-3 sm:mt-0">
+            <div className="flex-1 flex flex-col justify-center space-y-2 md:space-y-4 mt-4">
               {features.map((f) => (
                 <p key={f} className="font-body text-[11px] md:text-sm text-text-ink leading-snug">{f}</p>
               ))}
@@ -136,7 +136,7 @@ function EventCard({ event, variant }) {
 
       {/* Bajada: texto corto centrado en rosa (Montserrat = font-body) */}
       {event.subtitle && (
-        <p className="font-body text-sm md:text-base text-event-rose-deep mt-3 leading-relaxed">{event.subtitle}</p>
+        <p className="font-body text-sm md:text-base text-event-rose-deep mt-2 leading-relaxed">{event.subtitle}</p>
       )}
 
       {/* Detalles: líneas independientes sin viñetas, separadas por space-y-2 */}
