@@ -67,45 +67,50 @@ function EventCard({ event, variant }) {
     return (
       <div
         style={{ borderColor: variant.border }}
-        className="relative overflow-hidden flex flex-col md:flex-row md:items-stretch h-full md:min-h-[480px] rounded-3xl border bg-white"
+        className="relative overflow-hidden flex flex-col sm:flex-row sm:items-stretch h-full min-h-[300px] md:min-h-[480px] rounded-3xl border bg-white"
       >
-        {/* Mobile: imagen arriba a todo el ancho (alto fijo, siempre visible).
-            Desktop: mitad izquierda a todo el alto. El wrapper es un div (se
-            estira como flex item) y la imagen va absoluta adentro: un <img>
-            con self-stretch no siempre se estira y quedaba sin altura. */}
-        <div className="relative w-full h-44 md:w-1/2 md:h-auto md:shrink-0">
+        {/* Celular (2 cards por fila): la imagen va ARRIBA a todo el ancho y el
+            contenido debajo, así la card queda más alta que ancha. Desde sm
+            (640px) pasa a mitad izquierda a todo el alto, como en desktop.
+            El wrapper es un div (se estira como flex item) y la imagen va
+            absoluta adentro: un <img> con self-stretch no siempre se estira. */}
+        <div className="relative w-full h-40 sm:w-1/2 sm:h-auto sm:shrink-0">
           <img
             src={getImageUrl(event.image)}
             alt={event.title || 'Evento'}
             className="absolute inset-0 h-full w-full object-cover"
           />
         </div>
-        <div className="flex flex-col p-5 md:p-6 text-center flex-1 min-w-0">
-          <h3 className="font-display uppercase leading-none text-right">
-            <span className="text-event-pink block text-3xl md:text-4xl font-bold">{first}</span>
-            <span className="text-event-green-deep block text-xl md:text-2xl font-normal">{second}</span>
+        {/* Contenido: título (alineado a la derecha), bajada, características
+            centradas y botón centrado en su lado. */}
+        <div className="flex flex-col p-4 sm:p-3 md:p-6 text-center flex-1 min-w-0">
+          <h3 className="font-display uppercase leading-none text-center sm:text-right break-words">
+            <span className="text-event-pink block text-2xl md:text-4xl font-bold">{first}</span>
+            <span className="text-event-green-deep block text-base md:text-2xl font-normal">{second}</span>
           </h3>
 
           {event.subtitle && (
-            <p className="font-body text-xs md:text-sm text-event-rose-deep mt-2 leading-relaxed">{event.subtitle}</p>
+            <p className="font-body text-[11px] md:text-sm text-event-rose-deep mt-1 md:mt-2 leading-relaxed">{event.subtitle}</p>
           )}
 
           {features.length > 0 && (
-            <div className="flex-1 flex flex-col justify-center space-y-4">
+            <div className="flex-1 flex flex-col justify-center space-y-2 md:space-y-4 mt-4">
               {features.map((f) => (
-                <p key={f} className="font-body text-xs md:text-sm text-text-ink leading-snug">{f}</p>
+                <p key={f} className="font-body text-[11px] md:text-sm text-text-ink leading-snug">{f}</p>
               ))}
             </div>
           )}
 
-          {/* Botón CONSULTAR: píldora rosa, empujado al fondo (mt-auto) para
-              que todas las cards de la fila queden a la misma altura */}
-          <div className="mt-auto pt-5">
+          {/* Botón CONSULTAR: píldora rosa centrada en su mitad (igual que la
+              descripción) y con ancho tope para que nunca toque los bordes de
+              la card. mt-auto lo empuja al fondo para que todas las cards de la
+              fila queden a la misma altura. */}
+          <div className="mt-auto pt-3 md:pt-5 flex justify-center">
             <a
               href={whatsappUrl(event)}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center justify-center bg-event-pink hover:bg-event-pink-hover text-white font-bold text-sm uppercase tracking-wide rounded-full px-6 py-2.5 transition-colors"
+              className="inline-flex items-center justify-center max-w-full bg-event-pink hover:bg-event-pink-hover text-white font-bold text-[11px] md:text-sm uppercase tracking-wide rounded-full px-3 md:px-6 py-2 md:py-2.5 transition-colors"
             >
               Consultar
             </a>
@@ -118,19 +123,20 @@ function EventCard({ event, variant }) {
   return (
     <div
       style={{ backgroundColor: variant.bg, borderColor: variant.border }}
-      className="flex flex-col items-center h-full text-center rounded-3xl border p-6 md:p-8"
+      className="flex flex-col items-center h-full text-center rounded-3xl border p-4 sm:p-6 md:p-8"
     >
       {/* Título principal: 1ra línea rosa (más grande y en negrita), 2da
           verde oscuro (más chica y sin negrita). Bebas = font-display,
-          coherente con el resto de la página. */}
-      <h3 className="font-display uppercase leading-none">
-        <span className="text-event-pink block text-4xl md:text-5xl font-bold">{first}</span>
-        <span className="text-event-green-deep block text-2xl md:text-3xl font-normal">{second}</span>
+          coherente con el resto de la página. En celular baja un escalón
+          porque con 2 cards por fila el ancho es la mitad. */}
+      <h3 className="font-display uppercase leading-none break-words">
+        <span className="text-event-pink block text-2xl sm:text-4xl md:text-5xl font-bold">{first}</span>
+        <span className="text-event-green-deep block text-base sm:text-2xl md:text-3xl font-normal">{second}</span>
       </h3>
 
       {/* Bajada: texto corto centrado en rosa (Montserrat = font-body) */}
       {event.subtitle && (
-        <p className="font-body text-sm md:text-base text-event-rose-deep mt-3 leading-relaxed">{event.subtitle}</p>
+        <p className="font-body text-sm md:text-base text-event-rose-deep mt-2 leading-relaxed">{event.subtitle}</p>
       )}
 
       {/* Detalles: líneas independientes sin viñetas, separadas por space-y-2 */}
@@ -142,14 +148,16 @@ function EventCard({ event, variant }) {
         </div>
       )}
 
-      {/* Botón CONSULTAR: píldora rosa, empujado al fondo (mt-auto) para que
-          todos los folletos de la misma fila queden a la misma altura */}
-      <div className="mt-auto pt-6">
+      {/* Botón CONSULTAR: píldora rosa centrada, empujado al fondo (mt-auto)
+          para que todos los folletos de la misma fila queden a la misma altura.
+          En celular achica padding y texto: con 2 cards por fila el ancho es
+          la mitad y el botón no debe tocar los bordes. */}
+      <div className="mt-auto pt-6 flex justify-center w-full">
         <a
           href={whatsappUrl(event)}
           target="_blank"
           rel="noreferrer"
-          className="inline-flex items-center justify-center bg-event-pink hover:bg-event-pink-hover text-white font-bold text-sm uppercase tracking-wide rounded-full px-10 py-3 transition-colors"
+          className="inline-flex items-center justify-center max-w-full bg-event-pink hover:bg-event-pink-hover text-white font-bold text-[11px] sm:text-sm uppercase tracking-wide rounded-full px-5 sm:px-10 py-2.5 sm:py-3 transition-colors"
         >
           Consultar
         </a>
@@ -213,9 +221,10 @@ export default function Events() {
         )}
 
         {/* Grilla de tarjetas: 4 columnas en desktop ancho, 3 en desktop,
-            2 en tablet, 1 en mobile (igual que la grilla de Cursos) */}
+            2 en tablet Y en celular (en celular la card se apila: imagen
+            arriba, contenido abajo) */}
         {!loading && !error && events.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
             {events.map((event, i) => (
               <EventCard
                 key={event.id}
