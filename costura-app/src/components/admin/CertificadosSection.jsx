@@ -67,9 +67,9 @@ export default function CertificadosSection() {
             type="button"
             onClick={() => handleMarkSent(r)}
             disabled={sendingId === r.id}
-            className="btn btn-ghost text-xs font-semibold flex items-center gap-1.5"
+            className="btn btn-ghost text-sm font-semibold flex items-center justify-center gap-1.5 w-full sm:w-auto"
           >
-            <Mail className="w-3.5 h-3.5" strokeWidth={1.5} />
+            <Mail className="w-4 h-4" strokeWidth={1.5} />
             {sendingId === r.id ? 'Guardando...' : 'Marcar como enviada'}
           </button>
         )}
