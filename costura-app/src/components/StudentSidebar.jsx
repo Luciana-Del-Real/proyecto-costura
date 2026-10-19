@@ -7,14 +7,14 @@ import {
   CalendarDays,
   ShoppingBag,
   BookOpen,
-  Heart,
-  User,
   X,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 // Student navigation. Same items the navbar used to expose, in the same order;
 // every item carries a lucide icon and a route-based active state.
+// "Favoritos" and "Perfil" are NOT here: they already live in the navbar user
+// menu, so repeating them in the sidebar would duplicate the same destination.
 const NAV_ITEMS = [
   { to: '/dashboard', label: 'Inicio', icon: LayoutDashboard },
   { to: '/cursos', label: 'Cursos', icon: GraduationCap },
@@ -22,8 +22,6 @@ const NAV_ITEMS = [
   { to: '/eventos', label: 'Eventos', icon: CalendarDays },
   { to: '/recomendaciones', label: 'Recomendaciones', icon: ShoppingBag },
   { to: '/mis-cursos', label: 'Mis cursos', icon: BookOpen },
-  { to: '/favoritos', label: 'Favoritos', icon: Heart },
-  { to: '/perfil', label: 'Perfil', icon: User },
 ];
 
 // `/dashboard` is the index and must only match exactly; every other item
