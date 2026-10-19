@@ -72,13 +72,16 @@ function NavItem({ item, active, onNavigate }) {
 }
 
 // Shared sidebar body used by both the desktop rail and the mobile drawer.
-function SidebarContent({ onNavigate }) {
+// The desktop rail keeps the identity + logout in the topbar; the drawer adds
+// its own footer because the topbar block is desktop-only.
+function SidebarContent({ onNavigate, showLogout = false }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
   const handleLogout = () => {
     logout();
+    onNavigate?.();
     navigate('/');
   };
 
@@ -104,17 +107,20 @@ function SidebarContent({ onNavigate }) {
         ))}
       </nav>
 
-      {/* Footer — identity and logout. Name and role keep their own room
-          (no truncation). The notification bell lives in the topbar. */}
-      <div className="border-t border-border px-4 py-4 flex flex-col gap-3 shrink-0">
-        <div className="flex flex-col">
-          <p className="text-sm font-semibold text-text-ink">{user?.name}</p>
-          <p className="text-[10px] uppercase tracking-widest text-text-muted">Administradora</p>
+      {/* Drawer-only footer — identity and logout. The desktop rail keeps them
+          in the topbar, so this block never renders there. Name and role keep
+          their own room (no truncation). */}
+      {showLogout && (
+        <div className="border-t border-border px-4 py-4 flex flex-col gap-3 shrink-0">
+          <div className="flex flex-col">
+            <p className="text-sm font-semibold text-text-ink">{user?.name}</p>
+            <p className="text-[10px] uppercase tracking-widest text-text-muted">Administradora</p>
+          </div>
+          <button type="button" onClick={handleLogout} className="btn btn-primary text-xs w-full">
+            Salir
+          </button>
         </div>
-        <button type="button" onClick={handleLogout} className="btn btn-primary text-xs w-full">
-          Salir
-        </button>
-      </div>
+      )}
     </>
   );
 }
@@ -156,7 +162,7 @@ export default function AdminSidebar({ open = false, onClose }) {
             >
               <X className="w-5 h-5" aria-hidden="true" />
             </button>
-            <SidebarContent onNavigate={onClose} />
+            <SidebarContent onNavigate={onClose} showLogout />
           </aside>
         </div>
       )}
