@@ -92,5 +92,10 @@ costura-app/src/pages/Profile.test.jsx
 - [x] Exploración: hueco confirmado (no existe endpoint de alumna para patrones).
 - [x] T1 · [ ] T2 · [ ] T3
 
+## Evidencia
+- Commit de unidad de trabajo: `1806703` (`feat(profile): include pattern purchases in the student's purchase history`).
+- PR: https://github.com/Luciana-Del-Real/proyecto-costura/pull/71
+- Verificacion: backend 21 suites / 151 tests; frontend 33 archivos / 187 tests; lint y build limpios; UTF-8 sin BOM.
+
 ## Próximo paso
 Entregado en PR (ver seccion Evidencia).
