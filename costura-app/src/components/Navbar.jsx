@@ -6,7 +6,7 @@ import { useNotifications } from '../context/NotificationsContext';
 import BackToHome from './BackToHome';
 import NotificationBell from './NotificationBell';
 
-export default function Navbar() {
+export default function Navbar({ onMenuClick }) {
   const { user, logout, isAdmin } = useAuth();
   const { unreadCount } = useNotifications();
   const navigate = useNavigate();
@@ -20,6 +20,9 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const profileRef = useRef(null);
+  // A logged-in student gets the left sidebar, so the hamburger opens that
+  // drawer instead of the local link list. Guests and admins keep it as is.
+  const hasSidebar = Boolean(user && !isAdmin && onMenuClick);
 
   const handleLogout = () => {
     logout();
@@ -60,10 +63,16 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-6">
             {user ? (
               <>
-              <Link to="/cursos" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/cursos' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Cursos disponibles</Link>
-              <Link to="/patrones-gratis" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/patrones-gratis' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Patrones</Link>
-              <Link to="/eventos" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/eventos' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Eventos</Link>
-              <Link to="/recomendaciones" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/recomendaciones' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Recomendaciones</Link>
+              {/* With the sidebar these four live there; the navbar keeps the
+                  brand, the bell and the profile dropdown. */}
+              {!hasSidebar && (
+                <>
+                  <Link to="/cursos" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/cursos' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Cursos disponibles</Link>
+                  <Link to="/patrones-gratis" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/patrones-gratis' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Patrones</Link>
+                  <Link to="/eventos" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/eventos' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Eventos</Link>
+                  <Link to="/recomendaciones" className={`px-1 py-1 rounded-lg text-sm font-medium transition-colors ${pathname === '/recomendaciones' ? 'text-primary' : 'text-text-ink hover:text-primary'}`}>Recomendaciones</Link>
+                </>
+              )}
 
               {/* Notifications bell */}
               <NotificationBell />
@@ -126,9 +135,14 @@ export default function Navbar() {
         {/* Mobile: notification bell + menu toggle */}
         <div className="flex items-center gap-1 md:hidden">
           {user && <NotificationBell />}
-          <button className="btn btn-icon" onClick={() => setMenuOpen(!menuOpen)}>
+          <button
+            className="btn btn-icon"
+            onClick={() => (hasSidebar ? onMenuClick() : setMenuOpen(!menuOpen))}
+            aria-label={hasSidebar ? 'Abrir menú de navegación' : (menuOpen ? 'Cerrar menú' : 'Abrir menú')}
+            aria-expanded={hasSidebar ? undefined : menuOpen}
+          >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {menuOpen
+              {menuOpen && !hasSidebar
                 ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />}
             </svg>
@@ -136,8 +150,8 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile menu */}
-      {menuOpen && (
+      {/* Mobile menu — replaced by the sidebar drawer for logged-in students. */}
+      {!hasSidebar && menuOpen && (
         <div className={`md:hidden px-4 py-3 flex flex-col gap-3 ${!isHome ? 'bg-bg-surface border-t border-border' : ''}`}>
           {user ? (
             <>
