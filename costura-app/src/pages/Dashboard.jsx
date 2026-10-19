@@ -28,7 +28,7 @@ export default function Dashboard() {
               <Link to="/mis-cursos" className="text-text-ink text-sm hover:text-success">Ver todos →</Link>
             }
           />
-          <div className="w-full px-4">
+          <div className="w-full px-4 mt-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
               {myCourses.map(course => (
                 <CourseCard key={course.id} course={course} />
@@ -46,7 +46,7 @@ export default function Dashboard() {
                 <Link to="/cursos" className="text-text-ink text-sm hover:text-success">Ver todos →</Link>
               }
             />
-            <div className="w-full px-4">
+            <div className="w-full px-4 mt-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                 {suggested.map(course => (
                   <CourseCard key={course.id} course={course} />

@@ -67,4 +67,17 @@ describe('Dashboard — Ver todos dentro del header de la sección', () => {
     expect(header.contains(link)).toBe(true);
     expect(link.getAttribute('href')).toBe('/cursos');
   });
+
+  it('keeps the same top margin as the other tabs between the header and the cards', () => {
+    renderPage();
+
+    // La card mockeada cuelga de la grilla, que a su vez cuelga del contenedor
+    // con el margen. Las otras pestañas con grilla usan mt-6: el Dashboard
+    // tiene que manter la misma distancia entre la linea rosa y las cards.
+    const card = screen.getByText('Curso sugerido');
+    const grid = card.parentElement;
+    const wrapper = grid?.parentElement;
+
+    expect(wrapper?.className).toContain('mt-6');
+  });
 });
