@@ -6,15 +6,18 @@ import ErrorState from '../components/ErrorState';
 
 export default function Auth({ defaultTab = 'login' }) {
   const navigate = useNavigate();
-  const { login, register, logout } = useAuth();
+  const { user, login, register } = useAuth();
   const [tab, setTab] = useState(defaultTab);
   const [showPassword, setShowPassword] = useState(false);
   useEffect(() => {
-    // Si entras a la página de Auth, cerramos la sesión actual
-    // para que no se superpongan estados
-    logout();
-    // logout es estable (useCallback en AuthContext), el efecto corre una sola vez
-  }, [logout]);
+    // Si ya hay sesión iniciada no tiene sentido quedarse en el login: se
+    // redirige a la home de cada rol. Antes esta página cerraba la sesión
+    // (logout) al montarse, y eso invalidaba el login recién hecho cuando
+    // el componente se remontaba: la alumna quedaba expulsada a /login.
+    if (user) {
+      navigate(user.role === 'ADMIN' ? '/admin' : '/dashboard', { replace: true });
+    }
+  }, [user, navigate]);
 
   // Agregamos 'country' al estado inicial del formulario
   const [form, setForm] = useState({
