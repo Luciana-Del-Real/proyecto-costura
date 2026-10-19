@@ -7,18 +7,17 @@ import EmptyState from '../../components/EmptyState';
 import SearchInput from '../../components/SearchInput';
 import Badge from '../../components/Badge';
 import Modal from '../../components/Modal';
-import { useCourseCatalog } from '../../context/CourseCatalogContext';
 import { useDialog } from '../../context/DialogContext';
 import { useAdmin } from '../../context/AdminContext';
 import { getCoursePrice, getCurrencyCode, formatMoney } from '../../utils/currency';
 import { getImageUrl } from '../../utils/media';
-import { listAllPatternPurchases } from '../../services/api';
+import { get, listAllPatternPurchases } from '../../services/api';
 
 export default function AdminUsers() {
   const { alertDialog, confirmDialog } = useDialog();
-  const { courses } = useCourseCatalog();
   const { getAllUsers, toggleUserActive } = useAdmin();
   const [allUsers, setAllUsers] = useState([]);
+  const [courses, setCourses] = useState([]);
   const [patternPurchases, setPatternPurchases] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
@@ -30,6 +29,10 @@ export default function AdminUsers() {
     try {
       const data = await getAllUsers();
       setAllUsers(data);
+      // Cursos con forma de admin (incluye los ocultos): el catálogo público no
+      // los trae y además puede estar desactualizado, por eso el detalle
+      // terminaba mostrando "Sin cursos" aunque la alumna hubiera comprado.
+      setCourses(await get('/courses?limit=100'));
       setPatternPurchases(await listAllPatternPurchases());
     } catch (err) {
       console.error('Error cargando alumnas:', err);
@@ -241,13 +244,14 @@ export default function AdminUsers() {
         )
       ) : (
         <div className="card-flat rounded-2xl overflow-x-auto animate-fade-up mb-6">
-          <table className="w-full text-sm min-w-[560px]">
+          <table className="w-full text-sm min-w-[640px]">
             <thead>
               {/* Eliminamos el fondo del tr y dejamos que el bg del div principal sea el fondo */}
               <tr className="border-b border-border">
                 <th className="text-left px-8 py-4 text-text-ink font-bold text-xs uppercase tracking-wider">Alumna</th>
                 <th className="text-left px-4 py-4 text-text-ink font-bold text-xs uppercase tracking-wider hidden md:table-cell">Email</th>
                 <th className="text-center px-4 py-4 text-text-ink font-bold text-xs uppercase tracking-wider">Cursos</th>
+                <th className="text-center px-4 py-4 text-text-ink font-bold text-xs uppercase tracking-wider">Patrones</th>
                 <th className="text-center px-4 py-4 text-text-ink font-bold text-xs uppercase tracking-wider hidden sm:table-cell">Estado</th>
                 <th className="px-4 py-4"></th>
               </tr>
@@ -266,6 +270,9 @@ export default function AdminUsers() {
                   <td className="px-4 py-4 text-black hidden md:table-cell font-medium">{u.email}</td>
                   <td className="px-4 py-4 text-center">
                     <Badge tone="neutral">{getPurchasedCourseIds(u).length}</Badge>
+                  </td>
+                  <td className="px-4 py-4 text-center">
+                    <Badge tone="neutral">{getUserPatterns(u).length}</Badge>
                   </td>
                   <td className="px-4 py-4 text-center hidden sm:table-cell">
                     {isActive(u)
