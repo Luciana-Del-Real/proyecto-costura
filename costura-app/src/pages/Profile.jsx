@@ -8,10 +8,11 @@ import EmptyState from '../components/EmptyState';
 import ErrorState from '../components/ErrorState';
 import SuccessBanner from '../components/SuccessBanner';
 import PageHeader from '../components/PageHeader';
+import { getLevelLabel } from '../utils/levels';
 
 export default function Profile() {
   const { user, updateUser } = useAuth();
-  const { purchaseRecords, purchasesLoading, purchasesError } = usePurchases();
+  const { purchaseRecords, patternPurchaseRecords = [], purchasesLoading, purchasesError } = usePurchases();
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({
     name: user?.name || '',
@@ -22,14 +23,36 @@ export default function Profile() {
   const [error, setError] = useState(null);
   const [saved, setSaved] = useState(false);
 
-  // Historial real: solo las compras aprobadas que devuelve el backend.
-  const approvedRecords = Array.isArray(purchaseRecords)
+  // Historial real: cursos + patrones aprobados, unificados por fecha.
+  const approvedCourseRecords = Array.isArray(purchaseRecords)
     ? purchaseRecords.filter(r => r.status === 'APPROVED')
     : [];
-  const totalInvested = approvedRecords.reduce(
-    (sum, r) => sum + (r.total ?? r.course?.priceARS ?? 0),
-    0,
-  );
+  const approvedPatternRecords = Array.isArray(patternPurchaseRecords)
+    ? patternPurchaseRecords.filter(r => r.status === 'APPROVED')
+    : [];
+
+  const historyRecords = [
+    ...approvedCourseRecords.map(record => ({
+      key: `course-${record.id}`,
+      type: 'Curso',
+      record,
+      title: record.course?.title,
+      level: getLevelLabel(record.course?.level),
+      image: record.course?.image,
+      amount: record.total ?? record.course?.priceARS ?? 0,
+    })),
+    ...approvedPatternRecords.map(record => ({
+      key: `pattern-${record.id}`,
+      type: 'Patrón',
+      record,
+      title: record.pattern?.titulo,
+      level: getLevelLabel(record.pattern?.nivel),
+      image: record.pattern?.imagen,
+      amount: record.total ?? record.pattern?.precioARS ?? 0,
+    })),
+  ].sort((a, b) => new Date(b.record.createdAt ?? 0) - new Date(a.record.createdAt ?? 0));
+
+  const totalInvested = historyRecords.reduce((sum, item) => sum + item.amount, 0);
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -151,28 +174,28 @@ export default function Profile() {
             <LoadingState size="inline" />
           ) : purchasesError ? (
             <ErrorState variant="inline" description="No se pudieron cargar tus compras. Verificá tu conexión e intentá de nuevo más tarde." />
-          ) : approvedRecords.length === 0 ? (
+          ) : historyRecords.length === 0 ? (
             <EmptyState variant="inline" title="Todavía no realizaste ninguna compra." />
           ) : (
             <div className="space-y-3">
-              {approvedRecords.map(record => {
-                const course = record.course || {};
-                return (
-                  <div key={record.id} className="flex items-center gap-4 py-3 border-b border-border last:border-0">
-                    <img src={getImageUrl(course.image)} alt={course.title} className="w-12 h-12 rounded-xl object-cover flex-shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-text-ink text-sm truncate">{course.title}</p>
-                      <p className="text-text-ink text-xs">{course.level}</p>
-                      {record.createdAt && (
-                        <p className="text-text-ink text-xs">{new Date(record.createdAt).toLocaleDateString()}</p>
-                      )}
-                    </div>
-                    <span className="font-semibold text-text-ink text-sm flex-shrink-0">
-                      {formatMoney(record.total ?? course.priceARS ?? 0, user?.country === 'AUD' ? 'AUD' : 'ARS')}
-                    </span>
+              {historyRecords.map(item => (
+                <div key={item.key} className="flex items-center gap-4 py-3 border-b border-border last:border-0">
+                  <img src={getImageUrl(item.image)} alt={item.title} className="w-12 h-12 rounded-xl object-cover flex-shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-text-ink text-sm truncate">{item.title}</p>
+                    <p className="text-text-ink text-xs">
+                      <span className="inline-block rounded-full bg-primary-soft px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide">{item.type}</span>
+                      {item.level && <span className="ml-2">{item.level}</span>}
+                    </p>
+                    {item.record.createdAt && (
+                      <p className="text-text-ink text-xs">{new Date(item.record.createdAt).toLocaleDateString()}</p>
+                    )}
                   </div>
-                );
-              })}
+                  <span className="font-semibold text-text-ink text-sm flex-shrink-0">
+                    {formatMoney(item.amount, user?.country === 'AUD' ? 'AUD' : 'ARS')}
+                  </span>
+                </div>
+              ))}
               <div className="pt-2 flex justify-between text-sm font-semibold text-text-ink">
                 <span>Total invertido</span>
                 <span>{formatMoney(totalInvested, user?.country === 'AUD' ? 'AUD' : 'ARS')}</span>

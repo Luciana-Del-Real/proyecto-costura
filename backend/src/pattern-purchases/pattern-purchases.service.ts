@@ -102,6 +102,21 @@ export class PatternPurchasesService {
     });
   }
 
+  // Historial de compras de patrones de una alumna: mismo criterio que el de
+  // cursos (solo las suyas; el admin puede ver las de cualquiera).
+  getUserPurchases(userId: string) {
+    return this.prisma.patternPurchase.findMany({
+      where: { userId, deletedAt: null },
+      include: {
+        pattern: true,
+        user: {
+          select: { id: true, email: true, name: true, country: true },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
   async approve(id: string) {
     return this.prisma.runInTransaction(async (tx: Prisma.TransactionClient) => {
       const purchase = await tx.patternPurchase.findUnique({

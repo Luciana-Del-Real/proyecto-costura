@@ -9,8 +9,10 @@ export function PurchaseProvider({ children }) {
   const { user } = useAuth();
 
   // purchaseRecords: raw records from the backend (all statuses).
+  // patternPurchaseRecords: raw pattern purchases (all statuses).
   // purchases / pendingPurchases: derived course id lists, exposed separately.
   const [purchaseRecords, setPurchaseRecords] = useState([]);
+  const [patternPurchaseRecords, setPatternPurchaseRecords] = useState([]);
   const [purchases, setPurchases] = useState([]);
   const [pendingPurchases, setPendingPurchases] = useState([]);
   const [purchasesLoading, setPurchasesLoading] = useState(false);
@@ -19,6 +21,7 @@ export function PurchaseProvider({ children }) {
   const refreshMyPurchases = useCallback(async () => {
     if (!user) {
       setPurchaseRecords([]);
+      setPatternPurchaseRecords([]);
       setPurchases([]);
       setPendingPurchases([]);
       setPurchasesError(null);
@@ -26,9 +29,18 @@ export function PurchaseProvider({ children }) {
     }
     setPurchasesLoading(true);
     try {
-      const data = await get(`/purchases/user/${user.id}`);
+      // Los patrones se piden aparte: si esa ruta todavía no existe en el
+      // backend, el historial de cursos debe seguir funcionando igual.
+      const [data, patternData] = await Promise.all([
+        get(`/purchases/user/${user.id}`),
+        get(`/pattern-purchases/user/${user.id}`).catch((patternError) => {
+          console.error('Error cargando tus compras de patrones:', patternError);
+          return [];
+        }),
+      ]);
       const { approved, pending } = derivePurchaseState(data);
       setPurchaseRecords(data);
+      setPatternPurchaseRecords(Array.isArray(patternData) ? patternData : []);
       setPurchases(approved);
       setPendingPurchases(pending);
       setPurchasesError(null);
@@ -111,6 +123,7 @@ export function PurchaseProvider({ children }) {
   return (
     <PurchaseContext.Provider value={{
       purchaseRecords,
+      patternPurchaseRecords,
       purchases, pendingPurchases,
       purchasesLoading, purchasesError,
       requestPurchase, approvePurchase, denyPurchase, refreshMyPurchases,

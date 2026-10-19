@@ -1,7 +1,9 @@
+import { ForbiddenException } from '@nestjs/common';
 import { PatternPurchasesService } from '../src/pattern-purchases/pattern-purchases.service';
 import { PatternPurchasesController } from '../src/pattern-purchases/pattern-purchases.controller';
 import { PrismaService } from '../src/prisma/prisma.service';
-import { PurchaseStatus } from '../src/common/enums';
+import { PurchaseStatus, Role } from '../src/common/enums';
+import { Principal } from '../src/common/principal';
 
 /**
  * Admin sales-history spec for pattern purchases (task: pattern sales in the
@@ -91,6 +93,59 @@ describe('PatternPurchasesService (admin history)', () => {
   });
 });
 
+describe('PatternPurchasesService (student history)', () => {
+  const mockPrisma = {
+    patternPurchase: {
+      findMany: jest.fn(),
+    },
+  };
+
+  let service: PatternPurchasesService;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    service = new PatternPurchasesService(
+      mockPrisma as unknown as PrismaService,
+      {} as never,
+    );
+  });
+
+  describe('#getUserPurchases', () => {
+    it('queries only the given user non-deleted purchases ordered by createdAt desc', async () => {
+      mockPrisma.patternPurchase.findMany.mockResolvedValue([]);
+
+      await service.getUserPurchases('u1');
+
+      expect(mockPrisma.patternPurchase.findMany).toHaveBeenCalledWith({
+        where: { userId: 'u1', deletedAt: null },
+        include: {
+          pattern: true,
+          user: {
+            select: { id: true, email: true, name: true, country: true },
+          },
+        },
+        orderBy: { createdAt: 'desc' },
+      });
+    });
+
+    it('returns the given user\'s pattern purchases resolved by prisma', async () => {
+      const rows = [
+        {
+          id: 'pp1',
+          status: PurchaseStatus.APPROVED,
+          total: 12000,
+          pattern: { titulo: 'Blusa Romántica' },
+        },
+      ];
+      mockPrisma.patternPurchase.findMany.mockResolvedValue(rows);
+
+      const result = await service.getUserPurchases('u1');
+
+      expect(result).toEqual(rows);
+    });
+  });
+});
+
 describe('PatternPurchasesController (admin history route)', () => {
   it('getAll() delegates to the service', () => {
     const getAllPurchases = jest.fn().mockReturnValue(['purchase']);
@@ -100,5 +155,53 @@ describe('PatternPurchasesController (admin history route)', () => {
 
     expect(controller.getAll()).toEqual(['purchase']);
     expect(getAllPurchases).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('PatternPurchasesController (student history route)', () => {
+  const principal = (id: string, role: Role): { user: Principal } => ({
+    user: { id, role },
+  });
+
+  it('lets the owner read their own pattern purchases', async () => {
+    const getUserPurchases = jest.fn().mockResolvedValue(['purchase']);
+    const controller = new PatternPurchasesController({
+      getUserPurchases,
+    } as unknown as PatternPurchasesService);
+
+    const result = await controller.getUserPurchases(
+      'u1',
+      principal('u1', Role.ALUMNO),
+    );
+
+    expect(result).toEqual(['purchase']);
+    expect(getUserPurchases).toHaveBeenCalledWith('u1');
+  });
+
+  it('lets an admin read another student purchases', async () => {
+    const getUserPurchases = jest.fn().mockResolvedValue(['purchase']);
+    const controller = new PatternPurchasesController({
+      getUserPurchases,
+    } as unknown as PatternPurchasesService);
+
+    const result = await controller.getUserPurchases(
+      'u2',
+      principal('admin1', Role.ADMIN),
+    );
+
+    expect(result).toEqual(['purchase']);
+    expect(getUserPurchases).toHaveBeenCalledWith('u2');
+  });
+
+  it('forbids another student without calling the service', async () => {
+    const getUserPurchases = jest.fn();
+    const controller = new PatternPurchasesController({
+      getUserPurchases,
+    } as unknown as PatternPurchasesService);
+
+    await expect(
+      controller.getUserPurchases('u1', principal('u2', Role.ALUMNO)),
+    ).rejects.toBeInstanceOf(ForbiddenException);
+    expect(getUserPurchases).not.toHaveBeenCalled();
   });
 });
