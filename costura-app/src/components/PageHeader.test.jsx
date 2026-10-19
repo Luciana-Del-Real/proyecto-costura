@@ -22,6 +22,24 @@ describe('PageHeader', () => {
     expect(html).not.toContain('<p');
   });
 
+  it('renders the action on the same row as the subtitle', () => {
+    const html = renderToStaticMarkup(
+      <PageHeader
+        title="Mis cursos"
+        subtitle="2 cursos adquiridos"
+        action={<a href="/mis-cursos">Ver todos →</a>}
+      />
+    );
+
+    // Subtitle and action share a single flex row container.
+    const row = html.match(/<div class="[^"]*\bflex\b[^"]*">(.*?)<\/div>/)?.[1] ?? '';
+    expect(row).toContain('<p');
+    expect(row).toContain('2 cursos adquiridos');
+    expect(row).toContain('Ver todos →');
+    // The action is a DIRECT sibling of the subtitle, not a separate row below it.
+    expect(row).toMatch(/<\/p><a href="\/mis-cursos">Ver todos →<\/a>/);
+  });
+
   it('renders the accent bar by default', () => {
     const html = renderToStaticMarkup(<PageHeader title="Todos los cursos" />);
     expect(html).toContain('bg-primary');
