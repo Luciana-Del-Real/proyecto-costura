@@ -67,14 +67,14 @@ function EventCard({ event, variant }) {
     return (
       <div
         style={{ borderColor: variant.border }}
-        className="relative overflow-hidden flex flex-col sm:flex-row sm:items-stretch h-full min-h-[300px] md:min-h-[480px] rounded-3xl border bg-white"
+        className="relative overflow-hidden flex flex-col @container h-full min-h-[300px] md:min-h-[480px] rounded-3xl border bg-white @min-[360px]:flex-row @min-[360px]:items-stretch"
       >
         {/* Celular (2 cards por fila): la imagen va ARRIBA a todo el ancho y el
             contenido debajo, así la card queda más alta que ancha. Desde sm
             (640px) pasa a mitad izquierda a todo el alto, como en desktop.
             El wrapper es un div (se estira como flex item) y la imagen va
             absoluta adentro: un <img> con self-stretch no siempre se estira. */}
-        <div className="relative w-full h-40 sm:w-1/2 sm:h-auto sm:shrink-0">
+        <div className="relative w-full h-40 @min-[360px]:w-1/2 @min-[360px]:h-auto @min-[360px]:shrink-0">
           <img
             src={getImageUrl(event.image)}
             alt={event.title || 'Evento'}
@@ -83,20 +83,20 @@ function EventCard({ event, variant }) {
         </div>
         {/* Contenido: título (alineado a la derecha), bajada, características
             centradas y botón centrado en su lado. */}
-        <div className="flex flex-col p-4 sm:p-3 md:p-6 text-center flex-1 min-w-0">
-          <h3 className="font-display uppercase leading-none text-center sm:text-right break-words">
-            <span className="text-event-pink block text-2xl md:text-4xl font-bold">{first}</span>
-            <span className="text-event-green-deep block text-base md:text-2xl font-normal">{second}</span>
+        <div className="flex flex-col p-4 @min-[360px]:p-6 text-center flex-1 min-w-0">
+          <h3 className="font-display uppercase leading-none text-center @min-[360px]:text-right break-words">
+            <span className="text-event-pink block text-2xl @min-[360px]:text-4xl font-bold">{first}</span>
+            <span className="text-event-green-deep block text-base @min-[360px]:text-2xl font-normal">{second}</span>
           </h3>
 
           {event.subtitle && (
-            <p className="font-body text-[11px] md:text-sm text-event-rose-deep mt-1 md:mt-2 leading-relaxed">{event.subtitle}</p>
+            <p className="font-body text-[11px] @min-[360px]:text-sm text-event-rose-deep mt-1 @min-[360px]:mt-2 leading-relaxed">{event.subtitle}</p>
           )}
 
           {features.length > 0 && (
-            <div className="flex-1 flex flex-col justify-center space-y-2 md:space-y-4 mt-4">
+            <div className="flex-1 flex flex-col justify-center space-y-2 @min-[360px]:space-y-4 mt-4">
               {features.map((f) => (
-                <p key={f} className="font-body text-[11px] md:text-sm text-text-ink leading-snug">{f}</p>
+                <p key={f} className="font-body text-[11px] @min-[360px]:text-sm text-text-ink leading-snug">{f}</p>
               ))}
             </div>
           )}
@@ -110,7 +110,7 @@ function EventCard({ event, variant }) {
               href={whatsappUrl(event)}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center justify-center max-w-full bg-event-pink hover:bg-event-pink-hover text-white font-bold text-[11px] md:text-sm uppercase tracking-wide rounded-full px-3 md:px-6 py-2 md:py-2.5 transition-colors"
+              className="inline-flex items-center justify-center max-w-full bg-event-pink hover:bg-event-pink-hover text-white font-bold text-[11px] @min-[360px]:text-sm uppercase tracking-wide rounded-full px-3 @min-[360px]:px-6 py-2 @min-[360px]:py-2.5 transition-colors"
             >
               Consultar
             </a>
