@@ -8,6 +8,7 @@ import EmptyState from '../components/EmptyState';
 import ErrorState from '../components/ErrorState';
 import SuccessBanner from '../components/SuccessBanner';
 import PageHeader from '../components/PageHeader';
+import { getLevelLabel } from '../utils/levels';
 
 export default function Profile() {
   const { user, updateUser } = useAuth();
@@ -36,7 +37,7 @@ export default function Profile() {
       type: 'Curso',
       record,
       title: record.course?.title,
-      level: record.course?.level,
+      level: getLevelLabel(record.course?.level),
       image: record.course?.image,
       amount: record.total ?? record.course?.priceARS ?? 0,
     })),
@@ -45,7 +46,7 @@ export default function Profile() {
       type: 'Patrón',
       record,
       title: record.pattern?.titulo,
-      level: record.pattern?.nivel,
+      level: getLevelLabel(record.pattern?.nivel),
       image: record.pattern?.imagen,
       amount: record.total ?? record.pattern?.precioARS ?? 0,
     })),

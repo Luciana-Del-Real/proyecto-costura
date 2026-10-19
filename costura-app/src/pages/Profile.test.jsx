@@ -126,4 +126,30 @@ describe('5.4 Profile purchase history', () => {
     expect(html.indexOf('Blusa Romántica')).toBeLessThan(html.indexOf('Corte y Confección'));
     expect(html).not.toContain('Todavía no realizaste ninguna compra.');
   });
+  it('shows the course and pattern levels with the same casing', () => {
+    mocks.purchaseRecords = [
+      {
+        id: 'p9',
+        status: 'APPROVED',
+        total: 12000,
+        createdAt: '2026-08-01T10:00:00.000Z',
+        course: { title: 'Curso de Corte', level: 'PRINCIPIANTE', image: 'corte.jpg', priceARS: 12000 },
+      },
+    ];
+    mocks.patternPurchaseRecords = [
+      {
+        id: 'pp1',
+        status: 'APPROVED',
+        total: 8000,
+        createdAt: '2026-08-03T10:00:00.000Z',
+        pattern: { titulo: 'Blusa', nivel: 'principiante', imagen: 'blusa.jpg', precioARS: 8000 },
+      },
+    ];
+
+    const html = renderToStaticMarkup(<Profile />);
+
+    expect(html).toContain('Principiante');
+    expect(html).not.toContain('PRINCIPIANTE');
+    expect(html).not.toContain('>principiante<');
+  });
 });

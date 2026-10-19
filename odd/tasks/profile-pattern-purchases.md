@@ -97,5 +97,6 @@ costura-app/src/pages/Profile.test.jsx
 - PR: https://github.com/Luciana-Del-Real/proyecto-costura/pull/71
 - Verificacion: backend 21 suites / 151 tests; frontend 33 archivos / 187 tests; lint y build limpios; UTF-8 sin BOM.
 
+- Correccion: el nivel se normaliza con `getLevelLabel` en ambos lados. El enum del curso llega en MAYUSCULAS (`PRINCIPIANTE`) y el nivel del patron es texto libre (`Principiante`), asi que el historial mezclaba mayusculas y minusculas. Test: `shows the course and pattern levels with the same casing`.
 ## Próximo paso
 Entregado en PR (ver seccion Evidencia).
