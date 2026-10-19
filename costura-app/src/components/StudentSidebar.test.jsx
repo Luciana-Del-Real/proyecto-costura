@@ -39,11 +39,17 @@ function DrawerHarness() {
 describe('StudentSidebar', () => {
   it('renders every student nav item', () => {
     const { getByRole } = renderSidebar();
-    ['Inicio', 'Cursos', 'Patrones', 'Eventos', 'Recomendaciones', 'Mis cursos', 'Favoritos', 'Perfil'].forEach(
+    ['Inicio', 'Cursos', 'Patrones', 'Eventos', 'Recomendaciones', 'Mis cursos'].forEach(
       (label) => {
         expect(getByRole('link', { name: label })).toBeTruthy();
       },
     );
+  });
+
+  it('does not repeat Favoritos or Perfil (they live in the navbar dropdown)', () => {
+    const { queryByRole } = renderSidebar();
+    expect(queryByRole('link', { name: 'Favoritos' })).toBeNull();
+    expect(queryByRole('link', { name: 'Perfil' })).toBeNull();
   });
 
   it('marks the active item for the current route', () => {
@@ -58,7 +64,7 @@ describe('StudentSidebar', () => {
   });
 
   it('does not mark the dashboard index active on child routes', () => {
-    const { getByRole } = renderSidebar('/favoritos');
+    const { getByRole } = renderSidebar('/eventos');
     expect(getByRole('link', { name: 'Inicio' }).getAttribute('aria-current')).toBeNull();
   });
 
@@ -83,7 +89,7 @@ describe('StudentSidebar', () => {
     fireEvent.click(getByText('abrir drawer'));
 
     const dialog = getByRole('dialog');
-    fireEvent.click(within(dialog).getByRole('link', { name: 'Favoritos' }));
+    fireEvent.click(within(dialog).getByRole('link', { name: 'Mis cursos' }));
 
     expect(queryByRole('dialog')).toBeNull();
   });
