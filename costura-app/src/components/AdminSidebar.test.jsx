@@ -53,10 +53,11 @@ describe('AdminSidebar', () => {
     );
   });
 
-  it('renders the user block in the footer', () => {
-    const { getByText, queryByRole } = renderSidebar();
-    expect(getByText('Daiana Pérez')).toBeTruthy();
-    expect(getByText('Administradora')).toBeTruthy();
+  it('keeps the identity and logout out of the desktop rail (they live in the topbar)', () => {
+    const { queryByText, queryByRole } = renderSidebar();
+    expect(queryByText('Daiana Pérez')).toBeNull();
+    expect(queryByText('Administradora')).toBeNull();
+    expect(queryByRole('button', { name: 'Salir' })).toBeNull();
     // The notification bell lives in the topbar, not in the sidebar.
     expect(queryByRole('button', { name: 'Notificaciones' })).toBeNull();
   });
@@ -95,6 +96,19 @@ describe('AdminSidebar', () => {
     const dialog = getByRole('dialog');
     fireEvent.click(within(dialog).getByRole('link', { name: 'Ventas' }));
 
+    expect(queryByRole('dialog')).toBeNull();
+  });
+
+  it('shows the identity in the drawer and logs out from there', () => {
+    const { getByText, getByRole, queryByRole } = render(<DrawerHarness />);
+    fireEvent.click(getByText('abrir drawer'));
+
+    const dialog = getByRole('dialog');
+    expect(within(dialog).getByText('Daiana Pérez')).toBeTruthy();
+    expect(within(dialog).getByText('Administradora')).toBeTruthy();
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Salir' }));
+
+    expect(mocks.logout).toHaveBeenCalledTimes(1);
     expect(queryByRole('dialog')).toBeNull();
   });
 });
