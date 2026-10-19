@@ -39,12 +39,15 @@ export default function Auth({ defaultTab = 'login' }) {
     setError('');
 
     try {
-      if (tab === 'register') {
-        await register(form.name, form.email, form.password, form.country);
-      } else {
-        await login(form.email, form.password);
-      }
-      navigate('/dashboard');
+      // Destino explícito por rol: el admin al panel y la alumna a su
+      // dashboard. Antes se navegaba siempre a /dashboard y el ProtectedRoute
+      // redireccionaba a la portada cuando la sesión todavía no estaba
+      // reconocida, dejando a la alumna en el home sin haber entrado.
+      const loggedUser = tab === 'register'
+        ? await register(form.name, form.email, form.password, form.country)
+        : await login(form.email, form.password);
+      const role = String(loggedUser?.role || '').toUpperCase();
+      navigate(role === 'ADMIN' ? '/admin' : '/dashboard', { replace: true });
     } catch (err) {
       setError(err.message || 'Error al procesar la solicitud');
     } finally {
