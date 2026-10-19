@@ -248,11 +248,11 @@ export default function AdminUsers() {
             <thead>
               {/* Eliminamos el fondo del tr y dejamos que el bg del div principal sea el fondo */}
               <tr className="border-b border-border">
-                <th className="text-left px-8 py-4 text-text-ink font-bold text-xs uppercase tracking-wider">Alumna</th>
-                <th className="text-left px-4 py-4 text-text-ink font-bold text-xs uppercase tracking-wider hidden md:table-cell">Email</th>
-                <th className="text-center px-4 py-4 text-text-ink font-bold text-xs uppercase tracking-wider">Cursos</th>
-                <th className="text-center px-4 py-4 text-text-ink font-bold text-xs uppercase tracking-wider">Patrones</th>
-                <th className="text-center px-4 py-4 text-text-ink font-bold text-xs uppercase tracking-wider hidden sm:table-cell">Estado</th>
+                <th className="text-left px-8 py-3 text-text-ink font-bold text-sm uppercase tracking-wider">Alumna</th>
+                <th className="text-left px-4 py-3 text-text-ink font-bold text-sm uppercase tracking-wider hidden md:table-cell">Email</th>
+                <th className="text-center px-4 py-3 text-text-ink font-bold text-sm uppercase tracking-wider">Cursos</th>
+                <th className="text-center px-4 py-3 text-text-ink font-bold text-sm uppercase tracking-wider">Patrones</th>
+                <th className="text-center px-4 py-3 text-text-ink font-bold text-sm uppercase tracking-wider hidden sm:table-cell">Estado</th>
                 <th className="px-4 py-4"></th>
               </tr>
             </thead>
