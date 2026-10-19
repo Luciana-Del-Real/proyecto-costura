@@ -6,8 +6,10 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import AdminSidebar from './components/AdminSidebar';
 import AdminTopbar from './components/AdminTopbar';
+import StudentSidebar from './components/StudentSidebar';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
+import { useAuth } from './context/AuthContext';
 
 import Home from './pages/Home';
 import Auth from './pages/Auth';
@@ -39,11 +41,35 @@ import AdminRecommendations from './pages/admin/AdminRecommendations';
 import AdminRecommendationForm from './pages/admin/AdminRecommendationForm';
 import Recommendations from './pages/Recommendations';
 
+// Shell for a logged-in student: the public navbar on top and a left sidebar
+// below it (sticky rail on desktop, drawer on mobile). The drawer state lives
+// here so the navbar trigger and the sidebar can share it. Guests keep the
+// public full-width layout and admins keep the separate AdminLayout shell.
 function Layout({ children }) {
+  const { user, isAdmin } = useAuth();
+  const { pathname } = useLocation();
+  const [navOpen, setNavOpen] = useState(false);
+  // The landing page keeps its navbar overlaying the hero, so the rail is only
+  // mounted inside the app shell.
+  const hasStudentSidebar = Boolean(user && !isAdmin) && pathname !== '/';
+
+  if (!hasStudentSidebar) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        <main className="flex-1">{children}</main>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-      <main className="flex-1">{children}</main>
+    <div className="min-h-screen flex flex-col bg-bg-surface">
+      <Navbar onMenuClick={() => setNavOpen(true)} />
+      <div className="flex flex-1 min-w-0">
+        <StudentSidebar open={navOpen} onClose={() => setNavOpen(false)} />
+        <main className="flex-1 min-w-0">{children}</main>
+      </div>
       <Footer />
     </div>
   );
