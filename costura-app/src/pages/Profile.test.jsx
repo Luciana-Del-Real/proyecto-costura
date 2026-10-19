@@ -13,6 +13,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 const mocks = vi.hoisted(() => ({
   user: { id: 'u1', name: 'Ana', email: 'ana@test.local', country: 'AR' },
   purchaseRecords: [],
+  patternPurchaseRecords: [],
   purchasesLoading: false,
   purchasesError: null,
 }));
@@ -24,6 +25,7 @@ vi.mock('../context/AuthContext', () => ({
 vi.mock('../context/PurchaseContext', () => ({
   usePurchases: () => ({
     purchaseRecords: mocks.purchaseRecords,
+    patternPurchaseRecords: mocks.patternPurchaseRecords,
     purchasesLoading: mocks.purchasesLoading,
     purchasesError: mocks.purchasesError,
   }),
@@ -39,6 +41,7 @@ describe('5.4 Profile purchase history', () => {
   beforeEach(() => {
     mocks.user = { id: 'u1', name: 'Ana', email: 'ana@test.local', country: 'AR' };
     mocks.purchaseRecords = [];
+    mocks.patternPurchaseRecords = [];
     mocks.purchasesLoading = false;
     mocks.purchasesError = null;
   });
@@ -90,5 +93,37 @@ describe('5.4 Profile purchase history', () => {
 
     expect(html).toContain('Todavía no realizaste ninguna compra.');
     expect(html).not.toContain('Curso Pendiente');
+  });
+
+  it('merges approved course and pattern purchases in one history with a combined total', () => {
+    mocks.purchaseRecords = [
+      {
+        id: 'p1',
+        status: 'APPROVED',
+        total: 12000,
+        createdAt: '2026-08-01T10:00:00.000Z',
+        course: { title: 'Corte y Confección', level: 'Inicial', image: 'corte.jpg', priceARS: 12000 },
+      },
+    ];
+    mocks.patternPurchaseRecords = [
+      {
+        id: 'pp1',
+        status: 'APPROVED',
+        total: 15000,
+        createdAt: '2026-08-02T10:00:00.000Z',
+        pattern: { titulo: 'Blusa Romántica', nivel: 'Intermedio', imagen: 'blusa.jpg', precioARS: 15000 },
+      },
+    ];
+
+    const html = renderToStaticMarkup(<Profile />);
+
+    expect(html).toContain('Corte y Confección');
+    expect(html).toContain('Blusa Romántica');
+    expect(html).toContain('>Curso<');
+    expect(html).toContain('>Patrón<');
+    expect(html).toContain('Total invertido');
+    expect(html).toContain('27.000');
+    expect(html.indexOf('Blusa Romántica')).toBeLessThan(html.indexOf('Corte y Confección'));
+    expect(html).not.toContain('Todavía no realizaste ninguna compra.');
   });
 });

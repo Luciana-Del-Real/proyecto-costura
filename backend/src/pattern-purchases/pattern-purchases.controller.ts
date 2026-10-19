@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Param, Request, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Param, Request, UseGuards, ForbiddenException } from '@nestjs/common';
 import { PatternPurchasesService } from './pattern-purchases.service';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { AdminGuard } from '../auth/guards/admin.guard';
@@ -14,6 +14,18 @@ export class PatternPurchasesController {
   @UseGuards(JwtAuthGuard)
   request(@Param('patternId') patternId: string, @Request() req: { user: Principal }) {
     return this.patternPurchasesService.requestPurchase(req.user.id, patternId);
+  }
+
+  // Historial de compras de patrones de una alumna (dueño o admin).
+  @Get('pattern-purchases/user/:userId')
+  @UseGuards(JwtAuthGuard)
+  async getUserPurchases(@Param('userId') userId: string, @Request() req: { user: Principal }) {
+    const isOwner = req.user?.id === userId;
+    const isAdmin = req.user?.role === 'ADMIN';
+    if (!isOwner && !isAdmin) {
+      throw new ForbiddenException('No podés ver las compras de otro usuario');
+    }
+    return this.patternPurchasesService.getUserPurchases(userId);
   }
 
   @Get('admin/pattern-purchases/pending')
