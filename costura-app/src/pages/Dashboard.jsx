@@ -24,11 +24,11 @@ export default function Dashboard() {
           <PageHeader
             title="Mis cursos"
             subtitle={`${myCourses.length} curso${myCourses.length !== 1 ? 's' : ''} adquirido${myCourses.length !== 1 ? 's' : ''}`}
+            action={
+              <Link to="/mis-cursos" className="text-text-ink text-sm hover:text-success">Ver todos →</Link>
+            }
           />
           <div className="w-full px-4">
-            <div className="flex justify-end mb-5">
-              <Link to="/mis-cursos" className="text-text-ink text-sm hover:text-success">Ver todos →</Link>
-            </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
               {myCourses.map(course => (
                 <CourseCard key={course.id} course={course} />
@@ -39,11 +39,14 @@ export default function Dashboard() {
       ) : (
         suggested.length > 0 && (
           <div className="mb-10">
-            <PageHeader title="Cursos disponibles" subtitle="Encontrá el curso perfecto para vos" />
-            <div className="w-full px-4">
-              <div className="flex justify-end mb-5">
+            <PageHeader
+              title="Cursos disponibles"
+              subtitle="Encontrá el curso perfecto para vos"
+              action={
                 <Link to="/cursos" className="text-text-ink text-sm hover:text-success">Ver todos →</Link>
-              </div>
+              }
+            />
+            <div className="w-full px-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                 {suggested.map(course => (
                   <CourseCard key={course.id} course={course} />
