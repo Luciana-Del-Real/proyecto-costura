@@ -4,6 +4,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { publicCourseSelect } from '../courses/courses.service';
 
 @Injectable()
 export class FavoritesService {
@@ -13,7 +14,7 @@ export class FavoritesService {
     return this.prisma.favorite.findMany({
       where: { userId },
       include: {
-        course: true,
+        course: { select: publicCourseSelect },
       },
       orderBy: { createdAt: 'desc' },
     });
@@ -49,7 +50,7 @@ export class FavoritesService {
         courseId,
       },
       include: {
-        course: true,
+        course: { select: publicCourseSelect },
       },
     });
   }
