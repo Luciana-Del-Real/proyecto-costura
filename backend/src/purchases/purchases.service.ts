@@ -10,6 +10,7 @@ import { CreatePurchaseDto } from './dto/create-purchase.dto';
 import { PurchaseStatus } from '../common/enums';
 import { Principal, isOwnerOrAdmin } from '../common/principal';
 import { NotificationsService } from '../notifications/notifications.service';
+import { publicCourseSelect } from '../courses/courses.service';
 
 @Injectable()
 export class PurchasesService {
@@ -62,7 +63,7 @@ export class PurchasesService {
           total,
         },
         include: {
-          course: true,
+          course: { select: publicCourseSelect },
           user: {
             select: {
               id: true,
@@ -93,7 +94,7 @@ export class PurchasesService {
       async (tx: Prisma.TransactionClient) => {
         const purchase = await tx.purchase.findUnique({
           where: { id: purchaseId },
-          include: { course: true, user: true },
+          include: { course: { select: publicCourseSelect }, user: true },
         });
 
         if (!purchase) {
@@ -114,7 +115,7 @@ export class PurchasesService {
           where: { id: purchaseId },
           data: { status: PurchaseStatus.APPROVED },
           include: {
-            course: true,
+            course: { select: publicCourseSelect },
             user: {
               select: {
                 id: true,
@@ -168,7 +169,7 @@ export class PurchasesService {
   async rejectPurchase(purchaseId: string) {
     const purchase = await this.prisma.purchase.findUnique({
       where: { id: purchaseId },
-      include: { course: true, user: true },
+      include: { course: { select: publicCourseSelect }, user: true },
     });
 
     if (!purchase) {
@@ -191,7 +192,7 @@ export class PurchasesService {
       where: { id: purchaseId },
       data: { status: PurchaseStatus.REJECTED },
       include: {
-        course: true,
+        course: { select: publicCourseSelect },
         user: {
           select: {
             id: true,
@@ -213,7 +214,7 @@ export class PurchasesService {
     return this.prisma.purchase.findMany({
       where: { userId, deletedAt: null },
       include: {
-        course: true,
+        course: { select: publicCourseSelect },
         user: {
           select: {
             id: true,
@@ -238,7 +239,7 @@ export class PurchasesService {
     return this.prisma.purchase.findMany({
       where: { status: PurchaseStatus.PENDING, deletedAt: null },
       include: {
-        course: true,
+        course: { select: publicCourseSelect },
         user: {
           select: {
             id: true,
@@ -261,7 +262,7 @@ export class PurchasesService {
     return this.prisma.purchase.findMany({
       where: { deletedAt: null },
       include: {
-        course: true,
+        course: { select: publicCourseSelect },
         user: {
           select: {
             id: true,
@@ -281,7 +282,7 @@ export class PurchasesService {
     const purchase = await this.prisma.purchase.findFirst({
       where: { id, deletedAt: null },
       include: {
-        course: true,
+        course: { select: publicCourseSelect },
         user: {
           select: {
             id: true,

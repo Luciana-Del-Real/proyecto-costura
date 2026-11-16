@@ -8,6 +8,23 @@ import { PrismaService } from '../prisma/prisma.service';
 import { PurchaseStatus } from '../common/enums';
 import { NotificationsService } from '../notifications/notifications.service';
 
+// Proyección segura del patrón dentro de una compra: solo metadata de catálogo.
+// NUNCA `archivo` (URL pública del PDF de pago) ni `attachments`: el contenido
+// se sirve únicamente por el endpoint del patrón, que valida `hasAccess`.
+const purchasePatternSelect = {
+  id: true,
+  titulo: true,
+  descripcion: true,
+  nivel: true,
+  categoria: true,
+  imagen: true,
+  precioARS: true,
+  precioAUD: true,
+  active: true,
+  createdAt: true,
+  updatedAt: true,
+} as const;
+
 // Solicitudes de compra de patrones de pago, mismas reglas que las compras
 // de cursos: la alumna solicita (PENDING), el admin aprueba (APPROVED) y se
 // desbloquea el PDF; rechazar (REJECTED) es reversible.
@@ -56,7 +73,7 @@ export class PatternPurchasesService {
           total,
         },
         include: {
-          pattern: true,
+          pattern: { select: purchasePatternSelect },
           user: {
             select: { id: true, email: true, name: true, country: true },
           },
@@ -78,7 +95,7 @@ export class PatternPurchasesService {
     return this.prisma.patternPurchase.findMany({
       where: { status: PurchaseStatus.PENDING, deletedAt: null },
       include: {
-        pattern: true,
+        pattern: { select: purchasePatternSelect },
         user: {
           select: { id: true, email: true, name: true, country: true },
         },
@@ -93,7 +110,7 @@ export class PatternPurchasesService {
     return this.prisma.patternPurchase.findMany({
       where: { deletedAt: null },
       include: {
-        pattern: true,
+        pattern: { select: purchasePatternSelect },
         user: {
           select: { id: true, email: true, name: true, country: true },
         },
@@ -108,7 +125,7 @@ export class PatternPurchasesService {
     return this.prisma.patternPurchase.findMany({
       where: { userId, deletedAt: null },
       include: {
-        pattern: true,
+        pattern: { select: purchasePatternSelect },
         user: {
           select: { id: true, email: true, name: true, country: true },
         },
@@ -121,7 +138,7 @@ export class PatternPurchasesService {
     return this.prisma.runInTransaction(async (tx: Prisma.TransactionClient) => {
       const purchase = await tx.patternPurchase.findUnique({
         where: { id },
-        include: { pattern: true, user: true },
+        include: { pattern: { select: purchasePatternSelect }, user: true },
       });
       if (!purchase) {
         throw new NotFoundException('Solicitud de patrón no encontrada');
@@ -138,7 +155,7 @@ export class PatternPurchasesService {
       const updated = await tx.patternPurchase.update({
         where: { id },
         data: { status: PurchaseStatus.APPROVED },
-        include: { pattern: true },
+        include: { pattern: { select: purchasePatternSelect } },
       });
 
       await this.notificationsService.createNotification(

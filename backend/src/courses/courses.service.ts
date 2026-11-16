@@ -19,7 +19,7 @@ const publicLessonSelect = {
   order: true,
 } as const;
 
-const publicCourseSelect = {
+export const publicCourseSelect = {
   id: true,
   title: true,
   description: true,
